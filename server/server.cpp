@@ -618,9 +618,13 @@ static void enter_random_template_map(object *pl, object *exit_ob) {
 static void enter_unique_map(object *op, object *exit_ob) {
     char apartment[2 * HUGE_BUF], path[MAX_BUF];
     mapstruct        *newmap;
+    const char* player = op->name;
+    if (op->contr->followed_player) {
+        player = op->contr->followed_player;
+    }
 
     if (EXIT_PATH(exit_ob)[0] == '/') {
-        snprintf(apartment, sizeof(apartment), "~%s/%s", op->name, clean_path(EXIT_PATH(exit_ob), path, sizeof(path)));
+        snprintf(apartment, sizeof(apartment), "~%s/%s", player, clean_path(EXIT_PATH(exit_ob), path, sizeof(path)));
         newmap = ready_map_name(apartment, MAP_PLAYER_UNIQUE);
         if (!newmap) {
             newmap = mapfile_load(EXIT_PATH(exit_ob), 0);
@@ -656,7 +660,7 @@ static void enter_unique_map(object *op, object *exit_ob) {
              * use the basic logic - don't need to demangle the path name
              */
             path_combine_and_normalize(exit_ob->map->path, EXIT_PATH(exit_ob), reldir, sizeof(reldir));
-            snprintf(apartment, sizeof(apartment), "~%s/%s", op->name, clean_path(reldir, path, sizeof(path)));
+            snprintf(apartment, sizeof(apartment), "~%s/%s", player, clean_path(reldir, path, sizeof(path)));
             newmap = ready_map_name(apartment, MAP_PLAYER_UNIQUE);
             if (!newmap) {
                 path_combine_and_normalize(exit_ob->map->path, EXIT_PATH(exit_ob), reldir, sizeof(reldir));
