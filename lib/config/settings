@@ -37,7 +37,7 @@ starting_stat_max 18
 starting_stat_points 84
 roll_stat_points 105
 
-# values for the new big worldmap, and weather. Only use if you are using the
+# values for the new big worldmap. Only use if you are using the
 # new bigmap.
 #
 
@@ -45,8 +45,6 @@ worldmapstartx 100
 worldmapstarty 100
 worldmaptilesx 30
 worldmaptilesy 30
-worldmaptilesizex 50
-worldmaptilesizey 50
 
 # If this is set, when there is no player, the ingame clock will tick really fast.
 # If not set, it will not move and wait for a player to join.

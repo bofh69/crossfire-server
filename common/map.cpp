@@ -800,6 +800,9 @@ mapstruct *get_linked_map(void) {
     MAP_RESET_TIMEOUT(map) = 0;
     MAP_ENTER_X(map) = 0;
     MAP_ENTER_Y(map) = 0;
+    /*set part to -1 indicating conversion to weather map not yet done*/
+    MAP_WORLDPARTX(map)=-1;
+    MAP_WORLDPARTY(map)=-1;
     map->last_reset_time = 0;
     return map;
 }
@@ -1294,7 +1297,7 @@ static int load_temporary_map(mapstruct *m) {
  * @return
  * 0 on success, non zero in case of error, which is LOG'ed.
  */
-static int load_overlay_map(const char *filename, mapstruct *m) {
+int load_overlay_map(const char *filename, mapstruct *m) {
     FILE *fp;
     char pathname[MAX_BUF];
 
@@ -1786,6 +1789,7 @@ mapstruct *ready_map_name(const char *name, int flags) {
     /* Map is good to go, so just return it */
     if (m && (m->in_memory == MAP_LOADING || m->in_memory == MAP_IN_MEMORY)) {
         map_reset_swap(m);
+
         return m;
     }
 
@@ -1872,9 +1876,9 @@ mapstruct *ready_map_name(const char *name, int flags) {
 
     decay_objects(m); /* start the decay */
 
-    if (m->outdoor)
+    if (m->outdoor) {
         set_darkness_map(m);
-
+    }
     if (!(flags&(MAP_FLUSH))) {
         if (m->last_reset_time == 0) {
             m->last_reset_time = seconds();

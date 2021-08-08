@@ -57,6 +57,7 @@ static module_information modules[] = {
     { "citybell", "Ring bells every hour for defined temples", true, cfcitybell_init, cfcitybell_close },
     { "citylife", "Add NPCs in towns", true, citylife_init, citylife_close },
     { "rhg", "Add random maps to exits in towns", false, random_house_generator_init, random_house_generator_close },
+    { "weather", "Add weather effects to the world map.", false, cfweather_init, cfweather_close },
     { NULL, NULL, false, NULL, NULL }
 };
 
@@ -603,7 +604,7 @@ static void free_materials(void) {
  * be here or in the common directory - but since only the server needs this
  * information, having it here probably makes more sense.
  */
-static void load_settings(void) {
+void load_settings(void) {
     static char motd[MAX_BUF] = { 0 };
     char buf[MAX_BUF], *cp, dummy[1];
     int has_val;
@@ -706,20 +707,6 @@ static void load_settings(void) {
                 LOG(llevError, "load_settings: worldmaptilesy must be greater than 1, %d is invalid\n", size);
             else
                 settings.worldmaptilesy = size;
-        } else if (!strcasecmp(buf, "worldmaptilesizex")) {
-            int size = atoi(cp);
-
-            if (size < 1)
-                LOG(llevError, "load_settings: worldmaptilesizex must be greater than 1, %d is invalid\n", size);
-            else
-                settings.worldmaptilesizex = size;
-        } else if (!strcasecmp(buf, "worldmaptilesizey")) {
-            int size = atoi(cp);
-
-            if (size < 1)
-                LOG(llevError, "load_settings: worldmaptilesizey must be greater than 1, %d is invalid\n", size);
-            else
-                settings.worldmaptilesizey = size;
         } else if (!strcasecmp(buf, "fastclock")) {
             int lev = atoi(cp);
 
@@ -1112,7 +1099,6 @@ void init(int argc, char **argv) {
     parse_args(argc, argv, 1);
 
     add_server_collect_hooks();
-    init_modules();
 
     init_library();     /* Must be called early */
     load_settings();    /* Load the settings file */
@@ -1133,6 +1119,7 @@ void init(int argc, char **argv) {
     parse_args(argc, argv, 3);
 
     init_beforeplay();
+    init_modules();
     if (argc != 0) {
         // Invocations from the command-line (e.g. crossfire-server) have the
         // binary name in argv[0]. If that is not there, assume we are running

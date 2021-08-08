@@ -51,6 +51,7 @@ libserver_la_SOURCES = \
 	modules/cfcitybell.cpp \
 	modules/citylife.cpp \
 	modules/random_house_generator.cpp \
+	modules/cfweather.cpp \
 	win32.cpp \
 	$(top_srcdir)/socket/image.cpp \
 	$(top_srcdir)/socket/info.cpp \

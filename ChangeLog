@@ -1,3 +1,39 @@
+2025-09-12  Neila Hawkins
+  * .gitignore,
+    common/init.cpp,
+    common/map.cpp,
+    common/object.cpp,
+    common/utils.cpp,
+    include/global.h,
+    include/libproto.h,
+    include/map.h,
+    include/modules.h,
+    include/object.h,
+    include/plugin.h,
+    include/sproto.h,
+    lib/Makefile.am
+    lib/config/gavoiddefs,
+    lib/config/settings,
+    lib/config/treedefs,
+    lib/config/waterdefs,
+    lib/config/wavoiddefs,
+    lib/config/wevapdefs,
+    lib/config/wsettings,
+    lib/i18n/messages.fr,
+    plugins/cfpython/cfpython_map.cpp,
+    plugins/common/include/plugin_common.h,
+    plugins/common/plugin_common.cpp,
+    random_maps/main.cpp,
+    server/Makefile.am,
+    server/init.cpp,
+    server/modules/cfweather.cpp
+    server/player.cpp,
+    server/plugins.cpp,
+    server/weather.cpp,
+    utils/Makefile.am,
+    utils/mapper/mapper.cpp,
+    utils/test_weather.cpp: Merge in weather module from the weather branch. Defaulted to off.
+
 2025-04-06  Christopher Hayes
   * Add command 'shoottype' to allow player to switch to a readied ranged attack.
 
