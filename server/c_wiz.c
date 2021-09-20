@@ -1524,6 +1524,29 @@ void command_patch(object *op, const char *params) {
     }
 }
 
+static void reset_faces_sent(struct socket_struct *socket) {
+    free(socket->faces_sent);
+    socket->faces_sent = calloc(sizeof(socket->faces_sent), get_faces_count());
+    socket->faces_sent_len = get_faces_count();
+}
+
+void command_recollect(object *op, const char *params) {
+    load_assets();
+
+    // Clear sent faces for connected sockets so that clients see new faces.
+    for (int i = 0; i < socket_info.allocated_sockets; i++) {
+        if (init_sockets[i].status == Ns_Add) {
+            reset_faces_sent(&init_sockets[i]);
+        }
+    }
+
+    player *next;
+    for (player *pl = first_player; pl != NULL; pl = next) {
+        reset_faces_sent(&pl->socket);
+        next = pl->next;
+    }
+}
+
 /**
  * Remove an object from its position.
  *

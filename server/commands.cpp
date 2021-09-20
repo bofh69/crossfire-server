@@ -297,6 +297,7 @@ void commands_init(void) {
     RW("plugout", command_unloadplugin,           0.0);
     RW("purge_quest_state", command_purge_quest,  0.0);
     RW("purge_quests", command_purge_quest_definitions,  0.0);
+    RW("recollect", command_recollect,            0.0);
     RW("remove", command_remove,                  0.0);
     RW("reset", command_reset,                    0.0);
     RW("set_god", command_setgod,                 0.0);

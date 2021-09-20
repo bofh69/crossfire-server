@@ -254,6 +254,7 @@ void command_dump(object *op, const char *params);
 void command_mon_aggr(object *op, const char *params);
 void command_possess(object *op, const char *params);
 void command_patch(object *op, const char *params);
+void command_recollect(object *op, const char *params);
 void command_remove(object *op, const char *params);
 void command_free(object *op, const char *params);
 void command_accountpasswd(object *op, const char *params);

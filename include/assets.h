@@ -35,6 +35,8 @@ extern "C" {
 #define ASSETS_ALL                        0xFFFF
 /*@}*/
 
+void load_assets(void);
+
 void assets_init();
 void assets_free();
 void assets_collect(const char* datadir, int what);

@@ -176,6 +176,10 @@ static void init_emergency_mappath(void) {
     }
 }
 
+void load_assets(void) {
+    assets_collect(settings.datadir, ASSETS_ALL);
+    assets_end_load();
+}
 
 /**
  * It is vital that init_library() is called by any functions
@@ -207,8 +211,7 @@ void init_library(void) {
     init_objects();
     init_block();
 
-    assets_collect(settings.datadir, ASSETS_ALL);
-    assets_end_load();
+    load_assets();
 
     init_clocks();
     init_emergency_mappath();
