@@ -39,7 +39,7 @@ RUN apt-key adv \
     --recv-keys 86B72ED9
 
 RUN DEBIAN_FRONTEND=noninteractive TERM=xterm add-apt-repository \
-    "deb [arch=amd64] https://pkg.mxe.cc/repos/apt/ `lsb_release -sc` main"
+    "deb [arch=amd64] https://pkg.mxe.cc/repos/apt/ stretch main"
 
 RUN DEBIAN_FRONTEND=noninteractive TERM=xterm apt-get update
 
