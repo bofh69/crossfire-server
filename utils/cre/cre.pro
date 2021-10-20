@@ -1,3 +1,5 @@
+lessThan(QT_MAJOR_VERSION, 5): error("This program requires Qt5. Make sure you use the 'qmake' command from version 5 and not 4, and/or try 'qmake -qt=5'.")
+
 TEMPLATE = app
 
 INCLUDEPATH += ../../include
