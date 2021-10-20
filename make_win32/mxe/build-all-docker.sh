@@ -1,5 +1,5 @@
 #!/bin/sh
 
 ./configure-cross-compile-win.sh &&
-( cd ../.. && make -j6 ) &&
+( cd ../.. && make ) &&
 ./build-cre.sh
