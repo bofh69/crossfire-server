@@ -238,14 +238,9 @@ void pets_terminate_all(object *owner) {
 }
 
 /**
- * This function checks all pets so they try to follow their master around the world.
- *
- * Unfortunately, sometimes, the owner of a pet is in the
- * process of entering a new map when this is called.
- * Thus the map isn't loaded yet, and we have to remove
- * the pet...
+ * Check all pets so they try to follow their master around the world.
  */
-void pets_remove_all(void) {
+void pets_attempt_follow(void) {
     objectlink *obl, *next;
     object *owner;
 
