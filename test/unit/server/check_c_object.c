@@ -337,7 +337,6 @@ int main(void) {
     SRunner *sr = srunner_create(s);
 
     settings.debug = 0;
-    settings.logfilename = "c_object.out";
     cctk_setdatadir(SOURCE_ROOT "lib");
     init(0, NULL);
 
