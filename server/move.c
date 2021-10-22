@@ -164,6 +164,7 @@ int transfer_ob(object *op, int x, int y, int randomly, object *originator) {
     if (op && op->type == PLAYER) {
         map_newmap_cmd(&op->contr->socket);
         player_update_bg_music(op);
+        pets_attempt_follow(op, 1);
     }
     return op ? 0 : 1;
 }
@@ -261,6 +262,7 @@ int teleport(object *teleporter, uint8_t tele_type, object *user) {
     if (user && user->type == PLAYER) {
         map_newmap_cmd(&user->contr->socket);
         player_update_bg_music(user);
+        pets_attempt_follow(user, 1);
     }
     return (user == NULL);
 }

@@ -238,9 +238,14 @@ void pets_terminate_all(object *owner) {
 }
 
 /**
- * Check all pets so they try to follow their master around the world.
+ * Check pets so they try to follow their master around the world.
+ *
+ * @param for_owner if NULL, check all pets, else only pets for this owner.
+ * @param force if non zero, then forcibly move the pet close to its owner.
+ * If zero then only check pets if they are not on the same map, as
+ * computed by on_same_map(), as their owner.
  */
-void pets_attempt_follow(void) {
+void pets_attempt_follow(object *for_owner, int force) {
     objectlink *obl, *next;
     object *owner;
 
@@ -249,7 +254,8 @@ void pets_attempt_follow(void) {
         if (obl->ob->type != PLAYER
         && QUERY_FLAG(obl->ob, FLAG_FRIENDLY)
         && (owner = object_get_owner(obl->ob)) != NULL
-        && !on_same_map(owner, obl->ob)) {
+        && (for_owner == NULL || for_owner == owner)
+        && (force || !on_same_map(owner, obl->ob))) {
             /* follow owner checks map status for us.  Note that pet can
              * die in pets_follow_owner(), so check for obl->ob existence
              */

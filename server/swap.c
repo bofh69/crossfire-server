@@ -149,7 +149,7 @@ int swap_map(mapstruct *map) {
         map->timeout = 0;
         return SAVE_ERROR_PLAYER;
     }
-    pets_attempt_follow(); /* Give them a chance to follow */
+    pets_attempt_follow(0, 0); /* Give them a chance to follow */
 
     /* Update the reset time.  Only do this is STAND_STILL is not set */
     if (!map->fixed_resettime)
