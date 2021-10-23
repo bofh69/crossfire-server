@@ -1394,10 +1394,8 @@ static void save_picture(FILE *file, gdImagePtr pic) {
  * map from.
  * @param dest
  * map to.
- * @param linkname
- * name of the link as it should appear. Unused.
  */
-static void add_region_link(mapstruct *source, mapstruct *dest, const char */*linkname*/) {
+static void add_region_link(mapstruct *source, mapstruct *dest) {
     region *s, *d;
 
     s = get_region_by_map(source);
@@ -1626,7 +1624,7 @@ static void process_map(struct_map_info *info) {
                     if (link && link != m) {
                         /* no need to link a map with itself. Also, if the exit points to the same map, we don't
                         * want to reset it. */
-                        add_region_link(m, link, NULL);
+                        add_region_link(m, link);
                         link->reset_time = 1;
                         link->in_memory = MAP_IN_MEMORY;
                         delete_map(link);
@@ -1710,7 +1708,7 @@ static void process_map(struct_map_info *info) {
                                     if (link && link != m) {
                                         /* no need to link a map with itself. Also, if the exit points to the same map, we don't
                                          * want to reset it. */
-                                        add_region_link(m, link, item->arch->clone.name);
+                                        add_region_link(m, link);
                                         link->reset_time = 1;
                                         link->in_memory = MAP_IN_MEMORY;
                                         delete_map(link);
