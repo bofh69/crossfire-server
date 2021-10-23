@@ -93,9 +93,6 @@ struct mapzone {
 static std::unordered_map<std::string, mapzone *> maps;
 
 
-/** @ingroup  plugin_citylife
-@{*/
-
 /**
  * Finds if a map has a zone defined.
  *
