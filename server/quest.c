@@ -855,15 +855,15 @@ void command_quest(object *op, const char *params) {
     command_help(op, "quest");
 }
 
+/** Structure used when dumping quests to stdout. */
 typedef struct {
-    const quest_definition *parent;
-    int level;
+    const quest_definition *parent; /**< Parent to dump from. */
+    int level;                      /**< Indentation level. */
 } dump;
 /**
- * Dump all defined quests on the logfile. Will call itself recursively.
- * @param parent only quests with a parent of this value will be displayed.
- * Use NULL to display top-level quests.
- * @param level number of '-' to display before the quest's name.
+ * Dump one quest on the logfile, then its children. Will call itself through quest_for_each().
+ * @param quest quest to dump.
+ * @param user pointer to a ::dump struct.
  */
 static void output_quests(const quest_definition *quest, void *user) {
     dump *d = (dump *)user;
