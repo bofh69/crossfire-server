@@ -348,8 +348,8 @@ void commands_clear() {
  *
  * @param op
  * player asking for information.
- * @param ap
- * commands to display.
+ * @param type
+ * type of commands to display.
  * @param legend
  * banner to print before the commands.
  */
