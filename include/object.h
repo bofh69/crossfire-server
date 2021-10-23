@@ -3,10 +3,10 @@
  * Object structure, the core of Crossfire.
  */
 
-#include "dialog.h"
-
 #ifndef OBJECT_H
 #define OBJECT_H
+
+#include "dialog.h"
 
 /** Object tag, unique during the whole game. */
 typedef uint32_t tag_t;
