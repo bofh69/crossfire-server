@@ -33,6 +33,7 @@
 #define CONV_FROM(xyz)  xyz->slaying
 #define CONV_TO(xyz)    xyz->other_arch
 #define CONV_NR(xyz)    (unsigned char)xyz->stats.sp
+#define CONV_LIMIT(xyz) ((xyz->stats.wc > 0) ? ((unsigned long)xyz->stats.wc) : INT32_MAX)
 #define CONV_NEED(xyz)  (unsigned long)xyz->stats.food
 #define CONV_FROM_MATCH(xyz,_match) (CONV_FROM(xyz) == (_match) || (strchr(CONV_FROM(xyz),'*')) && wildcard_match(CONV_FROM(xyz),(_match)))
 
@@ -101,7 +102,7 @@ static int convert_item(object *item, object *converter) {
         if (item->type != MONEY)
             return 0;
 
-        nr = (item->nrof*item->value)/CONV_NEED(converter);
+        nr = MIN(CONV_LIMIT(converter), (item->nrof*item->value)/CONV_NEED(converter));
         if (!nr)
             return 0;
 
@@ -129,7 +130,7 @@ static int convert_item(object *item, object *converter) {
         }
 
         if (CONV_NEED(converter)) {
-            nr = item->nrof/CONV_NEED(converter);
+            nr = MIN(CONV_LIMIT(converter), item->nrof/CONV_NEED(converter));
             object_decrease_nrof(item, nr*CONV_NEED(converter));
             price_in = nr*CONV_NEED(converter)*item->value;
         } else {
