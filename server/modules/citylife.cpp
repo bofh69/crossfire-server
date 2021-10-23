@@ -308,18 +308,18 @@ static int eventListener(int *type, ...) {
  * @param zone zone to check.
  * @param path zone path in case of error.
  */
-static void check_zone(const mapzone *zone, const char *oath) {
+static void check_zone(const mapzone *zone, const char *path) {
     if (zone->population == 0) {
-        LOG(llevError, "zone for %s has population of 0!\n", oath);
+        LOG(llevError, "zone for %s has population of 0!\n", path);
     }
     if (zone->available_archetypes.empty()) {
-        LOG(llevError, "zone for %s has no archetype!\n", oath);
+        LOG(llevError, "zone for %s has no archetype!\n", path);
     }
     if (zone->zones.empty()) {
-        LOG(llevError, "zone for %s has no zone!\n", oath);
+        LOG(llevError, "zone for %s has no zone!\n", path);
     }
     if (zone->points.empty()) {
-        LOG(llevError, "zone for %s has no spawn point!\n", oath);
+        LOG(llevError, "zone for %s has no spawn point!\n", path);
     }
 }
 
