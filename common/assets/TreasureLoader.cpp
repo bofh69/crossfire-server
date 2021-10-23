@@ -54,14 +54,10 @@ static treasure *get_empty_treasure(void) {
 extern size_t nroftreasures;
 
 /**
- * Reads one treasure from the file, including the 'yes', 'no' and 'more' options.
+ * Reads one treasure, including the 'yes', 'no' and 'more' options.
  *
- * @param fp
- * file to read from.
- * @param[out] line
- * position in file.
- * @return
- * read structure, never NULL.
+ * @param reader where to read from.
+ * @param filename full path of the file for logging purposes.
  *
  * @todo
  * check if change_name is still used, and remove it if no.
