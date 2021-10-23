@@ -7,7 +7,7 @@ See @ref page_type_111
 @page page_type_111 Scroll
 
 
-@section Description
+@section sec_desc_111 Description
             Scrolls contain spells (similar to spell-potions). Unlike potions,
             scrolls require a certain literacy skill to read successfully.
             Accordingly, for a successful reading, a small amount of experience
@@ -20,7 +20,7 @@ Type defined by:
 - @ref object::type = 111
 
 
-@section Attributes
+@section sec_attr_111 Attributes
 
 <table>
 	<tr>
@@ -42,6 +42,12 @@ Type defined by:
 		</td>
 	</tr>
 	<tr>
+		<td>blocks prayers</td>
+		<td>@ref page_custom_attribute_blocks_prayer "blocks_prayer"</td>
+		<td>            Similar to damned, but does not appear in detect curse.
+		</td>
+	</tr>
+	<tr>
 		<td>casting level</td>
 		<td>@ref obj::level</td>
 		<td>            The spell of the scroll will be casted at this level. This value
@@ -56,6 +62,20 @@ Type defined by:
             is checked: if it is zero, the change happens; otherwise &lt;food&gt;
             is decreased by one. I suggest you don't mess with this value -
             leave the default in place.
+		</td>
+	</tr>
+	<tr>
+		<td>client-sided randomized animation?</td>
+		<td>@ref FLAG_CLIENT_ANIM_RANDOM</td>
+		<td>            If defined, then the object's animation is client-sided. Similar
+            objects are animated independently.
+		</td>
+	</tr>
+	<tr>
+		<td>client-sided synchronized animation?</td>
+		<td>@ref FLAG_CLIENT_ANIM_SYNC</td>
+		<td>            If defined, then the object's animation is client-sided. Similar
+            objects are animated synchronized.
 		</td>
 	</tr>
 	<tr>

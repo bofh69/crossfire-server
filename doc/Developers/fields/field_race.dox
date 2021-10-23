@@ -1,6 +1,6 @@
 /**
 @fn obj::race
-@section Use
+@section sec_race Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -32,7 +32,7 @@
 	</tr>
 	<tr>
 		<td>
-@ref page_type_214, @ref page_type_28
+@ref page_type_215, @ref page_type_28
 		</td><td>            Every monster should have a race set to categorize it. The monster's
             &lt;race&gt; can have different effects: Slaying weapons inflict
             triple damage against enemy races and holy word kills only enemy
@@ -76,7 +76,7 @@
 	</tr>
 	<tr>
 		<td>
-@ref page_type_216
+@ref page_type_217
 		</td><td>            For weak walls, &lt;race&gt; should always be set to "wall", unless
             you create something fancy like a building which is in fact meant to
             be a huge animal. Note that shovels slay walls, so they do triple

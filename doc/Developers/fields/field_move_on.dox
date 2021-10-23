@@ -1,6 +1,6 @@
 /**
 @fn obj::move_on
-@section Use
+@section sec_move_on Use
 <table>
 	<tr>
 		<th>Type(s)</th>

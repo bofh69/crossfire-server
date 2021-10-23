@@ -1,6 +1,6 @@
 /**
 @fn obj::slaying
-@section Use
+@section sec_slaying Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -107,6 +107,13 @@
             If it is set to "player", any player stepping on the pedestal is a
             match. Very useful if you want to open a gate for players but not
             for monsters.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_57
+		</td><td>            The destination path defines the map that the player is transferred
+            to. This must be an absolute path, beginning with '/' (for example
+            "/start/Nexus").</td>
 	</tr>
 	<tr>
 		<td>

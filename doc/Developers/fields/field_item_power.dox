@@ -1,6 +1,6 @@
 /**
 @fn obj::item_power
-@section Use
+@section sec_item_power Use
 <table>
 	<tr>
 		<th>Type(s)</th>

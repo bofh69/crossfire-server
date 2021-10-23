@@ -2,7 +2,7 @@
 @page page_custom_attribute_immunity_chance immunity_chance
 This is a @ref page_custom_attributes "custom attribute".
 
-@section Use
+@section sec_immunity_chance Use
 <table>
 	<tr>
 		<th>Type(s)</th>

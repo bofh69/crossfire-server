@@ -1,6 +1,6 @@
 /**
 @fn obj::speed
-@section Use
+@section sec_speed Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -36,7 +36,7 @@
 	</tr>
 	<tr>
 		<td>
-@ref page_type_214, @ref page_type_28
+@ref page_type_215, @ref page_type_28
 		</td><td>            The &lt;speed&gt; determines how fast a monster will both move and
             fight. High &lt;speed&gt; makes a monster considerably stronger.</td>
 	</tr>

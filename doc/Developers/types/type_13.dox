@@ -7,7 +7,7 @@ See @ref page_type_13
 @page page_type_13 Projectile
 
 
-@section Description
+@section sec_desc_13 Description
             Projectiles like arrows/crossbow bolts are used as ammunition for
             shooting weapons.
             <br>
@@ -22,7 +22,7 @@ Type defined by:
 - @ref object::type = 13
 
 
-@section Attributes
+@section sec_attr_13 Attributes
 
 <table>
 	<tr>
@@ -69,6 +69,12 @@ Type defined by:
 		</td>
 	</tr>
 	<tr>
+		<td>blocks prayers</td>
+		<td>@ref page_custom_attribute_blocks_prayer "blocks_prayer"</td>
+		<td>            Similar to damned, but does not appear in detect curse.
+		</td>
+	</tr>
+	<tr>
 		<td>chance to break</td>
 		<td>@ref liv::food</td>
 		<td>            The &lt;chance to break&gt; defines the breaking probability when
@@ -85,6 +91,20 @@ Type defined by:
             is checked: if it is zero, the change happens; otherwise &lt;food&gt;
             is decreased by one. I suggest you don't mess with this value -
             leave the default in place.
+		</td>
+	</tr>
+	<tr>
+		<td>client-sided randomized animation?</td>
+		<td>@ref FLAG_CLIENT_ANIM_RANDOM</td>
+		<td>            If defined, then the object's animation is client-sided. Similar
+            objects are animated independently.
+		</td>
+	</tr>
+	<tr>
+		<td>client-sided synchronized animation?</td>
+		<td>@ref FLAG_CLIENT_ANIM_SYNC</td>
+		<td>            If defined, then the object's animation is client-sided. Similar
+            objects are animated synchronized.
 		</td>
 	</tr>
 	<tr>

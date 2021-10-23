@@ -1,19 +1,23 @@
 /**
-@page page_type_213 Floor
+@var PLAYER_CHANGER
+See @ref page_type_57
+*/
+
+/**
+@page page_type_57 Player Changer
 
 
-@section Description
-            Floor is a very basic thing without too much functionality. It's a
-            floor - you stand on it. 
+@section sec_desc_57 Description
+            Teleport a player to a different map and applies changes to the
+            player from its inventory.
 
 
 
 Type defined by:
-- @ref FLAG_IS_FLOOR set
-- @ref FLAG_ALIVE unset
+- @ref object::type = 57
 
 
-@section Attributes
+@section sec_attr_57 Attributes
 
 <table>
 	<tr>
@@ -35,9 +39,9 @@ Type defined by:
 		</td>
 	</tr>
 	<tr>
-		<td>blocked movement</td>
-		<td>@ref obj::move_block</td>
-		<td>            If set, the object cannot be passed by players nor monsters.
+		<td>blocks prayers</td>
+		<td>@ref page_custom_attribute_blocks_prayer "blocks_prayer"</td>
+		<td>            Similar to damned, but does not appear in detect curse.
 		</td>
 	</tr>
 	<tr>
@@ -51,9 +55,39 @@ Type defined by:
 		</td>
 	</tr>
 	<tr>
-		<td>description</td>
-		<td>@ref obj::msg</td>
-		<td>            This text may describe the object.
+		<td>client-sided randomized animation?</td>
+		<td>@ref FLAG_CLIENT_ANIM_RANDOM</td>
+		<td>            If defined, then the object's animation is client-sided. Similar
+            objects are animated independently.
+		</td>
+	</tr>
+	<tr>
+		<td>client-sided synchronized animation?</td>
+		<td>@ref FLAG_CLIENT_ANIM_SYNC</td>
+		<td>            If defined, then the object's animation is client-sided. Similar
+            objects are animated synchronized.
+		</td>
+	</tr>
+	<tr>
+		<td>destination X</td>
+		<td>@ref liv::hp</td>
+		<td>            The player changer will transport the player to the destination
+            coordinate.
+		</td>
+	</tr>
+	<tr>
+		<td>destination Y</td>
+		<td>@ref liv::sp</td>
+		<td>            The player changer will transport the player to the destination
+            coordinate.
+		</td>
+	</tr>
+	<tr>
+		<td>destination path</td>
+		<td>@ref obj::slaying</td>
+		<td>            The destination path defines the map that the player is transferred
+            to. This must be an absolute path, beginning with '/' (for example
+            "/start/Nexus").
 		</td>
 	</tr>
 	<tr>
@@ -72,13 +106,6 @@ Type defined by:
 		<td>            If &lt;glow radius&gt; is set to a value greater zero, the object
             appears lit up on dark maps. &lt;glow radius&gt; can be a value
             between 0 and 4, the higher, the more light does the object emit.
-		</td>
-	</tr>
-	<tr>
-		<td>hilly terrain</td>
-		<td>@ref FLAG_IS_HILLY</td>
-		<td>                This flag indicates this spot contains hills or large rocks.
-                Players with activated mountaineer skill can move faster here.
 		</td>
 	</tr>
 	<tr>
@@ -166,20 +193,6 @@ Type defined by:
 		</td>
 	</tr>
 	<tr>
-		<td>no prayers</td>
-		<td>@ref FLAG_DAMNED</td>
-		<td>            If enabled, it is impossible for players to use prayers on that
-            spot. It also prevents players from saving.
-		</td>
-	</tr>
-	<tr>
-		<td>no spells</td>
-		<td>@ref FLAG_NO_MAGIC</td>
-		<td>            If enabled, it is impossible for players to use (wizard-) spells on
-            that spot.
-		</td>
-	</tr>
-	<tr>
 		<td>non-pickable</td>
 		<td>@ref FLAG_NO_PICK</td>
 		<td>            If set, the object cannot be picked up (Neither by players nor
@@ -224,23 +237,6 @@ Type defined by:
 		</td>
 	</tr>
 	<tr>
-		<td>slow movement</td>
-		<td>@ref obj::move_slow</td>
-		<td>                The movement types that are affected by &lt;slow penalty&gt;.
-		</td>
-	</tr>
-	<tr>
-		<td>slow penalty</td>
-		<td>@ref obj::move_slow_penalty</td>
-		<td>                If &lt;slow movement&gt; is set to a value greater zero, all
-                creatures moving over this spot will be slower than normal.
-
-                &lt;slow movement&gt; 1 - rough terrain &lt;slow movement&gt; 2
-                - very rough terrain ... &lt;slow movement&gt; 7 - spider web
-                (sticky as hell)
-		</td>
-	</tr>
-	<tr>
 		<td>smooth level</td>
 		<td>@ref obj::smoothlevel</td>
 		<td>            If &lt;smooth level&gt; is set to a value greater zero, the object
@@ -268,14 +264,6 @@ Type defined by:
 		</td>
 	</tr>
 	<tr>
-		<td>unique map</td>
-		<td>@ref FLAG_UNIQUE</td>
-		<td>            Unique floor means that any items dropped on that spot will be saved
-            beyond map reset. For permanent apartments, all floor squares must
-            be set &lt;unique map&gt;.
-		</td>
-	</tr>
-	<tr>
 		<td>unpaid</td>
 		<td>@ref FLAG_UNPAID</td>
 		<td>            An &lt;unpaid&gt; item cannot be used unless a player carried it
@@ -300,13 +288,6 @@ Type defined by:
             Objects with zero weight are not pickable for players. Still, set
             the "non-pickable"-flag for explicitly non-pickable objects (hey,
             this is open source.. you never know ;) ).
-		</td>
-	</tr>
-	<tr>
-		<td>wooded terrain</td>
-		<td>@ref FLAG_IS_WOODED</td>
-		<td>                This flag indicates this spot contains wood or high grass.
-                Players with activated woodsman skill can move faster here.
 		</td>
 	</tr>
 </table>

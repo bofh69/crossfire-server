@@ -6,7 +6,10 @@ This page lists all attributes.
 - @ref obj::artifact
 - @ref FLAG_BLOCKSVIEW
 - @ref obj::move_block
+- @ref page_custom_attribute_blocks_prayer "blocks_prayer"
 - @ref FLAG_CHANGING
+- @ref FLAG_CLIENT_ANIM_RANDOM
+- @ref FLAG_CLIENT_ANIM_SYNC
 - @ref page_connected "connection value"
 - @ref liv::food
 - @ref page_custom_attribute_elevation "elevation"
@@ -156,7 +159,6 @@ This page lists all attributes.
 - @ref FLAG_AUTO_APPLY
 - @ref obj::expmul
 - @ref page_custom_attribute_wc_increase_rate "wc_increase_rate"
-- @ref obj::perm_exp
 - @ref obj::skill
 - @ref obj::casting_time
 - @ref page_custom_attribute_casting_requirements "casting_requirements"

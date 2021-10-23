@@ -7,7 +7,7 @@ See @ref page_type_62
 @page page_type_62 Magic Wall
 
 
-@section Description
+@section sec_desc_62 Description
             Magic walls fire spells in a given direction, in regular intervals.
             Magic walls can contain any spell. However, some spells do not
             operate very successfully in them. The only way to know is to test
@@ -23,7 +23,7 @@ Type defined by:
 - @ref object::type = 62
 
 
-@section Attributes
+@section sec_attr_62 Attributes
 
 <table>
 	<tr>
@@ -59,6 +59,12 @@ Type defined by:
 		</td>
 	</tr>
 	<tr>
+		<td>blocks prayers</td>
+		<td>@ref page_custom_attribute_blocks_prayer "blocks_prayer"</td>
+		<td>            Similar to damned, but does not appear in detect curse.
+		</td>
+	</tr>
+	<tr>
 		<td>casting speed</td>
 		<td>@ref obj::speed</td>
 		<td>            The &lt;casting speed&gt; defines the spell-casting speed of the
@@ -75,6 +81,20 @@ Type defined by:
             is checked: if it is zero, the change happens; otherwise &lt;food&gt;
             is decreased by one. I suggest you don't mess with this value -
             leave the default in place.
+		</td>
+	</tr>
+	<tr>
+		<td>client-sided randomized animation?</td>
+		<td>@ref FLAG_CLIENT_ANIM_RANDOM</td>
+		<td>            If defined, then the object's animation is client-sided. Similar
+            objects are animated independently.
+		</td>
+	</tr>
+	<tr>
+		<td>client-sided synchronized animation?</td>
+		<td>@ref FLAG_CLIENT_ANIM_SYNC</td>
+		<td>            If defined, then the object's animation is client-sided. Similar
+            objects are animated synchronized.
 		</td>
 	</tr>
 	<tr>

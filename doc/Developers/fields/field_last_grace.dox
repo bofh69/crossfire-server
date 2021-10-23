@@ -1,6 +1,6 @@
 /**
 @fn obj::last_grace
-@section Use
+@section sec_last_grace Use
 <table>
 	<tr>
 		<th>Type(s)</th>

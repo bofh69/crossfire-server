@@ -1,13 +1,13 @@
 /**
 @fn FLAG_CAST_SPELL
-@section Use
+@section sec_can_cast_spell Use
 <table>
 	<tr>
 		<th>Type(s)</th>
 		<th>Description</th>
 	</tr>	<tr>
 		<td>
-@ref page_type_214, @ref page_type_28
+@ref page_type_215, @ref page_type_28
 		</td><td>                If &lt;can cast spell&gt; is disabled, the monster cannot cast
                 any spell. Only wands/rods/etc can be used, given the
                 appropriate abilities.</td>

@@ -7,7 +7,7 @@ See @ref page_type_16
 @page page_type_16 Breastplate Armor
 
 
-@section Description
+@section sec_desc_16 Description
             Wearing an armor, the object's stats will directly be inherited to
             the player. Usually enhancing his defense. 
 
@@ -17,7 +17,7 @@ Type defined by:
 - @ref object::type = 16
 
 
-@section Attributes
+@section sec_attr_16 Attributes
 
 <table>
 	<tr>
@@ -56,6 +56,12 @@ Type defined by:
 		</td>
 	</tr>
 	<tr>
+		<td>blocks prayers</td>
+		<td>@ref page_custom_attribute_blocks_prayer "blocks_prayer"</td>
+		<td>            Similar to damned, but does not appear in detect curse.
+		</td>
+	</tr>
+	<tr>
 		<td>changing</td>
 		<td>@ref FLAG_CHANGING</td>
 		<td>            A &lt;changing&gt; object converts to &lt;food&gt; &lt;other_arch&gt;
@@ -70,6 +76,20 @@ Type defined by:
 		<td>@ref liv::Cha</td>
 		<td>                The player's charisma will rise/fall by the given value while
                 wearing this piece of equipment.
+		</td>
+	</tr>
+	<tr>
+		<td>client-sided randomized animation?</td>
+		<td>@ref FLAG_CLIENT_ANIM_RANDOM</td>
+		<td>            If defined, then the object's animation is client-sided. Similar
+            objects are animated independently.
+		</td>
+	</tr>
+	<tr>
+		<td>client-sided synchronized animation?</td>
+		<td>@ref FLAG_CLIENT_ANIM_SYNC</td>
+		<td>            If defined, then the object's animation is client-sided. Similar
+            objects are animated synchronized.
 		</td>
 	</tr>
 	<tr>

@@ -1,13 +1,13 @@
 /**
 @fn FLAG_GENERATOR
-@section Use
+@section sec_generator Use
 <table>
 	<tr>
 		<th>Type(s)</th>
 		<th>Description</th>
 	</tr>	<tr>
 		<td>
-@ref page_type_214, @ref page_type_28
+@ref page_type_215, @ref page_type_28
 		</td><td>            Monsters with &lt;generator&gt; enabled will create a &lt;breed
             monster&gt; every once in a while. Mice are a good example for this
             effect. If enabled, you must also set &lt;breed monster&gt; or check

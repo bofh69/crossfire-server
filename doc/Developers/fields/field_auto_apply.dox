@@ -1,6 +1,6 @@
 /**
 @fn FLAG_AUTO_APPLY
-@section Use
+@section sec_auto_apply Use
 <table>
 	<tr>
 		<th>Type(s)</th>

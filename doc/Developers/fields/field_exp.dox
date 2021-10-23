@@ -1,6 +1,6 @@
 /**
 @fn liv::exp
-@section Use
+@section sec_exp Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -30,7 +30,7 @@
 	</tr>
 	<tr>
 		<td>
-@ref page_type_214, @ref page_type_28
+@ref page_type_215, @ref page_type_28
 		</td><td>            When a player kills this monster, he will get exactly this amount of
             &lt;experience&gt;. The experience will flow into the skill-category
             the player used for the kill.

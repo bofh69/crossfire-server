@@ -1,6 +1,6 @@
 /**
 @fn FLAG_UNIQUE
-@section Use
+@section sec_unique Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -37,7 +37,7 @@
 	</tr>
 	<tr>
 		<td>
-@ref page_type_213, @ref page_type_67, @ref page_type_88
+@ref page_type_214, @ref page_type_67, @ref page_type_88
 		</td><td>            Unique floor means that any items dropped on that spot will be saved
             beyond map reset. For permanent apartments, all floor squares must
             be set &lt;unique map&gt;.</td>

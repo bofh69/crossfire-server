@@ -1,6 +1,6 @@
 /**
 @fn obj::expmul
-@section Use
+@section sec_expmul Use
 <table>
 	<tr>
 		<th>Type(s)</th>

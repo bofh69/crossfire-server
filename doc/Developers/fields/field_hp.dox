@@ -1,6 +1,6 @@
 /**
 @fn liv::hp
-@section Use
+@section sec_hp Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -72,7 +72,7 @@
 	</tr>
 	<tr>
 		<td>
-@ref page_type_214, @ref page_type_28
+@ref page_type_215, @ref page_type_28
 		</td><td>                The &lt;health points&gt; of a monster define how long it takes
                 to kill it. With every successful hit from an opponent, &lt;health
                 points&gt; get drained - The monster dies by zero &lt;health
@@ -93,6 +93,12 @@
             two-square radius of the destination coordinates. If the destination
             square becomes blocked, the pit will act like being filled up and
             not work anymore!</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_57
+		</td><td>            The player changer will transport the player to the destination
+            coordinate.</td>
 	</tr>
 	<tr>
 		<td>
@@ -149,7 +155,7 @@
 	</tr>
 	<tr>
 		<td>
-@ref page_type_216
+@ref page_type_217
 		</td><td>            The &lt;health points&gt; of a weak wall define how long it takes to
             tear it down. With every successful hit from an opponent, &lt;health
             points&gt; get drained.</td>

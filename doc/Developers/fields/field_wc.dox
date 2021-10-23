@@ -1,6 +1,6 @@
 /**
 @fn liv::wc
-@section Use
+@section sec_wc Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -13,6 +13,12 @@
             hitting the opponent. Weapon class is the "counter piece" of &lt;armor
             class&gt;. It should usually be set only for weapon-like items.
             Lower values are better.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_103
+		</td><td>            The player can convert at most &lt;max receive&gt; items of &lt;receive arch&gt;
+            for each time she drops anything. 0 means no limit.</td>
 	</tr>
 	<tr>
 		<td>
@@ -42,7 +48,7 @@
 	</tr>
 	<tr>
 		<td>
-@ref page_type_214, @ref page_type_28
+@ref page_type_215, @ref page_type_28
 		</td><td>                Monsters of high &lt;weapon class&gt; are more likely to really
                 hit their opponent. &lt;weapon class&gt; can be considered the
                 "counter piece" to &lt;armor class&gt;.</td>

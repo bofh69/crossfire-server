@@ -1,6 +1,6 @@
 /**
 @fn obj::last_heal
-@section Use
+@section sec_last_heal Use
 <table>
 	<tr>
 		<th>Type(s)</th>

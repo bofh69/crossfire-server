@@ -2,12 +2,12 @@
 @page page_type_0 Misc
 
 
-@section Description
+@section sec_desc_0 Description
 This type regroups all types who don't have a specific definition.
 
 
 
-@section Attributes
+@section sec_attr_0 Attributes
 
 <table>
 	<tr>
@@ -35,6 +35,12 @@ This type regroups all types who don't have a specific definition.
 		</td>
 	</tr>
 	<tr>
+		<td>blocks prayers</td>
+		<td>@ref page_custom_attribute_blocks_prayer "blocks_prayer"</td>
+		<td>            Similar to damned, but does not appear in detect curse.
+		</td>
+	</tr>
+	<tr>
 		<td>changing</td>
 		<td>@ref FLAG_CHANGING</td>
 		<td>            A &lt;changing&gt; object converts to &lt;food&gt; &lt;other_arch&gt;
@@ -42,6 +48,20 @@ This type regroups all types who don't have a specific definition.
             is checked: if it is zero, the change happens; otherwise &lt;food&gt;
             is decreased by one. I suggest you don't mess with this value -
             leave the default in place.
+		</td>
+	</tr>
+	<tr>
+		<td>client-sided randomized animation?</td>
+		<td>@ref FLAG_CLIENT_ANIM_RANDOM</td>
+		<td>            If defined, then the object's animation is client-sided. Similar
+            objects are animated independently.
+		</td>
+	</tr>
+	<tr>
+		<td>client-sided synchronized animation?</td>
+		<td>@ref FLAG_CLIENT_ANIM_SYNC</td>
+		<td>            If defined, then the object's animation is client-sided. Similar
+            objects are animated synchronized.
 		</td>
 	</tr>
 	<tr>

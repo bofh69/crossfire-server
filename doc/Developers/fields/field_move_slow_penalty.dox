@@ -1,13 +1,13 @@
 /**
 @fn obj::move_slow_penalty
-@section Use
+@section sec_move_slow_penalty Use
 <table>
 	<tr>
 		<th>Type(s)</th>
 		<th>Description</th>
 	</tr>	<tr>
 		<td>
-@ref page_type_213, @ref page_type_67
+@ref page_type_214, @ref page_type_67
 		</td><td>                If &lt;slow movement&gt; is set to a value greater zero, all
                 creatures moving over this spot will be slower than normal.
 

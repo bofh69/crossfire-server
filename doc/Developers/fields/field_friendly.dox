@@ -1,13 +1,13 @@
 /**
 @fn FLAG_FRIENDLY
-@section Use
+@section sec_friendly Use
 <table>
 	<tr>
 		<th>Type(s)</th>
 		<th>Description</th>
 	</tr>	<tr>
 		<td>
-@ref page_type_214, @ref page_type_28
+@ref page_type_215, @ref page_type_28
 		</td><td>                &lt;friendly&gt; monsters help the player, attacking any
                 non-friendly monsters in range.</td>
 	</tr>

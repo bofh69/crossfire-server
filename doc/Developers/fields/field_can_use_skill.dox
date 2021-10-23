@@ -1,13 +1,13 @@
 /**
 @fn FLAG_CAN_USE_SKILL
-@section Use
+@section sec_can_use_skill Use
 <table>
 	<tr>
 		<th>Type(s)</th>
 		<th>Description</th>
 	</tr>	<tr>
 		<td>
-@ref page_type_214, @ref page_type_28
+@ref page_type_215, @ref page_type_28
 		</td><td>                Monster is able to use skills from it's inventory. For example,
                 you can put a throwing skill object and some boulders into the
                 monster's object and set &lt;can use skills&gt;.</td>

@@ -1,6 +1,6 @@
 /**
 @fn obj::last_eat
-@section Use
+@section sec_last_eat Use
 <table>
 	<tr>
 		<th>Type(s)</th>
