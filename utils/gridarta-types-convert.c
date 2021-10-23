@@ -838,6 +838,7 @@ static const char *custom_attributes[] = {
     "identified_anim_random",
     "immunity_chance",
     "elevation",
+    "blocks_prayer",
     NULL
 };
 
