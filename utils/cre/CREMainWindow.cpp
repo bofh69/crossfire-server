@@ -85,55 +85,15 @@ QAction *CREMainWindow::createAction(const QString &title, const QString &status
 
 void CREMainWindow::createActions()
 {
-    myOpenExperience = new QAction(tr("Experience"), this);
-    myOpenExperience->setStatusTip(tr("Display the experience table."));
-    connect(myOpenExperience, SIGNAL(triggered()), this, SLOT(onOpenExperience()));
-
     mySaveFormulae = new QAction(tr("Formulae"), this);
     mySaveFormulae->setEnabled(false);
     connect(mySaveFormulae, SIGNAL(triggered()), this, SLOT(onSaveFormulae()));
-
-    mySaveQuests = new QAction(tr("Quests"), this);
-    mySaveQuests->setStatusTip(tr("Save all modified quests to disk."));
-    connect(mySaveQuests, SIGNAL(triggered()), this, SLOT(onSaveQuests()));
-
-    mySaveMessages = new QAction(tr("Dialogs"), this);
-    mySaveMessages->setStatusTip(tr("Save all modified NPC dialogs."));
-    connect(mySaveMessages, SIGNAL(triggered()), this, SLOT(onSaveMessages()));
-
-    mySaveArchetypes = new QAction(tr("Archetypes"), this);
-    mySaveArchetypes->setStatusTip(tr("Save all modified archetypes."));
-    connect(mySaveArchetypes, SIGNAL(triggered()), myResourcesManager, SLOT(saveArchetypes()));
-
-    myReportDuplicate = new QAction(tr("Faces and animations report"), this);
-    myReportDuplicate->setStatusTip(tr("Show faces and animations which are used by multiple archetypes, or not used."));
-    connect(myReportDuplicate, SIGNAL(triggered()), this, SLOT(onReportDuplicate()));
-
-    myReportSpellDamage = new QAction(tr("Spell damage"), this);
-    myReportSpellDamage->setStatusTip(tr("Display spell damage by level (bullet spells only for now)"));
-    connect(myReportSpellDamage, SIGNAL(triggered()), this, SLOT(onReportSpellDamage()));
-
-    myReportAlchemy = new QAction(tr("Alchemy"), this);
-    myReportAlchemy->setStatusTip(tr("Display alchemy formulae, in a table."));
-    connect(myReportAlchemy, SIGNAL(triggered()), this, SLOT(onReportAlchemy()));
-
-    myReportAlchemyGraph = new QAction(tr("Alchemy graph"), this);
-    myReportAlchemyGraph->setStatusTip(tr("Export alchemy relationship as a DOT file."));
-    connect(myReportAlchemyGraph, SIGNAL(triggered()), this, SLOT(onReportAlchemyGraph()));
-
-    myReportSpells = new QAction(tr("Spells"), this);
-    myReportSpells->setStatusTip(tr("Display all spells, in a table."));
-    connect(myReportSpells, SIGNAL(triggered()), this, SLOT(onReportSpells()));
 
     myReportPlayer = new QAction(tr("Player vs monsters"), this);
     myReportPlayer->setStatusTip(tr("Compute statistics related to player vs monster combat."));
     // can't use that while map browsing is running ; will be enabled in browsingFinished()
     myReportPlayer->setEnabled(false);
     connect(myReportPlayer, SIGNAL(triggered()), this, SLOT(onReportPlayer()));
-
-    myReportSummon = new QAction(tr("Summoned pets statistics"), this);
-    myReportSummon->setStatusTip(tr("Display wc, hp, speed and other statistics for summoned pets."));
-    connect(myReportSummon, SIGNAL(triggered()), this, SLOT(onReportSummon()));
 
     myReportShops = new QAction(tr("Shop specialization"), this);
     myReportShops->setStatusTip(tr("Display the list of shops and their specialization for items."));
@@ -147,38 +107,10 @@ void CREMainWindow::createActions()
     myReportQuests->setEnabled(false);
     connect(myReportQuests, SIGNAL(triggered()), this, SLOT(onReportQuests()));
 
-    myReportMaterials = new QAction(tr("Materials"), this);
-    myReportMaterials->setStatusTip(tr("Display all materials with their properties."));
-    connect(myReportMaterials, SIGNAL(triggered()), this, SLOT(onReportMaterials()));
-
     myReportArchetypes = new QAction(tr("Unused archetypes"), this);
     myReportArchetypes->setStatusTip(tr("Display all archetypes which seem unused."));
     myReportArchetypes->setEnabled(false);
     connect(myReportArchetypes, SIGNAL(triggered()), this, SLOT(onReportArchetypes()));
-
-    myReportLicenses = new QAction(tr("Licenses checks"), this);
-    myReportLicenses->setStatusTip(tr("Check for licenses inconsistencies."));
-    connect(myReportLicenses, SIGNAL(triggered()), this, SLOT(onReportLicenses()));
-
-    myToolEditMonsters = new QAction(tr("Edit monsters"), this);
-    myToolEditMonsters->setStatusTip(tr("Edit monsters in a table."));
-    connect(myToolEditMonsters, SIGNAL(triggered()), this, SLOT(onToolEditMonsters()));
-
-    myToolSmooth = new QAction(tr("Generate smooth face base"), this);
-    myToolSmooth->setStatusTip(tr("Generate the basic smoothed picture for a face."));
-    connect(myToolSmooth, SIGNAL(triggered()), this, SLOT(onToolSmooth()));
-
-    myToolHPBar = new QAction(tr("Generate HP bar"), this);
-    myToolHPBar->setStatusTip(tr("Generate faces for a HP bar."));
-    connect(myToolHPBar, SIGNAL(triggered()), this, SLOT(onToolBarMaker()));
-
-    myToolCombatSimulator = new QAction(tr("Combat simulator"), this);
-    myToolCombatSimulator->setStatusTip(tr("Simulate fighting between two objects."));
-    connect(myToolCombatSimulator, SIGNAL(triggered()), this, SLOT(onToolCombatSimulator()));
-
-    myToolFaceMaker = new QAction(tr("Generate face variants"), this);
-    myToolFaceMaker->setStatusTip(tr("Generate faces by changing colors of existing faces."));
-    connect(myToolFaceMaker, SIGNAL(triggered()), this, SLOT(onToolFaceMaker()));
 
     myClearMapCache = new QAction(tr("Clear map cache"), this);
     myClearMapCache->setStatusTip(tr("Force a refresh of all map information at next start."));
@@ -190,10 +122,6 @@ void CREMainWindow::createActions()
     connect(myToolFacesetUseFallback, SIGNAL(triggered()), this, SLOT(onToolFacesetUseFallback()));
     myToolFacesetUseFallback->setCheckable(true);
     myToolFacesetUseFallback->setChecked(true);
-
-    myToolReloadAssets = new QAction(tr("Reload assets"), this);
-    myToolReloadAssets->setStatusTip(tr("Reload all assets from the data directory."));
-    connect(myToolReloadAssets, SIGNAL(triggered()), this, SLOT(onToolReloadAssets()));
 }
 
 const DisplayMode displayModes[] = {
@@ -262,8 +190,7 @@ void CREMainWindow::createMenus()
         myOpenMenu->addAction(action);
     }
 
-    myOpenMenu->addAction(myOpenExperience);
-
+    myOpenMenu->addAction(createAction(tr("Experience"), tr("Display the experience table."), this, SLOT(onOpenExperience())));
 
     myOpenMenu->addSeparator();
     QAction* exit = myOpenMenu->addAction(tr("&Exit"));
@@ -272,32 +199,32 @@ void CREMainWindow::createMenus()
 
     mySaveMenu = menuBar()->addMenu(tr("&Save"));
     mySaveMenu->addAction(mySaveFormulae);
-    mySaveMenu->addAction(mySaveQuests);
-    mySaveMenu->addAction(mySaveMessages);
-    mySaveMenu->addAction(mySaveArchetypes);
+    mySaveMenu->addAction(createAction(tr("Quests"), tr("Save all modified quests to disk."), this, SLOT(onSaveQuests())));
+    mySaveMenu->addAction(createAction(tr("Dialogs"), tr("Save all modified NPC dialogs."), this, SLOT(onSaveMessages())));
+    mySaveMenu->addAction(createAction(tr("Archetypes"), tr("Save all modified archetypes."), myResourcesManager, SLOT(saveArchetypes())));
 
     QMenu* reportMenu = menuBar()->addMenu("&Reports");
-    reportMenu->addAction(myReportDuplicate);
-    reportMenu->addAction(myReportSpellDamage);
-    reportMenu->addAction(myReportAlchemy);
-    reportMenu->addAction(myReportAlchemyGraph);
-    reportMenu->addAction(myReportSpells);
+    reportMenu->addAction(createAction(tr("Faces and animations report"), tr("Show faces and animations which are used by multiple archetypes, or not used."), this, SLOT(onReportDuplicate())));
+    reportMenu->addAction(createAction(tr("Spell damage"), tr("Display spell damage by level (bullet spells only for now)"), this, SLOT(onReportSpellDamage())));
+    reportMenu->addAction(createAction(tr("Alchemy"), tr("Display alchemy formulae, in a table."), this, SLOT(onReportAlchemy())));
+    reportMenu->addAction(createAction(tr("Alchemy graph"), tr("Export alchemy relationship as a DOT file."), this, SLOT(onReportAlchemyGraph())));
+    reportMenu->addAction(createAction(tr("Spells"), tr("Display all spells, in a table."), this, SLOT(onReportSpells())));
     reportMenu->addAction(myReportPlayer);
-    reportMenu->addAction(myReportSummon);
+    reportMenu->addAction(createAction(tr("Summoned pets statistics"), tr("Display wc, hp, speed and other statistics for summoned pets."), this, SLOT(onReportSummon())));
     reportMenu->addAction(myReportShops);
     reportMenu->addAction(myReportQuests);
-    reportMenu->addAction(myReportMaterials);
+    reportMenu->addAction(createAction(tr("Materials"), tr("Display all materials with their properties."), this, SLOT(onReportMaterials())));
     reportMenu->addAction(myReportArchetypes);
-    reportMenu->addAction(myReportLicenses);
+    reportMenu->addAction(createAction(tr("Licenses checks"), tr("Check for licenses inconsistencies."), this, SLOT(onReportLicenses())));
 
     myToolsMenu = menuBar()->addMenu("&Tools");
-    myToolsMenu->addAction(myToolEditMonsters);
-    myToolsMenu->addAction(myToolSmooth);
-    myToolsMenu->addAction(myToolHPBar);
-    myToolsMenu->addAction(myToolCombatSimulator);
-    myToolsMenu->addAction(myToolFaceMaker);
+    myToolsMenu->addAction(createAction(tr("Edit monsters"), tr("Edit monsters in a table."), this, SLOT(onToolEditMonsters())));
+    myToolsMenu->addAction(createAction(tr("Generate smooth face base"), tr("Generate the basic smoothed picture for a face."), this, SLOT(onToolSmooth())));
+    myToolsMenu->addAction(createAction(tr("Generate HP bar"), tr("Generate faces for a HP bar."), this, SLOT(onToolBarMaker())));
+    myToolsMenu->addAction(createAction(tr("Combat simulator"), tr("Simulate fighting between two objects."), this, SLOT(onToolCombatSimulator())));
+    myToolsMenu->addAction(createAction(tr("Generate face variants"), tr("Generate faces by changing colors of existing faces."), this, SLOT(onToolFaceMaker())));
     myToolsMenu->addAction(myClearMapCache);
-    myToolsMenu->addAction(myToolReloadAssets);
+    myToolsMenu->addAction(createAction(tr("Reload assets"), tr("Reload all assets from the data directory."), this, SLOT(onToolReloadAssets())));
 
     myWindows = menuBar()->addMenu(tr("&Windows"));
     connect(myWindows, SIGNAL(aboutToShow()), this, SLOT(onWindowsShowing()));
