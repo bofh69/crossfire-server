@@ -905,7 +905,7 @@ void write_type_file(type_definition *type) {
     }
 
     fprintf(file, "@page page_type_%d %s\n\n", type->number, type->name);
-    fprintf(file, "\n@section Description\n");
+    fprintf(file, "\n@section sec_desc_%d Description\n", type->number);
     fprintf(file, "%s\n\n", type->description);
     if (type != fallback_type) {
         fprintf(file, "\n\nType defined by:\n");
@@ -915,7 +915,7 @@ void write_type_file(type_definition *type) {
             fprintf(file, "- %s\n", type->required[req]);
     }
 
-    fprintf(file, "\n\n@section Attributes\n\n");
+    fprintf(file, "\n\n@section sec_attr_%d Attributes\n\n", type->number);
     fprintf(file, "<table>\n\t<tr>\n\t\t<th>Attribute</th>\n\t\t<th>Field</th>\n\t\t<th>Description</th>\n\t</tr>\n");
     for (attr = 0; attr < type->attribute_count; attr++) {
         fprintf(file, "\t<tr>\n\t\t<td>%s</td>\n\t\t<td>@ref ", type->attributes[attr]->name);
@@ -997,7 +997,7 @@ void write_attribute_file(attribute_definition *attribute) {
     if (strstr(attribute->field, "resist_"))
         fprintf(file, "\n@section %s %s resistance\n", attribute->field, attribute->field+7);
     else
-        fprintf(file, "\n@section Use\n");
+        fprintf(file, "\n@section sec_%s Use\n", attribute->field);
 
     fprintf(file, "<table>\n\t<tr>\n\t\t<th>Type(s)</th>\n\t\t<th>Description</th>\n\t</tr>");
 
