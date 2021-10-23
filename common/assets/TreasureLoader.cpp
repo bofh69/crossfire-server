@@ -124,7 +124,7 @@ treasure *TreasureLoader::loadTreasure(BufferReader *reader, const std::string &
 
 /**
  * Load all treasures from a buffer.
- * @param buffer where to read from.
+ * @param reader where to read from.
  * @param filename full path of the file for logging purposes.
  */
 void TreasureLoader::load(BufferReader *reader, const std::string& filename) {
