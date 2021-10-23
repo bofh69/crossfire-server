@@ -41,7 +41,6 @@ void init_type_poisoning(void) {
 
 /**
  * Handle ob_process for all poisoning objects.
- * @param context The method context
  * @param op The poisoning that's being processed.
  * @return METHOD_OK normally. METHOD_ERROR if POISONING is in an invalid env.
  */

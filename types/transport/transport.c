@@ -233,7 +233,6 @@ static method_ret transport_type_apply(object *op, object *applier, int aflags) 
 
 /**
  * Processes a Transport.
- * @param context The method context
  * @param op The Transport to process
  * @retval 0 If the remaining speed of the transport was > 0.0
  * @retval 1 If the remaining speed of the transport was < 0.0

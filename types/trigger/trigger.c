@@ -44,7 +44,6 @@ void init_type_trigger(void) {
 
 /**
  * Attempts to apply a trigger.
- * @param context The method context
  * @param op The Trigger to apply
  * @param applier The object attempting to apply the Trigger
  * @param aflags Special flags (always apply/unapply)
@@ -65,7 +64,6 @@ static method_ret trigger_type_apply(object *op, object *applier, int aflags) {
 
 /**
  * Processes a Trigger.
- * @param context The method context
  * @param op The Trigger to process
  * @return Always METHOD_OK
  */

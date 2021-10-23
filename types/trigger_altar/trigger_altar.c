@@ -41,7 +41,6 @@ void init_type_trigger_altar(void) {
 
 /**
  * Move on this Trigger Altar object.
- * @param context The method context
  * @param trap The Trigger Altar we're moving on
  * @param victim The object moving over this one
  * @param originator The object that caused the move_on event
