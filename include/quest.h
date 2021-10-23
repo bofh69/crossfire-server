@@ -83,8 +83,8 @@ void quest_destroy(quest_definition *quest);
  * - questcode 10-20 (the quest questcode must be between steps 10 and 20)
  * - questcode finished (the quest questcode must have been completed)
  *
- * @param step
- * @param buffer
+ * @param condition condition to fill.
+ * @param buffer where to read from.
  * @return 1 if the condition was parsed, 0 else.
  */
 int quest_condition_from_string(quest_condition *condition, const char *buffer);
