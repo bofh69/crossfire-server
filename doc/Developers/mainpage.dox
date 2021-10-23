@@ -24,7 +24,7 @@ Here is a list of topics:
 - @ref page_custom_attributes
 - @ref page_animations
 - @ref page_dialog
-- @ref plugin_citylife
+- @ref module_citylife
 - @ref type_index
 - @ref field_index
 - @ref page_i18n
@@ -63,4 +63,5 @@ Here is a list of topics:
 - @ref RM_LAYOUT
 - @ref EMOTE_xxx
 - @ref todo
+- @ref module_citybell
 */
