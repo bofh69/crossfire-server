@@ -67,6 +67,7 @@ class CREMainWindow : public QMainWindow
         QAction* myToolFacesetUseFallback;
         QAction* myClearMapCache;
         QAction* myToolReloadAssets;
+        QMenu *myWindows;
         QLabel* myMapBrowseStatus;
         CREMapInformationManager* myMapManager;
         MessageManager* myMessageManager;
@@ -77,6 +78,7 @@ class CREMainWindow : public QMainWindow
         void closeEvent(QCloseEvent* event);
         void doResourceWindow(DisplayMode mode);
         void fillFacesets();
+        QAction *createAction(const QString &title, const QString &statusTip, QObject *target, const char *slot);
 
     private slots:
         void onOpenResources();
@@ -104,6 +106,7 @@ class CREMainWindow : public QMainWindow
         void onToolFaceset(QAction* action);
         void onToolFacesetUseFallback();
         void onToolReloadAssets();
+        void onWindowsShowing();
         void browsingMap(const QString& path);
         void browsingFinished();
         void onFiltersModified();

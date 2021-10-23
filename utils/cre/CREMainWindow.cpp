@@ -30,6 +30,8 @@ CREMainWindow::CREMainWindow()
 {
     myArea = new QMdiArea();
     setCentralWidget(myArea);
+    myArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    myArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     myResourcesManager = new ResourcesManager();
 
@@ -72,6 +74,13 @@ void CREMainWindow::closeEvent(QCloseEvent* event)
     delete myResourcesManager;
     cleanup();
     QMainWindow::closeEvent(event);
+}
+
+QAction *CREMainWindow::createAction(const QString &title, const QString &statusTip, QObject *target, const char *slot) {
+    auto action = new QAction(title, this);
+    action->setStatusTip(statusTip);
+    connect(action, SIGNAL(triggered()), target, slot);
+    return action;
 }
 
 void CREMainWindow::createActions()
@@ -289,6 +298,17 @@ void CREMainWindow::createMenus()
     myToolsMenu->addAction(myToolFaceMaker);
     myToolsMenu->addAction(myClearMapCache);
     myToolsMenu->addAction(myToolReloadAssets);
+
+    myWindows = menuBar()->addMenu(tr("&Windows"));
+    connect(myWindows, SIGNAL(aboutToShow()), this, SLOT(onWindowsShowing()));
+    myWindows->addAction(createAction(tr("Close current window"), tr("Close the currently focused window"), myArea, SLOT(closeActiveSubWindow())));
+    myWindows->addAction(createAction(tr("Close all windows"), tr("Close all opened windows"), myArea, SLOT(closeAllSubWindows())));
+    myWindows->addAction(createAction(tr("Tile windows"), tr("Tile all windows"), myArea, SLOT(tileSubWindows())));
+    myWindows->addAction(createAction(tr("Cascade windows"), tr("Cascade all windows"), myArea, SLOT(cascadeSubWindows())));
+
+    auto sep = new QAction(this);
+    sep->setSeparator(true);
+    myWindows->addAction(sep);
 }
 
 void CREMainWindow::doResourceWindow(DisplayMode mode)
@@ -1740,4 +1760,36 @@ void CREMainWindow::onToolReloadAssets()
     CREPixmap::clearFaceCache();
     QApplication::restoreOverrideCursor();
     QMessageBox::information(this, "Reload complete", "Assets reload complete, you may need to change the selected item to see updated versions.");
+}
+
+void CREMainWindow::onWindowsShowing() {
+    auto windows = myArea->subWindowList();
+    bool hasWindows = !windows.empty();
+
+    while (myWindows->actions().size() > 5) {
+        myWindows->removeAction(myWindows->actions()[5]);
+    }
+    for (auto a : myWindows->actions()) {
+        if (a->isSeparator()) {
+            a->setVisible(hasWindows);
+        } else {
+            a->setEnabled(hasWindows);
+        }
+    }
+
+    for (int i = 0; i < windows.size(); ++i) {
+        QMdiSubWindow *mdiSubWindow = windows.at(i);
+
+        QString title(mdiSubWindow->widget()->windowTitle());
+        if (i < 9) {
+            title = tr("&%1 %2").arg(i + 1).arg(title);
+        } else {
+            title = tr("%1 %2").arg(i + 1).arg(title);
+        }
+        QAction *action = myWindows->addAction(title, mdiSubWindow, [this, mdiSubWindow] () {
+            myArea->setActiveSubWindow(mdiSubWindow);
+        });
+        action->setCheckable(true);
+        action ->setChecked(mdiSubWindow == myArea->activeSubWindow());
+    }
 }
