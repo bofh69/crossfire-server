@@ -38,7 +38,7 @@ static int last_hr;
 /** One region with bells. */
 struct Region {
     std::unordered_map<std::string, std::string> bells; /**< Map between a god's name and the message to display. */
-    std::string fallback;                               /**< Message if the god's name is not in ::bells. */
+    std::string fallback;                               /**< Message if the god's name is not in Region::bells. */
 };
 
 /** All defined regions. */
