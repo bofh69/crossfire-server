@@ -77,9 +77,9 @@ static uint8_t is_better_lighter(object *new, object *old) {
     if (new->type == LIGHTER && (old->type != LIGHTER || new->speed > old->speed))
         return 1;
     // For spells, either take the lower mana cost between spells or supercede a skill or skill tool.
-    if (old->type == SPELL && (new->type != SPELL || old->stats.sp + old->stats.grace >= new->stats.sp + new->stats.grace))
+    if (old->type == SPELL && (new->type != SPELL || old->stats.sp + old->stats.grace <= new->stats.sp + new->stats.grace))
         return 0;
-    if (new->type == SPELL && (old->type != SPELL || new->stats.sp + new->stats.grace > old->stats.sp + old->stats.grace))
+    if (new->type == SPELL && (old->type != SPELL || new->stats.sp + new->stats.grace < old->stats.sp + old->stats.grace))
         return 1;
     // And, if the old tool is a skill or skill tool, then it is one of the magic ones that uses 10 mana. As with new_tool.
     if (old->type == SKILL || old->type == SKILL_TOOL)
@@ -126,7 +126,9 @@ static method_ret lightable_type_apply(object *lightable, object *applier, int a
         FOR_INV_PREPARE(applier, tmp) {
             switch (tmp->type) {
                 case LIGHTER:
-                    wannabe_tool = tmp;
+                    // Skip over lighters that ran out of charges
+                    if (tmp->stats.food > 0)
+                        wannabe_tool = tmp;
                     break;
                 case SKILL:
                 case SKILL_TOOL:
