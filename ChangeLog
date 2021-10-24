@@ -1,3 +1,8 @@
+2021-10-24  Daniel Hawkins
+    * types/lightable/lightable.c: Refactor priority check to be easier to read.
+        Make LIGHTER type be higher priority than SPELLs.
+        Allow for clawing and flame touch skills with fire attacktype to be used before LIGHTERs and SPELLs.
+
 2021-10-8  Daniel Hawkins
     * common/is_valid_types_gen.pl: Removed. Replaced by a Python script.
     * common/is_valid_types_gen.py: New script to do the same thing is_valid_types_gen.pl used to do.

@@ -34,6 +34,61 @@ void init_type_lightable(void) {
 }
 
 /**
+ * Method to clean up priority calculations
+ *
+ * Priority goes in this order:
+ * WEAPON -> highest priority, use first encountered
+ * SKILL -> flame touch or clawing only
+ * LIGHTER -> next priority, prioritize ones with speed, as they will decay on their own.
+ * SPELL -> next priority, lower mana cost is better (ignores level scaling, since we are using that spell in a careful, low-energy way)
+ * SKILL, SKILL_TOOL -> fire magic skills only. Uses 10 mana.
+ *
+ * @param new
+ * The item we are checking to see if it's better.
+ *
+ * @param old
+ * The previous best tool we found. Can be NULL.
+ *
+ * @return
+ * 1 if new_tool is better than old_tool, else 0
+ * returns 2 for debugging purposes if something slips through the logic
+ */
+static uint8_t is_better_lighter(object *new, object *old) {
+    // If old_tool is not provided, then of course the new one is better.
+    if (!old)
+        return 1;
+    // If the old tool is a weapon, just don't even argue
+    if (old->type == WEAPON)
+        return 0;
+    // If the new tool is a weapon, and the old one is not, we will replace.
+    if (new->type == WEAPON)
+        return 1;
+    // If the old tool is a clawing or flame touch skill, we do not beat it.
+    // Only weapons have higher priority, and they have already been handled
+    if (old->type == SKILL && (old->subtype == SK_CLAWING || old->subtype == SK_FLAME_TOUCH))
+        return 0;
+    // But, if the new tool is one of these, then we will replace.
+    if (new->type == SKILL && (new->subtype == SK_CLAWING || old->subtype == SK_FLAME_TOUCH))
+        return 1;
+    // If old tool is a lighter and has higher or equal speed than a lighter as the new tool, then it is the better tool.
+    if (old->type == LIGHTER && (new->type != LIGHTER || old->speed >= new->speed))
+        return 0;
+    // And if the new tool has those same criteria, then it is better.
+    if (new->type == LIGHTER && (old->type != LIGHTER || new->speed > old->speed))
+        return 1;
+    // For spells, either take the lower mana cost between spells or supercede a skill or skill tool.
+    if (old->type == SPELL && (new->type != SPELL || old->stats.sp + old->stats.grace >= new->stats.sp + new->stats.grace))
+        return 0;
+    if (new->type == SPELL && (old->type != SPELL || new->stats.sp + new->stats.grace > old->stats.sp + old->stats.grace))
+        return 1;
+    // And, if the old tool is a skill or skill tool, then it is one of the magic ones that uses 10 mana. As with new_tool.
+    if (old->type == SKILL || old->type == SKILL_TOOL)
+        return 0;
+    // If we get here, something got messed up, so we want to ditch old_tool.
+    return 2;
+}
+
+/**
  * Attempt to find a lighter, wielded fire weapon, or fire spell to light with.
  *
  * @param lightable
@@ -77,7 +132,10 @@ static method_ret lightable_type_apply(object *lightable, object *applier, int a
                 case SKILL_TOOL:
                     // FIRE_MAGIC isn't used AFAIK, but account for it in case it ever is.
                     // Either way, we need 10 mana to use this directly.
-                    if ((tmp->subtype == SK_PYROMANCY || tmp->subtype == SK_FIRE_MAGIC) && applier->stats.sp > 10)
+                    if ((tmp->subtype == SK_PYROMANCY || tmp->subtype == SK_FIRE_MAGIC) && applier->stats.sp >= 10)
+                        wannabe_tool = tmp;
+                    // Clawing with fire attacktype and flame touch should also work.
+                    if ((tmp->subtype == SK_CLAWING || tmp->subtype == SK_FLAME_TOUCH) && (tmp->attacktype & AT_FIRE))
                         wannabe_tool = tmp;
                     break;
                 case WEAPON:
@@ -96,31 +154,16 @@ static method_ret lightable_type_apply(object *lightable, object *applier, int a
                     break;
                 case SPELL:
                     // Don't choose a spell if it is too expensive to cast.
-                    if (tmp->attacktype & AT_FIRE && tmp->stats.sp < applier->stats.sp && tmp->stats.grace < applier->stats.grace) {
+                    if (tmp->attacktype & AT_FIRE && tmp->stats.sp <= applier->stats.sp && tmp->stats.grace <= applier->stats.grace) {
                         wannabe_tool = tmp;
                     }
                     break;
             }
             // Determine the tool to use
-            // Priority goes in this order:
-            // WEAPON -> highest priority, use first encountered
-            // SPELL -> next priority, lower mana cost is better (ignores level scaling, since we are using that spell in a careful, low-energy way)
-            // SKILL, SKILL_TOOL, defaults to 10 mana, first one found suffices.
-            // LIGHTER, first one found suffices.
             //
             // This prevents us from wasting mana or lighter charges if we have another option.
-            if (wannabe_tool) {
-                if (!tool) {
-                    tool = wannabe_tool;
-                }
-                else if (wannabe_tool->type == WEAPON ||
-                        (wannabe_tool->type == SPELL && tool->type != WEAPON && !(tool->type == SPELL && low_mana_amt < wannabe_tool->stats.sp + wannabe_tool->stats.grace)) ||
-                        ((wannabe_tool->type == SKILL || wannabe_tool->type == SKILL_TOOL) && tool->type == LIGHTER)) {
-                            tool = wannabe_tool;
-                            // Keep track of used mana amount, since we want to ensure that we take the smallest mana + grace cost.
-                            if (tool->type == SPELL)
-                                low_mana_amt = tool->stats.sp + tool->stats.grace;
-                }
+            if (wannabe_tool && is_better_lighter(wannabe_tool, tool)) {
+                tool = wannabe_tool;
             }
             // Weapon has the shallowest cost, so if we found that, then use it.
             if (tool && tool->type == WEAPON)
@@ -173,7 +216,9 @@ static method_ret lightable_type_apply(object *lightable, object *applier, int a
                 applier->stats.grace -= tool->stats.grace;
             }
             else if (tool->type == SKILL || tool->type == SKILL_TOOL) {
-                applier->stats.sp -= 10;
+                // Clawing and flame touch do not use mana
+                if (tool->subtype == SK_PYROMANCY || tool->subtype == SK_FIRE_MAGIC)
+                    applier->stats.sp -= 10;
             }
         }
     }
