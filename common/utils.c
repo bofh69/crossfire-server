@@ -603,6 +603,10 @@ void fatal(enum fatal_error err) {
         "See last error",
     };
 
+    if (settings.fatal_hook) {
+        settings.fatal_hook(err);
+    }
+
     fprintf(logfile, "Fatal error: %s\n", fatalmsgs[err]);
     emergency_save(0);
     clean_tmp_files();

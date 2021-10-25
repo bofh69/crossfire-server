@@ -94,6 +94,7 @@ struct Settings settings = {
     .hooks_count = 0,
     .ignore_assets_errors = 0,
     .archetypes_tracker = NULL,
+    .fatal_hook = NULL,
 };
 
 struct Statistics statistics;
@@ -215,13 +216,13 @@ void init_library(void) {
 
     if (assets_dump_undefined() > 0 && !settings.ignore_assets_errors) {
         LOG(llevError, "Assets errors, please fix and restart.\n");
-        exit(EXIT_FAILURE);
+        fatal(SEE_LAST_ERROR);
     }
 
     /* init_dynamic() loads a map, so needs a region */
     if (init_regions() != 0) {
         LOG(llevError, "Please check that your maps are correctly installed.\n");
-        exit(EXIT_FAILURE);
+        fatal(SEE_LAST_ERROR);
     }
 
     init_dynamic();
@@ -368,7 +369,7 @@ static void init_dynamic(void) {
     archetype *at = get_archetype_by_type_subtype(MAP, MAP_TYPE_LEGACY);
     if (!at) {
         LOG(llevError, "You need a archetype for a legacy map, with type %d and subtype %d\n", MAP, MAP_TYPE_LEGACY);
-        exit(-1);
+        fatal(SEE_LAST_ERROR);
     }
     if (EXIT_PATH(&at->clone)) {
         mapstruct *first;

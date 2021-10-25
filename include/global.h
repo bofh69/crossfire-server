@@ -229,6 +229,7 @@ extern socket_struct *init_sockets;
 #define MAX_TOTAL_EXPERIENCE (settings.permanent_exp_ratio ? (MAX_EXPERIENCE * 100 / settings.permanent_exp_ratio) : 0)
 
 typedef void(*collectorHook)(BufferReader *, const char *);
+typedef void(*fatalHook)(enum fatal_error err);
 
 /**
  * Server settings.
@@ -329,6 +330,7 @@ typedef struct Settings {
     collectorHook hooks[20];          /**< Collect hooks, called when the filename matches. */
     int     ignore_assets_errors;     /**< If set then go on running even if there are errors in assets. */
     void    *archetypes_tracker;      /**< Must be a pointer to a AssetsTracker<archetype> if not NULL. */
+    fatalHook fatal_hook;             /**< If not NULL then called when fatal() is called. */
 } Settings;
 
 /**
