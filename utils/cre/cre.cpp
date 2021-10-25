@@ -42,6 +42,9 @@ int main(int argc, char **argv) {
     settings.tmpdir = temp.c_str();
     // Force log level to be debug to see all output
     settings.debug = llevDebug;
+    // Set a log file
+    std::string log = (QDir::tempPath() + "\\cre.log").toStdString();
+    settings.logfilename = log.c_str();
 #endif
 
     CRESettings settings;

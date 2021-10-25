@@ -2,6 +2,7 @@
 #include <qlist.h>
 #include <qhash.h>
 #include <QStringList>
+#include <QMessageBox>
 #include "ResourcesManager.h"
 #include <locale.h>
 
@@ -28,6 +29,10 @@ ResourcesManager::~ResourcesManager()
 {
 }
 
+static void onFatalInit(enum fatal_error) {
+    QMessageBox::critical(nullptr, "Fatal error", "Error while initializing Crossfire data, make sure you have maps and archetypes correctly installed.");
+}
+
 void ResourcesManager::load()
 {
     setlocale(LC_NUMERIC, "C");
@@ -37,8 +42,10 @@ void ResourcesManager::load()
     settings.hooks[settings.hooks_count] = LicenseManager::readLicense;
     settings.hooks_filename[settings.hooks_count] = ".LICENSE";
     settings.hooks_count++;
+    settings.fatal_hook = onFatalInit;
     init_globals();
     init_library();
+    settings.fatal_hook = nullptr;
 
     QString key;
 
