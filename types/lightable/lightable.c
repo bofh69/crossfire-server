@@ -109,7 +109,7 @@ static method_ret lightable_type_apply(object *lightable, object *applier, int a
     // wannabe_tool is used as a kind of temporary storage for tools that may become the selected tool, but might not as well.
     // unused_tool is a storage for when an item could be the tool of choice, but curses prevent something else from being unapplied.
     object *tool = NULL, *wannabe_tool = find_marked_object(applier), *unused_tool = NULL;
-    int current_weapon_is_cursed = 0, low_mana_amt = 999;
+    int current_weapon_is_cursed = 0;
     // First, use the marked item if it is a lighter or has fire attacktype.
     if (wannabe_tool && ((wannabe_tool->attacktype & AT_FIRE) || wannabe_tool->type == LIGHTER)) {
         tool = wannabe_tool;
