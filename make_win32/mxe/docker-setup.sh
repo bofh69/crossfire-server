@@ -32,7 +32,8 @@ RUN DEBIAN_FRONTEND=noninteractive TERM=xterm apt-get update && apt-get install 
     apt-transport-https \
     adduser \
     sudo \
-    automake
+    automake \
+    nsis
 
 RUN apt-key adv \
     --keyserver keyserver.ubuntu.com \
