@@ -46,6 +46,8 @@ void ResourcesManager::load()
     init_globals();
     init_library();
     settings.fatal_hook = nullptr;
+    init_gods();
+    init_readable();
 
     QString key;
 
