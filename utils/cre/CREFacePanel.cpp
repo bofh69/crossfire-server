@@ -81,6 +81,11 @@ static bool treasureContains(const treasure *t, const archetype *arch)
     {
         if (t->item == arch)
             return true;
+        if (t->name) {
+            auto other = getManager()->treasures()->find(t->name);
+            if (other && treasureContains(other->items, arch))
+                return true;
+        }
         if (t->next_yes && treasureContains(t->next_yes, arch))
             return true;
         if (t->next_no && treasureContains(t->next_no, arch))
@@ -92,7 +97,7 @@ static bool treasureContains(const treasure *t, const archetype *arch)
 
 static bool isValidArchFlesh(const archetype *arch, const Face *fleshFace)
 {
-    if (!arch || !arch->clone.randomitems)
+    if (!arch || !arch->clone.randomitems || !fleshFace)
         return false;
 
     std::vector<const archetype *> sources;
