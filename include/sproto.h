@@ -338,7 +338,7 @@ int save_player(object *op, int flag);
 void check_login(object *op, const char *password);
 /* monster.c */
 object *monster_check_enemy(object *npc, rv_vector *rv);
-object *monster_find_nearest_living_creature(object *npc);
+object *monster_find_nearest_living_creature(object *npc, object *exclude);
 int monster_compute_path(object *source, object *target, int default_dir);
 void monster_do_living(object *op);
 int monster_move(object *op);

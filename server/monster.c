@@ -146,10 +146,12 @@ object *monster_check_enemy(object *npc, rv_vector *rv) {
  *
  * @param npc
  * monster to consider
+ * @param exclude
+ * don't attack this object, for instance the npc's owner
  * @return
  * living creature, or NULL if none found.
  */
-object *monster_find_nearest_living_creature(object *npc) {
+object *monster_find_nearest_living_creature(object *npc, object *exclude) {
     int i, mflags;
     int16_t nx, ny;
     mapstruct *m;
@@ -164,6 +166,10 @@ object *monster_find_nearest_living_creature(object *npc) {
         ny = npc->y+freearr_y[search_arr[i]];
         m = npc->map;
 
+        if (nx == npc->x && ny == npc->y) {
+            continue;   // Don't try to attack ourself
+        }
+
         mflags = get_map_flags(m, &m, nx, ny, &nx, &ny);
         if (mflags&P_OUT_OF_MAP)
             continue;
@@ -173,9 +179,10 @@ object *monster_find_nearest_living_creature(object *npc) {
 
             creature = NULL;
             FOR_MAP_PREPARE(m, nx, ny, tmp)
-                if (QUERY_FLAG(tmp, FLAG_MONSTER)
+                if ((tmp != exclude) &&
+                    (QUERY_FLAG(tmp, FLAG_MONSTER)
                 || QUERY_FLAG(tmp, FLAG_GENERATOR)
-                || tmp->type == PLAYER) {
+                || tmp->type == PLAYER)) {
                     creature = tmp;
                     break;
                 }
@@ -214,7 +221,7 @@ static object *monster_find_enemy(object *npc, rv_vector *rv) {
 
     /* if we berserk, we don't care about others - we attack all we can find */
     if (QUERY_FLAG(npc, FLAG_BERSERK)) {
-        tmp = monster_find_nearest_living_creature(npc);
+        tmp = monster_find_nearest_living_creature(npc, NULL);
         if (tmp == NULL)
             return NULL;
         if (!get_rangevector(npc, tmp, rv, 0))

@@ -1,3 +1,6 @@
+2021-11-07  Nicolas Weeger
+    * Improve pet behaviour, see https://sourceforge.net/p/crossfire/bugs/908/
+
 2021-10-24  Daniel Hawkins
     * types/lightable/lightable.c: Refactor priority check to be easier to read.
         Make LIGHTER type be higher priority than SPELLs.
