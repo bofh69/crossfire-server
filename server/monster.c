@@ -841,8 +841,16 @@ int monster_move(object *op) {
         dir = get_randomized_dir(dir);
     else if (QUERY_FLAG(op, FLAG_SCARED) || QUERY_FLAG(op, FLAG_RUN_AWAY))
         dir = absdir(dir+4);
-    else if (!monster_can_hit(part, enemy, &rv))
-        dir = monster_compute_path(op, enemy, rv.direction);
+    else if (!monster_can_hit(part, enemy, &rv)) {
+        dir = monster_compute_path(op, enemy, -1);
+        if (dir == -1) {
+            // Can't reach enemy, so remove it, attempt to move in its last direction so not stay still
+            LOG(llevMonster, "monster %s (%d, %d on %s) can't reach enemy %s (%d, %d on %s)\n",
+                op->name, op->x, op->y, op->map ? op->map->name : "(unknown map)", enemy->name, enemy->x, enemy->y, enemy->map ? enemy->map->path : "(unknown map)");
+            object_set_enemy(op, NULL);
+            dir = rv.direction;
+        }
+    }
 
     if ((op->attack_movement&LO4) && !QUERY_FLAG(op, FLAG_SCARED)) {
         switch (op->attack_movement&LO4) {
