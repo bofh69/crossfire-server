@@ -669,6 +669,12 @@ void object_dump(const object *op, StringBuffer *sb) {
         if (op->inv) {
             stringbuffer_append_printf(sb, "inv %u\n", op->inv->count);
         }
+        if (op->enemy) {
+            stringbuffer_append_printf(sb, "enemy %u\n", op->enemy->count);
+        }
+        if (op->attacked_by) {
+            stringbuffer_append_printf(sb, "attacked_by %u\n", op->attacked_by->count);
+        }
         owner = object_get_owner_const(op);
         if (owner != NULL) {
             stringbuffer_append_printf(sb, "owner %u\n", owner->count);
