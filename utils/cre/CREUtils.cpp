@@ -20,7 +20,6 @@ QTreeWidgetItem* CREUtils::archetypeNode(QTreeWidgetItem* parent)
 QTreeWidgetItem* CREUtils::archetypeNode(const archt* arch, QTreeWidgetItem* parent)
 {
     QTreeWidgetItem* item = new QTreeWidgetItem(parent, QStringList(arch->name));
-    //item->setData(0, Qt::UserRole, arch->getId());
     item->setIcon(0, CREPixmap::getIcon(arch->clone.face ? arch->clone.face->number : 0));
     return item;
 }
