@@ -11,7 +11,6 @@ CREPixmap.cpp \
  CREAnimationControl.cpp \
  CREAnimationWidget.cpp \
  CREResourcesWindow.cpp \
- CRETreeItem.cpp \
  CREAnimationPanel.cpp \
  CRETreasurePanel.cpp \
  CREArtifactPanel.cpp \
