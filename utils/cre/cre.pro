@@ -39,7 +39,6 @@ CREPixmap.cpp \
  CREScriptEngine.cpp \
  CREQuestPanel.cpp \
  CRETreeItemQuest.cpp \
- CREPanel.cpp \
  MessageManager.cpp \
  CREMessagePanel.cpp \
  MessageFile.cpp \

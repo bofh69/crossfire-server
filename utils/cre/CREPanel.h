@@ -9,10 +9,10 @@ class CREPanel : public QWidget
     Q_OBJECT
 
     public:
-        CREPanel(QWidget* parent);
-        virtual ~CREPanel();
+        CREPanel(QWidget* parent) : QWidget(parent) {}
+        virtual ~CREPanel() {}
 
-        virtual void commitData();
+        virtual void commitData() {}
     private:
 };
 
