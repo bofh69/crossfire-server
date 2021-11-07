@@ -38,7 +38,6 @@ void QuestLoader::load(BufferReader *reader, const std::string &filename) {
     int i, in = QUESTFILE_NEXTQUEST;
     quest_definition *quest = NULL;
     quest_condition *cond = NULL;
-    char includefile[MAX_BUF];
     quest_step_definition *step = NULL;
     char *read;
     StringBuffer *buf = NULL;
@@ -227,22 +226,8 @@ void QuestLoader::load(BufferReader *reader, const std::string &filename) {
             in = QUESTFILE_QUEST;
             continue;
         }
-        if (sscanf(read, "include %s\n", includefile)) {
-#if 0
-            char inc_path[HUGE_BUF];
-            path_combine_and_normalize(filename, includefile, inc_path, sizeof (inc_path));
-            found = load_quests_from_file(inc_path);
-            if (found >= 0) {
-                LOG(llevDebug, "loaded %d quests from file %s\n", found, inc_path);
-                loaded_quests += found;
-            } else {
-                LOG(llevError, "Failed to load quests from file %s\n", inc_path);
-            }
-#endif
-            continue;
-        }
 
-        if (strcmp(read, "\n") == 0)
+        if (strcmp(read, "") == 0)
             continue;
 
         LOG(llevError, "quest: invalid file format for %s, I don't know what to do with the line %s\n", filename.c_str(), read);
