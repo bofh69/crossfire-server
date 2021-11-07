@@ -6,20 +6,46 @@ class MessageFile;
 
 class QuestConditionScript;
 
+/**
+ * Manage NPC dialogs.
+ */
 class MessageManager
 {
     public:
         MessageManager();
         virtual ~MessageManager();
 
+        /** Load all messages from the 'maps' directory. */
         void loadMessages();
+        /** Save all messages. */
         void saveMessages();
 
+        /**
+         * Get all known NPC dialogs.
+         * @return NPC dialogs.
+         */
         QList<MessageFile*>& messages();
+        /**
+         * Get all known NPC dialogs.
+         * @return NPC dialogs.
+         */
         const QList<MessageFile*>& messages() const;
+        /**
+         * Get the dialog from a file path.
+         * @param path path to get the dialog from.
+         * @return dialog, null if no dialog at this path.
+         */
         MessageFile* findMessage(const QString& path);
 
+        /**
+         * Get all dialog pre-conditions.
+         * @return pre-conditions.
+         */
         QList<QuestConditionScript*> preConditions() const;
+        /**
+         * Get all dialog post-conditions.
+         * @return post-conditions.
+         */
         QList<QuestConditionScript*> postConditions() const;
 
     private:

@@ -3,6 +3,9 @@
 
 #include <QObject>
 
+/**
+ * One pre- or post- condition Python script which may be used in a NPC dialog.
+ */
 class QuestConditionScript : public QObject
 {
     Q_OBJECT

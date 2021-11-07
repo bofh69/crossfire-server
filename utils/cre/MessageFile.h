@@ -6,6 +6,9 @@
 
 class CREMapInformation;
 
+/**
+ * One NPC dialog rule.
+ */
 class MessageRule : public QObject
 {
     Q_OBJECT
@@ -45,17 +48,29 @@ class MessageRule : public QObject
         QList<QStringList> myReplies;
 };
 
+/**
+ * One NPC dialog file, mostly a collection of MessageRule.
+ * Once a MessageFile is created, parseFile() must be called.
+ */
 class MessageFile : public QObject
 {
     Q_OBJECT
 
     public:
+        /**
+         * Standard constructor.
+         * @param path NPC dialog path.
+         */
         MessageFile(const QString& path);
         virtual ~MessageFile();
 
         MessageFile* duplicate() const;
         void copy(const MessageFile* other);
 
+        /**
+         * Parse the message file.
+         * @return false if an error happened, true else.
+         */
         bool parseFile();
 
         const QString& path() const;
