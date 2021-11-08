@@ -257,6 +257,7 @@
 /test/unit/common/check_logger
 /test/unit/common/check_los
 /test/unit/common/check_map
+/test/unit/common/check_minheap
 /test/unit/common/check_object
 /test/unit/common/check_path
 /test/unit/common/check_player
