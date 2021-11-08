@@ -26,7 +26,7 @@ static void teardown(void) {
 }
 
 // Define functions that will be needed in order to retrieve values from the heap.
-int int_measure(void *ob) {
+int int_measure(const void *ob) {
     return *((int *)ob);
 }
 
@@ -73,7 +73,7 @@ START_TEST(test_minheap_empty_remove) {
 END_TEST
 
 START_TEST(test_minheap_insert_remove) {
-    int vals[30] = {4, 6, 23, 7, 343, 12, 1, 1, 33, 76, 4, 34, 8, 7, 90, 123, 2, 3, 55, 65, 4, 6, 77, 65, 5, 7, 6, 5, 4, 1, 2};
+    int vals[30] = {4, 6, 23, 7, 343, 12, 1, 1, 33, 76, 4, 34, 8, 7, 90, 123, 2, 3, 55, 65, 4, 6, 77, 65, 5, 7, 6, 5, 4, 1};
     int expected[30], actual[30];
     // Copy the values to the expected array and then qsort them.
     memcpy(expected, vals, sizeof(int)*30);
@@ -101,7 +101,7 @@ typedef struct {
     int y;
 } Pos;
 
-int measure_pos_distance(void *ob) {
+int measure_pos_distance(const void *ob) {
     const Pos *p = ob;
     const int diag = MIN(FABS(p->x), FABS(p->y));
     const int rem = MAX(FABS(p->x), FABS(p->y)) - diag;
@@ -147,7 +147,7 @@ START_TEST(test_minheap_static_alloc) {
 #define HEAP_SIZE 50
     MinHeap heap;
     int *heaparr[HEAP_SIZE];
-    minheap_init_static(&heap, heaparr, HEAP_SIZE, int_measure);
+    minheap_init_static(&heap, (void **)heaparr, HEAP_SIZE, int_measure);
 
     // Now we get the data ready.
     int vals[HEAP_SIZE], expected[HEAP_SIZE];

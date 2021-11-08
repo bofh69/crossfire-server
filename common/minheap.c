@@ -126,7 +126,7 @@ static void minheap_normalize(MinHeap *heap) {
  * @return
  * Pointer to the allocated min-heap. Errors out if allocation fails.
  */
-MinHeap *minheap_init(int amt, int (*measure_func)(void *), void (*cleanup_func)(void *)){
+MinHeap *minheap_init(int amt, int (*measure_func)(const void *), void (*cleanup_func)(void *)){
     MinHeap *newheap = malloc(sizeof(MinHeap));
     if (!newheap)
         fatal(OUT_OF_MEMORY);
@@ -159,7 +159,7 @@ MinHeap *minheap_init(int amt, int (*measure_func)(void *), void (*cleanup_func)
  * @param measure_func
  * Pointer to the function that gives the calculation the minheap uses to organize elements.
  */
-void minheap_init_static(MinHeap *heap, void **arr, int amt, int (*measure_func)(void *)) {
+void minheap_init_static(MinHeap *heap, void **arr, int amt, int (*measure_func)(const void *)) {
     if (heap == NULL)
         return;
     heap->arr = arr;

@@ -24,15 +24,15 @@ typedef struct {
     int capacity;
     // Functon to get the measured quantity from the stored data.
     // The returned measure is what the min-heap organizes on.
-    int (*get_measure)(void *);
+    int (*get_measure)(const void *);
     // Function pointer to clean up the elements
     // Can do nothing, which allows for us to store primitive data types,
     // stack-allocated data, or data that is still in use.
     void (*element_cleanup)(void *);
 } MinHeap;
 
-MinHeap *minheap_init(int amt, int (*measure_func)(void *), void (*cleanup_func)(void *));
-void minheap_init_static(MinHeap *heap, void **arr, int amt, int (*measure_func)(void *));
+MinHeap *minheap_init(int amt, int (*measure_func)(const void *), void (*cleanup_func)(void *));
+void minheap_init_static(MinHeap *heap, void **arr, int amt, int (*measure_func)(const void *));
 int minheap_insert(MinHeap *heap, void *ob);
 void *minheap_remove(MinHeap *heap);
 void minheap_free(MinHeap *to_free);
