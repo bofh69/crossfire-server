@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 
+#include <global.h>
 #include "minheap.h"
 #include "compat.h"
 #include "define.h"
@@ -11,6 +12,8 @@
 #include <check.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <toolkit_common.h>
 
 static MinHeap *test_heap;
 
@@ -27,13 +30,13 @@ static void teardown(void) {
 
 // Define functions that will be needed in order to retrieve values from the heap.
 int int_measure(const void *ob) {
-    return *((int *)ob);
+    return *((const int *)ob);
 }
 
 // We will also need this in order to qsort the results to ensure it works.
 // This will tell qsort to sort in ascending order.
 int qsort_comp_int(const void *a, const void *b) {
-    return *((int *)a) - *((int *)b);
+    return *((const int *)a) - *((const int *)b);
 }
 
 // Ensure that allocation works.
