@@ -2,7 +2,11 @@
  * This is the unit tests file for common/minheap.c
  */
 
+#include <stdint.h>
+
 #include "minheap.h"
+#include "compat.h"
+#include "define.h"
 
 #include <check.h>
 #include <stdlib.h>
@@ -91,6 +95,54 @@ START_TEST(test_minheap_insert_remove) {
 }
 END_TEST
 
+// Now let's do a test that does a struct.
+typedef struct {
+    int x;
+    int y;
+} Pos;
+
+int measure_pos_distance(void *ob) {
+    const Pos *p = ob;
+    const int diag = MIN(FABS(p->x), FABS(p->y));
+    const int rem = MAX(FABS(p->x), FABS(p->y)) - diag;
+    return diag * 3 + rem * 2;
+}
+
+int qsort_pos_check(const void *a, const void *b) {
+    return measure_pos_distance(a) - measure_pos_distance(b);
+}
+
+START_TEST(test_minheap_with_struct) {
+    test_heap = minheap_init(400, measure_pos_distance, NULL);
+    Pos vals[400], expected[400], actual[400];
+    srand(0);
+    // Initialize
+    for (int i = 0; i < 400; ++i) {
+        vals[i].x = rand() & 16535;
+        vals[i].y = rand() & 16535;
+    }
+    // Copy these over to expected, since we will qsort it there.
+    memcpy(expected, vals, 400 * sizeof(Pos));
+    qsort(expected, 400, sizeof(Pos), qsort_pos_check);
+
+    // And then we will use the heap for sorting into actual
+    for (int i = 0; i < 400; ++i) {
+        int res = minheap_insert(test_heap, &vals[i]);
+        fail_unless(res == 0, "Could not insert into minheap at size %d.", test_heap->len);
+    }
+    // Then remove them from the heap.
+    for (int i = 0; i < 400; ++i) {
+        Pos *res = minheap_remove(test_heap);
+        fail_unless(res != NULL, "Minheap emptied before it should have: %d items should be left.", 400-i);
+        actual[i] = *res;
+        // Since we sorted on the distance from (0,0), any ties could be in different orders.
+        fail_unless(measure_pos_distance(&expected[i]) == measure_pos_distance(&actual[i]),
+            "Minheap retrieved wrong value. Expected (%d, %d): %d, got (%d, %d): %d", expected[i].x, expected[i].y,
+            measure_pos_distance(&expected[i]), actual[i].x, actual[i].y, measure_pos_distance(&actual[i]));
+    }
+}
+END_TEST
+
 static Suite *minheap_suite(void) {
     Suite *s = suite_create("minheap");
     TCase *tc_core = tcase_create("Core");
@@ -104,6 +156,7 @@ static Suite *minheap_suite(void) {
     tcase_add_test(tc_core, test_minheap_overfill);
     tcase_add_test(tc_core, test_minheap_empty_remove);
     tcase_add_test(tc_core, test_minheap_insert_remove);
+    tcase_add_test(tc_core, test_minheap_with_struct);
 
     return s;
 }
