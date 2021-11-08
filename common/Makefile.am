@@ -53,6 +53,7 @@ libcross_a_SOURCES = \
 	logger.c\
 	los.c\
 	map.c\
+	minheap.c\
 	ob_methods.c \
 	ob_types.c \
 	object.c\
