@@ -1,3 +1,6 @@
+2021-11-08  Nicolas Weeger
+    * Don't allow mimics to be put into containers
+
 2021-11-07  Nicolas Weeger
     * Improve pet behaviour, see https://sourceforge.net/p/crossfire/bugs/908/
 

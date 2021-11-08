@@ -624,7 +624,7 @@ void pick_up(object *op, object *alt) {
     /* Don't allow players to be put into containers.  Instead,
      * just put them in the players inventory.
      */
-    if (tmp->type == CONTAINER && alt->type==CONTAINER) {
+    if ((tmp->type == CONTAINER || tmp->type == MIMIC) && alt->type==CONTAINER) {
         alt = op;
     }
 #ifdef PICKUP_DEBUG
