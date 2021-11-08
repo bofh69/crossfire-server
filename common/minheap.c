@@ -141,6 +141,35 @@ MinHeap *minheap_init(int amt, int (*measure_func)(void *), void (*cleanup_func)
 }
 
 /**
+ * Initialize the minheap using statically allocated components.
+ * It is expected the caller will do any necessary cleanup on data before
+ * the components fall out of scope.
+ *
+ * It is also expected that the caller ensured arr can hold amt elements.
+ *
+ * @param heap
+ * Pointer to the heap we are initializing.
+ *
+ * @param arr
+ * Pointer to the array of elements we are using.
+ *
+ * @param amt
+ * The capacity of the heap
+ *
+ * @param measure_func
+ * Pointer to the function that gives the calculation the minheap uses to organize elements.
+ */
+void minheap_init_static(MinHeap *heap, void **arr, int amt, int (*measure_func)(void *)) {
+    if (heap == NULL)
+        return;
+    heap->arr = arr;
+    heap->len = 0;
+    heap->capacity = amt;
+    heap->get_measure = measure_func;
+    heap->element_cleanup = NULL;
+}
+
+/**
  * Inserts an element into the min-heap
  *
  * @param ob

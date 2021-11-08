@@ -32,6 +32,7 @@ typedef struct {
 } MinHeap;
 
 MinHeap *minheap_init(int amt, int (*measure_func)(void *), void (*cleanup_func)(void *));
+void minheap_init_static(MinHeap *heap, void **arr, int amt, int (*measure_func)(void *));
 int minheap_insert(MinHeap *heap, void *ob);
 void *minheap_remove(MinHeap *heap);
 void minheap_free(MinHeap *to_free);

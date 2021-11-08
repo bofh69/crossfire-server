@@ -143,6 +143,37 @@ START_TEST(test_minheap_with_struct) {
 }
 END_TEST
 
+START_TEST(test_minheap_static_alloc) {
+#define HEAP_SIZE 50
+    MinHeap heap;
+    int *heaparr[HEAP_SIZE];
+    minheap_init_static(&heap, heaparr, HEAP_SIZE, int_measure);
+
+    // Now we get the data ready.
+    int vals[HEAP_SIZE], expected[HEAP_SIZE];
+    srand(5);
+    for (int i = 0; i < HEAP_SIZE; ++i) {
+        vals[i] = rand() & 32767;
+    }
+    // Copy to expected so we can qsort it.
+    memcpy(expected, vals, HEAP_SIZE * sizeof(int));
+    qsort(expected, HEAP_SIZE, sizeof(int), qsort_comp_int);
+
+    // Push items onto the heap.
+    for (int i = 0; i < HEAP_SIZE; ++i) {
+        int res = minheap_insert(&heap, &vals[i]);
+        fail_unless(res == 0, "Could not insert into minheap at size %d.", heap.len);
+    }
+
+    // Pull back off the heap
+    for (int i = 0; i < HEAP_SIZE; ++i) {
+        int *ref = minheap_remove(&heap);
+        fail_unless(ref != NULL, "Minheap emptied before it should have: %d items should be left.", HEAP_SIZE - i);
+        fail_unless(*ref == expected[i], "Minheap retrieved wrong value. Expected %d, got %d.", expected[i], *ref);
+    }
+}
+END_TEST
+
 static Suite *minheap_suite(void) {
     Suite *s = suite_create("minheap");
     TCase *tc_core = tcase_create("Core");
@@ -157,6 +188,7 @@ static Suite *minheap_suite(void) {
     tcase_add_test(tc_core, test_minheap_empty_remove);
     tcase_add_test(tc_core, test_minheap_insert_remove);
     tcase_add_test(tc_core, test_minheap_with_struct);
+    tcase_add_test(tc_core, test_minheap_static_alloc);
 
     return s;
 }
