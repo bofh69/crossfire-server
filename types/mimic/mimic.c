@@ -62,6 +62,28 @@ static method_ret mimic_type_apply(object *op, object *applier, int aflags) {
     (void)aflags;
     if (applier->type == PLAYER) {
 
+        if (op->env) {
+            char name[MAX_BUF];
+            query_name(op, name, sizeof(name));
+            object *env = op->env;
+            if (!env->map) {
+                // Not supposed to happen, since mimics can't be put into other containers
+                draw_ext_info_format(NDI_UNIQUE, 0, applier, MSG_TYPE_APPLY, MSG_TYPE_APPLY_FAILURE, "You can't seem to open the %s.", name);
+                return METHOD_OK;
+            }
+            object_remove(op);
+            op->type = MONSTER;
+            int dir = object_find_free_spot(op, env->map, env->x, env->y, 1, SIZEOFFREE);
+            if (dir == -1) {
+                object_insert_in_ob(op, env);
+                op->type = MIMIC;
+                draw_ext_info_format(NDI_UNIQUE, 0, applier, MSG_TYPE_APPLY, MSG_TYPE_APPLY_FAILURE, "You can't seem to open the %s.", name);
+                return METHOD_OK;
+            }
+            op = object_insert_in_map_at(op, env->map, NULL, 0, env->x + freearr_x[dir], env->y + freearr_y[dir]);
+            draw_ext_info_format(NDI_UNIQUE, 0, applier, MSG_TYPE_APPLY, MSG_TYPE_APPLY_SUCCESS, "The %s suddenly escapes!", name);
+        }
+
         draw_ext_info(NDI_UNIQUE, 0, applier, MSG_TYPE_APPLY, MSG_TYPE_APPLY_SUCCESS, "Ah! It's alive!");
         /* We become a monster */
         op->type = MONSTER;
