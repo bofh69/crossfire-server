@@ -26,6 +26,7 @@
 #include "skills.h"
 #include "spells.h"
 #include "sproto.h"
+#include "minheap.h"
 
 static int monster_can_hit(object *ob1, object *ob2, rv_vector *rv);
 static int monster_cast_spell(object *head, object *part, object *pl, int dir);
@@ -382,6 +383,43 @@ static int monster_move_randomly(object *op) {
 #define MAX_EXPLORE 5000
 
 /**
+ * Structure to store data so we can use a minheap.
+ */
+typedef struct {
+    int16_t x;
+    int16_t y;
+    uint16_t distance;
+    uint16_t heuristic_dist;
+    // This way we only have to calculate penalties once per tile per pathing calculation.
+    int16_t movement_penalty;
+} path_data;
+
+/**
+ * Function to retrieve the measurement the minheap will organize by.
+ *
+ * @param ob
+ * The path_data object we with to observe, stored as a void *.
+ *
+ * @return
+ * The estimated distance to fulfill the shortest path.
+ */
+int path_measure_func(const void *ob) {
+    const path_data *dat = (path_data *)ob;
+    return dat->distance + dat->heuristic_dist;
+}
+
+/**
+ * Heuristic function to make the pathing follow an A* search.
+ *
+ * (ax, ay) and (bx, by) are the cooridnates we are estinating the distance between.
+ */
+static inline uint16_t estimate_distance(int16_t ax, int16_t ay, int16_t bx, int16_t by) {
+    uint16_t dx = FABS(ax - bx), dy = FABS(ay - by);
+    uint16_t diag = MIN(dx, dy);
+    return (MAX(dx, dy) - diag) * 2 + diag * 3;
+}
+
+/**
  * Computes a path from source to target. Takes into account walls, other living things, and such.
  * Only works if both items are on same map.
  *
@@ -395,12 +433,14 @@ static int monster_move_randomly(object *op) {
  * general direction from source to target.
  * @return
  * direction to go into. Will be default_dir if no path found.
- * @todo cache path, smart ajustment and such things to not compute all the time ; try directions randomly.
+ * @todo cache path, smart adjustment and such things to not compute all the time ; try directions randomly.
  */
 int monster_compute_path(object *source, object *target, int default_dir) {
-    unsigned short *distance;
-    int explore_x[MAX_EXPLORE], explore_y[MAX_EXPLORE], dirs[8];
-    int current = 0, dir, max = 1, x, y, i;
+    path_data *distance, *current, *explore;
+    path_data *heaparr[MAX_EXPLORE];
+    int dirs[8];
+    int dir, x, y, i;
+    MinHeap heap;
 
     if (target->map != source->map)
         return default_dir;
@@ -412,6 +452,33 @@ int monster_compute_path(object *source, object *target, int default_dir) {
 
     // Leave width like this because it is used just this once.
     const int size = cur_map->width * map_height;
+
+    // Determine the amount by which terrain is over or under valued by the monster.
+    /* terrain value is as follows:
+     * 0 - ignore terrain penalties
+     * 1 - undervalue terrain penalties by half
+     * 2 - correctly value terrain penalties
+     * 3 - overvalue terrain penalties by 50%
+     */
+    int terrain_value;
+    if (source->attack_movement & RUSH)
+        terrain_value = 0;
+    else if (source->stats.Int < 8) {
+        terrain_value = 0;
+    }
+    else if (source->stats.Int < 13) {
+        // If low Wis, then over-value terrain penalties.
+        // Otherwise, under-value terrain penalties.
+        if (source->stats.Wis < 13) {
+            terrain_value = 3;
+        }
+        else {
+            terrain_value = 1;
+        }
+    }
+    else {
+        terrain_value = 2;
+    }
 
     /**
      * Also, do a quick check to make sure our source monster is not completely sandwiched
@@ -461,21 +528,22 @@ int monster_compute_path(object *source, object *target, int default_dir) {
         fatal(OUT_OF_MEMORY);
     }
     /*
-     * 999 seems to be an arbitrary intializer.
-     * 65535 can be set more efficiently.
-     *
-    for (dir = 0; dir < size; ++dir) {
-        distance[dir] = 999;
-    }
-     *
      * To set to 65535 efficiently, though, I need to memset each byte to 255.
-     * each element is two bytes,
+     * each element is multiple bytes, and this will fill the non-distance values, too.
      */
     memset(distance, 255, sizeof(*distance) * size);
 
-    distance[map_height * target->x + target->y] = 0;
-    explore_x[0] = target->x;
-    explore_y[0] = target->y;
+    // Set current to the starting point.
+    current = &distance[map_height * target->x + target->y];
+
+    current->distance = 0;
+    current->x = target->x;
+    current->y = target->y;
+    current->heuristic_dist = 0;
+    current->movement_penalty = 0;
+
+    // Initialize the minheap
+    minheap_init_static(&heap, (void **)heaparr, MAX_EXPLORE, path_measure_func);
 
     /* The first time through, current = 0 and max = 1.
      * This will evaluate to true, so we might as well use a do-while loop.
@@ -491,18 +559,36 @@ int monster_compute_path(object *source, object *target, int default_dir) {
         }
 
         for (i = 0; i < 8; ++i) {
-            unsigned short new_distance;
+            uint16_t new_distance;
 
 	    /*
 	     * dirs[i] is the direction we wish to check.
 	     */
             dir = absdir(default_dir+4+dirs[i]);
-            x = explore_x[current]+freearr_x[dir];
-            y = explore_y[current]+freearr_y[dir];
+            x = current->x+freearr_x[dir];
+            y = current->y+freearr_y[dir];
 
             if (x == source->x && y == source->y) {
+                // Randomly decide to bob/weave on some steps if not RUSH movement.
+                // When not in RUSH mode, 1/4 chance of bob/weaving
+                if (source->attack_movement != RUSH && (RANDOM() & 3) == 0) {
+                    int newdir = absdir(dir+4+1-(RANDOM()&2)); // Bob/weave up to one space.
+                    int newx = source->x+freearr_x[newdir],
+                        newy = source->y+freearr_y[newdir];
+                    const path_data *newloc = &distance[map_height * newx + newy];
+                    // If we checked the tile during pathing and it is not a wall and the movement penalty of the tile
+                    // is not greater than the shortest-path's movement penalty, then go to that space.
+                    if (newloc->distance != 65535 && newloc->distance != 1 &&
+                        newloc->movement_penalty <= current->movement_penalty)
+                            dir = newdir; // Commit to the bob/weave
+                    else
+                        dir = absdir(dir + 4);
+                }
+                // Otherwise, just follow the path we were given.
+                else
+                    dir = absdir(dir + 4);
                 free(distance);
-                return absdir(dir+4);
+                return dir;
             }
 
             if (OUT_OF_REAL_MAP(cur_map, x, y))
@@ -512,25 +598,55 @@ int monster_compute_path(object *source, object *target, int default_dir) {
             assert(map_height * x + y >= 0);
             assert(map_height * x + y < size);
 
+            // Set a pointer to the tile we are exploring.
+            explore = &distance[map_height * x + y];
+
+            // Penalty-less spaces are handled by the inline if in the new_distance assignment.
+            // We can have move_penalty be zero because it assumes the penalty-less cost is already accounted for.
+            int16_t move_penalty = 0;
+            // Skip the penalty search if terrain value is zero. We will ignore any move penalty anyway.
+            if (terrain_value > 0) {
+                // Only calculate movement penalty if this tile does not have it yet.
+                if (explore->movement_penalty == -1) {
+                    // Sum the move_slow_penalties on the map space.
+                    object *tmp = GET_MAP_OB(cur_map, x, y);
+                    FOR_OB_AND_ABOVE_PREPARE(tmp) {
+                        if ((!source->move_type && tmp->move_slow&MOVE_WALK)
+                            || ((source->move_type&tmp->move_slow) && (source->move_type&~tmp->move_slow&~tmp->move_block) == 0)) {
+                                move_penalty += (int16_t)tmp->move_slow_penalty;
+                        }
+                    } FOR_OB_AND_ABOVE_FINISH();
+                    // And, make sure to store this for when we bump into this tile again
+                    explore->movement_penalty = move_penalty;
+                }
+                else {
+                    move_penalty = explore->movement_penalty;
+                }
+            }
+
+            /* Mod 2 is equivalent to checking only the 1's bit (1 or 0), but & 1 is faster.
+             * Also, dir & 1 == 0 is true if we have a diagonal dir.
+             */
+            const int base_move_cost = ((dir & 1) == 0 ? 3 : 2);
+
             new_distance =
-                distance[map_height * explore_x[current] + explore_y[current]]
-                /* Mod 2 is equivalent to checking only the 1's bit (1 or 0), but & 1 is faster.
-                 * Also, dir & 1 == 0 is true if we have a diagonal dir.
-                 */
-                + ((dir & 1) == 0 ? 3 : 2);
+                current->distance
+                  // If terrain value is zero, we will ignore movement_penalties.
+                  // If move_penalty is 0, then there were no penalties for moving onto this space.
+                + (move_penalty != 0 && terrain_value != 0 ? base_move_cost + base_move_cost * move_penalty * terrain_value / 2 : base_move_cost);
 
             // If already known blocked or arrivable in less distance, we skip
-            if (distance[map_height * x + y] <= new_distance)
+            if (explore->distance <= new_distance)
                 continue;
             // If we have a non-default value here, we will have lready done ob_blocked on it.
             // So, only call ob_blocked if we are staring at 65535.
             // If we are not looking at an untested space, then we will skip this block and avoid ob_blocked
-            if (distance[map_height * x + y] == 65535 && ob_blocked(source, cur_map, x, y))
+            if (explore->distance == 65535 && ob_blocked(source, cur_map, x, y))
             {
                 // Mark as something we can't otherwise get -- the goal is to cache what spaces are blocked.
                 // At least, this call to monster_compute_path will remember this spot is blocked.
                 // This should cut our calls to ob_blocked some.
-                distance[map_height * x + y] = 1;
+                explore->distance = 1;
                 // The value of 1 also allows for walls to be considered already checked, but since we do not add to the
                 // explore array, this makes them hit the condition above if they are checked again without going through walls.
                 continue;
@@ -538,24 +654,23 @@ int monster_compute_path(object *source, object *target, int default_dir) {
 
             /*LOG(llevDebug, "check %d, %d dist = %d, nd = %d\n", x, y, distance[source->map->height*x+y], new_distance);*/
 
-            /* This condition is now always true, since we bail before we get here if this is false.
-            if (distance[map_height * x + y] > new_distance) {
-            */
-            assert(max < MAX_EXPLORE);
-            explore_x[max] = x;
-            explore_y[max] = y;
-
-            distance[map_height * x + y] = new_distance;
+            // Only set x and y when we insert into the minheap.
+            explore->x = x;
+            explore->y = y;
+            explore->distance = new_distance;
+            explore->heuristic_dist = estimate_distance(x, y, source->x, source->y); // Add a heuristic to make this A*.
             /*                printf("explore[%d] => (%d, %d) %u\n", max, x, y, new_distance);*/
-            ++max;
-            if (max == MAX_EXPLORE) {
+
+            // TODO: If the space has already been evaluated, we'd really want to do an in-place update, not an insert.
+
+            // If the heap is full when we try to insert, then we have exhausted exploration space.
+            if (minheap_insert(&heap, explore) != 0) {
                 free(distance);
                 return default_dir;
             }
-            //}
         }
-        ++current;
-    } while (current < max);
+        current = minheap_remove(&heap);
+    } while (current != NULL);
 
     /*LOG(llevDebug, "no path\n");*/
     free(distance);

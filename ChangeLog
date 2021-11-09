@@ -1,3 +1,7 @@
+2021-11-09  Daniel Hawkins
+    * server/monster.c: Rework monster_compute_path to use terrain-aware A*,
+        instead of a naive Dijkstra's algorithm.
+
 2021-11-08  Nicolas Weeger
     * Don't allow mimics to be put into containers
     * Make mimics jump out of a player's inventory when applied
