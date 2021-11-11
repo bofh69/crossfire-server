@@ -2386,14 +2386,13 @@ void command_rename_item(object *op, const char *params) {
         /* Checking the first part */
         itemnumber = atoi(params);
         if (itemnumber != 0) {
-            int found = 0;
-            FOR_INV_PREPARE(op, item)
-                if (item->count == itemnumber && !item->invisible) {
-                    found = 1;
+            FOR_INV_PREPARE(op, inv)
+                if (inv->count == itemnumber && !inv->invisible) {
+                    item = inv;
                     break;
                 }
             FOR_INV_FINISH();
-            if (!found) {
+            if (!item) {
                 draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
                               "Tried to rename an invalid item.");
                 return;
