@@ -1,5 +1,6 @@
 2021-11-11  Nicolas Weeger
     * Fix crash with the 'rename' command, see https://sourceforge.net/p/crossfire/bugs/910/
+    * Make NPCs spawned by citylife switch back to default behaviour when attacked
 
 2021-11-09  Daniel Hawkins
     * server/monster.c: Rework monster_compute_path to use terrain-aware A*,

@@ -137,6 +137,12 @@ static object *get_npc(const mapzone *zone) {
     evt->title = add_string(CITYLIFE_NAME);
     object_insert_in_ob(evt, npc);
 
+    evt = create_archetype("event_attack");
+    evt->slaying = add_string(CITYLIFE_NAME);
+    evt->title = add_string(CITYLIFE_NAME);
+    SET_FLAG(evt, FLAG_UNIQUE);
+    object_insert_in_ob(evt, npc);
+
     return npc;
 }
 
@@ -257,6 +263,18 @@ static int eventListener(int *type, ...) {
     event = va_arg(args, object *);
     va_arg(args, talk_info *);
     va_end(args);
+
+    if (event->subtype == EVENT_ATTACKED) {
+        LOG(llevInfo, "citylife: %s attacked, reverting to default behaviour\n", who->name);
+        object *th = object_find_by_type_subtype(who, EVENT_CONNECTOR, EVENT_TIME);
+        if (th) {   // Should not be NULL, but play it safe
+            object_remove(th);
+            object_free(th, 0);
+        }   // Attacked hook is unique thus removed by the event handler
+        CLEAR_FLAG(who, FLAG_RANDOM_MOVE);
+        CLEAR_FLAG(who, FLAG_STAND_STILL);
+        return 0; // Let default behaviour apply, NPC becomes aggressive
+    }
 
     value = object_get_value(who, FIRST_MOVE_KEY);
     if (!value) {
