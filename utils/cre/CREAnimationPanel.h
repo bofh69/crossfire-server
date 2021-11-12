@@ -19,7 +19,7 @@ class CREAnimationPanel : public CRETPanel<const Animations>
 
     public:
         CREAnimationPanel(QWidget* parent, CREMapInformationManager* myMaps);
-        virtual void setItem(const Animations* animation);
+        virtual void setItem(const Animations* animation) override;
 
     protected:
         const Animations* myAnimation;

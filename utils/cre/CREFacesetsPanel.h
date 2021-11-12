@@ -17,7 +17,7 @@ class CREFacesetsPanel : public CRETPanel<face_sets>
         CREFacesetsPanel(QWidget* parent);
         virtual ~CREFacesetsPanel();
 
-        virtual void setItem(face_sets* fs);
+        virtual void setItem(face_sets* fs) override;
 
     protected:
         QLabel* myPrefix;

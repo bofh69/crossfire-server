@@ -11,7 +11,7 @@ class CREGeneralMessagePanel : public CRETPanel<const GeneralMessage>
 {
 public:
     CREGeneralMessagePanel(QWidget* parent);
-    virtual void setItem(const GeneralMessage* item);
+    virtual void setItem(const GeneralMessage* item) override;
 
 private:
     QLineEdit* myTitle;

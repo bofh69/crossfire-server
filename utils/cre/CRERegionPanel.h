@@ -17,7 +17,7 @@ class CRERegionPanel : public CRETPanel<regiondef>
         CRERegionPanel(QWidget* parent);
         virtual ~CRERegionPanel();
 
-        virtual void setItem(regiondef* region);
+        virtual void setItem(regiondef* region) override;
 
     protected:
         QLabel* myShortName;

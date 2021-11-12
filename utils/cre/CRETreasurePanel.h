@@ -16,7 +16,7 @@ class CRETreasurePanel : public CRETPanel<const treasurelist>
     public:
         CRETreasurePanel(QWidget* parent);
 
-        virtual void setItem(const treasurelist* treasure);
+        virtual void setItem(const treasurelist* treasure) override;
 
     public slots:
       void onGenerate(bool pressed);

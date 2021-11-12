@@ -25,8 +25,8 @@ class CREMessagePanel : public CRETPanel<MessageFile>
         CREMessagePanel(const MessageManager* manager, QWidget* parent);
         virtual ~CREMessagePanel();
 
-        virtual void setItem(MessageFile* message);
-        virtual void commitData();
+        virtual void setItem(MessageFile* message) override;
+        virtual void commitData() override;
 
     protected:
 

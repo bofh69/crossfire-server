@@ -11,7 +11,7 @@ class CRERandomMapPanel : public CRETPanel<const CRERandomMap>
 {
 public:
   CRERandomMapPanel(QWidget* parent);
-  virtual void setItem(const CRERandomMap* map);
+  virtual void setItem(const CRERandomMap* map) override;
 private:
   QLabel* mySource;
   QTextEdit* myInformation;

@@ -11,7 +11,7 @@ class CREScriptPanel : public CRETPanel<ScriptFile>
     public:
         CREScriptPanel(QWidget* parent);
 
-        virtual void setItem(ScriptFile* script);
+        virtual void setItem(ScriptFile* script) override;
 
     private:
       QTreeWidget* myMaps;

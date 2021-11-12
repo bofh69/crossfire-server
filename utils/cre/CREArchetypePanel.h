@@ -18,7 +18,7 @@ class CREArchetypePanel : public CRETPanel<archt>
 
     public:
         CREArchetypePanel(CREMapInformationManager* store, ResourcesManager* resources, QWidget* parent);
-        virtual void setItem(archt* archetype);
+        virtual void setItem(archt* archetype) override;
 
         virtual void commitData() override;
 

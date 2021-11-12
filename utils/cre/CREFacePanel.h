@@ -17,7 +17,7 @@ class CREFacePanel : public CRETPanel<const Face>
 
     public:
         CREFacePanel(QWidget* parent, CREMapInformationManager* maps);
-        virtual void setItem(const Face* face);
+        virtual void setItem(const Face* face) override;
 
     protected:
         CREMapInformationManager* myMaps;

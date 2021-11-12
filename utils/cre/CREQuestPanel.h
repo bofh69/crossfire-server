@@ -29,9 +29,9 @@ class CREQuestPanel : public CRETPanel<quest_definition>
         CREQuestPanel(CREMapInformationManager* mapManager, MessageManager* messageManager, ResourcesManager *resources, QWidget* parent);
         virtual ~CREQuestPanel();
 
-        virtual void commitData();
+        virtual void commitData() override;
 
-        virtual void setItem(quest_definition *quest);
+        virtual void setItem(quest_definition *quest) override;
     private:
         CREMapInformationManager *myMapManager;
         MessageManager* myMessageManager;

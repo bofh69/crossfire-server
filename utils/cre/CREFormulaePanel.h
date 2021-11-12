@@ -17,7 +17,7 @@ class CREFormulaePanel : public CRETPanel<const recipe>
     public:
         CREFormulaePanel(QWidget* parent);
 
-        void setItem(const recipe* recipe);
+        void setItem(const recipe* recipe) override;
 
     protected:
         const recipe* myRecipe;

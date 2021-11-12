@@ -17,7 +17,7 @@ class CREArtifactPanel : public CRETPanel<const artifact>
 
     public:
         CREArtifactPanel(QWidget* parent);
-        virtual void setItem(const artifact* artifact);
+        virtual void setItem(const artifact* artifact) override;
 
     protected:
         const artifact* myArtifact;
