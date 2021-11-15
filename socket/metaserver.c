@@ -43,24 +43,15 @@
 /** Mutex to protect access to ::metaserver2_updateinfo. */
 static pthread_mutex_t ms2_info_mutex;
 
-/**
- * Updates our info in the metaserver
- * Note that this is used for both metaserver1 and metaserver2 -
- * for metaserver2, it just copies dynamic data into private
- * data structure, doing locking in the process.
- */
-void metaserver_update(void) {
-    char num_players = 0;
-    player *pl;
-
-#ifdef HAVE_LIBCURL
+int count_players() {
     /* We could use socket_info.nconns, but that is not quite as accurate,
      * as connections in the progress of being established, are listening
      * but don't have a player, etc.  The checks below are basically the
      * same as for the who commands with the addition that WIZ, AFK, and BOT
      * players are not counted.
      */
-    for (pl = first_player; pl != NULL; pl = pl->next) {
+    char num_players = 0;
+    for (player *pl = first_player; pl != NULL; pl = pl->next) {
         if (pl->ob->map == NULL)
             continue;
         if (pl->hidden)
@@ -75,12 +66,22 @@ void metaserver_update(void) {
             continue;
         num_players++;
     }
+    return num_players;
+}
 
+/**
+ * Updates our info in the metaserver
+ * Note that this is used for both metaserver1 and metaserver2 -
+ * for metaserver2, it just copies dynamic data into private
+ * data structure, doing locking in the process.
+ */
+void metaserver_update(void) {
+#ifdef HAVE_LIBCURL
     /* Everything inside the pthread lock/unlock is related
      * to metaserver2 synchronization.
      */
     pthread_mutex_lock(&ms2_info_mutex);
-    metaserver2_updateinfo.num_players = num_players;
+    metaserver2_updateinfo.num_players = count_players();
     metaserver2_updateinfo.in_bytes = cst_tot.ibytes;
     metaserver2_updateinfo.out_bytes = cst_tot.obytes;
     metaserver2_updateinfo.uptime  = (long)time(NULL)-cst_tot.time_start;

@@ -1395,21 +1395,43 @@ static bool check_shutdown(void) {
         return true;
     }
 
-    /* Zero means that no timed shutdown is pending. */
-    if (cmd_shutdown_time == 0) {
+    if (shutdown_state.type == SHUTDOWN_NONE) {
         return false;
     }
 
-    /* If a timed shutdown is coming, remind players periodically. */
-    static int next_warn = 0; // FIXME: next_warn not reset if shutdown cancelled
-    time_t time_left = cmd_shutdown_time - time(NULL);
+    if (shutdown_state.type == SHUTDOWN_IDLE) {
+        if (count_players() == 0) {
+            if (shutdown_state.time == 0) {
+                // Start idle countdown
+                shutdown_state.time = time(NULL);
+                return false;
+            } else {
+                time_t diff = time(NULL) - shutdown_state.time;
+                if (diff > 60) {
+                    LOG(llevInfo, "No active players in the last %ld seconds, shutting down...\n", diff);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            // Reset idle time, since there are players
+            shutdown_state.time = 0;
+        }
+        return false;
+    }
 
-    for (unsigned int i = next_warn; i < sizeof(shutdown_warn_times) / sizeof(int); i++) {
+    assert(shutdown_state.type == SHUTDOWN_TIME);
+
+    /* If a timed shutdown is coming, remind players periodically. */
+    time_t time_left = shutdown_state.time - time(NULL);
+
+    for (unsigned int i = shutdown_state.next_warn; i < sizeof(shutdown_warn_times) / sizeof(int); i++) {
         if (shutdown_warn_times[i] == (int)ceil(time_left / 60.0)) {
             draw_ext_info_format(NDI_UNIQUE | NDI_ALL, 0, NULL, MSG_TYPE_ADMIN,
                     MSG_TYPE_ADMIN_DM,
                     "Server shutting down in %d minutes.", shutdown_warn_times[i]);
-            next_warn = i + 1;
+            shutdown_state.next_warn = i + 1;
             return false;
         }
     }
@@ -1425,15 +1447,24 @@ static bool check_shutdown(void) {
  * scheduled shutdowns when they log in.
  */
 void login_check_shutdown(object* const op) {
-    if (cmd_shutdown_time == 0) {
+    if (shutdown_state.type == SHUTDOWN_NONE) {
         return;
     }
 
-    time_t time_left = cmd_shutdown_time - time(NULL);
+    if (shutdown_state.type == SHUTDOWN_IDLE) {
+        draw_ext_info_format(
+            NDI_UNIQUE, 0, op, MSG_TYPE_ADMIN, MSG_TYPE_ADMIN_DM,
+            "This server will shut down when all players leave.");
+        return;
+    }
+
+    assert(shutdown_state.type == SHUTDOWN_TIME);
+
+    time_t time_left = shutdown_state.time - time(NULL);
     if (time_left <= 60*shutdown_warn_times[0]) {
         draw_ext_info_format(
-            NDI_UNIQUE | NDI_ALL, 0, op, MSG_TYPE_ADMIN, MSG_TYPE_ADMIN_DM,
-            "Server shutting down in %d minutes.", time_left / 60);
+            NDI_UNIQUE, 0, op, MSG_TYPE_ADMIN, MSG_TYPE_ADMIN_DM,
+            "This server will shut down in %d minutes.", time_left / 60);
     }
 }
 

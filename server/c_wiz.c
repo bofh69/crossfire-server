@@ -40,8 +40,7 @@ enum {
     STACK_FROM_NUMBER  = 3    /**< Item is a number (may be top) */
 };
 
-/** Time, in seconds from epoch, of server shutdown. */
-int cmd_shutdown_time = 0;
+struct shutdown_s shutdown_state;
 
 /**
  * Enough of the DM functions seem to need this that I broke
@@ -680,18 +679,23 @@ void command_shutdown(object *op, const char *params) {
     if (strlen(params) == 0) {
         /* Give DM command help and display current shutdown status. */
         command_help(op, "shutdown");
-
-        if (cmd_shutdown_time != 0) {
+        if (shutdown_state.type == SHUTDOWN_NONE) {
             draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND,
-                    MSG_TYPE_COMMAND_DM, "Server is shutting down soon.");
+                    MSG_TYPE_COMMAND_DM, "No shutdown is currently scheduled.");
+        } else if (shutdown_state.type == SHUTDOWN_TIME) {
+            time_t time_left = shutdown_state.time - time(NULL);
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND,
+                    MSG_TYPE_COMMAND_DM, "Shutdown scheduled in %d minutes.", time_left/60);
+        } else if (shutdown_state.type == SHUTDOWN_IDLE) {
+            draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND,
+                    MSG_TYPE_COMMAND_DM, "Shutdown scheduled when there are no active players.");
         }
     } else if (strcmp(params, "cancel") == 0) {
-        /* Tell everyone that the server is no longer shutting down. */
-        if (cmd_shutdown_time != 0) {
+        if (shutdown_state.type != SHUTDOWN_NONE) {
             draw_ext_info(NDI_UNIQUE | NDI_ALL, 0, op, MSG_TYPE_ADMIN,
                     MSG_TYPE_ADMIN_DM, "Server shutdown cancelled.");
-            cmd_shutdown_time = 0;
             LOG(llevInfo, "Server shutdown cancelled by %s.\n", op->name);
+            shutdown_state.type = SHUTDOWN_NONE;
         } else {
             draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND,
                     MSG_TYPE_COMMAND_ERROR, "No shutdown is pending.");
@@ -699,9 +703,17 @@ void command_shutdown(object *op, const char *params) {
     } else if (strncmp(params, "now", 3) == 0) {
         /* Announce and shut down immediately. */
         draw_ext_info(NDI_UNIQUE | NDI_ALL, 0, op, MSG_TYPE_ADMIN,
-                    MSG_TYPE_ADMIN_DM, "Server is shutting down now!");
-        cmd_shutdown_time = time(NULL);
+                    MSG_TYPE_ADMIN_DM, "This server is shutting down now!");
+        shutdown_state.type = SHUTDOWN_TIME;
+        shutdown_state.time = time(NULL);
         LOG(llevInfo, "Server shutdown initiated by %s.\n", op->name);
+    } else if (strcmp(params, "idle") == 0) {
+        draw_ext_info(NDI_UNIQUE | NDI_ALL, 0, op, MSG_TYPE_ADMIN,
+                    MSG_TYPE_ADMIN_DM, "This server will shut down when all players leave.");
+        shutdown_state.type = SHUTDOWN_IDLE;
+        shutdown_state.time = 0;
+        shutdown_state.next_warn = 0;
+        LOG(llevInfo, "Server idle shutdown scheduled by %s.\n", op->name);
     } else {
         /* Schedule (but don't announce) a shutdown. */
         int minutes = atoi(params);
@@ -710,8 +722,9 @@ void command_shutdown(object *op, const char *params) {
             draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND,
                     MSG_TYPE_COMMAND_SUCCESS,
                     "Server will shut down in %d minutes.", minutes);
-            cmd_shutdown_time = time(NULL) + minutes * 60;
-            LOG(llevInfo, "Server shutdown initiated by %s in %d minutes.\n", op->name, minutes);
+            shutdown_state.type = SHUTDOWN_TIME;
+            shutdown_state.time = time(NULL) + minutes * 60;
+            LOG(llevInfo, "Server shutdown scheduled in %d minutes by %s.\n", minutes, op->name);
         } else {
             draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND,
                     MSG_TYPE_COMMAND_ERROR,

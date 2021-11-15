@@ -38,7 +38,19 @@ typedef uint64_t command_registration;
 /** Wizard-only commands. */
 #define COMMAND_TYPE_WIZARD         2
 
-/** Time, in seconds from epoch, of server shutdown. */
-extern int cmd_shutdown_time;
+enum shutdown_type {
+    SHUTDOWN_NONE, //< No shutdown pending
+    SHUTDOWN_TIME, //< Shutdown at a given time
+    SHUTDOWN_IDLE  //< Shutdown when no active players are in the game
+};
+
+struct shutdown_s {
+    enum shutdown_type type;
+    time_t time;   /**< When using SHUTDOWN_TIME, time of shutdown.
+                        When using SHUTDOWN_IDLE, last time server was empty. */
+    int next_warn; //<  Used in SHUTDOWN_TIME to warn players
+};
+
+extern struct shutdown_s shutdown_state;
 
 #endif /* COMMANDS_H */
