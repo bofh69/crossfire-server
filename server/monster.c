@@ -572,6 +572,8 @@ int monster_compute_path(object *source, object *target, int default_dir) {
                 // Randomly decide to bob/weave on some steps if not RUSH movement.
                 // When not in RUSH mode, 1/4 chance of bob/weaving
                 if (source->attack_movement != RUSH && (RANDOM() & 3) == 0) {
+                    // We take the perspective of the source when determining our dodge/weave direction,
+                    // incorporating the required dir+4 reversal immediately.
                     int newdir = absdir(dir+4+1-(RANDOM()&2)); // Bob/weave up to one space.
                     int newx = source->x+freearr_x[newdir],
                         newy = source->y+freearr_y[newdir];
