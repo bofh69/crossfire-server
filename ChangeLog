@@ -1,3 +1,8 @@
+2021-11-17  Daniel Hawkins
+    * server/time.c: Handle when a generated monster immediately dies to a spell effect
+        when being inserted into the map.
+        Looking at you, banishment....
+
 2021-11-11  Nicolas Weeger
     * Fix crash with the 'rename' command, see https://sourceforge.net/p/crossfire/bugs/910/
     * Make NPCs spawned by citylife switch back to default behaviour when attacked
