@@ -1346,21 +1346,7 @@ void object_update_speed(object *op) {
             op->active_next->active_prev = op;
         active_objects = op;
     } else {
-        /* If not on the active list, nothing needs to be done */
-        if (!op->active_next && !op->active_prev && op != active_objects)
-            return;
-
-        if (op->active_prev == NULL) {
-            active_objects = op->active_next;
-            if (op->active_next != NULL)
-                op->active_next->active_prev = NULL;
-        } else {
-            op->active_prev->active_next = op->active_next;
-            if (op->active_next)
-                op->active_next->active_prev = op->active_prev;
-        }
-        op->active_next = NULL;
-        op->active_prev = NULL;
+        object_remove_from_active_list(op);
     }
 }
 
