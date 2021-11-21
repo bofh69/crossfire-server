@@ -195,12 +195,13 @@ void init_experience(void) {
                 LOG(llevDebug, "Got more than one max_level value from exp_table file?\n");
                 free(levels);
             }
-            settings.max_level = atoi(cp+9);
-            if (!settings.max_level) {
-                LOG(llevDebug, "Got invalid max_level from exp_table file? %s\n", buf);
-            } else {
-                levels = calloc(settings.max_level+1, sizeof(int64_t));
+            int ml = atoi(cp + 9);
+            if (ml <= 0 || ml > 10000) {
+                LOG(llevError, "max_level must be between 1 and 10000\n");
+                fatal(SEE_LAST_ERROR);
             }
+            settings.max_level = ml;
+            levels = calloc(settings.max_level+1, sizeof(int64_t));
         }
         while (isdigit(*cp) && *cp != 0) {
             if (!settings.max_level) {
