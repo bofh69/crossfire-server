@@ -135,8 +135,7 @@ void init_connection(socket_struct *ns, const char *from_ip) {
      */
     memset(ns->inbuf.buf, 0, sizeof(ns->inbuf.buf));
     memset(&ns->lastmap, 0, sizeof(struct Map));
-    if (!ns->faces_sent)
-        ns->faces_sent = calloc(sizeof(*ns->faces_sent), get_faces_count());
+    ns->faces_sent = calloc(sizeof(*ns->faces_sent), get_faces_count());
     ns->faces_sent_len = get_faces_count();
 
     memset(&ns->anims_sent, 0, sizeof(ns->anims_sent));

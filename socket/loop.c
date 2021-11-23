@@ -565,6 +565,7 @@ void do_server(void) {
         if (init_sockets[i].status == Ns_Add && !is_fd_valid(init_sockets[i].fd)) {
             LOG(llevError, "do_server: invalid waiting fd %d\n", i);
             init_sockets[i].status = Ns_Dead;
+            FREE_AND_CLEAR(init_sockets[i].faces_sent);
         }
         if (init_sockets[i].status == Ns_Dead) {
             LOG(llevInfo, "Disconnected from %s\n", init_sockets[i].host);
