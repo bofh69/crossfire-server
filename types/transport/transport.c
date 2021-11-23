@@ -188,7 +188,7 @@ static method_ret transport_type_apply(object *op, object *applier, int aflags) 
         object_sum_weight(op);
         applier->map = op->map;
         if (ox != op->x || oy != op->y) {
-            esrv_map_scroll(&applier->contr->socket, (ox-op->x), (oy-op->y));
+            esrv_map_scroll(&applier->contr->socket, (op->x - ox), (op->y - oy));
         }
         applier->contr->socket.update_look = 1;
         applier->contr->socket.look_position = 0;
