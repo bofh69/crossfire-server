@@ -1,8 +1,8 @@
 #include "CREMapPanel.h"
 #include "CREMapInformation.h"
 #include "CREMainWindow.h"
-#include "ScriptFileManager.h"
-#include "ScriptFile.h"
+#include "scripts/ScriptFileManager.h"
+#include "scripts/ScriptFile.h"
 #include "CREPixmap.h"
 
 extern "C" {

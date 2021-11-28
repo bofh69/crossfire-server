@@ -29,6 +29,8 @@ int main(int argc, char **argv) {
     qRegisterMetaTypeStreamOperators<CREReportDefinition>("CREReportDefinition");
     qRegisterMetaTypeStreamOperators<CREReportDefinitionManager>("CREReportDefinitionManager");
 
+    qRegisterMetaType<const Face *>("const Face*");
+
 #ifdef WIN32
     // Application compiled with "--prefix=", somehow the root is then c:\, which is bad
     // So force directories to point to the exe's path and something else.

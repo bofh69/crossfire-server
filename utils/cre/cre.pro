@@ -8,25 +8,12 @@ SOURCES += cre.cpp \
 CREMainWindow.cpp \
 CREPixmap.cpp \
  CREUtils.cpp \
- CREAnimationControl.cpp \
- CREAnimationWidget.cpp \
  CREResourcesWindow.cpp \
- CREAnimationPanel.cpp \
- CRETreasurePanel.cpp \
- CREArtifactPanel.cpp \
- CREFormulaePanel.cpp \
- CREFacePanel.cpp \
- CREArchetypePanel.cpp \
  CREMapInformation.cpp \
  CREMapInformationManager.cpp \
  CRESettings.cpp \
  CRESettingsDialog.cpp \
  CREFilterDialog.cpp \
- CREFilter.cpp \
- CREWrapperArchetype.cpp \
- CREWrapperObject.cpp \
- CREWrapperArtifact.cpp \
- CREWrapperFormulae.cpp \
  CREReportDialog.cpp \
  CREReportDisplay.cpp \
  CREFilterDefinition.cpp \
@@ -34,11 +21,9 @@ CREPixmap.cpp \
  CREReportDefinition.cpp \
  CREMapPanel.cpp \
  CREExperienceWindow.cpp \
- CRERegionPanel.cpp \
  CREReportDefinitionManager.cpp \
  CREScriptEngine.cpp \
  CREQuestPanel.cpp \
- CRETreeItemQuest.cpp \
  MessageManager.cpp \
  CREMessagePanel.cpp \
  MessageFile.cpp \
@@ -52,17 +37,11 @@ CREPixmap.cpp \
  CRESmoothFaceMaker.cpp \
  ResourcesManager.cpp \
  CRECombatSimulator.cpp \
- ScriptFileManager.cpp \
- ScriptFile.cpp \
- CREScriptPanel.cpp \
- CRERandomMap.cpp \
- CRERandomMapPanel.cpp \
+ random_maps/RandomMap.cpp \
+ random_maps/RandomMapPanel.cpp \
  FaceMakerDialog.cpp \
  EditMonstersDialog.cpp \
  ArchetypesModel.cpp \
- CREWrapperTreasure.cpp \
- CREGeneralMessagePanel.cpp \
- CREFacesetsPanel.cpp \
  CREMessageItemModel.cpp \
  CREPrePostConditionDelegate.cpp \
  CREPrePostList.cpp \
@@ -70,30 +49,50 @@ CREPixmap.cpp \
  CREPlayerRepliesDelegate.cpp \
  CREStringListDelegate.cpp \
  FaceComboBox.cpp \
- LicenseManager.cpp
+ LicenseManager.cpp \
+ animations/AnimationWrapper.cpp \
+ animations/AnimationControl.cpp \
+ animations/AnimationWidget.cpp \
+ animations/AnimationPanel.cpp \
+ archetypes/ArchetypePanel.cpp \
+ archetypes/ArchetypeWrapper.cpp \
+ archetypes/ArchetypesWrapper.cpp \
+ archetypes/ObjectWrapper.cpp \
+ artifacts/ArtifactListPanel.cpp \
+ artifacts/ArtifactListWrapper.cpp \
+ artifacts/ArtifactPanel.cpp \
+ artifacts/ArtifactWrapper.cpp \
+ artifacts/ArtifactsWrapper.cpp \
+ assets/AssetModel.cpp \
+ assets/AssetWrapperPanel.cpp \
+ faces/FacePanel.cpp \
+ faces/FaceWrapper.cpp \
+ faces/FacesetsPanel.cpp \
+ general_messages/GeneralMessagePanel.cpp \
+ quests/QuestWrapper.cpp \
+ recipes/RecipeListWrapper.cpp \
+ recipes/RecipePanel.cpp \
+ recipes/RecipeWrapper.cpp \
+ recipes/RecipesWrapper.cpp \
+ regions/RegionPanel.cpp \
+ regions/RegionWrapper.cpp \
+ regions/RegionsWrapper.cpp \
+ scripts/ScriptFile.cpp \
+ scripts/ScriptFileManager.cpp \
+ scripts/ScriptFilePanel.cpp \
+ treasures/TreasureListPanel.cpp \
+ treasures/TreasureListWrapper.cpp \
+ treasures/TreasureWrapper.cpp \
+ AllAssets.cpp
 HEADERS += CREMainWindow.h \
 CREPixmap.h \
  CREUtils.h \
- CREAnimationControl.h \
- CREAnimationWidget.h \
  CREResourcesWindow.h \
- CRETreeItem.h \
- CREAnimationPanel.h \
- CRETreasurePanel.h \
- CREArtifactPanel.h \
- CREFormulaePanel.h \
- CREFacePanel.h \
- CREArchetypePanel.h \
  CREMapInformation.h \
  CREMapInformationManager.h \
  CRESettings.h \
  CRESettingsDialog.h \
  CREFilterDialog.h \
- CREFilter.h \
- CREWrapperArchetype.h \
- CREWrapperObject.h \
- CREWrapperArtifact.h \
- CREWrapperFormulae.h \
  CREReportDialog.h \
  CREReportDisplay.h \
  CREFilterDefinition.h \
@@ -101,12 +100,9 @@ CREPixmap.h \
  CREReportDefinition.h \
  CREMapPanel.h \
  CREExperienceWindow.h \
- CRERegionPanel.h \
  CREReportDefinitionManager.h \
- CRETreeItemEmpty.h \
  CREScriptEngine.h \
  CREQuestPanel.h \
- CRETreeItemQuest.h \
  CREPanel.h \
  MessageManager.h \
  CREMessagePanel.h \
@@ -121,17 +117,12 @@ CREPixmap.h \
  CRESmoothFaceMaker.h \
  ResourcesManager.h \
  CRECombatSimulator.h \
- ScriptFileManager.h \
- ScriptFile.h \
- CREScriptPanel.h \
- CRERandomMap.h \
- CRERandomMapPanel.h \
+ random_maps/RandomMap.h \
+ random_maps/RandomMapPanel.h \
+ random_maps/RandomMaps.h \
  FaceMakerDialog.h \
  EditMonstersDialog.h \
  ArchetypesModel.h \
- CREWrapperTreasure.h \
- CREGeneralMessagePanel.h \
- CREFacesetsPanel.h \
  CREMessageItemModel.h \
  CREPrePostConditionDelegate.h \
  CREPrePostList.h \
@@ -139,7 +130,48 @@ CREPixmap.h \
  CREPlayerRepliesDelegate.h \
  CREStringListDelegate.h \
  FaceComboBox.h \
- LicenseManager.h
+ LicenseManager.h \
+ animations/AnimationWrapper.h \
+ animations/AnimationControl.h \
+ animations/AnimationWidget.h \
+ animations/AnimationPanel.h \
+ animations/AnimationsWrapper.h \
+ archetypes/ArchetypePanel.h \
+ archetypes/ArchetypeWrapper.h \
+ archetypes/ArchetypesWrapper.h \
+ archetypes/ObjectWrapper.h \
+ artifacts/ArtifactListPanel.h \
+ artifacts/ArtifactListWrapper.h \
+ artifacts/ArtifactPanel.h \
+ artifacts/ArtifactWrapper.h \
+ artifacts/ArtifactsWrapper.h \
+ assets/AssetModel.h \
+ assets/AssetWrapper.h \
+ assets/AssetWrapperPanel.h \
+ faces/FacePanel.h \
+ faces/FaceWrapper.h \
+ faces/FacesWrapper.h \
+ faces/FacesetsPanel.h \
+ faces/FacesetsWrapper.h \
+ general_messages/GeneralMessagePanel.h \
+ general_messages/GeneralMessageWrapper.h \
+ general_messages/GeneralMessagesWrapper.h \
+ quests/QuestWrapper.h \
+ quests/QuestsWrapper.h \
+ recipes/RecipeListWrapper.h \
+ recipes/RecipePanel.h \
+ recipes/RecipeWrapper.h \
+ recipes/RecipesWrapper.h \
+ regions/RegionPanel.cpp \
+ regions/RegionWrapper.h \
+ regions/RegionsWrapper.h \
+ scripts/ScriptFile.cpp \
+ scripts/ScriptFileManager.h \
+ scripts/ScriptFilePanel.h \
+ treasures/TreasureListPanel.h \
+ treasures/TreasureListWrapper.h \
+ treasures/TreasureWrapper.h \
+ AllAssets.h
 LIBS += ../../server/libserver.a ../../common/libcross.a ../../socket/libsocket.a ../../random_maps/librandom_map.a ../../types/libtypes.a -lcurl
 
 linux-* {

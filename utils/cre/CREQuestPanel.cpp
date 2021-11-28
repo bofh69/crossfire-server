@@ -1,8 +1,6 @@
 #include "CREQuestPanel.h"
-#include "CRERegionPanel.h"
 #include "CREQuestItemModel.h"
 #include "CREMultilineItemDelegate.h"
-#include "CRETreeItemQuest.h"
 #include "CREMapInformationManager.h"
 #include "CREMapInformation.h"
 #include "MessageManager.h"
@@ -14,8 +12,9 @@
 #include "ResourcesManager.h"
 #include "CREPrePostList.h"
 #include "CREPrePostConditionDelegate.h"
+#include "assets/AssetModel.h"
 
-CREQuestPanel::CREQuestPanel(CREMapInformationManager* mapManager, MessageManager* messageManager, ResourcesManager *resources, QWidget* parent) : CRETPanel(parent)
+CREQuestPanel::CREQuestPanel(CREMapInformationManager* mapManager, MessageManager* messageManager, ResourcesManager *resources, AssetModel *model, QWidget* parent) : CRETPanel(parent)
 {
     Q_ASSERT(mapManager);
     Q_ASSERT(messageManager);
@@ -112,9 +111,11 @@ CREQuestPanel::CREQuestPanel(CREMapInformationManager* mapManager, MessageManage
 
     layout->addLayout(buttons, line++, 1, 1, 2);
 
-    myUse = new QTreeWidget(this);
-    tab->addTab(myUse, tr("Use"));
-    myUse->setHeaderLabel(tr("Used by..."));
+    auto useView = new QTreeView(this);
+    tab->addTab(useView, tr("Use"));
+    myUse = new UseFilterAssetModel(this);
+    myUse->setSourceModel(model);
+    useView->setModel(myUse);
 
     myQuest = NULL;
     myCurrentStep = NULL;
@@ -152,47 +153,7 @@ void CREQuestPanel::setItem(quest_definition *quest)
 
     displaySteps();
 
-    myUse->clear();
-    QTreeWidgetItem* root = NULL;
-    auto maps = myMapManager->getMapsForQuest(quest);
-    if (!maps.empty())
-    {
-        root = new QTreeWidgetItem(myUse, QStringList(tr("Maps")));
-        root->setExpanded(true);
-        foreach(CREMapInformation* map, maps)
-        {
-            new QTreeWidgetItem(root, QStringList(map->path()));
-        }
-        root = NULL;
-    }
-
-    foreach(MessageFile* message, myMessageManager->messages())
-    {
-        bool got = false;
-        foreach(MessageRule* rule, message->rules())
-        {
-            QList<QStringList> conditions = rule->preconditions();
-            conditions.append(rule->postconditions());
-            foreach(QStringList list, conditions)
-            {
-                if (list.size() > 1 && (list[0] == "quest" || list[0] == "questdone") && list[1] == quest->quest_code)
-                {
-                    if (root == NULL)
-                    {
-                        root = new QTreeWidgetItem(myUse, QStringList(tr("Messages")));
-                        root->setExpanded(true);
-                    }
-
-                    new QTreeWidgetItem(root, QStringList(message->path()));
-                    got = true;
-                    break;
-                }
-            }
-
-            if (got)
-                break;
-        }
-    }
+    myUse->setFilter(myResources->wrap(quest, nullptr));
 }
 
 void CREQuestPanel::commitData()

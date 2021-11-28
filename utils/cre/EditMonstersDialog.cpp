@@ -24,7 +24,7 @@ EditMonstersDialog::EditMonstersDialog(ResourcesManager *resources) {
 
     setLayout(layout);
 
-    auto model = new ArchetypesModel();
+    auto model = new ArchetypesModel(resources);
     QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel();
     proxyModel->setSourceModel(model);
     view->setModel(proxyModel);

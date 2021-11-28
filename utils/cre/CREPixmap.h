@@ -2,8 +2,10 @@
 #define CREPIXMAP_H
 
 #include <QtWidgets>
-
-struct face_sets;
+extern "C" {
+#include "global.h"
+#include "image.h"
+}
 
 class CREPixmap
 {
@@ -16,6 +18,7 @@ class CREPixmap
         static void clearFaceCache();
 
         static QIcon getIcon(uint16_t faceNumber);
+        static QIcon getIcon(const Face *face);
 
         static QIcon getTreasureIcon();
         static QIcon getTreasureOneIcon();

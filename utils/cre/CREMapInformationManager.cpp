@@ -2,12 +2,11 @@
 
 #include "CREMapInformationManager.h"
 #include "CRESettings.h"
-#include "CREArchetypePanel.h"
 #include "MessageManager.h"
 #include "MessageFile.h"
-#include "ScriptFileManager.h"
-#include "ScriptFile.h"
-#include "CRERandomMap.h"
+#include "scripts/ScriptFileManager.h"
+#include "scripts/ScriptFile.h"
+#include "random_maps/RandomMap.h"
 
 extern "C" {
 #include "global.h"
@@ -58,6 +57,7 @@ CREMapInformationManager::CREMapInformationManager(QObject* parent, MessageManag
     Q_ASSERT(scriptManager != NULL);
     myMessageManager = messageManager;
     myScriptManager = scriptManager;
+    connect(this, SIGNAL(addHook(const QString &, HookInformation *)), scriptManager, SLOT(addHook(const QString &, HookInformation *)));
 }
 
 CREMapInformationManager::~CREMapInformationManager()
@@ -125,7 +125,7 @@ void CREMapInformationManager::checkItem(const object* item, CREMapInformation* 
                         strncpy(ep, start, end-start);
                     }
 
-                    information->addRandomMap(new CRERandomMap(information, env->x, env->y, item->msg));
+                    information->addRandomMap(new RandomMap(information, env->x, env->y, item->msg));
                 }
             }
 
@@ -166,11 +166,6 @@ void CREMapInformationManager::checkItem(const object* item, CREMapInformation* 
                 }
             }
         }
-    }
-    else if (item->type == EVENT_CONNECTOR && item->subtype > 0 && item->subtype < NR_EVENTS)
-    {
-        ScriptFile* script = myScriptManager->getFile(item->slaying);
-        script->addHook(new HookInformation(information, env->x, env->y, env->name, item->title, eventNames[item->subtype]));
     }
 
     if (QUERY_FLAG(item, FLAG_MONSTER))
@@ -331,6 +326,10 @@ void CREMapInformationManager::browseMaps()
     }
 
     storeCache();
+
+    for (auto map : myInformation) {
+        emit mapAdded(map);
+    }
 
     emit finished();
 
@@ -530,14 +529,14 @@ void CREMapInformationManager::loadCache()
             QString plugin = reader.attributes().value("pluginName").toString();
             QString event = reader.attributes().value("eventName").toString();
             QString script = reader.readElementText();
-            myScriptManager->getFile(script)->addHook(new HookInformation(map, x, y, item, plugin, event));
+            emit addHook(script, new HookInformation(map, x, y, item, plugin, event));
         }
         if (reader.isStartElement() && reader.name() == "random_map")
         {
             int x = reader.attributes().value("x").toString().toInt();
             int y = reader.attributes().value("y").toString().toInt();
             QString params = reader.attributes().value("params").toString();
-            map->addRandomMap(new CRERandomMap(map, x, y, params.toLatin1().constData()));
+            map->addRandomMap(new RandomMap(map, x, y, params.toLatin1().constData()));
         }
         if (reader.isStartElement() && reader.name() == "background_music")
         {
@@ -651,7 +650,7 @@ void CREMapInformationManager::storeCache()
             }
         }
 
-        foreach(CRERandomMap* random, map->randomMaps())
+        foreach(RandomMap* random, map->randomMaps())
         {
             writer.writeStartElement("random_map");
             writer.writeAttribute("x", QString::number(random->x()));
@@ -724,8 +723,7 @@ void CREMapInformationManager::checkEvent(const object* item, CREMapInformation*
 
     if (item->subtype > 0 && item->subtype < NR_EVENTS)
     {
-        ScriptFile* script = myScriptManager->getFile(item->slaying);
-        script->addHook(new HookInformation(map, env->x, env->y, env->name, item->title, eventNames[item->subtype]));
+        emit addHook(item->slaying, new HookInformation(map, env->x, env->y, env->name, item->title, eventNames[item->subtype]));
     }
 
     if (python != item->title)
@@ -781,9 +779,9 @@ void CREMapInformationManager::clearCache()
     QFile::remove(settings.mapCacheDirectory() + QDir::separator() + "maps_cache.xml");
 }
 
-QList<CRERandomMap*> CREMapInformationManager::randomMaps()
+QList<RandomMap*> CREMapInformationManager::randomMaps()
 {
-    QList<CRERandomMap*> maps;
+    QList<RandomMap*> maps;
     foreach(CREMapInformation* map, myInformation.values())
     {
         maps.append(map->randomMaps());
@@ -810,4 +808,10 @@ void CREMapInformationManager::recurseStyleDirectory(const QString& from)
             myToProcess.append(relative);
         }
     }
+}
+
+void CREMapInformationManager::fixMapInformation(CREMapInformation *map) {
+    map->moveToThread(thread());
+    map->setParent(this);
+    emit mapAdded(map);
 }

@@ -16,12 +16,16 @@ extern "C" {
 #include "assets.h"
 #include "AssetsManager.h"
 #include "CREMapInformationManager.h"
-#include "CRERandomMap.h"
+#include "random_maps/RandomMap.h"
 #include "LicenseManager.h"
 #include "ArchetypeWriter.h"
 #include "QuestWriter.h"
+#include "archetypes/ArchetypeWrapper.h"
+#include "archetypes/ObjectWrapper.h"
+#include "faces/FaceWrapper.h"
+#include "animations/AnimationWrapper.h"
 
-ResourcesManager::ResourcesManager() : myArchetypes(new ArchetypeWriter()), myQuests(new QuestWriter())
+ResourcesManager::ResourcesManager() : myMapInformationManager(nullptr), myArchetypes(new ArchetypeWriter()), myQuests(new QuestWriter())
 {
 }
 
@@ -82,7 +86,7 @@ QStringList ResourcesManager::recipes(int count) const
     return keys;
 }
 
-const recipe* ResourcesManager::recipe(int ingredients, const QString& name) const
+const recipe* ResourcesManager::getRecipe(int ingredients, const QString& name) const
 {
     if (ingredients < 1 || ingredients > myRecipes.size())
         return NULL;
@@ -133,7 +137,7 @@ void ResourcesManager::archetypeUse(const archt* item, CREMapInformationManager*
     {
         if (!goOn)
             return;
-        foreach(CRERandomMap* rm, information->randomMaps())
+        foreach(RandomMap* rm, information->randomMaps())
         {
             if (strcmp(item->name, rm->parameters()->final_exit_archetype) == 0)
             {

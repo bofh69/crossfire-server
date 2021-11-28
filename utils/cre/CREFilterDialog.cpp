@@ -1,7 +1,6 @@
 #include <QtWidgets>
 
 #include "CREFilterDialog.h"
-#include "CREFilter.h"
 #include "CRESettings.h"
 #include "CREFilterDefinition.h"
 

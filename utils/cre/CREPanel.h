@@ -4,25 +4,21 @@
 #include <QObject>
 #include <QWidget>
 
-class CREPanel : public QWidget
-{
+class CREPanel : public QWidget {
     Q_OBJECT
 
-    public:
-        CREPanel(QWidget* parent) : QWidget(parent) {}
-        virtual ~CREPanel() {}
+public:
+    CREPanel(QWidget* parent) : QWidget(parent) {}
+    virtual ~CREPanel() {}
 
-        virtual void commitData() {}
-    private:
+    virtual void commitData() {}
 };
 
 template<typename T>
-class CRETPanel : public CREPanel
-{
+class CRETPanel : public CREPanel {
     public:
         CRETPanel(QWidget* parent) : CREPanel(parent) {};
         virtual void setItem(T* item) = 0;
-    private:
 };
 
 #endif /* _CREPANEL_H */

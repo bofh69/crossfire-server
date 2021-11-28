@@ -12,6 +12,8 @@ class FaceComboBox : public QComboBox
 {
     Q_OBJECT
 
+    Q_PROPERTY(const Face *face READ face WRITE setFace)
+
  public:
     /**
      * Standard constructor.

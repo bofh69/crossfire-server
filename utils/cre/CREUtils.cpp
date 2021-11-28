@@ -3,12 +3,12 @@
 #include "CREPixmap.h"
 #include "CREMapInformation.h"
 #include "MessageFile.h"
+#include "scripts/ScriptFile.h"
 
 extern "C" {
 #include "global.h"
 #include "recipe.h"
 #include "libproto.h"
-#include "ScriptFile.h"
 }
 
 QTreeWidgetItem* CREUtils::archetypeNode(QTreeWidgetItem* parent)
@@ -34,47 +34,6 @@ QTreeWidgetItem* CREUtils::objectNode(const object* op, QTreeWidgetItem* parent)
     n.append(name);
     QTreeWidgetItem* item = new QTreeWidgetItem(parent, QStringList(n));
     item->setIcon(0, CREPixmap::getIcon(op->face->number));
-    return item;
-}
-
-QTreeWidgetItem* CREUtils::artifactNode(QTreeWidgetItem* parent)
-{
-    QTreeWidgetItem* item = new QTreeWidgetItem(parent, QStringList(QTreeWidget::tr("Artifacts")));
-    return item;
-}
-
-QTreeWidgetItem* CREUtils::artifactNode(const artifact* arti, QTreeWidgetItem* parent)
-{
-    QTreeWidgetItem* item = new QTreeWidgetItem(parent, QStringList(arti->item->name));
-    if (arti->item->face != NULL && arti->item->face != blank_face)
-        item->setIcon(0, CREPixmap::getIcon(arti->item->face->number));
-    else
-    {
-        int face = 0;
-        for (linked_char* allowed = arti->allowed; allowed; allowed = allowed->next)
-        {
-            if (allowed->name[0] == '!')
-                continue;
-            const archt* specific = try_find_archetype(allowed->name);
-            if (!specific)
-                specific = find_archetype_by_object_name(allowed->name);
-            if (specific && specific->clone.face != NULL)
-            {
-                face = specific->clone.face->number;
-                break;
-            }
-        }
-
-        if (face == 0)
-        {
-            const archt* generic = get_archetype_by_type_subtype(arti->item->type, -1);
-            if (generic != NULL && generic->clone.face != NULL)
-                face = generic->clone.face->number;
-        }
-
-        if (face)
-            item->setIcon(0, CREPixmap::getIcon(face));
-    }
     return item;
 }
 
@@ -197,26 +156,6 @@ QTreeWidgetItem* CREUtils::faceNode(const Face* face, QTreeWidgetItem* parent)
     return item;
 }
 
-QTreeWidgetItem* CREUtils::animationNode(QTreeWidgetItem* parent)
-{
-    return new QTreeWidgetItem(parent, QStringList(QTreeWidget::tr("Animations")));
-}
-
-QTreeWidgetItem* CREUtils::animationNode(const Animations* anim, QTreeWidgetItem* parent)
-{
-    QTreeWidgetItem* item = new QTreeWidgetItem(parent, QStringList(anim->name));
-    if (anim->num_animations > 0)
-        item->setIcon(0, CREPixmap::getIcon((anim->faces[0] != NULL) ? anim->faces[0]->number : 0));
-    else
-        LOG(llevDebug, "empty animation: %s\n", anim->name);
-    return item;
-}
-
-QTreeWidgetItem* CREUtils::regionNode(const QString& name, int count, QTreeWidgetItem *parent)
-{
-    return new QTreeWidgetItem(parent, QStringList(QObject::tr("%1 - %2 maps").arg(name).arg(count)));
-}
-
 QTreeWidgetItem* CREUtils::mapNode(QTreeWidgetItem *parent)
 {
   return new QTreeWidgetItem(parent, QStringList(QTreeWidget::tr("Maps")));
@@ -225,66 +164,6 @@ QTreeWidgetItem* CREUtils::mapNode(QTreeWidgetItem *parent)
 QTreeWidgetItem* CREUtils::mapNode(const CREMapInformation* map, QTreeWidgetItem *parent)
 {
     return new QTreeWidgetItem(parent, QStringList(QObject::tr("%1 [%2]").arg(map->name(), map->path())));
-}
-
-QTreeWidgetItem* CREUtils::questsNode()
-{
-  return new QTreeWidgetItem(QStringList(QTreeWidget::tr("Quests")));
-}
-
-QTreeWidgetItem* CREUtils::questNode(const quest_definition* quest, QTreeWidgetItem* parent)
-{
-    QTreeWidgetItem* item = new QTreeWidgetItem(parent, QStringList(quest->quest_code));
-    if (quest->face != nullptr)
-      item->setIcon(0, CREPixmap::getIcon(quest->face->number));
-    return item;
-}
-
-QTreeWidgetItem* CREUtils::messagesNode()
-{
-  return new QTreeWidgetItem(QStringList(QTreeWidget::tr("NPC dialogs")));
-}
-
-QTreeWidgetItem* CREUtils::messageNode(const MessageFile* message, QTreeWidgetItem* parent)
-{
-    return new QTreeWidgetItem(parent, QStringList(message->path()));
-}
-
-QTreeWidgetItem* CREUtils::scriptsNode()
-{
-    return new QTreeWidgetItem(QStringList(QTreeWidget::tr("Scripts")));
-}
-QTreeWidgetItem* CREUtils::scriptNode(const ScriptFile* script, QTreeWidgetItem* parent)
-{
-  return new QTreeWidgetItem(parent, QStringList(script->path()));
-}
-
-QTreeWidgetItem* CREUtils::generalMessageNode()
-{
-    return new QTreeWidgetItem(QStringList(QTreeWidget::tr("Messages")));
-}
-QTreeWidgetItem* CREUtils::generalMessageNode(const GeneralMessage* message, QTreeWidgetItem* parent)
-{
-    QString title;
-    if (message->identifier && message->identifier[0] == '\n')
-        title = "General message";
-    else
-        title = message->title;
-
-    QTreeWidgetItem* item = new QTreeWidgetItem(parent, QStringList(title));
-    if (message->face != nullptr)
-        item->setIcon(0, CREPixmap::getIcon(message->face->number));
-    return item;
-}
-
-QTreeWidgetItem* CREUtils::facesetsNode()
-{
-    return new QTreeWidgetItem(QStringList(QTreeWidget::tr("Facesets")));
-}
-QTreeWidgetItem* CREUtils::facesetsNode(const face_sets* faceset, QTreeWidgetItem* parent)
-{
-    QTreeWidgetItem* item = new QTreeWidgetItem(parent, QStringList(faceset->fullname));
-    return item;
 }
 
 void CREUtils::addCountSuffix(QTreeWidgetItem *item, int column)

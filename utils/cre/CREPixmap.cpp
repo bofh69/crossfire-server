@@ -57,8 +57,18 @@ QIcon CREPixmap::getIcon(uint16_t faceNumber)
     return CREPixmap::getIcon(faceset, faceNumber);
 }
 
+QIcon CREPixmap::getIcon(const Face *face) {
+    if (!face) {
+        return QIcon();
+    }
+    return getIcon(faceset, face->number);
+}
+
 QIcon CREPixmap::getIcon(const face_sets *faceset, uint16_t faceNumber)
 {
+    if (faceNumber == (uint16_t)-1) {
+        return QIcon();
+    }
     if (!allFaces.contains(faceNumber))
     {
         QPixmap face;

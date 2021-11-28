@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QStringList>
+#include "assets/AssetWrapper.h"
 
 class CREMapInformation;
 
@@ -52,47 +53,54 @@ class MessageRule : public QObject
  * One NPC dialog file, mostly a collection of MessageRule.
  * Once a MessageFile is created, parseFile() must be called.
  */
-class MessageFile : public QObject
-{
+class MessageFile : public AssetWrapper {
     Q_OBJECT
 
-    public:
-        /**
-         * Standard constructor.
-         * @param path NPC dialog path.
-         */
-        MessageFile(const QString& path);
-        virtual ~MessageFile();
+public:
+    /**
+     * Standard constructor.
+     * @param parent parent of this item.
+     * @param path NPC dialog path.
+     */
+    MessageFile(AssetWrapper *parent, const QString& path);
+    virtual ~MessageFile();
 
-        MessageFile* duplicate() const;
-        void copy(const MessageFile* other);
+    virtual QString displayName() const override { return myPath; }
+    virtual void displayFillPanel(QWidget *panel) override {
+        CRETPanel<MessageFile> *p = static_cast<CRETPanel<MessageFile> *>(panel);
+        p->setItem(this);
+    }
+    virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;
 
-        /**
-         * Parse the message file.
-         * @return false if an error happened, true else.
-         */
-        bool parseFile();
+    MessageFile* duplicate() const;
+    void copy(const MessageFile* other);
 
-        const QString& path() const;
-        void setPath(const QString& path);
+    /**
+     * Parse the message file.
+     * @return false if an error happened, true else.
+     */
+    bool parseFile();
 
-        const QString& location() const;
-        void setLocation(const QString& location);
+    const QString& path() const;
+    void setPath(const QString& path);
 
-        QList<MessageRule*>& rules();
-        QList<CREMapInformation*>& maps();
+    const QString& location() const;
+    void setLocation(const QString& location);
 
-        void save();
+    QList<MessageRule*>& rules();
+    QList<CREMapInformation*>& maps();
 
-        bool isModified() const;
-        void setModified(bool modified = true);
+    void save();
 
-    private:
-        bool myIsModified;
-        QString myPath;
-        QString myLocation;
-        QList<MessageRule*> myRules;
-        QList<CREMapInformation*> myMaps;
+    bool isModified() const;
+    void setModified(bool modified = true);
+
+private:
+    bool myIsModified;
+    QString myPath;
+    QString myLocation;
+    QList<MessageRule*> myRules;
+    QList<CREMapInformation*> myMaps;
 };
 
 #endif /* _MESSAGEFILE_H */

@@ -13,11 +13,15 @@ class CREArchetypeWindow;
 class CRETreasureWindow;
 class CREAnimationWindow;
 class CREFormulaeWindow;
+class CREMapInformation;
 class CREMapInformationManager;
 class QuestManager;
 class MessageManager;
 class ResourcesManager;
 class ScriptFileManager;
+class AssetWrapper;
+class AllAssets;
+class AssetModel;
 
 class CREMainWindow : public QMainWindow
 {
@@ -33,6 +37,8 @@ class CREMainWindow : public QMainWindow
 
     private:
         QMdiArea* myArea;
+        AssetModel *myModel;
+        AllAssets *myAssets;
 
         void createActions();
         void createMenus();
@@ -58,7 +64,7 @@ class CREMainWindow : public QMainWindow
 
     protected:
         void closeEvent(QCloseEvent* event);
-        void doResourceWindow(DisplayMode mode);
+        void doResourceWindow(int assets);
         void fillFacesets();
         QAction *createAction(const QString &title, const QString &statusTip, QObject *target, const char *slot);
 
@@ -94,4 +100,6 @@ class CREMainWindow : public QMainWindow
         void onFiltersModified();
         void onReportsModified();
         void onClearCache();
+
+        void mapAdded(CREMapInformation *map);
 };

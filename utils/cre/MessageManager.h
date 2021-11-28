@@ -1,19 +1,27 @@
 #ifndef _MESSAGEMANAGER_H
 #define _MESSAGEMANAGER_H
 
+#include "assets/AssetWrapper.h"
+#include "MessageFile.h"
 #include <QList>
-class MessageFile;
 
 class QuestConditionScript;
 
 /**
  * Manage NPC dialogs.
  */
-class MessageManager
-{
+class MessageManager : public AssetWrapper {
     public:
-        MessageManager();
+        MessageManager(AssetWrapper *parent);
         virtual ~MessageManager();
+
+        virtual QString displayName() const override { return "NPC dialogs"; }
+
+        virtual int childrenCount() const override { return myMessages.size(); }
+        virtual AssetWrapper *child(int child) override { return myMessages[child]; }
+        virtual int childIndex(AssetWrapper *child) override { return myMessages.indexOf(static_cast<MessageFile *>(child)); }
+
+        virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;
 
         /** Load all messages from the 'maps' directory. */
         void loadMessages();

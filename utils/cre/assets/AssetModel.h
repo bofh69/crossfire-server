@@ -1,0 +1,66 @@
+#ifndef ASSET_MODEL_H
+#define ASSET_MODEL_H
+
+#include <QAbstractItemModel>
+#include <QVector>
+#include <QSortFilterProxyModel>
+
+#include <map>
+#include <tuple>
+#include <utility>
+
+#include "assets/AssetWrapper.h"
+
+class AssetModel : public QAbstractItemModel {
+public:
+    AssetModel(AssetWrapper *assets, QObject *parent);
+    virtual ~AssetModel();
+
+    virtual int columnCount(const QModelIndex& parent) const override;
+    virtual QModelIndex index(int row, int column, const QModelIndex& parent) const override;
+    virtual QModelIndex parent(const QModelIndex& index) const override;
+    virtual int rowCount(const QModelIndex & parent) const override;
+    virtual QVariant data(const QModelIndex& index, int role) const override;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    virtual Qt::ItemFlags flags(const QModelIndex& index) const override;
+    //  virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override;
+    //  virtual bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) override;
+
+private:
+    AssetWrapper * myAssets;
+};
+
+class UseFilterAssetModel : public QSortFilterProxyModel {
+public:
+    UseFilterAssetModel(QObject *parent);
+
+    void setFilter(AssetWrapper *asset);
+    virtual QVariant data(const QModelIndex& index, int role) const override;
+
+protected:
+    virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
+
+    AssetWrapper *myAsset;
+    mutable std::map<AssetWrapper *, bool> myCachedFilter;
+    mutable std::map<AssetWrapper *, std::string> myCachedHints;
+};
+
+class QScriptEngine;
+
+class ScriptFilterAssetModel : public QSortFilterProxyModel {
+public:
+    ScriptFilterAssetModel(AssetModel *model, QScriptEngine *engine, QObject *parent);
+
+    void setFilter(const QString &filter);
+    const QString& filter() const { return myFilter; }
+
+protected:
+    virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
+    bool acceptItem(AssetWrapper *item) const;
+
+    QScriptEngine *myEngine;
+    QString myFilter;
+    mutable std::map<AssetWrapper *, bool> myCachedFilter;
+};
+
+#endif /* ASSET_MODEL_H */

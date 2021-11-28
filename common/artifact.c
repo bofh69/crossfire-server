@@ -707,29 +707,26 @@ void dump_artifacts(void) {
  * @return face, -1 as unsigned if none could be found.
  */
 uint16_t artifact_get_face(const artifact *art) {
-    archetype *arch = get_next_archetype(NULL);
-
     if (art->item->face != blank_face && art->item->face != NULL)
         return art->item->face->number;
+
+    archetype *arch = get_next_archetype(NULL);
 
     if (art->allowed_size > 0) {
         if (art->allowed->name[0] == '!') {
             linked_char *allowed;
             while (arch) {
-                if (arch->clone.type != art->item->type)
-                    arch = get_next_archetype(arch);
-
-                for (allowed = art->allowed; allowed != NULL; allowed = allowed->next) {
-                    if (strcmp(arch->name, allowed->name + 1) == 0) {
-                        break;
+                if (!arch->head && arch->clone.type == art->item->type) {
+                    for (allowed = art->allowed; allowed != NULL; allowed = allowed->next) {
+                        if (strcmp(arch->name, allowed->name + 1) == 0) {
+                            break;
+                        }
+                    }
+                    if (allowed == NULL && arch->clone.face != NULL) {
+                        return arch->clone.face->number;
                     }
                 }
-                if (allowed != NULL)
-                    continue;
-
-                if (arch->clone.face == NULL)
-                    continue;
-                return arch->clone.face->number;
+                arch = get_next_archetype(arch);
             }
             return (uint16_t)-1;
         } else {

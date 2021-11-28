@@ -11,7 +11,8 @@ extern "C" {
 
 class MessageManager;
 class ScriptFileManager;
-class CRERandomMap;
+class HookInformation;
+class RandomMap;
 
 class CREMapInformationManager : public QObject
 {
@@ -32,11 +33,13 @@ class CREMapInformationManager : public QObject
         QList<CREMapInformation*> getAnimationUse(const Animations* anim);
         QList<CREMapInformation*> getMapsForRegion(const QString& region);
         QList<CREMapInformation*> getMapsForQuest(const quest_definition *quest);
-        QList<CRERandomMap*> randomMaps();
+        QList<RandomMap*> randomMaps();
 
     signals:
         void browsingMap(const QString& path);
         void finished();
+        void addHook(const QString &file, HookInformation *hook);
+        void mapAdded(CREMapInformation *map);
 
     protected:
         MessageManager* myMessageManager;
@@ -65,6 +68,7 @@ class CREMapInformationManager : public QObject
         void addQuestUse(const QString &name, CREMapInformation *map);
         void checkEvent(const object* item, CREMapInformation* map, const object* env);
         void recurseStyleDirectory(const QString& from);
+        void fixMapInformation(CREMapInformation *map);
 };
 
 #endif // CLASS_CRE_MAP_INFORMATION_MANAGER_H

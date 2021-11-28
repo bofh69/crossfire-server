@@ -20,13 +20,15 @@ class CREQuestItemModel;
 class MessageManager;
 class ResourcesManager;
 class FaceComboBox;
+class UseFilterAssetModel;
+class AssetModel;
 
 class CREQuestPanel : public CRETPanel<quest_definition>
 {
     Q_OBJECT
 
     public:
-        CREQuestPanel(CREMapInformationManager* mapManager, MessageManager* messageManager, ResourcesManager *resources, QWidget* parent);
+        CREQuestPanel(CREMapInformationManager* mapManager, MessageManager* messageManager, ResourcesManager *resources, AssetModel *model, QWidget* parent);
         virtual ~CREQuestPanel();
 
         virtual void commitData() override;
@@ -49,7 +51,7 @@ class CREQuestPanel : public CRETPanel<quest_definition>
         QPlainTextEdit* myComment;
         CREQuestItemModel* myStepsModel;
         QTreeView* mySteps;
-        QTreeWidget* myUse;
+        UseFilterAssetModel *myUse;
 
         void displaySteps();
 

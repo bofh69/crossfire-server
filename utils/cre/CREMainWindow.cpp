@@ -12,9 +12,10 @@
 #include "ResourcesManager.h"
 #include "CRECombatSimulator.h"
 #include "CREHPBarMaker.h"
-#include "ScriptFileManager.h"
+#include "scripts/ScriptFileManager.h"
 #include "FaceMakerDialog.h"
 #include "EditMonstersDialog.h"
+#include "random_maps/RandomMap.h"
 
 extern "C" {
 #include "global.h"
@@ -25,6 +26,8 @@ extern "C" {
 #include "AssetsManager.h"
 #include "CRESettings.h"
 #include "LicenseManager.h"
+#include "AllAssets.h"
+#include "assets/AssetModel.h"
 
 CREMainWindow::CREMainWindow()
 {
@@ -34,6 +37,25 @@ CREMainWindow::CREMainWindow()
     myArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     myResourcesManager = new ResourcesManager();
+    myResourcesManager->load();
+
+    myMessageManager = new MessageManager(nullptr);
+    myMessageManager->loadMessages();
+    myScriptManager = new ScriptFileManager(nullptr);
+
+    myMapManager = new CREMapInformationManager(this, myMessageManager, myScriptManager);
+    connect(myMapManager, SIGNAL(browsingMap(const QString&)), this, SLOT(browsingMap(const QString&)));
+    connect(myMapManager, SIGNAL(finished()), this, SLOT(browsingFinished()));
+    connect(myMapManager, SIGNAL(mapAdded(CREMapInformation *)), this, SLOT(mapAdded(CREMapInformation *)));
+    myResourcesManager->setMapInformationManager(myMapManager);
+
+    CREPixmap::setFaceset("base");
+    CREPixmap::init();
+
+    myAssets = new AllAssets(myResourcesManager, myScriptManager, myMessageManager);
+    myModel = new AssetModel(myAssets, this);
+    myMessageManager->setDisplayParent(myAssets);
+    myScriptManager->setDisplayParent(myAssets);
 
     createActions();
     createMenus();
@@ -44,18 +66,8 @@ CREMainWindow::CREMainWindow()
 
     setWindowTitle(tr("Crossfire Resource Editor"));
 
-    myResourcesManager->load();
-
     fillFacesets();
 
-    myMessageManager = new MessageManager();
-    myMessageManager->loadMessages();
-
-    myScriptManager = new ScriptFileManager();
-
-    myMapManager = new CREMapInformationManager(this, myMessageManager, myScriptManager);
-    connect(myMapManager, SIGNAL(browsingMap(const QString&)), this, SLOT(browsingMap(const QString&)));
-    connect(myMapManager, SIGNAL(finished()), this, SLOT(browsingFinished()));
     myMapManager->start();
 }
 
@@ -124,42 +136,7 @@ void CREMainWindow::createActions()
     myToolFacesetUseFallback->setChecked(true);
 }
 
-const DisplayMode displayModes[] = {
-    DisplayAll,
-    DisplayArtifacts,
-    DisplayArchetypes,
-    DisplayTreasures,
-    DisplayAnimations,
-    DisplayFormulae,
-    DisplayFaces,
-    DisplayMaps,
-    DisplayQuests,
-    DisplayMessage,
-    DisplayScripts,
-    DisplayRandomMaps,
-    DisplayGeneralMessages,
-    DisplayFacesets,
-    DisplayAll,
-};
-
-const char* displayNames[] = {
-    "Resources",
-    "Artifacts",
-    "Archetypes",
-    "Treasures",
-    "Animations",
-    "Formulae",
-    "Faces",
-    "Maps",
-    "Quests",
-    "NPC dialogs",
-    "Scripts",
-    "Random maps",
-    "Messages",
-    "Facesets",
-    nullptr,
-};
-
+#if 0
 const char* displayTips[] = {
     "List all defined elements, except the experience table.",
     "List all defined artifacts.",
@@ -177,17 +154,22 @@ const char* displayTips[] = {
     "Display all facesets.",
     nullptr,
 };
+#endif
 
 void CREMainWindow::createMenus()
 {
     myOpenMenu = menuBar()->addMenu(tr("&Open"));
-    for (int i = 0; displayNames[i] != nullptr; i++)
-    {
-        QAction* action = new QAction(tr(displayNames[i]), this);
-        action->setStatusTip(tr(displayTips[i]));
-        action->setData(static_cast<int>(displayModes[i]));
+
+    auto add = [this] (int index, const QString &name) {
+        QAction* action = new QAction(name, this);
+//        action->setStatusTip(tr(displayTips[i]));
+        action->setData(static_cast<int>(index));
         connect(action, SIGNAL(triggered()), this, SLOT(onOpenResources()));
         myOpenMenu->addAction(action);
+    };
+    add(-1, "Assets");
+    for (int asset = 0; asset < myAssets->childrenCount(); asset++) {
+        add(asset, myAssets->child(asset)->displayName());
     }
 
     myOpenMenu->addAction(createAction(tr("Experience"), tr("Display the experience table."), this, SLOT(onOpenExperience())));
@@ -238,9 +220,14 @@ void CREMainWindow::createMenus()
     myWindows->addAction(sep);
 }
 
-void CREMainWindow::doResourceWindow(DisplayMode mode)
+void CREMainWindow::doResourceWindow(int assets)
 {
-    QWidget* resources = new CREResourcesWindow(myMapManager, myMessageManager, myResourcesManager, myScriptManager, this, mode);
+    QModelIndex root;
+    if (assets != -1) {
+        root = myModel->index(assets, 0, QModelIndex());
+    }
+
+    QWidget* resources = new CREResourcesWindow(myMapManager, myMessageManager, myResourcesManager, myScriptManager, myModel, root, this);
     connect(this, SIGNAL(updateFilters()), resources, SLOT(updateFilters()));
     connect(resources, SIGNAL(filtersModified()), this, SLOT(onFiltersModified()));
     connect(this, SIGNAL(updateReports()), resources, SLOT(updateReports()));
@@ -287,7 +274,7 @@ void CREMainWindow::onOpenResources()
     if (!source)
         return;
 
-    doResourceWindow(static_cast<DisplayMode>(source->data().toInt()));
+    doResourceWindow(source->data().toInt());
 }
 
 void CREMainWindow::onSaveFormulae()
@@ -1718,5 +1705,13 @@ void CREMainWindow::onWindowsShowing() {
         });
         action->setCheckable(true);
         action ->setChecked(mdiSubWindow == myArea->activeSubWindow());
+    }
+}
+
+void CREMainWindow::mapAdded(CREMapInformation *map) {
+    auto reg = get_region_by_name(map->region().toLocal8Bit().data());
+    map->setDisplayParent(myResourcesManager->wrap(reg, myAssets->regions()));
+    for (auto rm : map->randomMaps()) {
+        rm->setDisplayParent(myAssets->randomMaps());
     }
 }

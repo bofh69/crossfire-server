@@ -8,9 +8,12 @@
 #include <QHash>
 #include <QSet>
 
-class CRERandomMap;
+#include "assets/AssetWrapper.h"
+#include "CREPanel.h"
 
-class CREMapInformation : public QObject
+class RandomMap;
+
+class CREMapInformation : public AssetWrapper
 {
     Q_OBJECT
 
@@ -25,9 +28,16 @@ class CREMapInformation : public QObject
         CREMapInformation(const QString& path);
         virtual ~CREMapInformation();
 
-        CREMapInformation* clone() const;
+        void setDisplayParent(AssetWrapper *parent) { myParent = parent; }
 
-        const QString& displayName() const;
+        virtual QString displayName() const override;
+
+        virtual void displayFillPanel(QWidget *panel) override {
+            CRETPanel<CREMapInformation>* p = static_cast<CRETPanel<CREMapInformation>*>(panel);
+            p->setItem(this);
+        }
+
+        virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;
 
         const QString& path() const;
         void setPath(const QString& path);
@@ -86,8 +96,8 @@ class CREMapInformation : public QObject
         quint64 shopMax() const;
         void setShopMax(quint64 max);
 
-        QList<CRERandomMap*> randomMaps() const;
-        void addRandomMap(CRERandomMap* map);
+        QList<RandomMap*> randomMaps() const;
+        void addRandomMap(RandomMap* map);
 
     protected:
         QString myPath;
@@ -108,10 +118,8 @@ class CREMapInformation : public QObject
         double myShopGreed;
         QString myShopRace;
         quint64 myShopMin, myShopMax;
-        QList<CRERandomMap*> myRandomMaps;
+        QList<RandomMap*> myRandomMaps;
         QString myBackgroundMusic;
-
-        void copy(const CREMapInformation& other);
 };
 
 #endif // CLASS_CRE_MAP_INFORMATION_H

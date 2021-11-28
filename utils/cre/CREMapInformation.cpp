@@ -1,7 +1,10 @@
 #include "CREMapInformation.h"
-#include "CRERandomMap.h"
+#include "random_maps/RandomMap.h"
+#include "quests/QuestWrapper.h"
+#include "faces/FaceWrapper.h"
+#include "animations/AnimationWrapper.h"
 
-CREMapInformation::CREMapInformation()
+CREMapInformation::CREMapInformation() : AssetWrapper(nullptr, "Map")
 {
     myDifficulty = 0;
     myComputedDifficulty = 0;
@@ -11,7 +14,7 @@ CREMapInformation::CREMapInformation()
     myShopMax = 0;
 }
 
-CREMapInformation::CREMapInformation(const QString& path)
+CREMapInformation::CREMapInformation(const QString& path) : AssetWrapper(nullptr, "Map")
 {
     myPath = path;
     myDifficulty = 0;
@@ -27,34 +30,7 @@ CREMapInformation::~CREMapInformation()
     qDeleteAll(myRandomMaps);
 }
 
-CREMapInformation* CREMapInformation::clone() const
-{
-    CREMapInformation* clone = new CREMapInformation();
-    clone->copy(*this);
-    return clone;
-}
-
-void CREMapInformation::copy(const CREMapInformation& other)
-{
-    setPath(other.path());
-    setName(other.name());
-    myArchetypes.append(other.archetypes());
-    setMapTime(other.mapTime());
-    myExitsTo.append(other.exitsTo());
-    myAccessedFrom.append(other.accessedFrom());
-    setDifficulty(other.difficulty());
-    setComputedDifficulty(other.computedDifficulty());
-    setExperience(other.experience());
-    setRegion(other.region());
-    myShopItems = other.shopItems();
-    myShopGreed = other.shopGreed();
-    myShopRace = other.shopRace();
-    myShopMin = other.shopMin();
-    myShopMax = other.shopMax();
-    /** @todo clone random maps? */
-}
-
-const QString& CREMapInformation::displayName() const
+QString CREMapInformation::displayName() const
 {
     if (myName.isEmpty())
         return myPath;
@@ -265,12 +241,28 @@ void CREMapInformation::setShopMax(quint64 max)
   myShopMax = max;
 }
 
-QList<CRERandomMap*> CREMapInformation::randomMaps() const
+QList<RandomMap*> CREMapInformation::randomMaps() const
 {
   return myRandomMaps;
 }
 
-void CREMapInformation::addRandomMap(CRERandomMap* map)
+void CREMapInformation::addRandomMap(RandomMap* map)
 {
   myRandomMaps.append(map);
+}
+
+AssetWrapper::PossibleUse CREMapInformation::uses(const AssetWrapper *asset, std::string &) const {
+    auto quest = dynamic_cast<const QuestWrapper *>(asset);
+    if (quest) {
+        return myQuests.indexOf(quest->item()->quest_code) == -1 ? DoesntUse : Uses;
+    }
+    auto face = dynamic_cast<const FaceWrapper *>(asset);
+    if (face) {
+        return myFaces.find(face->item()->name) == myFaces.end() ? DoesntUse : Uses;
+    }
+    auto anim = dynamic_cast<const AnimationWrapper *>(asset);
+    if (anim) {
+        return myAnimations.find(anim->item()->name) == myAnimations.end() ? DoesntUse : Uses;
+    }
+    return DoesntUse;
 }

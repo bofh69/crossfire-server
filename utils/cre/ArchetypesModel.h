@@ -9,12 +9,13 @@ extern "C" {
 #include <set>
 #include <QAbstractTableModel>
 
-class CREWrapperObject;
+class ResourcesManager;
+class AssetWrapper;
 
 class ArchetypesModel : public QAbstractTableModel {
   Q_OBJECT
 public:
-  ArchetypesModel();
+  ArchetypesModel(ResourcesManager *resourcesManager);
   virtual ~ArchetypesModel();
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -28,7 +29,7 @@ signals:
   void archetypeModified(archetype *arch);
 
 private:
-  std::vector<CREWrapperObject *> myMonsters;
+  std::vector<AssetWrapper *> myMonsters;
 };
 
 #endif /* ARCHETYPESMODEL_H */

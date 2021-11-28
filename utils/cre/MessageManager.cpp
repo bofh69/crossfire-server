@@ -1,6 +1,7 @@
 #include "MessageManager.h"
 #include "MessageFile.h"
 #include "QuestConditionScript.h"
+#include "quests/QuestWrapper.h"
 
 extern "C" {
     #include "global.h"
@@ -9,8 +10,7 @@ extern "C" {
 #include <QDir>
 #include <QDebug>
 
-MessageManager::MessageManager()
-{
+MessageManager::MessageManager(AssetWrapper *parent) : AssetWrapper(parent) {
 }
 
 MessageManager::~MessageManager()
@@ -69,7 +69,7 @@ void MessageManager::loadDirectory(const QString& directory)
     foreach(QString message, messages)
     {
         QString path = directory + QDir::separator() + message;
-        MessageFile* file = new MessageFile(path);
+        MessageFile* file = new MessageFile(this, path);
         if (file->parseFile())
         {
             myMessages.append(file);
@@ -128,4 +128,12 @@ void MessageManager::findPrePost(const QString directory, QList<QuestConditionSc
     {
         list.append(new QuestConditionScript(file.baseName(), loadScriptComment(file.absoluteFilePath())));
     }
+}
+
+AssetWrapper::PossibleUse MessageManager::uses(const AssetWrapper *asset, std::string &) const {
+    auto quest = dynamic_cast<const QuestWrapper *>(asset);
+    if (quest) {
+        return ChildrenMayUse;
+    }
+    return DoesntUse;
 }

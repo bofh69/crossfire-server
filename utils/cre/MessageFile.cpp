@@ -4,6 +4,7 @@
 #include <QDebug>
 
 #include "MessageFile.h"
+#include "quests/QuestWrapper.h"
 
 extern "C" {
     #include "global.h"
@@ -113,8 +114,7 @@ void MessageRule::setModified(bool modified)
     myIsModified = modified;
 }
 
-MessageFile::MessageFile(const QString& path)
-{
+MessageFile::MessageFile(AssetWrapper *parent, const QString& path) : AssetWrapper(parent, "Message") {
     myPath = path;
     myIsModified = false;
 }
@@ -126,7 +126,7 @@ MessageFile::~MessageFile()
 
 MessageFile* MessageFile::duplicate() const
 {
-    MessageFile* copy = new MessageFile(myPath);
+    MessageFile* copy = new MessageFile(nullptr, myPath);
     copy->myLocation = myLocation;
     for (auto rule : myRules)
         copy->myRules.append(new MessageRule(*rule));
@@ -384,4 +384,21 @@ bool MessageFile::isModified() const
 void MessageFile::setModified(bool modified)
 {
     myIsModified = modified;
+}
+
+AssetWrapper::PossibleUse MessageFile::uses(const AssetWrapper *asset, std::string &) const {
+    auto quest = dynamic_cast<const QuestWrapper *>(asset);
+    if (quest) {
+        foreach(const MessageRule* rule, myRules) {
+            QList<QStringList> conditions = rule->preconditions();
+            conditions.append(rule->postconditions());
+            foreach(QStringList list, conditions) {
+                if (list.size() > 1 && (list[0] == "quest" || list[0] == "questdone") && list[1] == quest->item()->quest_code) {
+                    return Uses;
+                }
+            }
+        }
+        return DoesntUse;
+    }
+    return DoesntUse;
 }

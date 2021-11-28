@@ -2,7 +2,8 @@
 #include "assets.h"
 #include "AssetsManager.h"
 #include "CREPixmap.h"
-#include "CREWrapperObject.h"
+#include "archetypes/ObjectWrapper.h"
+#include "ResourcesManager.h"
 
 #define PROPERTY_COUNT  8
 const char *properties[PROPERTY_COUNT] = {
@@ -16,18 +17,15 @@ const char *properties[PROPERTY_COUNT] = {
     "speed"
 };
 
-ArchetypesModel::ArchetypesModel() {
-    getManager()->archetypes()->each([this] (archetype *arch) {
+ArchetypesModel::ArchetypesModel(ResourcesManager *resourcesManager) {
+    getManager()->archetypes()->each([this, resourcesManager] (archetype *arch) {
         if (QUERY_FLAG(&arch->clone, FLAG_MONSTER) && (!arch->head)) {
-            CREWrapperObject *wrapper = new CREWrapperObject();
-            wrapper->setObject(&arch->clone);
-            myMonsters.push_back(wrapper);
+            myMonsters.push_back(resourcesManager->wrap(&arch->clone, nullptr));
         }
     });
 }
 
 ArchetypesModel::~ArchetypesModel() {
-    qDeleteAll(myMonsters);
 }
 
 int ArchetypesModel::rowCount(const QModelIndex &parent) const {
@@ -51,9 +49,9 @@ QVariant ArchetypesModel::data(const QModelIndex &index, int role) const {
 QVariant ArchetypesModel::headerData(int section, Qt::Orientation orientation, int role) const {
     if (orientation == Qt::Vertical) {
         if (role == Qt::DisplayRole) {
-            return myMonsters[section]->name();
+            return myMonsters[section]->displayName();
         } else if (role == Qt::DecorationRole) {
-            return CREPixmap::getIcon(myMonsters[section]->getObject()->face->number);
+            return QVariant(); // CREPixmap::getIcon(myMonsters[section]->getObject()->face->number);
         }
         return QVariant();
     }
@@ -75,8 +73,8 @@ Qt::ItemFlags ArchetypesModel::flags(const QModelIndex &index) const {
 
     Qt::ItemFlags flags = QAbstractItemModel::flags(index);
 
-    int pi = CREWrapperObject::staticMetaObject.indexOfProperty(properties[index.column()]);
-    if (pi != -1 && CREWrapperObject::staticMetaObject.property(pi).isWritable()) {
+    int pi = ObjectWrapper::staticMetaObject.indexOfProperty(properties[index.column()]);
+    if (pi != -1 && ObjectWrapper::staticMetaObject.property(pi).isWritable()) {
         flags |= Qt::ItemIsEditable;
     }
     return flags;
@@ -89,7 +87,7 @@ bool ArchetypesModel::setData(const QModelIndex &index, const QVariant &value, i
     auto monster = myMonsters[index.row()];
     monster->setProperty(properties[index.column()], value);
 
-    emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
-    emit archetypeModified(monster->arch()->arch());
+//    emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+//    emit archetypeModified(monster->arch()->arch());
     return true;
 }

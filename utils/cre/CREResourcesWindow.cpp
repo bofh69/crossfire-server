@@ -7,7 +7,6 @@
 #include "CREUtils.h"
 #include "CREPixmap.h"
 
-#include "CREFilter.h"
 #include "CREFilterDialog.h"
 #include "CREFilterDefinition.h"
 
@@ -17,36 +16,30 @@
 #include "CREReportDisplay.h"
 #include "CREReportDefinition.h"
 
-#include "CRETreeItemEmpty.h"
-#include "CRETreeItemQuest.h"
-
-#include "CREAnimationPanel.h"
-#include "CREArchetypePanel.h"
-#include "CRETreasurePanel.h"
-#include "CREArtifactPanel.h"
-#include "CREFormulaePanel.h"
-#include "CREFacePanel.h"
+#include "animations/AnimationPanel.h"
+#include "archetypes/ArchetypePanel.h"
+#include "treasures/TreasureListPanel.h"
+#include "artifacts/ArtifactListPanel.h"
+#include "artifacts/ArtifactPanel.h"
+#include "recipes/RecipePanel.h"
 #include "CREMapPanel.h"
-#include "CRERegionPanel.h"
+#include "regions/RegionPanel.h"
 #include "CREQuestPanel.h"
 #include "CREMessagePanel.h"
-#include "CREScriptPanel.h"
-#include "CREGeneralMessagePanel.h"
-#include "CREFacesetsPanel.h"
+#include "scripts/ScriptFilePanel.h"
+#include "general_messages/GeneralMessagePanel.h"
+#include "faces/FacesetsPanel.h"
 
-#include "CREWrapperObject.h"
-#include "CREWrapperArtifact.h"
-#include "CREWrapperFormulae.h"
-#include "CREWrapperTreasure.h"
+#include "artifacts/ArtifactWrapper.h"
 
 #include "CREMapInformationManager.h"
 #include "MessageFile.h"
-#include "ScriptFileManager.h"
+#include "scripts/ScriptFileManager.h"
 
 #include "CREScriptEngine.h"
 
-#include "CRERandomMap.h"
-#include "CRERandomMapPanel.h"
+#include "random_maps/RandomMap.h"
+#include "random_maps/RandomMapPanel.h"
 
 extern "C" {
 #include "global.h"
@@ -57,13 +50,13 @@ extern "C" {
 
 #include "MessageManager.h"
 #include "ResourcesManager.h"
-#include "ScriptFile.h"
+#include "assets/AssetModel.h"
+#include "faces/FacePanel.h"
 
-CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageManager* messages, ResourcesManager* resources, ScriptFileManager* scripts, QWidget* parent, DisplayMode mode) : QWidget(parent)
+CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageManager* messages, ResourcesManager* resources, ScriptFileManager* scripts, AssetModel *model, const QModelIndex &root, QWidget* parent) : QWidget(parent)
 {
     QApplication::setOverrideCursor(Qt::WaitCursor);
-
-    myDisplay = mode;
+    setWindowTitle(model->data(root, Qt::DisplayRole).toString());
 
     Q_ASSERT(store);
     myStore = store;
@@ -73,6 +66,8 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     myResources = resources;
     Q_ASSERT(scripts);
     myScripts = scripts;
+    myModel = new ScriptFilterAssetModel(model, &myEngine, this);
+    myTreeRoot = root;
 
     setAttribute(Qt::WA_DeleteOnClose);
 
@@ -93,132 +88,56 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
 
     mySplitter = new QSplitter(this);
     layout->addWidget(mySplitter);
-    myTree = new QTreeWidget(this);
+    myTree = new QTreeView(this);
+    myTree->setModel(myModel);
+    myTree->setRootIndex(myModel->mapFromSource(root));
     mySplitter->addWidget(myTree);
     myTree->setIconSize(QSize(32, 32));
-    myTree->setHeaderLabel(tr("All resources"));
+    myTree->collapseAll();
+    myTree->expand(myModel->mapFromSource(root));
+    myTree->setSelectionMode(QAbstractItemView::SingleSelection);
 //    myTree->sortByColumn(0, Qt::AscendingOrder);
 
 //    myTree->setSortingEnabled(true);
     myTree->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(myTree, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(treeCustomMenu(const QPoint&)));
-    connect(myTree, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(tree_currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
+    connect(myTree->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(currentRowChanged(const QModelIndex&, const QModelIndex&)));
 
     /* dummy panel to display for empty items */
     CREPanel* dummy = new CREPanel(this);
     QVBoxLayout* dl = new QVBoxLayout(dummy);
     dl->addWidget(new QLabel(tr("No details available."), dummy));
-    addPanel("(dummy)", dummy);
+    addPanel("empty", dummy);
     dummy->setVisible(true);
     myCurrentPanel = dummy;
-
-    fillData();
 
     connect(&myFiltersMapper, SIGNAL(mapped(QObject*)), this, SLOT(onFilterChange(QObject*)));
     updateFilters();
     connect(&myReportsMapper, SIGNAL(mapped(QObject*)), this, SLOT(onReportChange(QObject*)));
     updateReports();
 
+    addPanel("Archetype", new ArchetypePanel(myStore, myResources, this));
+    addPanel("Face", new CREFacePanel(this, model, myResources, myStore));
+    addPanel("Animation", new AnimationPanel(this, model));
+    addPanel("Artifact", new CREArtifactPanel(this));
+    addPanel("ArtifactList", new ArtifactListPanel(this));
+    addPanel("Recipe", new RecipePanel(this));
+    addPanel("TreasureList", new CRETreasurePanel(this));
+    addPanel("Faceset", new FacesetsPanel(this));
+    addPanel("Quest", new CREQuestPanel(myStore, myMessages, myResources, model, this));
+    addPanel("GeneralMessage", new CREGeneralMessagePanel(this));
+    addPanel("Region", new RegionPanel(this));
+    addPanel("Map", new CREMapPanel(myScripts, this));
+    addPanel("Script", new CREScriptPanel(this));
+    addPanel("Message", new CREMessagePanel(myMessages, this));
+    addPanel("RandomMap", new CRERandomMapPanel(this));
+
     QApplication::restoreOverrideCursor();
 }
 
 CREResourcesWindow::~CREResourcesWindow()
 {
-    qDeleteAll(myTreeItems);
-    myTreeItems.clear();
-    qDeleteAll(myDisplayedItems);
-    myDisplayedItems.clear();
     qDeleteAll(myPanels);
-}
-
-void CREResourcesWindow::fillData()
-{
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-
-    myTree->clear();
-    qDeleteAll(myTreeItems);
-    myTreeItems.clear();
-    qDeleteAll(myDisplayedItems);
-    myDisplayedItems.clear();
-
-    QString title;
-    if (myDisplay & DisplayArchetypes)
-    {
-        title = tr("Archetypes");
-        fillArchetypes();
-    }
-    if (myDisplay & DisplayAnimations)
-    {
-        title = tr("Animations");
-        fillAnimations();
-    }
-    if (myDisplay & DisplayTreasures)
-    {
-        title = tr("Treasures");
-        fillTreasures();
-    }
-    if (myDisplay & DisplayFormulae)
-    {
-        title = tr("Formulae");
-        fillFormulae();
-    }
-    if (myDisplay & DisplayArtifacts)
-    {
-        title = tr("Artifacts");
-        fillArtifacts();
-    }
-    if (myDisplay & DisplayFaces)
-    {
-        title = tr("Faces");
-        fillFaces();
-    }
-    if (myDisplay & DisplayMaps)
-    {
-        title = tr("Maps");
-        fillMaps();
-    }
-    if (myDisplay & DisplayQuests)
-    {
-        title = tr("Quests");
-        fillQuests();
-    }
-    if (myDisplay & DisplayMessage)
-    {
-        title = tr("NPC dialogs");
-        fillMessages();
-    }
-    if (myDisplay & DisplayScripts)
-    {
-        title = tr("Scripts");
-        fillScripts();
-    }
-    if (myDisplay & DisplayRandomMaps)
-    {
-        title = tr("Random maps");
-        fillRandomMaps();
-    }
-    if (myDisplay & DisplayGeneralMessages)
-    {
-        title = tr("General messages");
-        fillGeneralMessages();
-    }
-    if (myDisplay & DisplayFacesets)
-    {
-        title = tr("Facesets");
-        fillFacesets();
-    }
-
-    if (myDisplay == DisplayAll)
-        title = tr("All resources");
-
-    if (myTree->topLevelItemCount() == 1)
-        myTree->topLevelItem(0)->setExpanded(true);
-
-    setWindowTitle(title);
-
-    myTree->resizeColumnToContents(0);
-
-    QApplication::restoreOverrideCursor();
 }
 
 void CREResourcesWindow::commitData()
@@ -227,456 +146,38 @@ void CREResourcesWindow::commitData()
         myCurrentPanel->commitData();
 }
 
-void CREResourcesWindow::tree_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem*)
+void CREResourcesWindow::currentRowChanged(const QModelIndex &current, const QModelIndex &previous)
 {
-    if (!current || current->data(0, Qt::UserRole).value<void*>() == NULL)
-        return;
-    CRETreeItem* item = reinterpret_cast<CRETreeItem*>(current->data(0, Qt::UserRole).value<void*>());
-    if (!item)
-        return;
+    if (previous.isValid()) {
+        commitData();
+    }
 
-    commitData();
+    if (!current.isValid()) {
+        myCurrentPanel = nullptr;
+        return;
+    }
 
-    CREPanel* newPanel = myPanels[item->getPanelName()];
-    if (!newPanel)
-    {
+    auto rc = myModel->mapToSource(current);
+    AssetWrapper *item = reinterpret_cast<AssetWrapper *>(rc.internalPointer());
+    if (!item) {
+        return;
+    }
+
+    CREPanel* newPanel = myPanels[item->displayPanelName()];
+    if (!newPanel) {
 //        printf("no panel for %s\n", qPrintable(item->getPanelName()));
         return;
     }
 
-    item->fillPanel(newPanel);
+    item->displayFillPanel(newPanel);
 
-    if (myCurrentPanel != newPanel)
-    {
-        if (myCurrentPanel)
+    if (myCurrentPanel != newPanel) {
+        if (myCurrentPanel) {
             myCurrentPanel->setVisible(false);
+        }
         newPanel->setVisible(true);
         myCurrentPanel = newPanel;
     }
-}
-
-void CREResourcesWindow::fillAnimations()
-{
-    QTreeWidgetItem* animationsNode = CREUtils::animationNode(NULL);
-    myTreeItems.append(new CRETreeItemEmpty());
-    animationsNode->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    myTree->addTopLevelItem(animationsNode);
-
-    getManager()->animations()->each([this, &animationsNode] (const auto anim)
-    {
-        auto item = CREUtils::animationNode(anim, animationsNode);
-        myTreeItems.append(new CRETTreeItem<const animations_struct>(anim, "Animation"));
-        item->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    });
-
-    addPanel("Animation", new CREAnimationPanel(this, myStore));
-}
-
-void CREResourcesWindow::fillTreasures()
-{
-    QTreeWidgetItem* treasures = CREUtils::treasureNode(NULL);
-    myTreeItems.append(new CRETreeItemEmpty());
-    treasures->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    myTree->addTopLevelItem(treasures);
-
-    getManager()->treasures()->each([this, &treasures] (const auto list)
-    {
-        auto wrapper = new CREWrapperTreasureList(list);
-        if (!myFilter.showItem(wrapper)) {
-            delete wrapper;
-            return;
-        }
-        auto item = CREUtils::treasureNode(list, treasures);
-
-        myTreeItems.append(new CRETTreeItem<const treasurelist>(list, "Treasure"));
-        item->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-        //item->setData(0, Qt::UserRole, allTreasures[t]);
-        if (list->total_chance != 0)
-            item->setText(1, QString::number(list->total_chance));
-
-        for (auto treasure = list->items; treasure; treasure = treasure->next)
-        {
-            auto sub = CREUtils::treasureNode(treasure, list, item);
-            if (treasure->chance)
-                sub->setText(1, QString::number(treasure->chance));
-            myTreeItems.append(new CRETTreeItem<const treasurelist>(list, "Treasure"));
-            sub->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-        }
-        myDisplayedItems.append(wrapper);
-    });
-
-    addPanel("Treasure", new CRETreasurePanel(this));
-    treasures->setText(0, tr("%1 [%2 items]").arg(treasures->text(0)).arg((getManager()->treasures()->count())));
-}
-
-void CREResourcesWindow::fillArchetypes()
-{
-    QTreeWidgetItem* root;
-    int added = 0, count = 0;
-
-    root = CREUtils::archetypeNode(NULL);
-    myTreeItems.append(new CRETreeItemEmpty());
-    root->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    myTree->addTopLevelItem(root);
-
-    CREWrapperObject* wrapper = NULL;
-
-    getManager()->archetypes()->each([this, &wrapper, &root, &added, &count] (const auto arch)
-    {
-        if (arch->head) {
-            return;
-        }
-        count++;
-        if (!wrapper)
-            wrapper = new CREWrapperObject();
-        wrapper->setObject(&arch->clone);
-        if (!myFilter.showItem(wrapper))
-            return;
-
-        auto item = CREUtils::archetypeNode(arch, root);
-        myTreeItems.append(new CRETTreeItem<archt>(arch, "Archetype"));
-        item->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-
-        if (arch->more)
-        {
-            int min_x = 0, max_x = 0, min_y = 0, max_y = 0;
-
-            for (archt* more = arch->more; more; more = more->more)
-            {
-                min_x = MIN(min_x, more->clone.x);
-                max_x = MAX(max_x, more->clone.x);
-                min_y = MIN(min_y, more->clone.y);
-                max_y = MAX(max_y, more->clone.y);
-                auto sub = CREUtils::archetypeNode(more, item);
-                myTreeItems.append(new CRETTreeItem<const archt>(more, "Archetype"));
-                sub->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-            }
-
-            item->setText(0, tr("%1 (%2x%3)").arg(item->text(0)).arg(max_x - min_x + 1).arg(max_y - min_y + 1));
-        }
-
-        myDisplayedItems.append(wrapper);
-        wrapper = NULL;
-        added++;
-    });
-
-    delete wrapper;
-    addPanel("Archetype", new CREArchetypePanel(myStore, myResources, this));
-    if (added == count)
-        root->setText(0, tr("%1 [%2 items]").arg(root->text(0)).arg(count));
-    else
-        root->setText(0, tr("%1 [%2 items out of %3]").arg(root->text(0)).arg(added).arg(count));
-}
-
-void CREResourcesWindow::fillFormulae()
-{
-    const recipe* r;
-    QTreeWidgetItem* root, *form, *sub;
-    CREWrapperFormulae* wrapper = NULL;
-    int count = 0, added = 0, subCount, subAdded;
-
-    form = new QTreeWidgetItem(myTree, QStringList(tr("Formulae")));
-    myTreeItems.append(new CRETreeItemEmpty());
-    form->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-//    myTree->addTopLevelItem(form);
-
-    for (int ing = 1; ing <= myResources->recipeMaxIngredients() ; ing++)
-    {
-        root = new QTreeWidgetItem(form, QStringList(tr("%1 ingredients").arg(ing)));
-        subCount = 0;
-        subAdded = 0;
-
-        QStringList recipes = myResources->recipes(ing);
-
-        foreach(QString name, recipes)
-        {
-            r = myResources->recipe(ing, name);
-            subCount++;
-            count++;
-            if (!wrapper)
-                wrapper = new CREWrapperFormulae();
-            wrapper->setFormulae(r);
-            if (!myFilter.showItem(wrapper))
-                continue;
-
-            sub = CREUtils::formulaeNode(r, root);
-            myTreeItems.append(new CRETTreeItem<const recipe>(r, "Formulae"));
-            sub->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-            myDisplayedItems.append(wrapper);
-            wrapper = NULL;
-            subAdded++;
-            added++;
-        }
-        if (subCount == subAdded)
-            root->setText(0, tr("%1 [%2 items]").arg(root->text(0)).arg(subCount));
-        else
-            root->setText(0, tr("%1 [%2 items out of %3]").arg(root->text(0)).arg(subAdded).arg(subCount));
-    }
-
-    delete wrapper;
-    addPanel("Formulae", new CREFormulaePanel(this));
-    if (added == count)
-        form->setText(0, tr("%1 [%2 items]").arg(form->text(0)).arg(count));
-    else
-        form->setText(0, tr("%1 [%2 items out of %3]").arg(form->text(0)).arg(added).arg(count));
-}
-
-void CREResourcesWindow::fillArtifacts()
-{
-    QTreeWidgetItem* item, *root, *sub;
-    artifactlist* list;
-    const typedata* data;
-    int count = 0, added = 0;
-
-    root = new QTreeWidgetItem(myTree, QStringList(tr("Artifacts")));
-    myTreeItems.append(new CRETreeItemEmpty());
-    root->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-
-    CREWrapperArtifact wrapper;
-
-    for (list = first_artifactlist; list; list = list->next)
-    {
-        int subCount = 0, subAdded = 0;
-        data = get_typedata(list->type);
-
-        item = new QTreeWidgetItem(root, QStringList(data ? data->name : tr("type %1").arg(list->type)));
-
-        for (artifact* art = list->items; art; art = art->next)
-        {
-            count++;
-            subCount++;
-            wrapper.setArtifact(art);
-            if (!myFilter.showItem(&wrapper))
-                continue;
-
-            sub = CREUtils::artifactNode(art, item);
-            myTreeItems.append(new CRETTreeItem<artifact>(art, "Artifact"));
-            sub->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-            added++;
-            subAdded++;
-        }
-
-        if (subCount == subAdded)
-            item->setText(0, tr("%1 [%2 items]").arg(item->text(0)).arg(subCount));
-        else
-            item->setText(0, tr("%1 [%2 items out of %3]").arg(item->text(0)).arg(subAdded).arg(subCount));
-    }
-
-    addPanel("Artifact", new CREArtifactPanel(this));
-    if (added == count)
-        root->setText(0, tr("%1 [%2 items]").arg(root->text(0)).arg(count));
-    else
-        root->setText(0, tr("%1 [%2 items out of %3]").arg(root->text(0)).arg(added).arg(count));
-}
-
-void CREResourcesWindow::fillFaces()
-{
-    QTreeWidgetItem* root;
-
-    root = CREUtils::faceNode(NULL);
-    myTreeItems.append(new CRETreeItemEmpty());
-    root->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    myTree->addTopLevelItem(root);
-
-    getManager()->faces()->each([this, &root] (const auto face)
-    {
-        auto item = CREUtils::faceNode(face, root);
-        myTreeItems.append(new CRETTreeItem<const Face>(face, "Face"));
-        item->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    });
-
-    addPanel("Face", new CREFacePanel(this, myStore));
-}
-
-bool sortMapInformation(const CREMapInformation* left, const CREMapInformation* right)
-{
-    return left->displayName().compare(right->displayName(), Qt::CaseInsensitive) < 0;
-}
-
-void CREResourcesWindow::fillMaps()
-{
-    bool full = false;
-    if (myDisplay == DisplayMaps)
-    {
-        QStringList headers;
-        headers << tr("Maps") << tr("Experience") << tr("Difficulty") << tr("Computed difficulty");
-        myTree->setHeaderLabels(headers);
-        myTree->sortByColumn(0, Qt::AscendingOrder);
-        full = true;
-    }
-
-    QTreeWidgetItem* regionNode, *root, *leaf;
-
-    root = CREUtils::mapNode(NULL);
-    myTreeItems.append(new CRETreeItemEmpty());
-    root->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    myTree->addTopLevelItem(root);
-
-    QHash<QString, region*> regions;
-    for (region* reg = first_region; reg; reg = reg->next)
-    {
-      regions[reg->name] = reg;
-    }
-
-    QStringList names = regions.keys();
-    names.sort();
-
-    int totalMaps = 0, totalAdded = 0;
-
-    foreach(QString name, names)
-    {
-        int added = 0;
-        QList<CREMapInformation*> maps = myStore->getMapsForRegion(name);
-        qSort(maps.begin(), maps.end(), sortMapInformation);
-        regionNode = CREUtils::regionNode(name, maps.size(), root);
-        myTreeItems.append(new CRETTreeItem<region>(regions[name], "Region"));
-        regionNode->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-        foreach(CREMapInformation* map, maps)
-        {
-            if (!myFilter.showItem(map)) {
-                continue;
-            }
-            added++;
-
-            leaf = CREUtils::mapNode(map, regionNode);
-            myTreeItems.append(new CRETTreeItem<CREMapInformation>(map, "Map"));
-            leaf->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-            if (full)
-            {
-                leaf->setText(1, tr("%1").arg(QString::number(map->experience()), 20));
-                leaf->setText(2, tr("%1").arg(QString::number(map->difficulty()), 20));
-                leaf->setText(3, tr("%1").arg(QString::number(map->computedDifficulty()), 20));
-            }
-
-            /** @todo clean at some point - the issue is wrapper's ownership */
-            myDisplayedItems.append(map->clone());
-
-        }
-
-        totalMaps += maps.size();
-        totalAdded += added;
-        if (added != maps.size())
-        {
-            regionNode->setText(0, tr("%1 - %2 maps out of %3").arg(name).arg(added).arg(maps.size()));
-        }
-    }
-
-    if (full)
-    {
-        root->setExpanded(true);
-        myTree->resizeColumnToContents(0);
-        myTree->resizeColumnToContents(1);
-    }
-    if (totalMaps == totalAdded)
-        root->setText(0, tr("Maps [%1 items]").arg(totalMaps));
-    else
-        root->setText(0, tr("Maps - [%1 out of %2]").arg(totalAdded).arg(totalMaps));
-
-    addPanel("Region", new CRERegionPanel(this));
-    addPanel("Map", new CREMapPanel(myScripts, this));
-}
-
-void CREResourcesWindow::fillQuests()
-{
-    QTreeWidgetItem* item, *root;
-
-    root = CREUtils::questsNode();
-    myTreeItems.append(new CRETreeItemQuest(NULL, root, this));
-    root->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    myTree->addTopLevelItem(root);
-
-    getManager()->quests()->each([&] (auto quest) {
-        item = CREUtils::questNode(quest, root);
-        myTreeItems.append(new CRETreeItemQuest(quest, item, this));
-        item->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    });
-
-    addPanel("Quest", new CREQuestPanel(myStore, myMessages, myResources, this));
-    root->setText(0, tr("%1 [%2 items]").arg(root->text(0)).arg(getManager()->quests()->count()));
-}
-
-void CREResourcesWindow::fillMessages()
-{
-    QTreeWidgetItem* item, *root;
-
-    root = CREUtils::messagesNode();
-    myTreeItems.append(new CRETreeItemEmpty());
-    root->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    myTree->addTopLevelItem(root);
-
-    foreach(MessageFile* message, myMessages->messages())
-    {
-        item = CREUtils::messageNode(message, root);
-        myTreeItems.append(new CRETTreeItem<MessageFile>(message, "Message"));
-        item->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    }
-
-    addPanel("Message", new CREMessagePanel(myMessages, this));
-}
-
-static bool scriptLessThan(const ScriptFile* left, const ScriptFile* right)
-{
-    return left->path().compare(right->path()) < 0;
-}
-
-void CREResourcesWindow::fillScripts()
-{
-    QTreeWidgetItem* item, *root;
-
-    root = CREUtils::scriptsNode();
-    myTreeItems.append(new CRETreeItemEmpty());
-    root->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    myTree->addTopLevelItem(root);
-
-    QList<ScriptFile*> scripts = myScripts->scripts();
-    qSort(scripts.begin(), scripts.end(), scriptLessThan);
-
-    foreach(ScriptFile* script, scripts)
-    {
-        item = CREUtils::scriptNode(script, root);
-        myTreeItems.append(new CRETTreeItem<ScriptFile>(script, "Script"));
-        item->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    }
-
-    addPanel("Script", new CREScriptPanel(this));
-}
-
-void CREResourcesWindow::fillGeneralMessages()
-{
-    QTreeWidgetItem* root;
-
-    root = CREUtils::generalMessageNode();
-    myTreeItems.append(new CRETreeItemEmpty());
-    root->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    myTree->addTopLevelItem(root);
-
-    getManager()->messages()->each([this, &root] (const GeneralMessage* message)
-    {
-        auto item = CREUtils::generalMessageNode(message, root);
-        myTreeItems.append(new CRETTreeItem<const GeneralMessage>(message, "GeneralMessage"));
-        item->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    });
-
-    addPanel("GeneralMessage", new CREGeneralMessagePanel(this));
-}
-
-void CREResourcesWindow::fillFacesets()
-{
-    QTreeWidgetItem* root;
-
-    root = CREUtils::facesetsNode();
-    myTreeItems.append(new CRETreeItemEmpty());
-    root->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    myTree->addTopLevelItem(root);
-
-    getManager()->facesets()->each([this, &root] (const face_sets* faceset)
-    {
-        auto item = CREUtils::facesetsNode(faceset, root);
-        myTreeItems.append(new CRETTreeItem<const face_sets>(faceset, "Faceset"));
-        item->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    });
-
-    addPanel("Faceset", new CREFacesetsPanel(this));
 }
 
 void CREResourcesWindow::addPanel(QString name, CREPanel* panel)
@@ -740,37 +241,38 @@ void CREResourcesWindow::updateFilters()
     clearFilter();
 }
 
-void CREResourcesWindow::onFilterChange(QObject* object)
-{
+void CREResourcesWindow::onFilterChange(QObject* object) {
     CREFilterDefinition* filter = qobject_cast<CREFilterDefinition*>(object);
     if (filter == NULL)
         return;
-    myFilter.setFilter(filter->filter());
-    fillData();
-    myFilterButton->setText(tr("Filter: %1").arg(filter->name()));
+    setFilter(filter->filter(), filter->name());
 }
 
-void CREResourcesWindow::onQuickFilter()
-{
+void CREResourcesWindow::onQuickFilter() {
     bool ok;
-    QString filter = QInputDialog::getText(this, tr("Quick filter"), tr("Filter:"), QLineEdit::Normal, myFilter.filter(), &ok);
+    QString filter = QInputDialog::getText(this, tr("Quick filter"), tr("Filter:"), QLineEdit::Normal, myModel->filter(), &ok);
     if (!ok)
         return;
-    if (filter.isEmpty())
-    {
-        clearFilter();
-        return;
-    }
-    myFilter.setFilter(filter);
-    fillData();
-    myFilterButton->setText(tr("Filter: %1").arg(filter));
+    setFilter(filter, filter);
 }
 
-void CREResourcesWindow::clearFilter()
-{
-    myFilter.setFilter(QString());
-    fillData();
-    myFilterButton->setText(tr("Filter..."));
+void CREResourcesWindow::clearFilter() {
+    setFilter(QString(), QString());
+}
+
+void CREResourcesWindow::setFilter(const QString &filter, const QString &name) {
+    myModel->setFilter(filter);
+    myFilterButton->setText(filter.isEmpty() ? tr("Filter...") : tr("Filter: %1").arg(name));
+    auto root = myModel->mapFromSource(myTreeRoot);
+    if (!myTreeRoot.isValid() || root.isValid()) {
+        if (myTree->model() == nullptr) {
+            myTree->setModel(myModel);
+            connect(myTree->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(currentRowChanged(const QModelIndex&, const QModelIndex&)));
+        }
+        myTree->setRootIndex(root);
+    } else {
+        myTree->setModel(nullptr);
+    }
 }
 
 void CREResourcesWindow::updateReports()
@@ -804,7 +306,9 @@ void CREResourcesWindow::onReportChange(QObject* object)
     if (report == NULL)
         return;
 
-    QProgressDialog progress(tr("Generating report..."), tr("Abort report"), 0, myDisplayedItems.size() - 1, this);
+    int count = myModel->rowCount(myTree->rootIndex());
+
+    QProgressDialog progress(tr("Generating report..."), tr("Abort report"), 0, count - 1, this);
     progress.setWindowTitle(tr("Report: '%1'").arg(report->name()));
     progress.setWindowModality(Qt::WindowModal);
 
@@ -822,8 +326,15 @@ void CREResourcesWindow::onReportChange(QObject* object)
 
     CREScriptEngine engine;
     std::vector<QScriptValue> items;
-    std::for_each(myDisplayedItems.begin(), myDisplayedItems.end(),
-            [&items, &engine] (QObject* item) { items.push_back(engine.newQObject(item)); });
+    for (int i = 0; i < count; i++) {
+        auto idx = myModel->index(i, 0, myTree->rootIndex());
+        if (!idx.isValid()) {
+            continue;
+        }
+        idx = myModel->mapToSource(idx);
+        auto w = static_cast<AssetWrapper *>(idx.internalPointer());
+        items.push_back(engine.newQObject(w));
+    }
 
     if (!sort.isEmpty())
     {
@@ -909,28 +420,22 @@ void CREResourcesWindow::onReportChange(QObject* object)
 
 void CREResourcesWindow::fillItem(const QPoint& pos, QMenu* menu)
 {
-    QTreeWidgetItem* node = myTree->itemAt(pos);
-    if (!node || node->data(0, Qt::UserRole).value<void*>() == NULL)
-        return;
-    CRETreeItem* item = reinterpret_cast<CRETreeItem*>(node->data(0, Qt::UserRole).value<void*>());
-    if (!item)
-        return;
-
-    item->fillContextMenu(menu);
+    (void)pos;
+    (void)menu;
 }
 
 void CREResourcesWindow::treeCustomMenu(const QPoint & pos)
 {
     QMenu menu;
 
-    if (myDisplay & DisplayMessage)
+//    if (myDisplay & DisplayMessage)
     {
         QAction* addMessage = new QAction("add message", &menu);
         connect(addMessage, SIGNAL(triggered(bool)), this, SLOT(addMessage(bool)));
         menu.addAction(addMessage);
     }
 
-    if (myDisplay & DisplayQuests)
+//    if (myDisplay & DisplayQuests)
     {
         QAction* addQuest = new QAction("add quest", &menu);
         connect(addQuest, SIGNAL(triggered(bool)), this, SLOT(addQuest(bool)));
@@ -958,75 +463,13 @@ void CREResourcesWindow::addQuest(bool)
     auto quest = quest_create(name.data());
     quest->face = getManager()->faces()->get("quest_generic.111");
     getManager()->quests()->define(name, quest);
-    fillData();
 }
 
 void CREResourcesWindow::addMessage(bool)
 {
+#if 0
     MessageFile* file = new MessageFile("<new file>");
     file->setModified();
     myMessages->messages().append(file);
-    fillData();
-}
-
-const ResourcesManager* CREResourcesWindow::resourcesManager() const
-{
-  return myResources;
-}
-
-static bool sortRandomMap(const CRERandomMap* left, const CRERandomMap* right)
-{
-    int name = left->map()->displayName().compare(right->map()->displayName(), Qt::CaseInsensitive);
-    if (name == 0)
-    {
-        if (left->x() < right->x())
-            return true;
-        if (left->x() == right->x() && left->y() < right->y())
-            return true;
-        return false;
-    }
-    return name < 0;
-}
-
-void CREResourcesWindow::fillRandomMaps()
-{
-    bool full = false;
-    if (myDisplay == DisplayRandomMaps)
-    {
-        QStringList headers;
-        headers << tr("Random maps") << tr("Final map") << tr("Depth");
-        myTree->setHeaderLabels(headers);
-        myTree->sortByColumn(0, Qt::AscendingOrder);
-        full = true;
-    }
-
-    QTreeWidgetItem* root = CREUtils::mapNode(NULL);
-    myTreeItems.append(new CRETreeItemEmpty());
-    root->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    myTree->addTopLevelItem(root);
-
-    QList<CRERandomMap*> maps = myStore->randomMaps();
-    qSort(maps.begin(), maps.end(), sortRandomMap);
-    foreach(CRERandomMap* map, maps)
-    {
-        QString source(tr("from %1 [%2, %3]").arg(map->map()->name()).arg(map->x()).arg(map->y()));
-        QStringList data(source);
-        if (full)
-        {
-            data << map->parameters()->final_map << QString::number(map->parameters()->dungeon_depth);
-        }
-        QTreeWidgetItem* leaf = new QTreeWidgetItem(root, QStringList(data));
-        myTreeItems.append(new CRETTreeItem<CRERandomMap>(map, "Random map"));
-        leaf->setData(0, Qt::UserRole, QVariant::fromValue<void*>(myTreeItems.last()));
-    }
-
-    root->setText(0, tr("Random maps [%1]").arg(maps.size()));
-
-    if (full)
-    {
-        root->setExpanded(true);
-        myTree->resizeColumnToContents(0);
-    }
-
-    addPanel("Random map", new CRERandomMapPanel(this));
+#endif
 }
