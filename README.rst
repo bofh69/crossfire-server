@@ -33,6 +33,10 @@ If you are building from Git, you also need:
 
 * autoconf/automake
 
+* libtool
+
+* flex
+
 In addition, there are a number of optional dependencies that make the game
 even more fun. These include:
 
