@@ -62,7 +62,7 @@ typedef struct _change_arch {
 */
 typedef struct treasurestruct {
     struct archt *item;                 /**< Which item this link can be */
-    const char *name;                   /**< If non null, name of list to use instead */
+    sstring name;                       /**< If non null, name of list to use instead */
     struct treasurestruct *next;        /**< Next treasure-item in a linked list */
     struct treasurestruct *next_yes;    /**< If this item was generated, use this link instead of ->next */
     struct treasurestruct *next_no;     /**< If this item was not generated, then continue here */
@@ -80,7 +80,7 @@ typedef struct treasurestruct {
  * treasureliststruct represents one logical group of items to be generated together.
  */
 typedef struct treasureliststruct {
-    const char *name;                   /**< Usually monster-name/combination */
+    sstring name;                        /**< Usually monster-name/combination */
     int16_t total_chance;                /**< If non-zero, only 1 item on this
                                          * list should be generated.  The
                                          * total_chance contains the sum of

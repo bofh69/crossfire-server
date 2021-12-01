@@ -11,9 +11,6 @@
  */
 
 #include "Treasures.h"
-extern "C" {
-#include "global.h"
-}
 
 treasurelist *Treasures::create(const std::string& name) {
     treasurelist *tl = (treasurelist *)calloc(1, sizeof(treasurelist));
