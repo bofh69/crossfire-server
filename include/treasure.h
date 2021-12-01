@@ -49,9 +49,9 @@ enum {
  * is this still used somewhere in the maps/code??
  */
 typedef struct _change_arch {
-    const char *name;              /**< is != NULL, copy this over the original arch name */
-    const char *title;             /**< is != NULL, copy this over the original arch name */
-    const char *slaying;           /**< is != NULL, copy this over the original arch name */
+    const char *name;              /**< If != NULL, copy this over the original arch name */
+    const char *title;             /**< If != NULL, copy this over the original arch title */
+    const char *slaying;           /**< If != NULL, copy this over the original arch slaying */
 } _change_arch;
 
 /**
@@ -73,7 +73,7 @@ typedef struct treasurestruct {
                                          * 'magic' contains the difficulty
                                          * required to go to the new list
                                          */
-    uint16_t nrof;                        /**< random 1 to nrof items are generated */
+    uint16_t nrof;                        /**< Random 1 to nrof items are generated */
 } treasure;
 
 /**
