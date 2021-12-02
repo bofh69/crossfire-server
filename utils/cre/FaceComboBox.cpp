@@ -23,6 +23,7 @@ FaceComboBox::FaceComboBox(QWidget* parent, bool allowNone) : QComboBox(parent)
     setInsertPolicy(QComboBox::NoInsert);
     setCompleter(new QCompleter(names, this));
     completer()->setFilterMode(Qt::MatchContains);
+    completer()->setCaseSensitivity(Qt::CaseInsensitive);
 }
 
 FaceComboBox::~FaceComboBox()
