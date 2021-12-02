@@ -39,7 +39,7 @@ class CREResourcesWindow : public QWidget
         QModelIndex myTreeRoot;
         CREPanel* myCurrentPanel;
         QHash<QString, QPointer<CREPanel> > myPanels;
-        QSplitter* mySplitter;
+        QStackedLayout* myStackedPanels;
         CREMapInformationManager* myStore;
         MessageManager* myMessages;
         ResourcesManager* myResources;

@@ -86,12 +86,13 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
 
     layout->addLayout(buttons);
 
-    mySplitter = new QSplitter(this);
-    layout->addWidget(mySplitter);
+    auto splitter = new QSplitter(this);
+    layout->addWidget(splitter);
+
     myTree = new QTreeView(this);
     myTree->setModel(myModel);
     myTree->setRootIndex(myModel->mapFromSource(root));
-    mySplitter->addWidget(myTree);
+    splitter->addWidget(myTree);
     myTree->setIconSize(QSize(32, 32));
     myTree->collapseAll();
     myTree->expand(myModel->mapFromSource(root));
@@ -103,12 +104,16 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     connect(myTree, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(treeCustomMenu(const QPoint&)));
     connect(myTree->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(currentRowChanged(const QModelIndex&, const QModelIndex&)));
 
+    QWidget* w = new QWidget(splitter);
+    myStackedPanels = new QStackedLayout(w);
+    splitter->addWidget(w);
+
     /* dummy panel to display for empty items */
     CREPanel* dummy = new CREPanel(this);
     QVBoxLayout* dl = new QVBoxLayout(dummy);
     dl->addWidget(new QLabel(tr("No details available."), dummy));
     addPanel("empty", dummy);
-    dummy->setVisible(true);
+    myStackedPanels->setCurrentWidget(dummy);
     myCurrentPanel = dummy;
 
     connect(&myFiltersMapper, SIGNAL(mapped(QObject*)), this, SLOT(onFilterChange(QObject*)));
@@ -172,19 +177,15 @@ void CREResourcesWindow::currentRowChanged(const QModelIndex &current, const QMo
     item->displayFillPanel(newPanel);
 
     if (myCurrentPanel != newPanel) {
-        if (myCurrentPanel) {
-            myCurrentPanel->setVisible(false);
-        }
-        newPanel->setVisible(true);
+        myStackedPanels->setCurrentWidget(newPanel);
         myCurrentPanel = newPanel;
     }
 }
 
 void CREResourcesWindow::addPanel(QString name, CREPanel* panel)
 {
-    panel->setVisible(false);
     myPanels[name] = panel;
-    mySplitter->addWidget(panel);
+    myStackedPanels->addWidget(panel);
 }
 
 void CREResourcesWindow::onFilter()
