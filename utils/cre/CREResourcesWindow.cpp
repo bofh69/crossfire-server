@@ -137,6 +137,8 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     addPanel("Message", new CREMessagePanel(myMessages, this));
     addPanel("RandomMap", new CRERandomMapPanel(this));
 
+    splitter->setSizes({5000, 5000});
+
     QApplication::restoreOverrideCursor();
 }
 
@@ -184,6 +186,7 @@ void CREResourcesWindow::currentRowChanged(const QModelIndex &current, const QMo
 
 void CREResourcesWindow::addPanel(QString name, CREPanel* panel)
 {
+    panel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     myPanels[name] = panel;
     myStackedPanels->addWidget(panel);
 }
