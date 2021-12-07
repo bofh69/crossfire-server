@@ -54,6 +54,7 @@ CREPixmap.cpp \
  animations/AnimationControl.cpp \
  animations/AnimationWidget.cpp \
  animations/AnimationPanel.cpp \
+ archetypes/ArchetypeComboBox.cpp \
  archetypes/ArchetypePanel.cpp \
  archetypes/ArchetypeWrapper.cpp \
  archetypes/ArchetypesWrapper.cpp \
@@ -80,8 +81,10 @@ CREPixmap.cpp \
  scripts/ScriptFile.cpp \
  scripts/ScriptFileManager.cpp \
  scripts/ScriptFilePanel.cpp \
+ treasures/TreasureListComboBox.cpp \
  treasures/TreasureListPanel.cpp \
  treasures/TreasureListWrapper.cpp \
+ treasures/TreasurePanel.cpp \
  treasures/TreasureWrapper.cpp \
  AllAssets.cpp
 HEADERS += CREMainWindow.h \
@@ -136,6 +139,7 @@ CREPixmap.h \
  animations/AnimationWidget.h \
  animations/AnimationPanel.h \
  animations/AnimationsWrapper.h \
+ archetypes/ArchetypeComboBox.h \
  archetypes/ArchetypePanel.h \
  archetypes/ArchetypeWrapper.h \
  archetypes/ArchetypesWrapper.h \
@@ -168,11 +172,15 @@ CREPixmap.h \
  scripts/ScriptFile.cpp \
  scripts/ScriptFileManager.h \
  scripts/ScriptFilePanel.h \
+ treasures/TreasureListComboBox.h \
  treasures/TreasureListPanel.h \
  treasures/TreasureListWrapper.h \
+ treasures/TreasurePanel.h \
  treasures/TreasureWrapper.h \
  AllAssets.h
 LIBS += ../../server/libserver.a ../../common/libcross.a ../../socket/libsocket.a ../../random_maps/librandom_map.a ../../types/libtypes.a -lcurl
+QMAKE_CXXFLAGS += -Wcast-qual
+# -Wold-style-cast
 
 linux-* {
 LIBS += -lcrypt -ldl

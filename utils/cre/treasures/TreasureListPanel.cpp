@@ -10,35 +10,41 @@ extern "C" {
 
 #include "assets.h"
 #include "AssetsManager.h"
+#include "TreasureListWrapper.h"
+#include "TreasureWrapper.h"
 
-CRETreasurePanel::CRETreasurePanel(QWidget* parent) : CRETPanel(parent) {
-    QGridLayout* layout = new QGridLayout(this);
+CRETreasurePanel::CRETreasurePanel(QWidget* parent) : AssetWrapperPanel(parent) {
+
+    addCheckBox(tr("Single item"), "isSingleItem", false);
+
+    myLayout->addWidget(new QLabel("Difficulty:"), 2, 0);
+    myLayout->addWidget(myDifficulty = new QSpinBox(this), 2, 1);
+    myDifficulty->setRange(0, 150);
+    myDifficulty->setValue(150);
+    QPushButton* generate = new QPushButton("generate", this);
+    connect(generate, SIGNAL(clicked(bool)), this, SLOT(onGenerate(bool)));
+    myLayout->addWidget(generate, 2, 2);
+    myLayout->addWidget(myGenerated = new QTreeWidget(this), 3, 0, 1, 3);
+    myGenerated->setHeaderLabel(tr("Generation result"));
+    myGenerated->setIconSize(QSize(32, 32));
 
     myUsing = new QTreeWidget(this);
     myUsing->setColumnCount(1);
     myUsing->setHeaderLabel(tr("Used by"));
     myUsing->setIconSize(QSize(32, 32));
-    layout->addWidget(myUsing, 1, 1, 2, 1);
-
-    layout->addWidget(new QLabel("Difficulty:"), 1, 2);
-    layout->addWidget(myDifficulty = new QSpinBox(this), 1, 3);
-    myDifficulty->setRange(0, 150);
-    myDifficulty->setValue(150);
-    QPushButton* generate = new QPushButton("generate", this);
-    connect(generate, SIGNAL(clicked(bool)), this, SLOT(onGenerate(bool)));
-    layout->addWidget(generate, 1, 4);
-    layout->addWidget(myGenerated = new QTreeWidget(this), 2, 2, 1, 3);
-    myGenerated->setHeaderLabel(tr("Generation result"));
-    myGenerated->setIconSize(QSize(32, 32));
+    myLayout->addWidget(myUsing, 1, 4, 3, 1);
 }
 
-void CRETreasurePanel::setItem(const treasurelist* treas) {
+void CRETreasurePanel::setItem(AssetWrapper *asset) {
+    AssetWrapperPanel::setItem(asset);
+    myTreasure = dynamic_cast<TreasureListWrapper *>(asset);
+    Q_ASSERT(myTreasure);
+
     myUsing->clear();
-    myTreasure = treas;
 
     QTreeWidgetItem* root = NULL;
 
-    QString name = myTreasure->name;
+    QString name = myTreasure->displayName();
 
     getManager()->archetypes()->each([this, &root, &name] (const archetype * arch) {
         if (arch->clone.randomitems && name == arch->clone.randomitems->name) {
@@ -73,7 +79,7 @@ void CRETreasurePanel::onGenerate(bool) {
     const int difficulty = myDifficulty->value();
     myGenerated->clear();
     object* result = object_new(), *item;
-    create_treasure((treasurelist*) myTreasure, result, 0, difficulty, 0);
+    create_treasure(const_cast<treasurelist *>(myTreasure->item()), result, 0, difficulty, 0);
     while ((item = result->inv)) {
         identify(result->inv);
         myGenerated->addTopLevelItem(CREUtils::objectNode(item, NULL));

@@ -20,12 +20,13 @@ extern "C" {
 #include "LicenseManager.h"
 #include "ArchetypeWriter.h"
 #include "QuestWriter.h"
+#include "TreasureWriter.h"
 #include "archetypes/ArchetypeWrapper.h"
 #include "archetypes/ObjectWrapper.h"
 #include "faces/FaceWrapper.h"
 #include "animations/AnimationWrapper.h"
 
-ResourcesManager::ResourcesManager() : myMapInformationManager(nullptr), myArchetypes(new ArchetypeWriter()), myQuests(new QuestWriter())
+ResourcesManager::ResourcesManager() : myMapInformationManager(nullptr), myArchetypes(new ArchetypeWriter()), myQuests(new QuestWriter()), myTreasures(new TreasureWriter())
 {
 }
 
@@ -184,4 +185,12 @@ void ResourcesManager::questModified(quest_definition *quest) {
 
 void ResourcesManager::saveQuests() {
     myQuests.saveModifiedAssets();
+}
+
+void ResourcesManager::treasureModified(treasurelist *treasure) {
+    myTreasures.assetModified(treasure);
+}
+
+void ResourcesManager::saveTreasures() {
+    myTreasures.saveModifiedAssets();
 }

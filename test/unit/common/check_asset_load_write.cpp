@@ -119,7 +119,7 @@ bool equal(const treasurelist *left, const treasurelist *right) {
 START_TEST(test_treasure) {
     Archetypes arch;
     Treasures trs;
-    TreasureLoader loader(&trs, &arch);
+    TreasureLoader loader(&trs, &arch, nullptr);
     TreasureWriter writer;
 
     auto generated = generate_random_list(arch);

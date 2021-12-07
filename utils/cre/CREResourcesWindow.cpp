@@ -19,6 +19,7 @@
 #include "animations/AnimationPanel.h"
 #include "archetypes/ArchetypePanel.h"
 #include "treasures/TreasureListPanel.h"
+#include "treasures/TreasurePanel.h"
 #include "artifacts/ArtifactListPanel.h"
 #include "artifacts/ArtifactPanel.h"
 #include "recipes/RecipePanel.h"
@@ -97,6 +98,7 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     myTree->collapseAll();
     myTree->expand(myModel->mapFromSource(root));
     myTree->setSelectionMode(QAbstractItemView::SingleSelection);
+    myTree->setDragEnabled(true);
 //    myTree->sortByColumn(0, Qt::AscendingOrder);
 
 //    myTree->setSortingEnabled(true);
@@ -127,6 +129,7 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     addPanel("Artifact", new CREArtifactPanel(this));
     addPanel("ArtifactList", new ArtifactListPanel(this));
     addPanel("Recipe", new RecipePanel(this));
+    addPanel("Treasure", new TreasurePanel(this));
     addPanel("TreasureList", new CRETreasurePanel(this));
     addPanel("Faceset", new FacesetsPanel(this));
     addPanel("Quest", new CREQuestPanel(myStore, myMessages, myResources, model, this));

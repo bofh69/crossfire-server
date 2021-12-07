@@ -1,9 +1,11 @@
 #include "AssetModel.h"
 #include "AssetWrapper.h"
 #include <QScriptEngine>
+#include <QMimeData>
 
 AssetModel::AssetModel(AssetWrapper *assets, QObject *parent) : QAbstractItemModel(parent) {
     myAssets = assets;
+    connect(myAssets, SIGNAL(dataModified(AssetWrapper *, bool)), this, SLOT(assetModified(AssetWrapper *, bool)));
 }
 
 AssetModel::~AssetModel() {
@@ -77,16 +79,51 @@ QVariant AssetModel::headerData(int section, Qt::Orientation orientation, int ro
     return QVariant();
 }
 
-Qt::ItemFlags AssetModel::flags(const QModelIndex& index) const {
-    (void)index;
-#if 0
-    if (!index.isValid())
-        return 0;
+Qt::ItemFlags AssetModel::flags(const QModelIndex &index) const {
+    auto flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    if (index.isValid() && index.internalPointer()) {
+        auto wrapper = static_cast<AssetWrapper *>(index.internalPointer());
+        if (wrapper->canDrag()) {
+            flags |= Qt::ItemIsDragEnabled;
+        }
+        if (wrapper->canDrop()) {
+            flags |= Qt::ItemIsDropEnabled;
+        }
+    }
+    return flags;
+}
 
-    if (index.column() == 2)
-        return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
-#endif
-    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+QMimeData *AssetModel::mimeData(const QModelIndexList &indexes) const {
+    QMimeData *data = nullptr;
+    for (auto index : indexes) {
+        if (index.isValid() && index.internalPointer()) {
+            auto wrapper = static_cast<AssetWrapper *>(index.internalPointer());
+            if (wrapper->canDrag()) {
+                if (!data) {
+                    data = new QMimeData();
+                }
+                wrapper->drag(data);
+            }
+        }
+    }
+    return data;
+}
+
+void AssetModel::assetModified(AssetWrapper *asset, bool updateChildren) {
+    auto parent = asset->displayParent();
+    if (!parent) {
+        emit dataChanged(QModelIndex(), QModelIndex());
+    }
+
+    auto idx = createIndex(parent->childIndex(asset), 0, asset);
+    emit dataChanged(idx, idx);
+
+    if (updateChildren && asset->childrenCount() > 0) {
+        int count = asset->childrenCount() - 1;
+        auto left = createIndex(0, 0, asset->child(0));
+        auto right = createIndex(count, 0, asset->child(0));
+        emit dataChanged(left, right);
+    }
 }
 
 UseFilterAssetModel::UseFilterAssetModel(QObject *parent) : QSortFilterProxyModel(parent), myAsset(nullptr) {

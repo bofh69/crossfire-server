@@ -14,6 +14,7 @@
 #include "Archetypes.h"
 #include "Treasures.h"
 #include "Utils.h"
+#include "AssetsTracker.h"
 
 extern "C" {
 #include "string.h"
@@ -21,8 +22,8 @@ extern "C" {
 #include "compat.h"
 }
 
-TreasureLoader::TreasureLoader(Treasures *treasures, Archetypes *archetypes)
- : m_treasures(treasures), m_archetypes(archetypes) {
+TreasureLoader::TreasureLoader(Treasures *treasures, Archetypes *archetypes, AssetsTracker *tracker)
+ : m_treasures(treasures), m_archetypes(archetypes), m_tracker(tracker) {
 }
 
 /**
@@ -150,7 +151,10 @@ void TreasureLoader::load(BufferReader *reader, const std::string& filename) {
                 }
             }
 
-            m_treasures->define(tl->name, tl);
+            tl = m_treasures->define(tl->name, tl);
+            if (m_tracker) {
+                m_tracker->assetDefined(tl, filename);
+            }
         } else
             LOG(llevError, "Treasure-list didn't understand: %s in %s:%d\n", buf, filename.c_str(), bufferreader_current_line(reader));
     }

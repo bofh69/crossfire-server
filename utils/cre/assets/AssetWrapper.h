@@ -5,6 +5,8 @@
 #include "../CREPanel.h"
 #include <QIcon>
 
+class QMimeData;
+
 class AssetWrapper : public QObject {
     Q_OBJECT
 public:
@@ -28,7 +30,30 @@ public:
 
     virtual PossibleUse uses(const AssetWrapper *, std::string &) const { return DoesntUse; }
 
+    void markModified(bool updateChildren) {
+        emit modified();
+        wasModified(this, updateChildren);
+    }
+
+    virtual bool canDrag() const { return false; }
+    virtual void drag(QMimeData *) const { }
+    virtual bool canDrop() const { return false; }
+    virtual bool canDrop(const QMimeData *) const { return false; }
+    virtual void drop(const QMimeData *) { }
+
+signals:
+    void dataModified(AssetWrapper *asset, bool updateChildren);
+    void modified();
+
 protected:
+    virtual void wasModified(AssetWrapper *asset, bool updateChildren) {
+        if (myParent) {
+            myParent->wasModified(asset, updateChildren);
+        } else {
+            emit dataModified(asset, updateChildren);
+        }
+    }
+
     AssetWrapper *myParent;
     QString myPanelName;
 };

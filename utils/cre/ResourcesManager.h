@@ -79,6 +79,7 @@ class ResourcesManager : public QObject, AssetsTracker
 
         virtual void assetDefined(const archt *arch, const std::string &filename) override { myArchetypes.assetDefined(arch, filename); }
         virtual void assetDefined(const quest_definition *asset, const std::string &filename) override { myQuests.assetDefined(asset, filename); }
+        virtual void assetDefined(const treasurelist *asset, const std::string &filename) override { myTreasures.assetDefined(asset, filename); }
 
         const std::map<std::string, std::set<const archt*> >& origins() const { return myArchetypes.origins(); }
         std::string originOf(const archt *arch) const { return myArchetypes.originOf(arch); }
@@ -88,7 +89,13 @@ class ResourcesManager : public QObject, AssetsTracker
 
         static void archetypeUse(const archt* item, CREMapInformationManager* store, AssetUseCallback callback);
 
-        bool hasPendingChanges() const { return myArchetypes.hasPendingChanges() || myQuests.hasPendingChanges(); }
+        bool hasPendingChanges() const {
+            return
+                    myArchetypes.hasPendingChanges()
+                    || myQuests.hasPendingChanges()
+                    || myTreasures.hasPendingChanges()
+                    ;
+        }
 
         AssetWrapper *wrap(archt *arch, AssetWrapper *parent) { return myWrappedArchetypes.wrap(arch, parent, this); }
         AssetWrapper *wrap(object *ob, AssetWrapper *parent) { return myWrappedObjects.wrap(ob, parent, this); }
@@ -110,12 +117,15 @@ class ResourcesManager : public QObject, AssetsTracker
       void saveArchetypes();
       void questModified(quest_definition *quest);
       void saveQuests();
+      void treasureModified(treasurelist *treasure);
+      void saveTreasures();
 
     protected:
         CREMapInformationManager *myMapInformationManager;
         QList<QHash<QString, recipestruct*> > myRecipes;
         ModifiedAssetsManager<archetype> myArchetypes;
         ModifiedAssetsManager<quest_definition> myQuests;
+        ModifiedAssetsManager<treasurelist> myTreasures;
         AssetWrapperManager<archt, ArchetypeWrapper> myWrappedArchetypes;
         AssetWrapperManager<object, ObjectWrapper> myWrappedObjects;
         AssetWrapperManager<Face, FaceWrapper> myWrappedFaces;

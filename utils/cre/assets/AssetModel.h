@@ -12,6 +12,7 @@
 #include "assets/AssetWrapper.h"
 
 class AssetModel : public QAbstractItemModel {
+    Q_OBJECT
 public:
     AssetModel(AssetWrapper *assets, QObject *parent);
     virtual ~AssetModel();
@@ -25,6 +26,10 @@ public:
     virtual Qt::ItemFlags flags(const QModelIndex& index) const override;
     //  virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override;
     //  virtual bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) override;
+    virtual QMimeData *mimeData(const QModelIndexList &indexes) const override;
+
+protected slots:
+    void assetModified(AssetWrapper *asset, bool updateChildren);
 
 private:
     AssetWrapper * myAssets;

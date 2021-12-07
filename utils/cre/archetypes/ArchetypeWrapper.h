@@ -31,6 +31,9 @@ public:
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;
 
+    virtual bool canDrag() const override { return true; }
+    virtual void drag(QMimeData *) const override;
+
     QString name() const;
     QObject* clone();
     QObject *head() const;

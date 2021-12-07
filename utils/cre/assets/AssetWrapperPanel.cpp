@@ -3,14 +3,30 @@
 #include <QVariant>
 #include <QGridLayout>
 #include "FaceComboBox.h"
+#include "treasures/TreasureListComboBox.h"
+#include "archetypes/ArchetypeComboBox.h"
 
-AssetWrapperPanel::AssetWrapperPanel(QWidget *parent) : CRETPanel(parent) {
+AssetWrapperPanel::AssetWrapperPanel(QWidget *parent) : CRETPanel(parent), myAsset(nullptr) {
     myLayout = new QGridLayout(this);
 }
 
 void AssetWrapperPanel::setItem(AssetWrapper *item) {
+    if (myAsset) {
+        disconnect(myAsset, SIGNAL(modified()), this, SLOT(itemChanged()));
+    }
+    myAsset = item;
+    if (myAsset) {
+        connect(myAsset, SIGNAL(modified()), this, SLOT(itemChanged()));
+        itemChanged();
+    }
+}
+
+void AssetWrapperPanel::itemChanged() {
+    if (!myAsset) {
+        return;
+    }
     for (auto pl : myLinks) {
-        pl.widget->setProperty(pl.widgetPropertyName, item->property(pl.assetPropertyName));
+        pl.widget->setProperty(pl.widgetPropertyName, myAsset->property(pl.assetPropertyName));
     }
 }
 
@@ -29,9 +45,14 @@ QTextEdit *AssetWrapperPanel::addTextEdit(const QString &label, const char *prop
     return widget;
 }
 
-void AssetWrapperPanel::addCheckBox(const QString &label, const char *property, bool readOnly) {
+QCheckBox *AssetWrapperPanel::addCheckBox(const QString &label, const char *property, bool readOnly) {
     auto widget = addWidget(label, new QCheckBox(this), true, property, "checked");
-    widget->setEnabled(!readOnly);
+    if (readOnly) {
+        widget->setEnabled(false);
+    } else {
+        connect(widget, SIGNAL(toggled(bool)), this, SLOT(dataChanged()));
+    }
+    return widget;
 }
 
 void AssetWrapperPanel::addFaceChoice(const QString &label, const char *property, bool readOnly, bool allowNone) {
@@ -39,8 +60,53 @@ void AssetWrapperPanel::addFaceChoice(const QString &label, const char *property
     widget->setEnabled(!readOnly);
 }
 
+QSpinBox *AssetWrapperPanel::addSpinBox(const QString &label, const char *property, int min, int max, bool readOnly) {
+    auto widget = addWidget(label, new QSpinBox(this), true, property, "value");
+    widget->setMinimum(min);
+    widget->setMaximum(max);
+    if (readOnly) {
+        widget->setReadOnly(true);
+    } else {
+        connect(widget, SIGNAL(valueChanged(int)), this, SLOT(dataChanged()));
+    }
+    return widget;
+}
+
+TreasureListComboBox *AssetWrapperPanel::addTreasureList(const QString &label, const char *property, bool readOnly, bool allowNone) {
+    auto widget = addWidget(label, new TreasureListComboBox(this, allowNone), true, property, "list");
+    if (readOnly) {
+        widget->setEnabled(false);
+    } else {
+        connect(widget, SIGNAL(currentIndexChanged(int)), this, SLOT(dataChanged()));
+    }
+    return widget;
+}
+
+ArchetypeComboBox *AssetWrapperPanel::addArchetype(const QString &label, const char *property, bool readOnly, bool allowNone) {
+    auto widget = addWidget(label, new ArchetypeComboBox(this, allowNone), true, property, "arch");
+    if (readOnly) {
+        widget->setEnabled(false);
+    } else {
+        connect(widget, SIGNAL(currentIndexChanged(int)), this, SLOT(dataChanged()));
+    }
+    return widget;
+}
+
 void AssetWrapperPanel::addBottomFiller() {
     QWidget *bottomFiller = new QWidget(this);
     bottomFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     myLayout->addWidget(bottomFiller, myLayout->rowCount(), 0, 1, 2);
+}
+
+void AssetWrapperPanel::dataChanged() {
+    if (!myAsset) {
+        return;
+    }
+    QObject *widget = sender();
+    for (auto link : myLinks) {
+        if (link.widget == widget) {
+            myAsset->setProperty(link.assetPropertyName, widget->property(link.widgetPropertyName));
+            break;
+        }
+    }
 }

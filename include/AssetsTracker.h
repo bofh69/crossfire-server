@@ -48,6 +48,17 @@ class AssetsTracker {
       (void)asset;
       (void)filename;
     }
+
+    /**
+     * Function called when an asset is defined in a file.
+     * It may be called multiple times with the same asset.
+     * @param asset asset which is defined.
+     * @param filename full pathname of where the asset was defined.
+     */
+    virtual void assetDefined(const treasurelist *asset, const std::string &filename) {
+      (void)asset;
+      (void)filename;
+    }
 };
 
 #endif /* ASSETSTRACKER_H */

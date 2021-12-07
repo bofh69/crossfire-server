@@ -17,6 +17,7 @@
 #include "Utils.h"
 class Treasures;
 class Archetypes;
+class AssetsTracker;
 
 extern "C" {
 #include "global.h"
@@ -26,7 +27,7 @@ extern "C" {
 
 class TreasureLoader : public AssetLoader {
 public:
-  TreasureLoader(Treasures *treasures, Archetypes *archetypes);
+  TreasureLoader(Treasures *treasures, Archetypes *archetypes, AssetsTracker *tracker);
 
   virtual bool willLoad(const std::string &filename) override {
       return Utils::endsWith(filename, ".trs");
@@ -37,6 +38,7 @@ public:
 private:
     Treasures *m_treasures;
     Archetypes *m_archetypes;
+    AssetsTracker *m_tracker;
 
     treasure *loadTreasure(BufferReader *reader, const std::string &filename);
 };

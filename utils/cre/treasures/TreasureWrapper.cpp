@@ -4,7 +4,7 @@
 #include "AssetsManager.h"
 
 TreasureWrapper::TreasureWrapper(AssetWrapper *parent, treasure *tr, ResourcesManager *resources)
-   : AssetTWrapper(parent, "TreasureList", tr), myResources(resources), myNextYes(nullptr), myNextNo(nullptr)
+   : AssetTWrapper(parent, "Treasure", tr), myResources(resources), myNextYes(nullptr), myNextNo(nullptr)
 {
     if (myItem->next_yes) {
         myNextYes = new TreasureYesNo(this, myItem->next_yes, resources, TreasureYesNo::Yes);
@@ -60,7 +60,8 @@ QIcon TreasureWrapper::displayIcon() const {
 }
 
 void TreasureWrapper::displayFillPanel(QWidget *panel) {
-    displayParent()->displayFillPanel(panel);
+    AssetWrapperPanel *p = static_cast<AssetWrapperPanel *>(panel);
+    p->setItem(this);
 }
 
 int TreasureWrapper::childrenCount() const {
@@ -103,6 +104,68 @@ int TreasureWrapper::childIndex(AssetWrapper *child) {
         }
     }
     return -1;
+}
+
+uint8_t TreasureWrapper::chance() const {
+    return myItem->chance;
+}
+
+void TreasureWrapper::setChance(uint8_t chance) {
+    if (chance != myItem->chance) {
+        myItem->chance = chance;
+        markModified(false);
+    }
+}
+
+uint8_t TreasureWrapper::magic() const {
+    return myItem->magic;
+}
+
+void TreasureWrapper::setMagic(uint8_t magic) {
+    if (magic != myItem->magic) {
+        myItem->magic = magic;
+        markModified(false);
+    }
+}
+
+uint16_t TreasureWrapper::nrof() const {
+    return myItem->nrof;
+}
+
+void TreasureWrapper::setNrof(uint16_t nrof) {
+    if (nrof != myItem->nrof) {
+        myItem->nrof = nrof;
+        markModified(false);
+    }
+}
+
+const treasurelist *TreasureWrapper::list() const {
+    return myItem->name ? getManager()->treasures()->find(myItem->name) : nullptr;
+}
+
+void TreasureWrapper::setList(const treasurelist *list) {
+    if (myItem->name != (list ? list->name : nullptr)) {
+        FREE_AND_CLEAR_STR_IF(myItem->name);
+        if (list) {
+            myItem->name = add_string(list->name);
+            myItem->item = nullptr;
+        }
+        markModified(false);
+    }
+}
+
+const archetype *TreasureWrapper::arch() const {
+    return myItem->item;
+}
+
+void TreasureWrapper::setArch(const archetype *arch) {
+    if (arch != myItem->item) {
+        myItem->item = const_cast<archetype *>(arch);
+        if (myItem->item && myItem->name) {
+            FREE_AND_CLEAR_STR(myItem->name);
+        }
+        markModified(false);
+    }
 }
 
 TreasureYesNo::TreasureYesNo(TreasureWrapper *parent, treasure *tr, ResourcesManager *resources, YesNo yesNo)

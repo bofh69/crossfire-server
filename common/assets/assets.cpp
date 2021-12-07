@@ -120,7 +120,7 @@ void assets_collect(const char* datadir, int what) {
 
     AssetCollector collector;
     if (what & ASSETS_TREASURES)
-        collector.addLoader(new TreasureLoader(manager->treasures(), manager->archetypes()));
+        collector.addLoader(new TreasureLoader(manager->treasures(), manager->archetypes(), tracker));
     if (what & ASSETS_ARCHETYPES)
         collector.addLoader(new ArchetypeLoader(manager->archetypes(), tracker));
     if (what & ASSETS_PNG)

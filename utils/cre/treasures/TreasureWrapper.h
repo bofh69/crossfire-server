@@ -17,6 +17,12 @@ class TreasureYesNo;
 class TreasureWrapper : public AssetTWrapper<treasure> {
     Q_OBJECT
 
+    Q_PROPERTY(quint8 chance READ chance WRITE setChance)
+    Q_PROPERTY(quint8 magic READ magic WRITE setMagic)
+    Q_PROPERTY(quint16 nrof READ nrof WRITE setNrof)
+    Q_PROPERTY(const treasurelist *list READ list WRITE setList)
+    Q_PROPERTY(const archetype *arch READ arch WRITE setArch)
+
 public:
     TreasureWrapper(AssetWrapper *parent, treasure *tr, ResourcesManager *resources);
 
@@ -27,6 +33,17 @@ public:
     virtual int childrenCount() const override;
     virtual AssetWrapper *child(int child) override;
     virtual int childIndex(AssetWrapper *child) override;
+
+    uint8_t chance() const;
+    void setChance(uint8_t chance);
+    uint8_t magic() const;
+    void setMagic(uint8_t magic);
+    uint16_t nrof() const;
+    void setNrof(uint16_t nrof);
+    const treasurelist *list() const;
+    void setList(const treasurelist *list);
+    const archetype *arch() const;
+    void setArch(const archetype *arch);
 
 protected:
     ResourcesManager *myResources;

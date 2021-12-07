@@ -1,4 +1,5 @@
 #include "ArchetypeWrapper.h"
+#include <QMimeData>
 #include "../ResourcesManager.h"
 #include "../CREPixmap.h"
 #include "faces/FaceWrapper.h"
@@ -125,4 +126,11 @@ AssetWrapper::PossibleUse ArchetypeWrapper::uses(const AssetWrapper *asset, std:
         return DoesntUse;
     }
     return DoesntUse;
+}
+
+void ArchetypeWrapper::drag(QMimeData *data) const {
+    QByteArray ba(data->data("x-crossfire/archetype"));
+    QDataStream df(&ba, QIODevice::WriteOnly);
+    df << QString(myItem->name);
+    data->setData("x-crossfire/archetype", ba);
 }

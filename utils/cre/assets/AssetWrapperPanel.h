@@ -8,8 +8,13 @@ class AssetWrapper;
 class QGridLayout;
 class QLabel;
 class QLineEdit;
+class QCheckBox;
+class QSpinBox;
+class TreasureListComboBox;
+class ArchetypeComboBox;
 
 class AssetWrapperPanel : public CRETPanel<AssetWrapper> {
+    Q_OBJECT
 public:
     AssetWrapperPanel(QWidget *parent);
     virtual void setItem(AssetWrapper *item) override;
@@ -17,12 +22,20 @@ public:
     QLabel *addLabel(const QString &label, const char *property);
     void addLineEdit(const QString &label, const char *property, bool readOnly = true);
     QTextEdit *addTextEdit(const QString &label, const char *property, bool readOnly = true);
-    void addCheckBox(const QString &label, const char *property, bool readOnly = true);
+    QCheckBox *addCheckBox(const QString &label, const char *property, bool readOnly = true);
     void addFaceChoice(const QString &label, const char *property, bool readOnly = true, bool allowNone = true);
+    QSpinBox *addSpinBox(const QString &label, const char *property, int min = 0, int max = 100, bool readOnly = true);
+    TreasureListComboBox *addTreasureList(const QString &label, const char *property, bool readOnly = true, bool allowNone = true);
+    ArchetypeComboBox *addArchetype(const QString &label, const char *property, bool readOnly = false, bool allowNone = true);
     void addBottomFiller();
+
+protected slots:
+    void dataChanged();
+    void itemChanged();
 
 protected:
     QGridLayout *myLayout;
+    AssetWrapper *myAsset;
 
     template<class T>
     T *addWidget(const QString &label, T *widget, bool sideBySide, const char *property, const char *widgetProperty) {
