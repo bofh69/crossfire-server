@@ -6,6 +6,7 @@
 #include "assets.h"
 #include "AssetsManager.h"
 #include "animations/AnimationWrapper.h"
+#include "MimeUtils.h"
 
 ArchetypeWrapper::ArchetypeWrapper(AssetWrapper *parent, archetype *arch, ResourcesManager *resourcesManager)
  : AssetTWrapper(parent, "Archetype", arch), myResourcesManager(resourcesManager) {
@@ -129,8 +130,5 @@ AssetWrapper::PossibleUse ArchetypeWrapper::uses(const AssetWrapper *asset, std:
 }
 
 void ArchetypeWrapper::drag(QMimeData *data) const {
-    QByteArray ba(data->data("x-crossfire/archetype"));
-    QDataStream df(&ba, QIODevice::WriteOnly);
-    df << QString(myItem->name);
-    data->setData("x-crossfire/archetype", ba);
+    MimeUtils::addMime(data, MimeUtils::Archetype, myItem->name);
 }

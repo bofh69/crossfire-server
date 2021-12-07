@@ -26,32 +26,6 @@ TreasureLoader::TreasureLoader(Treasures *treasures, Archetypes *archetypes, Ass
  : m_treasures(treasures), m_archetypes(archetypes), m_tracker(tracker) {
 }
 
-/**
- * Allocate and return the pointer to an empty treasure structure.
- *
- * @return
- * new structure, blanked, never NULL.
- *
- * @note
- * will call fatal() if memory allocation error.
- * @ingroup page_treasure_list
- */
-
-static treasure *get_empty_treasure(void) {
-    treasure *t = (treasure *)calloc(1, sizeof(treasure));
-    if (t == NULL)
-        fatal(OUT_OF_MEMORY);
-    t->item = NULL;
-    t->name = NULL;
-    t->next = NULL;
-    t->next_yes = NULL;
-    t->next_no = NULL;
-    t->chance = 100;
-    t->magic = 0;
-    t->nrof = 0;
-    return t;
-}
-
 extern size_t nroftreasures;
 
 /**

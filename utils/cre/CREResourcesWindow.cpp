@@ -99,9 +99,8 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     myTree->expand(myModel->mapFromSource(root));
     myTree->setSelectionMode(QAbstractItemView::SingleSelection);
     myTree->setDragEnabled(true);
-//    myTree->sortByColumn(0, Qt::AscendingOrder);
-
-//    myTree->setSortingEnabled(true);
+    myTree->setDropIndicatorShown(true);
+    myTree->setDragDropMode(QAbstractItemView::DragDrop);
     myTree->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(myTree, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(treeCustomMenu(const QPoint&)));
     connect(myTree->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(currentRowChanged(const QModelIndex&, const QModelIndex&)));

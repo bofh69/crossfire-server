@@ -27,9 +27,11 @@ public:
     //  virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override;
     //  virtual bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) override;
     virtual QMimeData *mimeData(const QModelIndexList &indexes) const override;
+    virtual bool canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const override;
+    virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
 
 protected slots:
-    void assetModified(AssetWrapper *asset, bool updateChildren);
+    void assetModified(AssetWrapper *asset, AssetWrapper::ChangeType type, int extra);
 
 private:
     AssetWrapper * myAssets;

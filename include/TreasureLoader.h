@@ -24,7 +24,6 @@ extern "C" {
 #include "treasure.h"
 }
 
-
 class TreasureLoader : public AssetLoader {
 public:
   TreasureLoader(Treasures *treasures, Archetypes *archetypes, AssetsTracker *tracker);

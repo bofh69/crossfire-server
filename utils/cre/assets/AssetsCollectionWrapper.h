@@ -20,6 +20,8 @@ public:
     virtual AssetWrapper *child(int index) override { return myAssets[index]; }
     virtual int childIndex(AssetWrapper *child) override { return myAssets.indexOf(child); }
 
+    virtual bool canDrop(const QMimeData *, int) const override { return true; }
+
 protected:
     QString myName;
     QVector<AssetWrapper *> myAssets;

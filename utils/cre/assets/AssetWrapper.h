@@ -11,6 +11,7 @@ class AssetWrapper : public QObject {
     Q_OBJECT
 public:
     enum PossibleUse { Uses, ChildrenMayUse, DoesntUse };
+    enum ChangeType { AssetUpdated, BeforeChildAdd, AfterChildAdd };
 
     AssetWrapper(AssetWrapper *parent, const QString &panelName = "empty")
         : QObject(parent), myParent(parent), myPanelName(panelName) {
@@ -30,27 +31,26 @@ public:
 
     virtual PossibleUse uses(const AssetWrapper *, std::string &) const { return DoesntUse; }
 
-    void markModified(bool updateChildren) {
+    void markModified(ChangeType change, int extra = 0) {
         emit modified();
-        wasModified(this, updateChildren);
+        wasModified(this, change, extra);
     }
 
     virtual bool canDrag() const { return false; }
     virtual void drag(QMimeData *) const { }
-    virtual bool canDrop() const { return false; }
-    virtual bool canDrop(const QMimeData *) const { return false; }
-    virtual void drop(const QMimeData *) { }
+    virtual bool canDrop(const QMimeData *, int) const { return false; }
+    virtual void drop(const QMimeData *, int) { }
 
 signals:
-    void dataModified(AssetWrapper *asset, bool updateChildren);
+    void dataModified(AssetWrapper *asset, AssetWrapper::ChangeType type, int extra);
     void modified();
 
 protected:
-    virtual void wasModified(AssetWrapper *asset, bool updateChildren) {
+    virtual void wasModified(AssetWrapper *asset, ChangeType type, int extra) {
         if (myParent) {
-            myParent->wasModified(asset, updateChildren);
+            myParent->wasModified(asset, type, extra);
         } else {
-            emit dataModified(asset, updateChildren);
+            emit dataModified(asset, type, extra);
         }
     }
 

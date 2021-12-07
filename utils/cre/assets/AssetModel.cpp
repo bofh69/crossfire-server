@@ -5,7 +5,7 @@
 
 AssetModel::AssetModel(AssetWrapper *assets, QObject *parent) : QAbstractItemModel(parent) {
     myAssets = assets;
-    connect(myAssets, SIGNAL(dataModified(AssetWrapper *, bool)), this, SLOT(assetModified(AssetWrapper *, bool)));
+    connect(myAssets, SIGNAL(dataModified(AssetWrapper *, AssetWrapper::ChangeType, int)), this, SLOT(assetModified(AssetWrapper *, AssetWrapper::ChangeType, int)));
 }
 
 AssetModel::~AssetModel() {
@@ -80,14 +80,11 @@ QVariant AssetModel::headerData(int section, Qt::Orientation orientation, int ro
 }
 
 Qt::ItemFlags AssetModel::flags(const QModelIndex &index) const {
-    auto flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    auto flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
     if (index.isValid() && index.internalPointer()) {
         auto wrapper = static_cast<AssetWrapper *>(index.internalPointer());
         if (wrapper->canDrag()) {
             flags |= Qt::ItemIsDragEnabled;
-        }
-        if (wrapper->canDrop()) {
-            flags |= Qt::ItemIsDropEnabled;
         }
     }
     return flags;
@@ -109,20 +106,60 @@ QMimeData *AssetModel::mimeData(const QModelIndexList &indexes) const {
     return data;
 }
 
-void AssetModel::assetModified(AssetWrapper *asset, bool updateChildren) {
+bool AssetModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const {
+    (void)column;
+    if (action != Qt::CopyAction) {
+        return false;
+    }
+
+    if (parent.isValid() && parent.internalPointer()) {
+        auto wrapper = static_cast<AssetWrapper *>(parent.internalPointer());
+        return wrapper->canDrop(data, row);
+    }
+    return false;
+}
+
+bool AssetModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) {
+    (void)column;
+    if (action != Qt::CopyAction) {
+        return false;
+    }
+
+    if (parent.isValid() && parent.internalPointer()) {
+        auto wrapper = static_cast<AssetWrapper *>(parent.internalPointer());
+        wrapper->drop(data, row);
+        return true;
+    }
+    return false;
+}
+
+void AssetModel::assetModified(AssetWrapper *asset, AssetWrapper::ChangeType type, int extra) {
     auto parent = asset->displayParent();
     if (!parent) {
         emit dataChanged(QModelIndex(), QModelIndex());
+        return;
     }
 
     auto idx = createIndex(parent->childIndex(asset), 0, asset);
-    emit dataChanged(idx, idx);
-
-    if (updateChildren && asset->childrenCount() > 0) {
-        int count = asset->childrenCount() - 1;
-        auto left = createIndex(0, 0, asset->child(0));
-        auto right = createIndex(count, 0, asset->child(0));
-        emit dataChanged(left, right);
+    switch (type) {
+        case AssetWrapper::AssetUpdated: {
+            emit dataChanged(idx, idx);
+            if (extra > 0) {
+                int count = asset->childrenCount() - 1;
+                auto left = createIndex(0, 0, asset->child(0));
+                auto right = createIndex(count, 0, asset->child(0));
+                emit dataChanged(left, right);
+            }
+            break;
+        }
+        case AssetWrapper::BeforeChildAdd: {
+            beginInsertRows(idx, extra, extra);
+            break;
+        }
+        case AssetWrapper::AfterChildAdd: {
+            endInsertRows();
+            break;
+        }
     }
 }
 

@@ -4,6 +4,7 @@
 #include "AssetsManager.h"
 #include "archetypes/ArchetypeComboBox.h"
 #include "treasures/TreasureListComboBox.h"
+#include "MimeUtils.h"
 
 TreasurePanel::TreasurePanel(QWidget* parent) : AssetWrapperPanel(parent) {
     addSpinBox(tr("Chance:"), "chance", 0, 255, false);
@@ -16,7 +17,7 @@ TreasurePanel::TreasurePanel(QWidget* parent) : AssetWrapperPanel(parent) {
 }
 
 void TreasurePanel::dragEnterEvent(QDragEnterEvent *event) {
-    if (event->mimeData()->hasFormat("x-crossfire/archetype") || event->mimeData()->hasFormat("x-crossfire/treasure-list")) {
+    if (event->mimeData()->hasFormat(MimeUtils::Archetype) || event->mimeData()->hasFormat(MimeUtils::TreasureList)) {
         event->acceptProposedAction();
     }
 }
@@ -26,28 +27,14 @@ void TreasurePanel::dragMoveEvent(QDragMoveEvent *event) {
 }
 
 void TreasurePanel::dropEvent(QDropEvent *event) {
-    if (event->mimeData()->hasFormat("x-crossfire/archetype")) {
-        QByteArray ba(event->mimeData()->data("x-crossfire/archetype"));
-        QDataStream df(&ba, QIODevice::ReadOnly);
-        QString name;
-        while (!df.atEnd()) {
-            df >> name;
-        }
-        if (!name.isEmpty()) {
-            myArch->setArch(getManager()->archetypes()->find(name.toLocal8Bit().data()));
-        }
+    auto archs = MimeUtils::extract(event->mimeData(), MimeUtils::Archetype, getManager()->archetypes());
+    if (!archs.empty()) {
+        myArch->setArch(archs.front());
         event->acceptProposedAction();
     }
-    if (event->mimeData()->hasFormat("x-crossfire/treasure-list")) {
-        QByteArray ba(event->mimeData()->data("x-crossfire/treasure-list"));
-        QDataStream df(&ba, QIODevice::ReadOnly);
-        QString name;
-        while (!df.atEnd()) {
-            df >> name;
-        }
-        if (!name.isEmpty()) {
-            myList->setList(getManager()->treasures()->find(name.toLocal8Bit().data()));
-        }
+    auto lists = MimeUtils::extract(event->mimeData(), MimeUtils::TreasureList, getManager()->treasures());
+    if (!lists.empty()) {
+        myList->setList(lists.front());
         event->acceptProposedAction();
     }
 }

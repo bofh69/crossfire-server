@@ -86,7 +86,8 @@ CREPixmap.cpp \
  treasures/TreasureListWrapper.cpp \
  treasures/TreasurePanel.cpp \
  treasures/TreasureWrapper.cpp \
- AllAssets.cpp
+ AllAssets.cpp \
+ MimeUtils.cpp
 HEADERS += CREMainWindow.h \
 CREPixmap.h \
  CREUtils.h \

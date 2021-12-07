@@ -39,16 +39,36 @@ static void setup(void) {
     cctk_setdatadir(SOURCE_ROOT "lib");
     cctk_setlog(LOGDIR "/unit/common/object.out");
     printf("set log to %s\n", LOGDIR"/unit/common/object.out");
-    cctk_init_std_archetypes();
+    //cctk_init_std_archetypes();
 }
 
 static void teardown(void) {
     /* put any cleanup steps here, they will be run after each testcase */
 }
 
-/* Note: This file is far from a complete test of all treasurelists.
- * but it tests at least one function from treasure.c.
- */
+START_TEST(test_add_treasure_in_list) {
+    treasurelist list;
+    list.items = NULL;
+    treasure *first = treasure_insert(&list, 10);
+    fail_unless(list.items == first, "First not inserted in first place");
+
+    treasure *new_first = treasure_insert(&list, -1);
+    fail_unless(list.items == new_first, "First not replaced");
+    fail_unless(new_first->next == first, "List not correctly linked");
+
+    treasure *second = treasure_insert(&list, 11);
+    fail_unless(first->next == second, "Second not inserted at end");
+    fail_unless(second->next == NULL, "Second should be the last");
+
+    treasure *between = treasure_insert(&list, 2);
+    fail_unless(first->next == between, "Between should be after first");
+    fail_unless(between->next == second, "Between should be before second");
+
+    treasure *other_first = treasure_insert(&list, 0);
+    fail_unless(list.items == other_first, "Other first should be first item");
+    fail_unless(other_first->next == new_first, "Other first should be before new first");
+}
+END_TEST
 
 static Suite *treasure_suite(void) {
     Suite *s = suite_create("treasure");
@@ -58,6 +78,7 @@ static Suite *treasure_suite(void) {
     tcase_add_checked_fixture(tc_core, setup, teardown);
 
     suite_add_tcase(s, tc_core);
+    tcase_add_test(tc_core, test_add_treasure_in_list);
 
     return s;
 }

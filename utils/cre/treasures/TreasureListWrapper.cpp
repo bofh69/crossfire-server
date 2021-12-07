@@ -1,6 +1,10 @@
 #include "TreasureListWrapper.h"
 #include "../ResourcesManager.h"
 #include "../CREPixmap.h"
+#include "MimeUtils.h"
+#include "TreasureLoader.h"
+#include "assets.h"
+#include "AssetsManager.h"
 
 TreasureListWrapper::TreasureListWrapper(AssetWrapper *parent, treasurelist *list, ResourcesManager *resources)
    : AssetTWrapper(parent, "TreasureList", list), myResources(resources)
@@ -57,7 +61,7 @@ void TreasureListWrapper::setSingleItem(bool isSingle) {
     } else {
         myItem->total_chance = 0;
     }
-    markModified(true);
+    markModified(AssetUpdated, 1);
 }
 
 void TreasureListWrapper::fixTotalChance() {
@@ -69,21 +73,55 @@ void TreasureListWrapper::fixTotalChance() {
     }
 }
 
-void TreasureListWrapper::wasModified(AssetWrapper *asset, bool updateChildren) {
+void TreasureListWrapper::wasModified(AssetWrapper *asset, ChangeType type, int extra) {
     myResources->treasureModified(myItem);
-    if (childIndex(asset) != -1) {
+    if (childIndex(asset) != -1 && type == AssetUpdated) {
         if (myItem->total_chance) {
             fixTotalChance();
+            markModified(AssetUpdated, 1);
+            return;
         }
-        AssetWrapper::wasModified(this, true);
-    } else {
-        AssetWrapper::wasModified(asset, updateChildren);
     }
+    AssetWrapper::wasModified(asset, type, extra);
 }
 
 void TreasureListWrapper::drag(QMimeData *data) const {
-    QByteArray ba(data->data("x-crossfire/treasure-list"));
+    QByteArray ba(data->data(MimeUtils::TreasureList));
     QDataStream df(&ba, QIODevice::WriteOnly);
     df << QString(myItem->name);
-    data->setData("x-crossfire/treasure-list", ba);
+    data->setData(MimeUtils::TreasureList, ba);
+}
+
+bool TreasureListWrapper::canDrop(const QMimeData *data, int) const {
+    return
+            data->hasFormat(MimeUtils::Archetype)
+            || data->hasFormat(MimeUtils::TreasureList)
+        ;
+}
+
+void TreasureListWrapper::drop(const QMimeData *data, int row) {
+    bool modified = false;
+    if (row == -1) {
+        row = childrenCount();
+    }
+
+    auto archs = MimeUtils::extract(data, MimeUtils::Archetype, getManager()->archetypes());
+    modified |= !archs.empty();
+    for (auto arch : archs) {
+        markModified(BeforeChildAdd, row);
+        auto item = treasure_insert(myItem, row);
+        item->item = arch;
+        markModified(AfterChildAdd, row);
+        row++;
+    }
+
+    auto lists = MimeUtils::extract(data, MimeUtils::TreasureList, getManager()->treasures());
+    modified |= !lists.empty();
+    for (auto list : lists) {
+        markModified(BeforeChildAdd, row);
+        auto item = treasure_insert(myItem, row);
+        item->name = add_string(list->name);
+        markModified(AfterChildAdd, row);
+        row++;
+    }
 }

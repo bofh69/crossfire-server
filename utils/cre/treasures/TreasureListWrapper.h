@@ -33,7 +33,9 @@ public:
     virtual int childIndex(AssetWrapper *child) override;
 
     virtual bool canDrag() const override { return true; }
-    virtual void drag(QMimeData *) const override;
+    virtual void drag(QMimeData *data) const override;
+    virtual bool canDrop(const QMimeData *data, int row) const override;
+    virtual void drop(const QMimeData *data, int row) override;
 
     int totalChance() const { return myItem->total_chance; }
     void fixTotalChance();
@@ -44,7 +46,7 @@ public:
 protected:
     ResourcesManager *myResources;
 
-    virtual void wasModified(AssetWrapper *asset, bool updateChildren) override;
+    virtual void wasModified(AssetWrapper *asset, ChangeType type, int extra) override;
 };
 
 #endif /* TREASURE_LIST_WRAPPER_H */

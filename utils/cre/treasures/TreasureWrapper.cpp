@@ -113,7 +113,7 @@ uint8_t TreasureWrapper::chance() const {
 void TreasureWrapper::setChance(uint8_t chance) {
     if (chance != myItem->chance) {
         myItem->chance = chance;
-        markModified(false);
+        markModified(AssetUpdated);
     }
 }
 
@@ -124,7 +124,7 @@ uint8_t TreasureWrapper::magic() const {
 void TreasureWrapper::setMagic(uint8_t magic) {
     if (magic != myItem->magic) {
         myItem->magic = magic;
-        markModified(false);
+        markModified(AssetUpdated);
     }
 }
 
@@ -135,7 +135,7 @@ uint16_t TreasureWrapper::nrof() const {
 void TreasureWrapper::setNrof(uint16_t nrof) {
     if (nrof != myItem->nrof) {
         myItem->nrof = nrof;
-        markModified(false);
+        markModified(AssetUpdated);
     }
 }
 
@@ -150,7 +150,7 @@ void TreasureWrapper::setList(const treasurelist *list) {
             myItem->name = add_string(list->name);
             myItem->item = nullptr;
         }
-        markModified(false);
+        markModified(AssetUpdated);
     }
 }
 
@@ -164,7 +164,7 @@ void TreasureWrapper::setArch(const archetype *arch) {
         if (myItem->item && myItem->name) {
             FREE_AND_CLEAR_STR(myItem->name);
         }
-        markModified(false);
+        markModified(AssetUpdated);
     }
 }
 

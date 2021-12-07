@@ -1339,3 +1339,53 @@ static int special_potion(object *op) {
 
     return 0;
 }
+
+/**
+ * Allocate and return the pointer to an empty treasure structure.
+ *
+ * @return
+ * new structure, blanked, never NULL.
+ *
+ * @note
+ * will call fatal() if memory allocation error.
+ * @ingroup page_treasure_list
+ */
+
+treasure *get_empty_treasure(void) {
+    treasure *t = (treasure *)calloc(1, sizeof(treasure));
+    if (t == NULL)
+        fatal(OUT_OF_MEMORY);
+    t->item = NULL;
+    t->name = NULL;
+    t->next = NULL;
+    t->next_yes = NULL;
+    t->next_no = NULL;
+    t->chance = 100;
+    t->magic = 0;
+    t->nrof = 0;
+    return t;
+}
+
+/**
+ * Insert a new treasure in the treasure list, at a specific position in the children list.
+ * @param list list to insert the new treasure into.
+ * @param position if less than the number of items then before this item, else at end of list.
+ * @return inserted item, never null.
+ */
+treasure *treasure_insert(treasurelist *list, int position) {
+    treasure *added = get_empty_treasure();
+    if (list->items == NULL || position <= 0) {
+        added->next = list->items;
+        list->items = added;
+        return added;
+    }
+    treasure *prev = list->items;
+    position--;
+    while (position > 0 && prev->next) {
+        position--;
+        prev = prev->next;
+    }
+    added->next = prev->next;
+    prev->next = added;
+    return added;
+}
