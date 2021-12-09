@@ -36,6 +36,7 @@ protected slots:
 protected:
     QGridLayout *myLayout;
     AssetWrapper *myAsset;
+    bool myInhibit;
 
     template<class T>
     T *addWidget(const QString &label, T *widget, bool sideBySide, const char *property, const char *widgetProperty) {

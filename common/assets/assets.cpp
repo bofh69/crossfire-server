@@ -130,7 +130,7 @@ void assets_collect(const char* datadir, int what) {
     if (what & ASSETS_FACES)
         collector.addLoader(new FaceLoader(manager->faces(), manager->animations()));
     if (what & ASSETS_MESSAGES)
-        collector.addLoader(new MessageLoader(manager->messages()));
+        collector.addLoader(new MessageLoader(manager->messages(), tracker));
     if (what & ASSETS_ARTIFACTS)
         collector.addLoader(new WrapperLoader("/artifacts", init_artifacts));
     if (what & ASSETS_FORMULAE)

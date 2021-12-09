@@ -6,7 +6,7 @@
 #include "treasures/TreasureListComboBox.h"
 #include "archetypes/ArchetypeComboBox.h"
 
-AssetWrapperPanel::AssetWrapperPanel(QWidget *parent) : CRETPanel(parent), myAsset(nullptr) {
+AssetWrapperPanel::AssetWrapperPanel(QWidget *parent) : CRETPanel(parent), myAsset(nullptr), myInhibit(false) {
     myLayout = new QGridLayout(this);
 }
 
@@ -22,7 +22,7 @@ void AssetWrapperPanel::setItem(AssetWrapper *item) {
 }
 
 void AssetWrapperPanel::itemChanged() {
-    if (!myAsset) {
+    if (!myAsset || myInhibit) {
         return;
     }
     for (auto pl : myLinks) {
@@ -36,12 +36,20 @@ QLabel *AssetWrapperPanel::addLabel(const QString &label, const char *property) 
 
 void AssetWrapperPanel::addLineEdit(const QString &label, const char *property, bool readOnly) {
     auto widget = addWidget(label, new QLineEdit(this), true, property, "text");
-    widget->setReadOnly(readOnly);
+    if (readOnly) {
+        widget->setReadOnly(readOnly);
+    } else {
+        connect(widget, SIGNAL(editingFinished()), this, SLOT(dataChanged()));
+    }
 }
 
 QTextEdit *AssetWrapperPanel::addTextEdit(const QString &label, const char *property, bool readOnly) {
     auto widget = addWidget(label, new QTextEdit(this), false, property, "plainText");
-    widget->setReadOnly(readOnly);
+    if (readOnly) {
+        widget->setReadOnly(readOnly);
+    } else {
+        connect(widget, SIGNAL(textChanged()), this, SLOT(dataChanged()));
+    }
     return widget;
 }
 
@@ -105,7 +113,9 @@ void AssetWrapperPanel::dataChanged() {
     QObject *widget = sender();
     for (auto link : myLinks) {
         if (link.widget == widget) {
+            myInhibit = true;
             myAsset->setProperty(link.assetPropertyName, widget->property(link.widgetPropertyName));
+            myInhibit = false;
             break;
         }
     }

@@ -1,10 +1,10 @@
 #include "GeneralMessagePanel.h"
 
 CREGeneralMessagePanel::CREGeneralMessagePanel(QWidget* parent) : AssetWrapperPanel(parent) {
-    addLineEdit(tr("Title:"), "title");
+    addLineEdit(tr("Title:"), "title", false);
     addLineEdit(tr("Identifier:"), "identifier");
-    addLineEdit(tr("Quest:"), "quest");
-    addLineEdit(tr("Chance:"), "chance");
-    addFaceChoice(tr("Face:"), "face");
-    addTextEdit(tr("Message:"), "message");
+    addLineEdit(tr("Quest:"), "quest", false);
+    addLineEdit(tr("Chance:"), "chance", false);
+    addFaceChoice(tr("Face:"), "face", false);
+    addTextEdit(tr("Message:"), "message", false);
 }

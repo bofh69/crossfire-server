@@ -18,8 +18,9 @@ extern "C" {
 #include "compat.h"
 #include "string.h"
 }
+#include "AssetsTracker.h"
 
-MessageLoader::MessageLoader(Messages* messages) : m_messages(messages) {
+MessageLoader::MessageLoader(Messages* messages, AssetsTracker *tracker) : m_messages(messages), m_tracker(tracker) {
 }
 
 void MessageLoader::load(BufferReader *reader, const std::string &filename) {
@@ -52,7 +53,10 @@ void MessageLoader::load(BufferReader *reader, const std::string &filename) {
                 if (tmp->identifier[0] != '\n' && tmp->title == NULL) {
                     LOG(llevError, "Error: message can't have identifier without title, file %s on line %ld\n", filename.c_str(), bufferreader_current_line(reader));
                 }
-                m_messages->define(tmp->identifier, tmp);
+                tmp = m_messages->define(tmp->identifier, tmp);
+                if (m_tracker) {
+                    m_tracker->assetDefined(tmp, filename);
+                }
                 nrofmsg++;
                 tmp = NULL;
                 text = 0;

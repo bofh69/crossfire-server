@@ -70,6 +70,7 @@ CREPixmap.cpp \
  faces/FaceWrapper.cpp \
  faces/FacesetsPanel.cpp \
  general_messages/GeneralMessagePanel.cpp \
+ general_messages/GeneralMessageWrapper.cpp \
  quests/QuestWrapper.cpp \
  recipes/RecipeListWrapper.cpp \
  recipes/RecipePanel.cpp \

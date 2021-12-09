@@ -80,6 +80,7 @@ class ResourcesManager : public QObject, AssetsTracker
         virtual void assetDefined(const archt *arch, const std::string &filename) override { myArchetypes.assetDefined(arch, filename); }
         virtual void assetDefined(const quest_definition *asset, const std::string &filename) override { myQuests.assetDefined(asset, filename); }
         virtual void assetDefined(const treasurelist *asset, const std::string &filename) override { myTreasures.assetDefined(asset, filename); }
+        virtual void assetDefined(const GeneralMessage *asset, const std::string &filename) override { myGeneralMessages.assetDefined(asset, filename); }
 
         const std::map<std::string, std::set<const archt*> >& origins() const { return myArchetypes.origins(); }
         std::string originOf(const archt *arch) const { return myArchetypes.originOf(arch); }
@@ -94,6 +95,7 @@ class ResourcesManager : public QObject, AssetsTracker
                     myArchetypes.hasPendingChanges()
                     || myQuests.hasPendingChanges()
                     || myTreasures.hasPendingChanges()
+                    || myGeneralMessages.hasPendingChanges()
                     ;
         }
 
@@ -119,6 +121,8 @@ class ResourcesManager : public QObject, AssetsTracker
       void saveQuests();
       void treasureModified(treasurelist *treasure);
       void saveTreasures();
+      void generalMessageModified(GeneralMessage *message);
+      void saveGeneralMessages();
 
     protected:
         CREMapInformationManager *myMapInformationManager;
@@ -126,6 +130,7 @@ class ResourcesManager : public QObject, AssetsTracker
         ModifiedAssetsManager<archetype> myArchetypes;
         ModifiedAssetsManager<quest_definition> myQuests;
         ModifiedAssetsManager<treasurelist> myTreasures;
+        ModifiedAssetsManager<GeneralMessage> myGeneralMessages;
         AssetWrapperManager<archt, ArchetypeWrapper> myWrappedArchetypes;
         AssetWrapperManager<object, ObjectWrapper> myWrappedObjects;
         AssetWrapperManager<Face, FaceWrapper> myWrappedFaces;

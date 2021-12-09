@@ -185,6 +185,7 @@ void CREMainWindow::createMenus()
     mySaveMenu->addAction(createAction(tr("Dialogs"), tr("Save all modified NPC dialogs."), this, SLOT(onSaveMessages())));
     mySaveMenu->addAction(createAction(tr("Archetypes"), tr("Save all modified archetypes."), myResourcesManager, SLOT(saveArchetypes())));
     mySaveMenu->addAction(createAction(tr("Treasures"), tr("Save all modified treasures."), myResourcesManager, SLOT(saveTreasures())));
+    mySaveMenu->addAction(createAction(tr("General messages"), tr("Save all modified general messages."), myResourcesManager, SLOT(saveGeneralMessages())));
 
     QMenu* reportMenu = menuBar()->addMenu("&Reports");
     reportMenu->addAction(createAction(tr("Faces and animations report"), tr("Show faces and animations which are used by multiple archetypes, or not used."), this, SLOT(onReportDuplicate())));

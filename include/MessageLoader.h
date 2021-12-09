@@ -17,10 +17,11 @@
 #include "Utils.h"
 
 class Messages;
+class AssetsTracker;
 
 class MessageLoader : public AssetLoader {
 public:
-    MessageLoader(Messages *messages);
+    MessageLoader(Messages *messages, AssetsTracker *tracker);
 
     virtual bool willLoad(const std::string &filename) override {
         return Utils::endsWith(filename, "/messages");
@@ -30,6 +31,7 @@ public:
 
 private:
     Messages *m_messages;
+    AssetsTracker *m_tracker;
 };
 
 #endif /* MESSAGELOADER_H */
