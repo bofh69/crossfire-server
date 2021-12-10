@@ -37,9 +37,6 @@ bool CRESettings::ensureOptions()
         return ensureOptions();
     }
 
-    if (facesetToDisplay().isEmpty())
-        setFacesetToDisplay("base");
-
     return true;
 }
 
@@ -74,7 +71,7 @@ void CRESettings::saveReports(const CREReportDefinitionManager& reports)
 
 QString CRESettings::facesetToDisplay() const
 {
-    return value("facesetToDisplay").toString();
+    return value("facesetToDisplay", "base").toString();
 }
 
 void CRESettings::setFacesetToDisplay(const QString& faceset)

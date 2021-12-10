@@ -49,7 +49,6 @@ CREMainWindow::CREMainWindow()
     connect(myMapManager, SIGNAL(mapAdded(CREMapInformation *)), this, SLOT(mapAdded(CREMapInformation *)));
     myResourcesManager->setMapInformationManager(myMapManager);
 
-    CREPixmap::setFaceset("base");
     CREPixmap::init();
 
     myAssets = new AllAssets(myResourcesManager, myScriptManager, myMessageManager);
