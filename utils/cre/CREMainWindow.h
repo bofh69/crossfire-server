@@ -66,6 +66,7 @@ class CREMainWindow : public QMainWindow
         void closeEvent(QCloseEvent* event);
         void doResourceWindow(int assets);
         void fillFacesets();
+        QAction *createAction(const QString &title, const QString &statusTip);
         QAction *createAction(const QString &title, const QString &statusTip, QObject *target, const char *slot);
 
     private slots:

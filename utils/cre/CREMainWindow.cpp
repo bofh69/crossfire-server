@@ -87,9 +87,14 @@ void CREMainWindow::closeEvent(QCloseEvent* event)
     QMainWindow::closeEvent(event);
 }
 
-QAction *CREMainWindow::createAction(const QString &title, const QString &statusTip, QObject *target, const char *slot) {
+QAction *CREMainWindow::createAction(const QString &title, const QString &statusTip) {
     auto action = new QAction(title, this);
     action->setStatusTip(statusTip);
+    return action;
+}
+
+QAction *CREMainWindow::createAction(const QString &title, const QString &statusTip, QObject *target, const char *slot) {
+    auto action = createAction(title, statusTip);
     connect(action, SIGNAL(triggered()), target, slot);
     return action;
 }
@@ -219,6 +224,11 @@ void CREMainWindow::createMenus()
     auto sep = new QAction(this);
     sep->setSeparator(true);
     myWindows->addAction(sep);
+
+    auto help = menuBar()->addMenu(tr("&Help"));
+    auto about = createAction(tr("About"), tr("About CRE"));
+    help->addAction(about);
+    connect(about, &QAction::triggered, [=] () { QMessageBox::about(this, tr("About CRE"), tr("Crossfire Resource Editor")); });
 }
 
 void CREMainWindow::doResourceWindow(int assets)
