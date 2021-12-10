@@ -88,3 +88,19 @@ void CRESettings::setFacesetUseFallback(bool use)
 {
     setValue("facesetUseFallback", use);
 }
+
+bool CRESettings::showChanges() const {
+    return value("showChanges", true).toBool();
+}
+
+void CRESettings::setShowChanges(bool show) {
+    setValue("showChanges", show);
+}
+
+int CRESettings::changesLength() const {
+    return value("changesLength").toInt();
+}
+
+void CRESettings::setChangesLength(int length) {
+    setValue("changesLength", length);
+}

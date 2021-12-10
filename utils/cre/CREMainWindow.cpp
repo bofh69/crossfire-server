@@ -28,6 +28,7 @@ extern "C" {
 #include "LicenseManager.h"
 #include "AllAssets.h"
 #include "assets/AssetModel.h"
+#include "ChangesDock.h"
 
 CREMainWindow::CREMainWindow()
 {
@@ -66,6 +67,9 @@ CREMainWindow::CREMainWindow()
     setWindowTitle(tr("Crossfire Resource Editor"));
 
     fillFacesets();
+
+    myChanges = new ChangesDock(this);
+    addDockWidget(Qt::RightDockWidgetArea, myChanges);
 
     myMapManager->start();
 }
@@ -229,6 +233,20 @@ void CREMainWindow::createMenus()
     auto about = createAction(tr("About"), tr("About CRE"));
     help->addAction(about);
     connect(about, &QAction::triggered, [=] () { QMessageBox::about(this, tr("About CRE"), tr("Crossfire Resource Editor")); });
+
+    CRESettings settings;
+    auto show = createAction(tr("Show changes after updating"), tr("If checked, then show latest changes at first startup after an update"));
+    show->setCheckable(true);
+    show->setChecked(settings.showChanges());
+    help->addAction(show);
+    connect(show, &QAction::triggered, [&] (bool checked) {
+        CRESettings settings;
+        settings.setShowChanges(checked);
+    });
+
+    auto changes = createAction(tr("Changes"), tr("Display CRE changes"));
+    help->addAction(changes);
+    connect(changes, &QAction::triggered, [=] () { myChanges->setVisible(true); });
 }
 
 void CREMainWindow::doResourceWindow(int assets)

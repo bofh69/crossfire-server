@@ -25,6 +25,12 @@ class CRESettings : protected QSettings
         void setFacesetToDisplay(const QString& faceset);
         bool facesetUseFallback() const;
         void setFacesetUseFallback(bool use);
+
+        bool showChanges() const;
+        void setShowChanges(bool show);
+
+        int changesLength() const;
+        void setChangesLength(int length);
 };
 
 #endif // CLASS_CRE_SETTINGS_H

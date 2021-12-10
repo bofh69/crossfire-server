@@ -88,6 +88,7 @@ CREPixmap.cpp \
  treasures/TreasurePanel.cpp \
  treasures/TreasureWrapper.cpp \
  AllAssets.cpp \
+ ChangesDock.cpp \
  MimeUtils.cpp
 HEADERS += CREMainWindow.h \
 CREPixmap.h \
@@ -179,7 +180,8 @@ CREPixmap.h \
  treasures/TreasureListWrapper.h \
  treasures/TreasurePanel.h \
  treasures/TreasureWrapper.h \
- AllAssets.h
+ AllAssets.h \
+ ChangesDock.h
 LIBS += ../../server/libserver.a ../../common/libcross.a ../../socket/libsocket.a ../../random_maps/librandom_map.a ../../types/libtypes.a -lcurl
 QMAKE_CXXFLAGS += -Wcast-qual
 # -Wold-style-cast

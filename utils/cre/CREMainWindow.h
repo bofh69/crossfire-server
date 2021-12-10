@@ -22,6 +22,7 @@ class ScriptFileManager;
 class AssetWrapper;
 class AllAssets;
 class AssetModel;
+class ChangesDock;
 
 class CREMainWindow : public QMainWindow
 {
@@ -61,6 +62,7 @@ class CREMainWindow : public QMainWindow
         MessageManager* myMessageManager;
         ResourcesManager* myResourcesManager;
         ScriptFileManager* myScriptManager;
+        ChangesDock* myChanges;
 
     protected:
         void closeEvent(QCloseEvent* event);
