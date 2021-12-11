@@ -51,7 +51,7 @@ QVariant ArchetypesModel::headerData(int section, Qt::Orientation orientation, i
         if (role == Qt::DisplayRole) {
             return myMonsters[section]->displayName();
         } else if (role == Qt::DecorationRole) {
-            return QVariant(); // CREPixmap::getIcon(myMonsters[section]->getObject()->face->number);
+            return CREPixmap::getIcon(myMonsters[section]->face());
         }
         return QVariant();
     }

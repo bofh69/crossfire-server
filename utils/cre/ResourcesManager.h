@@ -100,7 +100,7 @@ class ResourcesManager : public QObject, AssetsTracker
         }
 
         AssetWrapper *wrap(archt *arch, AssetWrapper *parent) { return myWrappedArchetypes.wrap(arch, parent, this); }
-        AssetWrapper *wrap(object *ob, AssetWrapper *parent) { return myWrappedObjects.wrap(ob, parent, this); }
+        ObjectWrapper *wrap(object *ob, AssetWrapper *parent) { return myWrappedObjects.wrap(ob, parent, this); }
         AssetWrapper *wrap(Face *face, AssetWrapper *parent) { return myWrappedFaces.wrap(face, parent, this); }
         AssetWrapper *wrap(Animations *anim, AssetWrapper *parent) { return myWrappedAnimations.wrap(anim, parent, this); }
         AssetWrapper *wrap(treasurelist *tr, AssetWrapper *parent) { return myWrappedTreasureLists.wrap(tr, parent, this); }

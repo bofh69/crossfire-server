@@ -10,7 +10,7 @@ extern "C" {
 #include <QAbstractTableModel>
 
 class ResourcesManager;
-class AssetWrapper;
+class ObjectWrapper;
 
 class ArchetypesModel : public QAbstractTableModel {
   Q_OBJECT
@@ -29,7 +29,7 @@ signals:
   void archetypeModified(archetype *arch);
 
 private:
-  std::vector<AssetWrapper *> myMonsters;
+  std::vector<ObjectWrapper *> myMonsters;
 };
 
 #endif /* ARCHETYPESMODEL_H */

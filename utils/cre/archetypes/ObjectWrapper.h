@@ -77,6 +77,7 @@ class ObjectWrapper : public AssetTWrapper<object> {
         AssetWrapper *randomItems();
         float speed() const { return myItem->speed; }
         void setSpeed(float speed) { myItem->speed = speed; }
+        const Face *face() const { return myItem->face; }
 
     protected:
         ResourcesManager *myResourcesManager;
