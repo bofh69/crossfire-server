@@ -2683,9 +2683,9 @@ static void init_renderer_env() {
         return std::string(rel);
     });
     env->add_callback("get_by_field", 3, [] (inja::Arguments &args) {
-        auto src = args.at(0);
+        const auto &src = args.at(0);
         auto field = args.at(1)->get<std::string>();
-        auto value = args.at(2);
+        const auto &value = args.at(2);
         auto found = std::find_if(src->begin(), src->end(), [&field, &value] (auto item) {
             return item[field] == *value;
         });
@@ -2694,8 +2694,19 @@ static void init_renderer_env() {
         }
         return *found;
     });
+    env->add_callback("get_list_by_field", 3, [] (inja::Arguments &args) {
+        const auto &src = args.at(0);
+        auto field = args.at(1)->get<std::string>();
+        const auto &list = args.at(2);
+        nlohmann::json ret = nlohmann::json::array();
+        std::copy_if(src->begin(), src->end(), std::back_inserter(ret), [&] (auto &item) {
+            auto val = item[field];
+            return std::find_if(list->begin(), list->end(), [&] (auto li) { return val == li; }) != list->end();
+        });
+        return ret;
+    });
     env->add_callback("sort", [] (inja::Arguments &args) {
-        auto src = args.at(0);
+        const auto &src = args.at(0);
         std::vector<nlohmann::json> ret;
         for (auto i : *src) {
             ret.push_back(i);
@@ -3016,6 +3027,17 @@ static const char *yesno(int value) {
     return (value ? "yes" : "no");
 }
 
+static inja::TemplateStorage templateCache;
+static inja::Template get_template(const std::string &filename) {
+    auto find = templateCache.find(filename);
+    if (find != templateCache.end()) {
+        return find->second;
+    }
+    inja::Template parsed = env->parse_template(filename);
+    templateCache[filename] = parsed;
+    return parsed;
+}
+
 int main(int argc, char **argv) {
     size_t current_map = 0, i;
     char max[50];
@@ -3166,6 +3188,12 @@ int main(int argc, char **argv) {
         }
     }
 
+    const auto fullStart = time(nullptr);
+    printf("rendering pages...");
+    if (display_rendered_template)
+        printf("\n");
+    fflush(stdout);
+
     while (!pages.empty()) {
         auto p = pages.back();
         pages.pop_back();
@@ -3173,14 +3201,23 @@ int main(int argc, char **argv) {
             all_data.erase("param");
         else
             all_data["param"] = p.param;
+        const auto start = time(nullptr);
         if (display_rendered_template) {
-            printf("rendering page %s (%s)\n", p.template_name.c_str(), p.param.c_str());
+            printf(" rendering page %s (%s)... ", p.template_name.c_str(), p.param.c_str());
             fflush(stdout);
         }
         path_stack.push_back(p.output_name);
-        env->write(p.template_name, all_data, p.output_name);
+        inja::Template temp = get_template(p.template_name);
+        env->write(temp, all_data, p.output_name);
         path_stack.pop_back();
+        const auto elapsed = time(nullptr) - start;
+        if (display_rendered_template) {
+            printf("took %ld seconds\n", elapsed);
+        }
     }
+
+    const auto elapsed = time(nullptr) - fullStart;
+    printf(" done, took %ld seconds\n", elapsed);
 
     return 0;
 }

@@ -7,9 +7,9 @@
 
   <p>{{ length(region.maps) }} maps found:</p>
   <ul>
-    {% for m in region.maps %}
-    {% set map = get_by_field(maps, "_key", m) %}
-    <li><a href='{{ link_to_page("map.html", m) }}'>{{ map.name }}</a></li>
+    {% set rm = get_list_by_field(maps, "_key", region.maps)  %}
+    {% for map in rm %}
+    <li><a href='{{ link_to_page("map.html", map._key) }}'>{{ map.name }}</a></li>
     {% endfor %}
   </ul>
   {% if length(region.links) %}

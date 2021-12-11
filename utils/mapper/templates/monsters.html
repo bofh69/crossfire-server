@@ -14,9 +14,9 @@
       <td>{{ monster.count }}</td>
       <td>Found on {{ length(monster.maps) }} maps:
         <ul>
-          {% for x in monster.maps %}
-          {% set map = get_by_field(maps, "_key", x) %}
-          <li><a href='{{ link_to_page("map.html", x) }}'>{{ map.name }}</a></li>
+          {% set mm = get_list_by_field(maps, "_key", monster.maps) %}
+          {% for map in mm %}
+          <li><a href='{{ link_to_page("map.html", map._key) }}'>{{ map.name }}</a></li>
           {% endfor %}
         </ul>
       </td>

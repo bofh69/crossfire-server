@@ -14,18 +14,18 @@
 {% if length(map.exits_from) > 0 %}
 <p>Exits from this map:</p>
 <ul>
-  {% for e in map.exits_from %}
-  {% set x = get_by_field(maps, "_key", e) %}
-  <li><a href='{{ link_to_page("map.html", e) }}'>{{ x.name }}</a></li>
+  {% set ef = get_list_by_field(maps, "_key", map.exits_from) %}
+  {% for x in ef %}
+  <li><a href='{{ link_to_page("map.html", x._key) }}'>{{ x.name }}</a></li>
   {% endfor %}
 </ul>
 {% endif %}
 {% if length(map.exits_to) > 0 %}
 <p>Exits to this map:</p>
 <ul>
-  {% for e in map.exits_to %}
-  {% set x = get_by_field(maps, "_key", e) %}
-  <li><a href='{{ link_to_page("map.html", e) }}'>{{ x.name }}</a></li>
+  {% set et = get_list_by_field(maps, "_key", map.exits_to) %}
+  {% for x in et %}
+  <li><a href='{{ link_to_page("map.html", x._key) }}'>{{ x.name }}</a></li>
   {% endfor %}
 </ul>
 {% endif %}
