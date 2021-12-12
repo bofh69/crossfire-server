@@ -1,4 +1,4 @@
-La commande take fait prendre au joueur les objets qui se trouve sur la case qu'il occupe et les place dans son inventaire.
+La commande take fait prendre au joueur les objets qui se trouvent sur la case qu'il occupe et les place dans son inventaire.
 
 Si aucun paramètre n'est spécifié, cette commande prendra l'objet le plus haut dans la pile qui peut être pris et le placera dans l'inventaire du joueur. Si aucun objet ne peut être pris, un message d'erreur sera renvoyé.
 
