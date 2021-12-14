@@ -58,7 +58,6 @@ public:
 
     virtual QString displayName() const override { return myYesNo == Yes ? "Yes" : "No"; }
     virtual QIcon displayIcon() const override { return myYesNo == Yes ? CREPixmap::getTreasureYesIcon() : CREPixmap::getTreasureNoIcon(); }
-    virtual void displayFillPanel(QWidget *panel) override { displayParent()->displayFillPanel(panel); }
 
     virtual int childrenCount() const override { return 1; }
     virtual AssetWrapper *child(int child) override { return child == 0 ? myWrapped : nullptr; }

@@ -169,6 +169,6 @@ void TreasureWrapper::setArch(const archetype *arch) {
 }
 
 TreasureYesNo::TreasureYesNo(TreasureWrapper *parent, treasure *tr, ResourcesManager *resources, YesNo yesNo)
-    : AssetWrapper(parent, "TreasureList"), myYesNo(yesNo) {
+    : AssetWrapper(parent, "empty"), myYesNo(yesNo) {
         myWrapped = resources->wrap(tr, this);
     }
