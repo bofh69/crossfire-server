@@ -147,7 +147,7 @@ void AssetModel::assetModified(AssetWrapper *asset, AssetWrapper::ChangeType typ
             if (extra > 0) {
                 int count = asset->childrenCount() - 1;
                 auto left = createIndex(0, 0, asset->child(0));
-                auto right = createIndex(count, 0, asset->child(0));
+                auto right = createIndex(count, 0, asset->child(count));
                 emit dataChanged(left, right);
             }
             break;
