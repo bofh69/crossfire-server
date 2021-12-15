@@ -124,4 +124,8 @@ void TreasureListWrapper::drop(const QMimeData *data, int row) {
         markModified(AfterChildAdd, row);
         row++;
     }
+    if (modified && myItem->total_chance) {
+        fixTotalChance();
+        markModified(AssetUpdated, 1);
+    }
 }
