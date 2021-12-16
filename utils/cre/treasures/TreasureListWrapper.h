@@ -12,6 +12,7 @@ extern "C" {
 #include "CREPixmap.h"
 
 class ResourcesManager;
+class TreasureWrapper;
 
 class TreasureListWrapper : public AssetTWrapper<treasurelist> {
     Q_OBJECT
@@ -31,6 +32,7 @@ public:
     virtual int childrenCount() const override;
     virtual AssetWrapper *child(int child) override;
     virtual int childIndex(AssetWrapper *child) override;
+    virtual void removeChild(AssetWrapper *child) override;
 
     virtual bool canDrag() const override { return true; }
     virtual void drag(QMimeData *data) const override;

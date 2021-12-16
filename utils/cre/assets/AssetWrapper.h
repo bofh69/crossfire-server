@@ -6,12 +6,13 @@
 #include <QIcon>
 
 class QMimeData;
+class QMenu;
 
 class AssetWrapper : public QObject {
     Q_OBJECT
 public:
     enum PossibleUse { Uses, ChildrenMayUse, DoesntUse };
-    enum ChangeType { AssetUpdated, BeforeChildAdd, AfterChildAdd };
+    enum ChangeType { AssetUpdated, BeforeChildAdd, AfterChildAdd, BeforeChildRemove, AfterChildRemove, BeforeLayoutChange, AfterLayoutChange };
 
     AssetWrapper(AssetWrapper *parent, const QString &panelName = "empty")
         : QObject(parent), myParent(parent), myPanelName(panelName) {
@@ -40,6 +41,10 @@ public:
     virtual void drag(QMimeData *) const { }
     virtual bool canDrop(const QMimeData *, int) const { return false; }
     virtual void drop(const QMimeData *, int) { }
+    virtual void fillMenu(QMenu *) { }
+
+public slots:
+    virtual void removeChild(AssetWrapper *) { }
 
 signals:
     void dataModified(AssetWrapper *asset, AssetWrapper::ChangeType type, int extra);
@@ -66,7 +71,7 @@ public:
         myItem = item;
     };
 
-    const T *item() const { return myItem; }
+    T *item() const { return myItem; }
 
     virtual void displayFillPanel(QWidget *panel) override {
         CRETPanel<T>* p = static_cast<CRETPanel<T>*>(panel);

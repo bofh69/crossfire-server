@@ -160,6 +160,22 @@ void AssetModel::assetModified(AssetWrapper *asset, AssetWrapper::ChangeType typ
             endInsertRows();
             break;
         }
+        case AssetWrapper::BeforeChildRemove: {
+            beginRemoveRows(idx, extra, extra);
+            break;
+        }
+        case AssetWrapper::AfterChildRemove: {
+            endRemoveRows();
+            break;
+        }
+        case AssetWrapper::BeforeLayoutChange: {
+            emit layoutAboutToBeChanged();
+            break;
+        }
+        case AssetWrapper::AfterLayoutChange: {
+            emit layoutChanged();
+            break;
+        }
     }
 }
 

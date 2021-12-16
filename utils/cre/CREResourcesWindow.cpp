@@ -104,6 +104,9 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     myTree->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(myTree, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(treeCustomMenu(const QPoint&)));
     connect(myTree->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(currentRowChanged(const QModelIndex&, const QModelIndex&)));
+    connect(myModel, &QAbstractItemModel::rowsInserted, [this](const QModelIndex &parent, int /*first*/, int /*last*/) {
+        myTree->expand(parent);
+    });
 
     QWidget* w = new QWidget(splitter);
     myStackedPanels = new QStackedLayout(w);
@@ -424,35 +427,21 @@ void CREResourcesWindow::onReportChange(QObject* object)
     progress.hide();
 }
 
-void CREResourcesWindow::fillItem(const QPoint& pos, QMenu* menu)
-{
-    (void)pos;
-    (void)menu;
-}
-
 void CREResourcesWindow::treeCustomMenu(const QPoint & pos)
 {
     QMenu menu;
 
-//    if (myDisplay & DisplayMessage)
-    {
-        QAction* addMessage = new QAction("add message", &menu);
-        connect(addMessage, SIGNAL(triggered(bool)), this, SLOT(addMessage(bool)));
-        menu.addAction(addMessage);
+    QModelIndex index = myModel->mapToSource(myTree->indexAt(pos));
+    if (index.isValid() && index.internalPointer()) {
+        AssetWrapper *item = reinterpret_cast<AssetWrapper *>(index.internalPointer());
+        if (item) {
+            item->fillMenu(&menu);
+        }
     }
-
-//    if (myDisplay & DisplayQuests)
-    {
-        QAction* addQuest = new QAction("add quest", &menu);
-        connect(addQuest, SIGNAL(triggered(bool)), this, SLOT(addQuest(bool)));
-        menu.addAction(addQuest);
-    }
-
-    fillItem(pos, &menu);
 
     if (menu.actions().size() == 0)
         return;
-    menu.exec(myTree->mapToGlobal(pos));
+    menu.exec(myTree->mapToGlobal(pos) + QPoint(5, 5));
 }
 
 void CREResourcesWindow::addQuest(bool)

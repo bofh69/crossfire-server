@@ -54,7 +54,6 @@ class CREResourcesWindow : public QWidget
         CREScriptEngine myEngine;
 
         void addPanel(QString name, CREPanel* panel);
-        void fillItem(const QPoint& pos, QMenu* menu);
         void setFilter(const QString &filter, const QString &name);
 
     protected slots:

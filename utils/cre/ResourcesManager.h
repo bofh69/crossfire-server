@@ -41,6 +41,13 @@ public:
         }
         return myWrappedAssets[asset];
     }
+    void remove(A *asset) {
+        auto found = myWrappedAssets.find(asset);
+        if (found != myWrappedAssets.end()) {
+            delete found.value();
+            myWrappedAssets.erase(found);
+        }
+    }
 private:
     QHash<A *, W *> myWrappedAssets;
 };
@@ -113,6 +120,7 @@ class ResourcesManager : public QObject, AssetsTracker
         AssetWrapper *wrap(artifact *art, AssetWrapper *parent) { return myWrappedArtifacts.wrap(art, parent, this); }
         AssetWrapper *wrap(recipelist *list, AssetWrapper *parent) { return myWrappedRecipeLists.wrap(list, parent, this); }
         AssetWrapper *wrap(recipe *rc, AssetWrapper *parent) { return myWrappedRecipes.wrap(rc, parent, this); }
+        void remove(treasure *tr) { myWrappedTreasures.remove(tr); }
 
     public slots:
       void archetypeModified(archetype *arch);

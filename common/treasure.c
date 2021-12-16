@@ -1367,6 +1367,23 @@ treasure *get_empty_treasure(void) {
 }
 
 /**
+ * Frees a treasure, including its yes, no and next items.
+ *
+ * @param t
+ * treasure to free. Pointer is free()d too, so becomes invalid.
+ */
+void treasure_free(treasure *t) {
+    if (t->next)
+        treasure_free(t->next);
+    if (t->next_yes)
+        treasure_free(t->next_yes);
+    if (t->next_no)
+        treasure_free(t->next_no);
+    free(t);
+}
+
+
+/**
  * Insert a new treasure in the treasure list, at a specific position in the children list.
  * @param list list to insert the new treasure into.
  * @param position if less than the number of items then before this item, else at end of list.
@@ -1388,4 +1405,35 @@ treasure *treasure_insert(treasurelist *list, int position) {
     added->next = prev->next;
     prev->next = added;
     return added;
+}
+
+/**
+ * Remove the treasure at the specified position from the list.
+ * @param list list to remove the treasure from.
+ * @param position index of the treasure to remove, 0-based, negative value is ignored.
+ */
+void treasure_remove_item(treasurelist *list, int position) {
+    if (list->items == 0 || position < 0) {
+        return;
+    }
+    if (position == 0) {
+        treasure *next = list->items->next;
+        list->items->next = NULL;
+        treasure_free(list->items);
+        list->items = next;
+        return;
+    }
+    position--;
+    treasure *prev = list->items;
+    while (prev && position > 0) {
+        position--;
+        prev = prev->next;
+    }
+    if (!prev) {
+        return;
+    }
+    treasure *next = prev->next->next;
+    prev->next->next = NULL;
+    treasure_free(prev->next);
+    prev->next = next;
 }

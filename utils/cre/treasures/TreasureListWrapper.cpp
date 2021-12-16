@@ -129,3 +129,19 @@ void TreasureListWrapper::drop(const QMimeData *data, int row) {
         markModified(AssetUpdated, 1);
     }
 }
+
+void TreasureListWrapper::removeChild(AssetWrapper *child) {
+    int index = childIndex(child);
+    if (index != -1) {
+        auto t = dynamic_cast<TreasureWrapper *>(child);
+        markModified(BeforeChildRemove, index);
+        myResources->remove(t->item());
+        treasure_remove_item(myItem, index);
+        markModified(AfterChildRemove, index);
+        if (myItem->total_chance) {
+            fixTotalChance();
+            markModified(AssetUpdated, 1);
+            return;
+        }
+    }
+}

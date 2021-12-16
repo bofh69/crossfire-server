@@ -18,33 +18,17 @@ treasurelist *Treasures::create(const std::string& name) {
     return tl;
 }
 
-/**
- * Frees a treasure, including its yes, no and next items.
- *
- * @param t
- * treasure to free. Pointer is free()d too, so becomes invalid.
- */
-static void free_treasurestruct(treasure *t) {
-    if (t->next)
-        free_treasurestruct(t->next);
-    if (t->next_yes)
-        free_treasurestruct(t->next_yes);
-    if (t->next_no)
-        free_treasurestruct(t->next_no);
-    free(t);
-}
-
 void Treasures::destroy(treasurelist *item) {
     if (item->name)
         free_string(item->name);
     if (item->items)
-        free_treasurestruct(item->items);
+        treasure_free(item->items);
     free(item);
 }
 
 void Treasures::replace(treasurelist *existing, treasurelist *update) {
     if (existing->items) {
-        free_treasurestruct(existing->items);
+        treasure_free(existing->items);
     }
     existing->items = update->items;
     existing->total_chance = update->total_chance;

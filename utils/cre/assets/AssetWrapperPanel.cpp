@@ -12,11 +12,13 @@ AssetWrapperPanel::AssetWrapperPanel(QWidget *parent) : CRETPanel(parent), myAss
 
 void AssetWrapperPanel::setItem(AssetWrapper *item) {
     if (myAsset) {
-        disconnect(myAsset, SIGNAL(modified()), this, SLOT(itemChanged()));
+        disconnect(myChanged);
+        disconnect(myDelete);
     }
     myAsset = item;
     if (myAsset) {
-        connect(myAsset, SIGNAL(modified()), this, SLOT(itemChanged()));
+        myChanged = connect(myAsset, SIGNAL(modified()), this, SLOT(itemChanged()));
+        myDelete = connect(myAsset, &QObject::destroyed, [this] () { setItem(nullptr); });
         itemChanged();
     }
 }

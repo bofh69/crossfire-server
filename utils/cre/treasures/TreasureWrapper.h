@@ -33,6 +33,12 @@ public:
     virtual int childrenCount() const override;
     virtual AssetWrapper *child(int child) override;
     virtual int childIndex(AssetWrapper *child) override;
+    virtual void removeChild(AssetWrapper *child) override;
+
+    virtual bool canDrop(const QMimeData *data, int row) const override;
+    virtual void drop(const QMimeData *data, int row) override;
+
+    virtual void fillMenu(QMenu *menu) override;
 
     uint8_t chance() const;
     void setChance(uint8_t chance);
@@ -45,26 +51,36 @@ public:
     const archetype *arch() const;
     void setArch(const archetype *arch);
 
+public slots:
+    void swapYesNo();
+
 protected:
     ResourcesManager *myResources;
     TreasureYesNo *myNextYes;
     TreasureYesNo *myNextNo;
+
+    void doAddChild(TreasureYesNo **my, treasure **ti, bool isYes, int index, treasurelist *tl, archetype *arch);
+    void addChild(treasurelist *tl, archetype *arch);
+    void doRemoveChild(TreasureYesNo **tr, treasure **ti, int index);
 };
 
 class TreasureYesNo : public AssetWrapper {
 public:
-    enum YesNo { Yes, No };
-    TreasureYesNo(TreasureWrapper *parent, treasure *tr, ResourcesManager *resources, YesNo yesNo);
+    TreasureYesNo(TreasureWrapper *parent, treasure *tr, ResourcesManager *resources, bool isYes);
 
-    virtual QString displayName() const override { return myYesNo == Yes ? "Yes" : "No"; }
-    virtual QIcon displayIcon() const override { return myYesNo == Yes ? CREPixmap::getTreasureYesIcon() : CREPixmap::getTreasureNoIcon(); }
+    virtual QString displayName() const override { return myIsYes ? "Yes" : "No"; }
+    virtual QIcon displayIcon() const override { return myIsYes ? CREPixmap::getTreasureYesIcon() : CREPixmap::getTreasureNoIcon(); }
 
     virtual int childrenCount() const override { return 1; }
     virtual AssetWrapper *child(int child) override { return child == 0 ? myWrapped : nullptr; }
     virtual int childIndex(AssetWrapper *child) override { return child == myWrapped ? 0 : -1; }
+    virtual void removeChild(AssetWrapper *) override { myParent->removeChild(this); }
+
+    virtual void fillMenu(QMenu *menu) override;
+    void setIsYes(bool isYes) { myIsYes = isYes; }
 
 protected:
-    YesNo myYesNo;
+    bool myIsYes;
     AssetWrapper *myWrapped;
 };
 

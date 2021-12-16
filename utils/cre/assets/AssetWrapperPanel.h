@@ -37,6 +37,8 @@ protected:
     QGridLayout *myLayout;
     AssetWrapper *myAsset;
     bool myInhibit;
+    QMetaObject::Connection myChanged;
+    QMetaObject::Connection myDelete;
 
     template<class T>
     T *addWidget(const QString &label, T *widget, bool sideBySide, const char *property, const char *widgetProperty) {

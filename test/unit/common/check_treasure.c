@@ -70,6 +70,24 @@ START_TEST(test_add_treasure_in_list) {
 }
 END_TEST
 
+START_TEST(test_treasure_remove_item) {
+    treasurelist list;
+    treasure *first = treasure_insert(&list, 0),
+            *second = treasure_insert(&list, 1),
+            *third = treasure_insert(&list, 2),
+            *fourth = treasure_insert(&list, 3),
+            *fifth = treasure_insert(&list, 4)
+            ;
+
+    treasure_remove_item(&list, 0);
+    fail_unless(list.items == second, "first not removed");
+    treasure_remove_item(&list, 1);
+    fail_unless(second->next == fourth, "third not removed");
+    treasure_remove_item(&list, 2);
+    fail_unless(fourth->next == NULL, "fifth not removed");
+}
+END_TEST
+
 static Suite *treasure_suite(void) {
     Suite *s = suite_create("treasure");
     TCase *tc_core = tcase_create("Core");
@@ -79,6 +97,7 @@ static Suite *treasure_suite(void) {
 
     suite_add_tcase(s, tc_core);
     tcase_add_test(tc_core, test_add_treasure_in_list);
+    tcase_add_test(tc_core, test_treasure_remove_item);
 
     return s;
 }

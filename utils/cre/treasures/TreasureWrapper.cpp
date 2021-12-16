@@ -1,16 +1,18 @@
 #include "TreasureWrapper.h"
+#include "TreasureListWrapper.h"
 #include "../ResourcesManager.h"
 #include "assets.h"
 #include "AssetsManager.h"
+#include "MimeUtils.h"
 
 TreasureWrapper::TreasureWrapper(AssetWrapper *parent, treasure *tr, ResourcesManager *resources)
    : AssetTWrapper(parent, "Treasure", tr), myResources(resources), myNextYes(nullptr), myNextNo(nullptr)
 {
     if (myItem->next_yes) {
-        myNextYes = new TreasureYesNo(this, myItem->next_yes, resources, TreasureYesNo::Yes);
+        myNextYes = new TreasureYesNo(this, myItem->next_yes, resources, true);
     }
     if (myItem->next_no) {
-        myNextNo = new TreasureYesNo(this, myItem->next_no, resources, TreasureYesNo::No);
+        myNextNo = new TreasureYesNo(this, myItem->next_no, resources, false);
     }
 }
 
@@ -106,6 +108,67 @@ int TreasureWrapper::childIndex(AssetWrapper *child) {
     return -1;
 }
 
+void TreasureWrapper::doRemoveChild(TreasureYesNo **tr, treasure **ti, int index) {
+    markModified(BeforeChildRemove, index);
+    myResources->remove(*ti);
+    treasure_free(*ti);
+    (*ti) = nullptr;
+    delete *tr;
+    (*tr) = nullptr;
+    markModified(AfterChildRemove, index);
+    return;
+}
+
+void TreasureWrapper::removeChild(AssetWrapper *child) {
+    if (child == myNextYes) {
+        doRemoveChild(&myNextYes, &myItem->next_yes, 0);
+        return;
+    }
+    if (child == myNextNo) {
+        doRemoveChild(&myNextNo, &myItem->next_no, myNextYes ? 1 : 0);
+    }
+}
+
+void TreasureWrapper::doAddChild(TreasureYesNo **my, treasure **ti, bool isYes, int index, treasurelist *tl, archetype *arch) {
+    markModified(BeforeChildAdd, index);
+    (*ti) = get_empty_treasure();
+    (*my) = new TreasureYesNo(this, *ti, myResources, isYes);
+    (*ti)->item = arch;
+    if (tl) {
+        (*ti)->name = add_string(tl->name);
+    }
+    markModified(AfterChildAdd, index);
+}
+
+void TreasureWrapper::addChild(treasurelist *tl, archetype *arch) {
+    if (!myNextYes) {
+        doAddChild(&myNextYes, &myItem->next_yes, true, 0, tl, arch);
+        return;
+    }
+    if (!myNextNo) {
+        doAddChild(&myNextNo, &myItem->next_no, false, 1, tl, arch);
+    }
+}
+
+bool TreasureWrapper::canDrop(const QMimeData *data, int) const {
+    return
+            data->hasFormat(MimeUtils::Archetype)
+            || data->hasFormat(MimeUtils::TreasureList)
+        ;
+}
+
+void TreasureWrapper::drop(const QMimeData *data, int) {
+    auto archs = MimeUtils::extract(data, MimeUtils::Archetype, getManager()->archetypes());
+    for (auto arch : archs) {
+        addChild(nullptr, arch);
+    }
+
+    auto lists = MimeUtils::extract(data, MimeUtils::TreasureList, getManager()->treasures());
+    for (auto list : lists) {
+        addChild(list, nullptr);
+    }
+}
+
 uint8_t TreasureWrapper::chance() const {
     return myItem->chance;
 }
@@ -168,7 +231,34 @@ void TreasureWrapper::setArch(const archetype *arch) {
     }
 }
 
-TreasureYesNo::TreasureYesNo(TreasureWrapper *parent, treasure *tr, ResourcesManager *resources, YesNo yesNo)
-    : AssetWrapper(parent, "empty"), myYesNo(yesNo) {
+void TreasureWrapper::fillMenu(QMenu *menu) {
+    connect(menu->addAction(tr("Delete")), &QAction::triggered, [this] () { myParent->removeChild(this); });
+    if (myNextYes || myNextNo) {
+        connect(menu->addAction(tr("Swap 'yes' and 'no'")), &QAction::triggered, this, &TreasureWrapper::swapYesNo);
+    }
+}
+
+void TreasureWrapper::swapYesNo() {
+    if (myNextYes || myNextNo) {
+        markModified(BeforeLayoutChange);
+        if (myNextYes) {
+            myNextYes->setIsYes(false);
+        }
+        if (myNextNo) {
+            myNextNo->setIsYes(true);
+        }
+        std::swap(myNextYes, myNextNo);
+        std::swap(myItem->next_yes, myItem->next_no);
+        markModified(AfterLayoutChange);
+    }
+}
+
+TreasureYesNo::TreasureYesNo(TreasureWrapper *parent, treasure *tr, ResourcesManager *resources, bool isYes)
+    : AssetWrapper(parent, "empty"), myIsYes(isYes) {
         myWrapped = resources->wrap(tr, this);
     }
+
+void TreasureYesNo::fillMenu(QMenu *menu) {
+    connect(menu->addAction(tr("Delete")), &QAction::triggered, [this] () { myParent->removeChild(this); });
+    connect(menu->addAction(tr("Swap 'yes' and 'no'")), &QAction::triggered, static_cast<TreasureWrapper *>(myParent), &TreasureWrapper::swapYesNo);
+}
