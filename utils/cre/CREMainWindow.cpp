@@ -144,26 +144,6 @@ void CREMainWindow::createActions()
     myToolFacesetUseFallback->setChecked(true);
 }
 
-#if 0
-const char* displayTips[] = {
-    "List all defined elements, except the experience table.",
-    "List all defined artifacts.",
-    "List all defined archetypes.",
-    "List all defined treasure lists.",
-    "List all defined animations.",
-    "List all defined alchemy recipes.",
-    "List all defined faces.",
-    "List all maps, with their region.",
-    "List all defined quests.",
-    "List all NPC dialogs in files.",
-    "List all scripts references in maps.",
-    "List all random maps.",
-    "Display all general messages.",
-    "Display all facesets.",
-    nullptr,
-};
-#endif
-
 void CREMainWindow::createMenus()
 {
     myOpenMenu = menuBar()->addMenu(tr("&Open"));
