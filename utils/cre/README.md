@@ -16,6 +16,9 @@ What you can edit currently:
 - archetypes (through a text entry field)
 - NPC dialogs (through a GUI)
 - quests (through a GUI)
+- treasure lists; right-click to delete or alter items (not lists), drag & drop archetypes or other treasure lists to add an item to a list.
+    It is not possible to add or remove treasure lists
+- general messages can be edited except their identifier, no add/remove
 
 ## Linux and similar platforms
 
