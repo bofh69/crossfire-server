@@ -28,8 +28,6 @@ class CREMapInformation : public AssetWrapper
         CREMapInformation(const QString& path);
         virtual ~CREMapInformation();
 
-        void setDisplayParent(AssetWrapper *parent) { myParent = parent; }
-
         virtual QString displayName() const override;
 
         virtual void displayFillPanel(QWidget *panel) override {
