@@ -192,6 +192,19 @@ CONFIG += precompile_header
 PRECOMPILED_DIR = .pch
 PRECOMPILED_HEADER = cre_pch.h
 CONFIG += debug
+
+CONFIG(debug, debug|release) {
+    BDIR = build/debug
+}
+CONFIG(release, debug|release) {
+    BDIR = build/release
+}
+
+OBJECTS_DIR = $$BDIR/obj
+MOC_DIR = $$BDIR/moc
+RCC_DIR = $$BDIR/qrc
+UI_DIR = $$BDIR/u
+
 }
 
 win* {
