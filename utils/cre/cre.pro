@@ -182,6 +182,7 @@ CREPixmap.h \
  treasures/TreasureWrapper.h \
  AllAssets.h \
  ChangesDock.h
+
 LIBS += ../../server/libserver.a ../../common/libcross.a ../../socket/libsocket.a ../../random_maps/librandom_map.a ../../types/libtypes.a -lcurl
 QMAKE_CXXFLAGS += -Wcast-qual
 # -Wold-style-cast
