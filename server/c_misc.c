@@ -1171,7 +1171,7 @@ void command_statistics(object *pl, const char *params) {
         weap_speed = 1.0f;
     // We will initially calculate the damage if every attack you perform hits.
     // This will serve as a baseline for future calculations
-    float dps = (1000000.0f / max_time) * weap_speed * pl->stats.dam;
+    float dps = (1000000.0f / tick_duration) * weap_speed * pl->stats.dam;
     // TODO: Account for opposing AC in calculations, make some sort of table/chart.
     // Then we round the floating-point.
     draw_ext_info_format(NDI_UNIQUE, 0, pl, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_STATISTICS,
@@ -1185,7 +1185,7 @@ void command_statistics(object *pl, const char *params) {
      * the time estimates use the current value.  But I'm presuming that
      * max_time won't change very often.  MSW 2009-12-01
      */
-    seconds = (uint64_t)pl->contr->ticks_played * (uint64_t)max_time / 1000000;
+    seconds = (uint64_t)pl->contr->ticks_played * (uint64_t)tick_duration / 1000000;
     minutes = (uint32_t)seconds / 60;
     hours = minutes / 60;
     minutes = minutes % 60;

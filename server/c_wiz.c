@@ -1705,11 +1705,11 @@ void command_speed(object *op, const char *params) {
     if (*params == '\0' || !sscanf(params, "%d", &i)) {
         draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_DM,
                              "Current speed is %d",
-                             max_time);
+                             tick_duration);
         return;
     }
 
-    set_max_time(i);
+    set_tick_duration(i);
     reset_sleep();
     draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_DM,
                          "The speed is changed to %d.",

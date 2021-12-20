@@ -175,7 +175,7 @@ extern int maxfree[SIZEOFFREE], freedir[SIZEOFFREE];
 extern const Face *blank_face, *empty_face;
 extern const Face *smooth_face;
 
-extern uint32_t max_time; /* loop time */
+extern uint32_t tick_duration; /* loop time */
 extern socket_struct *init_sockets;
 
 #include "stringbuffer.h"

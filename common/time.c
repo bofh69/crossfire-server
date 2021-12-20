@@ -32,7 +32,7 @@
 /**
  * Gloabal variables:
  */
-uint32_t max_time = MAX_TIME;
+uint32_t tick_duration = MAX_TIME;
 static struct timespec game_time;
 
 /** Size of history buffer. */
@@ -178,7 +178,7 @@ static void timespec_add(struct timespec *time, long usec) {
  * Add one tick length to the last tick time.
  */
 void tick_game_time() {
-    timespec_add(&game_time, max_time);
+    timespec_add(&game_time, tick_duration);
 }
 
 long get_sleep_remaining() {
@@ -186,7 +186,7 @@ long get_sleep_remaining() {
     clock_gettime(CLOCK_MONOTONIC, &now);
     long time_since_last_sleep = timespec_diff(&now, &game_time);
     log_time(time_since_last_sleep);
-    return max_time - time_since_last_sleep;
+    return tick_duration - time_since_last_sleep;
 }
 
 void jump_time() {
@@ -195,13 +195,13 @@ void jump_time() {
 }
 
 /**
- * Sets the max speed. Can be called by a DM through the speed command.
+ * Sets the tick duration. Can be called by a DM through the speed command.
  *
  * @param t
- * new speed.
+ * new duration.
  */
-void set_max_time(long t) {
-    max_time = t;
+void set_tick_duration(long t) {
+    tick_duration = t;
 }
 
 extern unsigned long todtick;
@@ -308,7 +308,7 @@ void time_info(object *op) {
 
     draw_ext_info_format(
         NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_DEBUG,
-        "\tticks longer than %d ms = %d (%d%%)", max_time / 1000,
+        "\tticks longer than %d ms = %d (%d%%)", tick_duration / 1000,
         process_utime_long_count, 100 * process_utime_long_count / pticks);
 
     draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_DEBUG,
@@ -321,7 +321,7 @@ void time_info(object *op) {
             maxt = process_utime_save[i];
         if (process_utime_save[i] < mint)
             mint = process_utime_save[i];
-        if (process_utime_save[i] > max_time)
+        if (process_utime_save[i] > tick_duration)
             long_count++;
     }
 
@@ -334,7 +334,7 @@ void time_info(object *op) {
 
     draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_DEBUG,
                          "ticks longer than max time (%dms) = %d (%d%%)",
-                         max_time/1000, long_count,
+                         tick_duration/1000, long_count,
                          100*long_count/MIN(pticks, PBUFLEN));
 }
 
@@ -376,5 +376,5 @@ const char *time_format_time(const timeofday_t *tod, char *buf, size_t bufsize)
  * Calculate the number of ticks that correspond to real time.
  */
 unsigned int tick_length(float seconds) {
-    return (int)ceil(seconds * 1000000 / max_time);
+    return (int)ceil(seconds * 1000000 / tick_duration);
 }

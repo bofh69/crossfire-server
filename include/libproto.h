@@ -422,7 +422,7 @@ extern long usec_elapsed(struct timespec first, struct timespec second);
 void tick_game_time(void);
 long get_sleep_remaining(void);
 extern void jump_time(void);
-extern void set_max_time(long t);
+extern void set_tick_duration(long t);
 extern void get_tod(timeofday_t *tod);
 extern void time_info(object *op);
 extern long seconds(void);
