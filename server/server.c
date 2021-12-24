@@ -1539,6 +1539,7 @@ static void do_specials(void) {
  * command-line options.
  */
 void server_main(int argc, char *argv[]) {
+    PROFILE_BEGIN();
 #ifdef WIN32 /* ---win32 this sets the win32 from 0d0a to 0a handling */
     _fmode = _O_BINARY;
 #endif
@@ -1560,7 +1561,7 @@ void server_main(int argc, char *argv[]) {
     init(argc, argv);
     initPlugins();        /* GROS - Init the Plugins */
     // Give feedback that loading is complete. This prevents confusion on when it is done loading.
-    LOG(llevInfo, "Initialization complete. Waiting for connections.\n");
+    PROFILE_END(diff, LOG(llevInfo, "Initialization complete (%ld ms). Waiting for connections.\n", diff/1000));
 #ifdef WIN32
     while (bRunning) {
 #else
