@@ -35,16 +35,6 @@
 #include "output_file.h"
 #include "path.h"
 
-#define PROFILE_BEGIN(expr) { \
-    struct timespec _begin, _end; \
-    clock_gettime(CLOCK_MONOTONIC, &_begin); \
-    expr;
-
-#define PROFILE_END(var, expr) \
-    clock_gettime(CLOCK_MONOTONIC, &_end); \
-    long var = timespec_diff(&_end, &_begin); \
-    expr; }
-
 static void free_all_objects(mapstruct *m);
 
 /**

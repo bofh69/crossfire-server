@@ -359,6 +359,16 @@ typedef struct Statistics {
  */
 extern Statistics statistics;
 
+#define PROFILE_BEGIN(expr) { \
+    struct timespec _begin, _end; \
+    clock_gettime(CLOCK_MONOTONIC, &_begin); \
+    expr;
+
+#define PROFILE_END(var, expr) \
+    clock_gettime(CLOCK_MONOTONIC, &_end); \
+    long var = timespec_diff(&_end, &_begin); \
+    expr; }
+
 /**
  * @defgroup SCRIPT_FIX_xxx For plugin events
  * GROS: Those are used by plugin events (argument fixthem).
