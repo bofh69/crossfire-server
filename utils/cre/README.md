@@ -30,7 +30,7 @@ What you can edit currently:
 
 ### To build
 
-`qmake && make` should be enough to build everything.
+`./build-help.sh && qmake && make` should be enough to build everything.
 
 (Builds in debug mode; change .qmake.cache to suit other needs better.)
 

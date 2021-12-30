@@ -13,6 +13,7 @@
 #include "CREPrePostList.h"
 #include "CREPrePostConditionDelegate.h"
 #include "assets/AssetModel.h"
+#include "HelpManager.h"
 
 CREQuestPanel::CREQuestPanel(CREMapInformationManager* mapManager, MessageManager* messageManager, ResourcesManager *resources, AssetModel *model, QWidget* parent) : CRETPanel(parent)
 {
@@ -119,6 +120,8 @@ CREQuestPanel::CREQuestPanel(CREMapInformationManager* mapManager, MessageManage
 
     myQuest = NULL;
     myCurrentStep = NULL;
+
+    HelpManager::setHelpId(this, "quests");
 }
 
 CREQuestPanel::~CREQuestPanel()

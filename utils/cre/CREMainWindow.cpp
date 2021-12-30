@@ -29,8 +29,9 @@ extern "C" {
 #include "AllAssets.h"
 #include "assets/AssetModel.h"
 #include "ChangesDock.h"
+#include "HelpManager.h"
 
-CREMainWindow::CREMainWindow()
+CREMainWindow::CREMainWindow(const QString &helpRoot)
 {
     myArea = new QMdiArea();
     setCentralWidget(myArea);
@@ -56,6 +57,8 @@ CREMainWindow::CREMainWindow()
     myModel = new AssetModel(myAssets, this);
     myMessageManager->setDisplayParent(myAssets);
     myScriptManager->setDisplayParent(myAssets);
+
+    myHelpManager = new HelpManager(helpRoot);
 
     createActions();
     createMenus();
@@ -209,23 +212,28 @@ void CREMainWindow::createMenus()
     sep->setSeparator(true);
     myWindows->addAction(sep);
 
-    auto help = menuBar()->addMenu(tr("&Help"));
+    auto helpMenu = menuBar()->addMenu(tr("&Help"));
+    auto help = createAction(tr("Help"), tr("CRE Help"));
+    help->setShortcut(Qt::Key_F1);
+    helpMenu->addAction(help);
+    connect(help, &QAction::triggered, myHelpManager, &HelpManager::displayHelp);
+
     auto about = createAction(tr("About"), tr("About CRE"));
-    help->addAction(about);
+    helpMenu->addAction(about);
     connect(about, &QAction::triggered, [=] () { QMessageBox::about(this, tr("About CRE"), tr("Crossfire Resource Editor")); });
 
     CRESettings settings;
     auto show = createAction(tr("Show changes after updating"), tr("If checked, then show latest changes at first startup after an update"));
     show->setCheckable(true);
     show->setChecked(settings.showChanges());
-    help->addAction(show);
+    helpMenu->addAction(show);
     connect(show, &QAction::triggered, [&] (bool checked) {
         CRESettings settings;
         settings.setShowChanges(checked);
     });
 
     auto changes = createAction(tr("Changes"), tr("Display CRE changes"));
-    help->addAction(changes);
+    helpMenu->addAction(changes);
     connect(changes, &QAction::triggered, [=] () { myChanges->setVisible(true); });
 }
 

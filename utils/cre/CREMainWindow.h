@@ -23,13 +23,14 @@ class AssetWrapper;
 class AllAssets;
 class AssetModel;
 class ChangesDock;
+class HelpManager;
 
 class CREMainWindow : public QMainWindow
 {
     Q_OBJECT
 
     public:
-        CREMainWindow();
+        CREMainWindow(const QString &helpRoot);
 
     signals:
         void updateFilters();
@@ -63,6 +64,7 @@ class CREMainWindow : public QMainWindow
         ResourcesManager* myResourcesManager;
         ScriptFileManager* myScriptManager;
         ChangesDock* myChanges;
+        HelpManager* myHelpManager;
 
     protected:
         void closeEvent(QCloseEvent* event);

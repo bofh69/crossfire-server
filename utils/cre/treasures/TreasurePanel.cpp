@@ -5,6 +5,7 @@
 #include "archetypes/ArchetypeComboBox.h"
 #include "treasures/TreasureListComboBox.h"
 #include "MimeUtils.h"
+#include "HelpManager.h"
 
 TreasurePanel::TreasurePanel(QWidget* parent) : AssetWrapperPanel(parent) {
     addSpinBox(tr("Chance:"), "chance", 0, 255, false);
@@ -14,6 +15,7 @@ TreasurePanel::TreasurePanel(QWidget* parent) : AssetWrapperPanel(parent) {
     myArch = addArchetype(tr("Archetype:"), "arch");
     addBottomFiller();
     setAcceptDrops(true);
+    HelpManager::setHelpId(this, "treasures");
 }
 
 void TreasurePanel::dragEnterEvent(QDragEnterEvent *event) {

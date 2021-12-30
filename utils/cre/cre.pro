@@ -89,6 +89,8 @@ CREPixmap.cpp \
  treasures/TreasureWrapper.cpp \
  AllAssets.cpp \
  ChangesDock.cpp \
+ HelpBrowser.cpp \
+ HelpManager.cpp \
  MimeUtils.cpp
 HEADERS += CREMainWindow.h \
 CREPixmap.h \
@@ -181,7 +183,9 @@ CREPixmap.h \
  treasures/TreasurePanel.h \
  treasures/TreasureWrapper.h \
  AllAssets.h \
- ChangesDock.h
+ ChangesDock.h \
+ HelpBrowser.h \
+ HelpManager.h
 
 LIBS += ../../server/libserver.a ../../common/libcross.a ../../socket/libsocket.a ../../random_maps/librandom_map.a ../../types/libtypes.a -lcurl
 QMAKE_CXXFLAGS += -Wcast-qual
@@ -217,4 +221,4 @@ RESOURCES += cre.qrc
 CONFIG += thread
 CONFIG += c++14
 
-QT += concurrent script widgets
+QT += concurrent script widgets help

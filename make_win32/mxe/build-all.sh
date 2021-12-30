@@ -1,5 +1,7 @@
 #!/bin/sh
 
+( cd ../../utils/cre && ./build-help.sh )
+
 CURRENT=`cd ../.. && basename \`pwd\``
 
 ./docker-setup.sh &&

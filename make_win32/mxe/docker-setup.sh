@@ -33,7 +33,8 @@ RUN DEBIAN_FRONTEND=noninteractive TERM=xterm apt-get update && apt-get install 
     adduser \
     sudo \
     automake \
-    nsis
+    nsis \
+    qttools5-dev-tools
 
 RUN apt-key adv \
     --keyserver keyserver.ubuntu.com \

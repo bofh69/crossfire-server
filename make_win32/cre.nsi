@@ -75,6 +75,8 @@ no_current:
 
   ; Install main files
   File "..\utils\cre\release\cre.exe"
+  File "..\utils\cre\cre.qch"
+  File "..\utils\cre\cre.qhc"
   File "cre.ico"
 
   ; Required directories
@@ -125,6 +127,8 @@ Section "un.${CRE}" un_jx
 
   ; Delete main files
   Delete "$INSTDIR\cre.exe"
+  Delete "$INSTDIR\cre.qch"
+  Delete "$INSTDIR\cre.qhc"
   Delete "$INSTDIR\cre.ico"
 
   ; Delete server files

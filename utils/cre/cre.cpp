@@ -1,6 +1,7 @@
 #include <Qt>
 #include <QApplication>
 #include <QCoreApplication>
+#include <QTemporaryDir>
 
 #include <CREMainWindow.h>
 #include "CRESettings.h"
@@ -33,6 +34,11 @@ int main(int argc, char **argv) {
     qRegisterMetaType<const Face *>("const treasurelist*");
     qRegisterMetaType<const Face *>("const archetype*");
 
+    // QHelpEngine apparently needs write access to files, so move'em to a writable location
+    QTemporaryDir forHelp;
+    QFile::copy(app.applicationDirPath() + "/cre.qch", forHelp.path() + "/cre.qch");
+    QFile::copy(app.applicationDirPath() + "/cre.qhc", forHelp.path() + "/cre.qhc");
+
 #ifdef WIN32
     // Application compiled with "--prefix=", somehow the root is then c:\, which is bad
     // So force directories to point to the exe's path and something else.
@@ -55,7 +61,7 @@ int main(int argc, char **argv) {
     if (!settings.ensureOptions())
         return -1;
 
-    CREMainWindow win;
+    CREMainWindow win(forHelp.path());
 
     CREPixmap::init();
 
