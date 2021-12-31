@@ -117,7 +117,7 @@ http://crossfire.real-time.com/mailinglists/index.html
 
 There you can subscribe/unsubscribe any of the mailing lists.  Links to
 archives of the mailing lists can be found there, as well as at:
-http://gmane.org/find.php?list=crossfire
+https://www.mail-archive.com/crossfire@metalforge.org/
 
 Contributing
 ------------
