@@ -666,7 +666,7 @@ more for making special NPCs for maps.  However, certain generic messages in
 archetypes might add to the general game ambiance a bit (by default: dogs
 would say "arf arf" guards would say "move along"...) - tm
 
-See also: http://wiki.metalforge.net/doku.php/cfdialog
+See also: http://wiki.cross-fire.org/dokuwiki/doku.php/cfpython:cfdialog
 
 ******************************************************************************
 3. Objects in general
@@ -717,7 +717,7 @@ When making a map, you should almost never change the type field of an object -
 instead, you should start with an object of an appropriate type and change the
 fields of the object to appear as you want it to.
 
-http://wiki.metalforge.net/doku.php/dev:object_types contains a wiki version of
+http://wiki.cross-fire.org/doku.php/dev:object_types contains a wiki version of
 the defines.h type definitions.
 
 Subtypes are related to types, in that it narrows down the scope of the
@@ -2622,7 +2622,7 @@ does for its name.
 Shared Strings
 ==============
 
-Ref:  http://wiki.metalforge.net/doku.php/dev:shared_strings
+Ref: http://wiki.cross-fire.org/doku.php/dev:shared_strings
 
 To minimize memory use, Crossfire uses a shared string mechanism. This is
 intended to be used for strings whose contents is not expected to change during

@@ -72,7 +72,7 @@ We recommend building with debugging symbols on (``-g``) and low optimization
   $ make install
 
 An older, step-by-step guide is available on the wiki:
-http://wiki.metalforge.net/doku.php/server:server_compiling
+http://wiki.cross-fire.org/doku.php/server:server_compiling
 
 To build the Crossfire Resource Editor (CRE), first build the server, and then
 run::
@@ -99,7 +99,7 @@ Official Website:
 http://crossfire.real-time.com/
 
 Crossfire Wiki:
-http://wiki.metalforge.net/doku.php
+http://wiki.cross-fire.org/
 
 SourceForge Downloads Page:
 http://sourceforge.net/projects/crossfire/files/
