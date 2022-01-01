@@ -157,7 +157,7 @@ void CREMainWindow::createMenus()
         QAction* action = new QAction(name, this);
         action->setStatusTip(tip);
         action->setData(static_cast<int>(index));
-        connect(action, SIGNAL(triggered()), this, SLOT(onOpenResources()));
+        connect(action, &QAction::triggered, [this, index] () { doResourceWindow(index); });
         myOpenMenu->addAction(action);
     };
     add(-1, "Assets", tr("Display all defined assets, except the experience table."));
@@ -285,15 +285,6 @@ void CREMainWindow::fillFacesets()
     fs->addSeparator();
     fs->addAction(myToolFacesetUseFallback);
     myToolFacesetUseFallback->setChecked(use);
-}
-
-void CREMainWindow::onOpenResources()
-{
-    QAction* source = qobject_cast<QAction*>(sender());
-    if (!source)
-        return;
-
-    doResourceWindow(source->data().toInt());
 }
 
 void CREMainWindow::onSaveFormulae()

@@ -74,7 +74,6 @@ class CREMainWindow : public QMainWindow
         QAction *createAction(const QString &title, const QString &statusTip, QObject *target, const char *slot);
 
     private slots:
-        void onOpenResources();
         void onOpenExperience();
         void onSaveFormulae();
         void onSaveQuests();
