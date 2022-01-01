@@ -13,6 +13,7 @@ class AssetWrapper : public QObject {
 public:
     enum PossibleUse { Uses, ChildrenMayUse, DoesntUse };
     enum ChangeType { AssetUpdated, BeforeChildAdd, AfterChildAdd, BeforeChildRemove, AfterChildRemove, BeforeLayoutChange, AfterLayoutChange };
+    static const char *tipProperty;
 
     AssetWrapper(AssetWrapper *parent, const QString &panelName = "empty")
         : QObject(parent), myParent(parent), myPanelName(panelName) {

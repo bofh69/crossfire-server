@@ -11,6 +11,7 @@ extern "C" {
 #include <QDebug>
 
 MessageManager::MessageManager(AssetWrapper *parent) : AssetWrapper(parent) {
+    setProperty(tipProperty, tr("Display all NPC dialogs."));
 }
 
 MessageManager::~MessageManager()

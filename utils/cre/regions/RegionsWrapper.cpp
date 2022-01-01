@@ -5,6 +5,7 @@ RegionsWrapper::RegionsWrapper(AssetWrapper *parent, ResourcesManager *resources
     for (region* reg = first_region; reg; reg = reg->next) {
         myRegions.push_front(resources->wrap(reg, this));
     }
+    setProperty(tipProperty, tr("Display all maps and regions."));
 }
 
 AssetWrapper::PossibleUse RegionsWrapper::uses(const AssetWrapper *asset, std::string &) const {

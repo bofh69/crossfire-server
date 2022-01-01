@@ -5,6 +5,7 @@
 
 RecipesWrapper::RecipesWrapper(AssetWrapper *parent, ResourcesManager *resourcesManager)
  : AssetWrapper(parent), myResourcesManager(resourcesManager) {
+    setProperty(tipProperty, tr("Display all recipes."));
 }
 
 int RecipesWrapper::childrenCount() const {

@@ -11,4 +11,5 @@ ArchetypesWrapper::ArchetypesWrapper(AssetWrapper *parent, ResourcesManager *res
             myArch.append(myResourcesManager->wrap(arch, this));
         }
     });
+    setProperty(tipProperty, tr("Display all archetypes."));
 }

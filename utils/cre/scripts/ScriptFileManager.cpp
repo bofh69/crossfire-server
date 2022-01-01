@@ -2,6 +2,7 @@
 #include "scripts/ScriptFile.h"
 
 ScriptFileManager::ScriptFileManager(AssetWrapper *parent) : AssetWrapper(parent) {
+    setProperty(tipProperty, tr("Display all Python scripts used in maps."));
 }
 
 ScriptFileManager::~ScriptFileManager()

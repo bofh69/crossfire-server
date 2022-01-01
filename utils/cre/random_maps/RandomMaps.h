@@ -10,6 +10,7 @@ class RandomMaps : public AssetWrapper {
 public:
     RandomMaps(AssetWrapper *parent, CREMapInformationManager *maps) : AssetWrapper(parent), myMaps(maps), myNeedRefresh(false) {
         connect(maps, SIGNAL(mapAdded(CREMapInformation *)), this, SLOT(mapAdded(CREMapInformation *)));
+        setProperty(tipProperty, tr("Display all random maps."));
     }
 
     virtual QString displayName() const override { return "Random maps"; }

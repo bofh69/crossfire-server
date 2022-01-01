@@ -26,8 +26,8 @@ AllAssets::AllAssets(ResourcesManager *resources, ScriptFileManager *scripts, Me
     myAssets.append(new ArchetypesWrapper(this, resources));
     myAssets.append(new FacesWrapper(this, resources));
     myAssets.append(new AnimationsWrapper(this, resources));
-    myAssets.append(new AssetsCollectionWrapper<treasurelist>(this, "Treasures", getManager()->treasures(), resources));
-    myAssets.append(new AssetsCollectionWrapper<face_sets>(this, "Facesets", getManager()->facesets(), resources));
+    myAssets.append(new AssetsCollectionWrapper<treasurelist>(this, "Treasures", getManager()->treasures(), resources, tr("Display all treasure lists.")));
+    myAssets.append(new AssetsCollectionWrapper<face_sets>(this, "Facesets", getManager()->facesets(), resources, tr("Display all facesets.")));
     myAssets.append(new GeneralMessagesWrapper(this, resources));
     myAssets.append(new QuestsWrapper(this, resources));
     myAssets.append(new ArtifactsWrapper(this, resources));

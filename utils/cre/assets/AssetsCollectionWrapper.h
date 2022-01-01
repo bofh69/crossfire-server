@@ -8,11 +8,12 @@
 template<typename T>
 class AssetsCollectionWrapper : public AssetWrapper {
 public:
-    AssetsCollectionWrapper(AssetWrapper *parent, const QString &name, AssetsCollection<T> *collection, ResourcesManager *resources)
+    AssetsCollectionWrapper(AssetWrapper *parent, const QString &name, AssetsCollection<T> *collection, ResourcesManager *resources, const QString &tip)
         : AssetWrapper(parent), myName(name) {
         collection->each([&] (T *asset) {
             myAssets.append(resources->wrap(asset, this));
         });
+        setProperty(tipProperty, tip);
     }
 
     virtual QString displayName() const { return myName; }

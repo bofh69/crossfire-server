@@ -31,6 +31,8 @@ extern "C" {
 #include "ChangesDock.h"
 #include "HelpManager.h"
 
+const char *AssetWrapper::tipProperty = "_cre_internal";
+
 CREMainWindow::CREMainWindow(const QString &helpRoot)
 {
     myArea = new QMdiArea();
@@ -151,16 +153,16 @@ void CREMainWindow::createMenus()
 {
     myOpenMenu = menuBar()->addMenu(tr("&Open"));
 
-    auto add = [this] (int index, const QString &name) {
+    auto add = [this] (int index, const QString &name, const QString &tip) {
         QAction* action = new QAction(name, this);
-//        action->setStatusTip(tr(displayTips[i]));
+        action->setStatusTip(tip);
         action->setData(static_cast<int>(index));
         connect(action, SIGNAL(triggered()), this, SLOT(onOpenResources()));
         myOpenMenu->addAction(action);
     };
-    add(-1, "Assets");
+    add(-1, "Assets", tr("Display all defined assets, except the experience table."));
     for (int asset = 0; asset < myAssets->childrenCount(); asset++) {
-        add(asset, myAssets->child(asset)->displayName());
+        add(asset, myAssets->child(asset)->displayName(), myAssets->child(asset)->property(AssetWrapper::tipProperty).toString());
     }
 
     myOpenMenu->addAction(createAction(tr("Experience"), tr("Display the experience table."), this, SLOT(onOpenExperience())));

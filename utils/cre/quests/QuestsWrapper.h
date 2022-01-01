@@ -7,7 +7,7 @@
 
 class QuestsWrapper : public AssetsCollectionWrapper<quest_definition> {
 public:
-    QuestsWrapper(AssetWrapper *parent, ResourcesManager *resources) : AssetsCollectionWrapper(parent, "Quests", getManager()->quests(), resources) {
+    QuestsWrapper(AssetWrapper *parent, ResourcesManager *resources) : AssetsCollectionWrapper(parent, "Quests", getManager()->quests(), resources, tr("Display all quests.")) {
     }
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override {

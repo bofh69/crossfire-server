@@ -5,6 +5,7 @@
 
 ArtifactsWrapper::ArtifactsWrapper(AssetWrapper *parent, ResourcesManager *resourcesManager)
  : AssetWrapper(parent), myResourcesManager(resourcesManager) {
+    setProperty(tipProperty, tr("Display all artifacts."));
 }
 
 int ArtifactsWrapper::childrenCount() const {
