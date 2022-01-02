@@ -35,6 +35,7 @@ CREQuestPanel::CREQuestPanel(CREMapInformationManager* mapManager, MessageManage
     int line = 1;
     layout->addWidget(new QLabel(tr("Code:"), this), line, 1);
     myCode = new QLineEdit();
+    myCode->setReadOnly(true);
     layout->addWidget(myCode, line++, 2);
 
     layout->addWidget(new QLabel(tr("Title:"), this), line, 1);
