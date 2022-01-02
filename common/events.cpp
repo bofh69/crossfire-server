@@ -238,7 +238,13 @@ static int do_execute_event(object *op, int eventcode, object *activator, object
                         object_remove(tmp);
                         object_free(tmp, FREE_OBJ_NO_DESTROY_CALLBACK);
                     }
-                    return rv;
+                    if (rv != METHOD_UNHANDLED) {
+                        // Stop applying events and return, unless the method
+                        // was unhandled (and keep applying other eligible
+                        // events). This is needed to make QuestApplyIf work
+                        // if apply is also handled in an event.
+                        return rv;
+                    }
                 }
             }
         }
