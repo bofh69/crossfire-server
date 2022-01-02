@@ -1,5 +1,6 @@
 #include "ScriptFileManager.h"
 #include "scripts/ScriptFile.h"
+#include <QVariant>
 
 ScriptFileManager::ScriptFileManager(AssetWrapper *parent) : AssetWrapper(parent) {
     setProperty(tipProperty, tr("Display all Python scripts used in maps."));
