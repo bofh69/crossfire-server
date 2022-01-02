@@ -65,8 +65,8 @@ CRECombatSimulator::~CRECombatSimulator()
 void CRECombatSimulator::fight(const archetype* first, const archetype* second)
 {
     int limit = myMaxRounds->value();
-    object* obfirst = object_create_arch((archetype*)first);
-    object* obsecond = object_create_arch((archetype*)second);
+    object* obfirst = object_create_arch(const_cast<archetype *>(first));
+    object* obsecond = object_create_arch(const_cast<archetype *>(second));
     tag_t tagfirst = obfirst->count;
     tag_t tagsecond = obsecond->count;
 
@@ -150,8 +150,8 @@ void CRECombatSimulator::fight()
      * So, temporaily create the objects to then determine what the maxhp is for
      * each object from the archetypes.
      */
-    object* obfirst = object_create_arch((archetype*)first);
-    object* obsecond = object_create_arch((archetype*)second);
+    object* obfirst = object_create_arch(const_cast<archetype *>(first));
+    object* obsecond = object_create_arch(const_cast<archetype *>(second));
 
     myFirstMinHp = obfirst->stats.maxhp;
     myFirstMaxHp = obfirst->stats.maxhp;
