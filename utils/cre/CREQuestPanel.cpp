@@ -45,7 +45,7 @@ CREQuestPanel::CREQuestPanel(CREMapInformationManager* mapManager, MessageManage
     myFace = new FaceComboBox(this, true);
     layout->addWidget(myFace, line++, 2);
 
-    myCanRestart = new QCheckBox(tr("this quest can be done multiple times"));
+    myCanRestart = new QCheckBox(tr("This quest can be done multiple times"));
     layout->addWidget(myCanRestart, line++, 1, 1, 2);
 
     myIsSystem = new QCheckBox(tr("System quest, not listed to players"));
