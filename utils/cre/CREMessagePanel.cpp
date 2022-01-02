@@ -99,7 +99,7 @@ void CREMessagePanel::setItem(MessageFile* message)
 {
     myPath->setText(message->path());
     /* can only change path when new file is created */
-    myPath->setEnabled(message->path() == "<new file>");
+    myPath->setReadOnly(message->path() != "<new file>");
     myLocation->setText(message->location());
 
     /* so the change handler won't do anything */
