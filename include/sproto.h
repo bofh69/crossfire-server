@@ -405,6 +405,7 @@ int playername_ok(const char *cp);
 player *get_player(player *p);
 void set_first_map(object *op);
 player *add_player(socket_struct *ns, int flags);
+object *get_nearest_criminal(object *mon);
 object *get_nearest_player(object *mon);
 int path_to_player(object *mon, object *pl, unsigned mindiff);
 void give_initial_items(object *pl, treasurelist *items);

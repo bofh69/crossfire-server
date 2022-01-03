@@ -572,6 +572,17 @@ object *get_nearest_player(object *mon) {
     return op;
 }
 
+object *get_nearest_criminal(object *mon) {
+    object *op = NULL;
+    for (player *pl = first_player; pl != NULL; pl = pl->next) {
+        rv_vector rv;
+        if (monster_can_detect_enemy(mon, pl->ob, &rv) && is_criminal(pl->ob)) {
+            op = pl->ob;
+        }
+    }
+    return op;
+}
+
 /**
  * This value basically determines how large a detour a monster will take from
  * the direction path when looking for a path to the player.

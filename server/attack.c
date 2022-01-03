@@ -896,6 +896,12 @@ static int attack_ob_simple(object *op, object *hitter, int base_dam, int base_w
         || abort_attack(op, hitter, simple_attack)) {
             return 0;
         }
+
+        if (object_value_set(hitter, "is_guard")) {
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_VICTIM, MSG_TYPE_VICTIM_WAS_PUSHED,
+                    "The %s arrests you!", hitter->name);
+            player_arrest(op);
+        }
     } else {/* end of if hitter hit op */
         play_sound_map(SOUND_TYPE_HIT, hitter, 0, "miss");
         dam = 0; /* if we missed, dam=0 */

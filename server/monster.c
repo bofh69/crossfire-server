@@ -94,7 +94,7 @@ object *monster_check_enemy(object *npc, rv_vector *rv) {
      * If we include a aggravated flag in , we can handle evil vs evil and good vs good
      * too. */
 
-    if (npc->enemy) {
+    if (npc->enemy && !object_value_set(npc, "is_guard")) {
         /* I broke these if's apart to better be able to see what
          * the grouping checks are.  Code is the same.
          */
@@ -273,13 +273,23 @@ static object *monster_find_enemy(object *npc, rv_vector *rv) {
             }
         }
 
-        /* we have no legal enemy or attacker, so we try to target a new one */
-        if (!QUERY_FLAG(npc, FLAG_UNAGGRESSIVE)
-        && !QUERY_FLAG(npc, FLAG_FRIENDLY)
-        && !QUERY_FLAG(npc, FLAG_NEUTRAL)) {
-            object_set_enemy(npc, get_nearest_player(npc));
-            if (npc->enemy)
+        if (object_value_set(npc, "is_guard")) {
+            object_set_enemy(npc, get_nearest_criminal(npc));
+            if (npc->enemy) {
+                char buf[MAX_BUF];
+                snprintf(buf, sizeof(buf), "Halt, %s, you are under arrest!", npc->enemy->name);
+                monster_npc_say(npc, buf);
                 tmp = monster_check_enemy(npc, rv);
+            }
+        } else {
+            /* we have no legal enemy or attacker, so we try to target a new one */
+            if (!QUERY_FLAG(npc, FLAG_UNAGGRESSIVE)
+            && !QUERY_FLAG(npc, FLAG_FRIENDLY)
+            && !QUERY_FLAG(npc, FLAG_NEUTRAL)) {
+                object_set_enemy(npc, get_nearest_player(npc));
+                if (npc->enemy)
+                    tmp = monster_check_enemy(npc, rv);
+            }
         }
     }
 
