@@ -613,4 +613,18 @@ static inline uint32_t NROF(const object * const ob) {
     return ob->nrof ? ob->nrof : 1;
 }
 
+/**
+ * Find a force with the given 'name' in the slaying field. These forces are
+ * used as markers that may expire, for example, in the marker type. This is
+ * a thin wrapper around object_find_by_type_and_slaying().
+ */
+object *find_force(object *op, const char *name);
+
+/**
+ * Add or return an existing force inside 'op' with the given 'name' and
+ * 'duration' in units of 100 ticks (12 seconds under default settings).
+ * If 'duration' is zero, the force will not expire by itself.
+ */
+object *add_force(object *op, const char *name, int duration);
+
 #endif /* OBJECT_H */

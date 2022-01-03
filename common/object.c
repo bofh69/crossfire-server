@@ -5382,3 +5382,30 @@ void object_handle_death_animation(object *op) {
         }
     }
 }
+
+object *find_force(object *op, const char *name) {
+    assert(op != NULL);
+    return object_find_by_type_and_slaying(op, FORCE, name);
+}
+
+object *add_force(object *op, const char *name, int duration) {
+    assert(op != NULL);
+    object *force = find_force(op, name);
+    if (force == NULL) {
+        force = create_archetype(FORCE_NAME);
+        force->slaying = add_string(name);
+        object_insert_in_ob(force, op);
+    }
+
+    if (duration != 0) {
+        force->speed = 0.01;
+        force->speed_left = -duration;
+    } else {
+        force->speed = 0;
+    }
+
+    // Even if duration is zero, a force could be set previously.
+    object_update_speed(force);
+
+    return force;
+}

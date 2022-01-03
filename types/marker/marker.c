@@ -70,27 +70,12 @@ static void move_marker(object *op) {
 
     for (tmp = GET_MAP_OB(op->map, op->x, op->y); tmp != NULL; tmp = tmp->above) {
         if (tmp->type == PLAYER) { /* we've got someone to MARK */
-            /* cycle through his inventory to look for the MARK we want to
-            * place
-            */
-            tmp2 = object_find_by_type_and_slaying(tmp, FORCE, op->slaying);
-            /* if we didn't find our own MARK */
-            if (tmp2 == NULL) {
-                object *force = create_archetype(FORCE_NAME);
-
-                force->speed = 0;
-                if (op->stats.food) {
-                    force->speed = 0.01;
-                    force->speed_left = -op->stats.food;
-                }
-                object_update_speed(force);
-                /* put in the lock code */
-                force->slaying = add_string(op->slaying);
+            if (!find_force(tmp, op->slaying)) {
+                object *force = add_force(tmp, op->slaying, op->stats.food);
 
                 if (op->lore)
                     force->lore = add_string(op->lore);
 
-                object_insert_in_ob(force, tmp);
                 if (op->msg)
                     draw_ext_info(NDI_UNIQUE|NDI_NAVY, 0, tmp, MSG_TYPE_MISC, MSG_SUBTYPE_NONE,
                         op->msg);
@@ -104,7 +89,7 @@ static void move_marker(object *op) {
                         return;
                     }
                 }
-            } /* if tmp2 == NULL */
+            }
         } /* if tmp->type == PLAYER */
     } /* For all objects on this space */
 }
