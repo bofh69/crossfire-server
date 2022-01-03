@@ -232,4 +232,7 @@ typedef struct pl {
 #define ADD_PLAYER_NO_STATS_ROLL    0x4 /**< Stats provided from client */
 /*@}*/
 
+void commit_crime(object *op, const char *description);
+bool is_criminal(object *op);
+
 #endif /* PLAYER_H */

@@ -258,6 +258,12 @@ void save_throw_object(object *op, uint32_t type, object *originator) {
             fix_stopped_item(op, m, originator);
             return;
         }
+        if (QUERY_FLAG(op, FLAG_UNPAID)) {
+            if (originator->owner != NULL) {
+                // Punish player for destroying unpaid item
+                commit_crime(originator->owner, "Destruction of unpaid property");
+            }
+        }
         if (op->nrof > 1) {
             op = object_decrease_nrof(op, rndm(0, op->nrof-1));
             if (op)

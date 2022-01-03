@@ -306,3 +306,12 @@ void link_player_skills(object *op) {
         }
     } FOR_INV_FINISH();
 }
+
+void commit_crime(object *op, const char *description) {
+    object *force = add_force(op, "criminal", 25); // 5 minutes
+    object_set_msg(force, description);
+}
+
+bool is_criminal(object *op) {
+    return find_force(op, "criminal");
+}
