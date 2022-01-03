@@ -6,8 +6,10 @@ extern "C" {
 #include <map>
 #include <string>
 
-// If set then dump information about found event connectors
-//#define EVENTS_DEBUG
+/**
+ * To turn on verbose messages about events in the debug log, set the
+ * CF_DEBUG_EVENTS environment variable.
+ */
 
 static std::map<event_registration, f_plug_event> global_handlers[NR_EVENTS];
 static event_registration next_event_registration = 1;
@@ -186,24 +188,25 @@ void events_execute_global_event(int eventcode, ...) {
 
 static int do_execute_event(object *op, int eventcode, object *activator, object *third, const char *message, int fix, talk_info *talk) {
     int rv = 0;
+    bool debug_events = (getenv("CF_DEBUG_EVENTS") != NULL);
 
     FOR_INV_PREPARE(op, tmp) {
         if (tmp->type == EVENT_CONNECTOR && tmp->subtype == eventcode) {
-#ifdef EVENTS_DEBUG
-            LOG(llevDebug, "********** EVENT HANDLER **********\n");
-            LOG(llevDebug, " - Who am I      :%s\n", op->name);
-            if (activator != NULL)
-                LOG(llevDebug, " - Activator     :%s\n", activator->name);
-            if (third != NULL)
-                LOG(llevDebug, " - Other object  :%s\n", third->name);
-            LOG(llevDebug, " - Event code    :%d\n", tmp->subtype);
-            if (tmp->title != NULL)
-                LOG(llevDebug, " - Event plugin  :%s\n", tmp->title);
-            if (tmp->slaying != NULL)
-                LOG(llevDebug, " - Event hook    :%s\n", tmp->slaying);
-            if (tmp->name != NULL)
-                LOG(llevDebug, " - Event options :%s\n", tmp->name);
-#endif
+            if (debug_events) {
+                LOG(llevDebug, "********** EVENT HANDLER **********\n");
+                LOG(llevDebug, " - Who am I      :%s\n", op->name);
+                if (activator != NULL)
+                    LOG(llevDebug, " - Activator     :%s\n", activator->name);
+                if (third != NULL)
+                    LOG(llevDebug, " - Other object  :%s\n", third->name);
+                LOG(llevDebug, " - Event code    :%d\n", tmp->subtype);
+                if (tmp->title != NULL)
+                    LOG(llevDebug, " - Event plugin  :%s\n", tmp->title);
+                if (tmp->slaying != NULL)
+                    LOG(llevDebug, " - Event hook    :%s\n", tmp->slaying);
+                if (tmp->name != NULL)
+                    LOG(llevDebug, " - Event options :%s\n", tmp->name);
+            }
 
             if (tmp->title == NULL) {
                 object *env = object_get_env_recursive(tmp);
@@ -232,9 +235,9 @@ static int do_execute_event(object *op, int eventcode, object *activator, object
                         return rv;
                     }
                     if (QUERY_FLAG(tmp, FLAG_UNIQUE)) {
-#ifdef EVENTS_DEBUG
-                        LOG(llevDebug, "Removing unique event %s\n", tmp->slaying);
-#endif
+                        if (debug_events) {
+                            LOG(llevDebug, "Removing unique event %s\n", tmp->slaying);
+                        }
                         object_remove(tmp);
                         object_free(tmp, FREE_OBJ_NO_DESTROY_CALLBACK);
                     }
