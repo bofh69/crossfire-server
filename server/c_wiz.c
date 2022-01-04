@@ -1531,6 +1531,8 @@ static void reset_faces_sent(struct socket_struct *socket) {
 }
 
 void command_recollect(object *op, const char *params) {
+    (void)op;
+    (void)params;
     load_assets();
 
     // Clear sent faces for connected sockets so that clients see new faces.
