@@ -8,6 +8,7 @@ extern "C" {
 #include "AssetsManager.h"
 #include "assets/AssetsCollectionWrapper.h"
 #include "faces/FaceWrapper.h"
+#include "quests/QuestWrapper.h"
 
 class ResourcesManager;
 
@@ -20,7 +21,9 @@ public:
     }
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override {
-        return dynamic_cast<const FaceWrapper *>(asset) ? ChildrenMayUse : DoesntUse;
+        return dynamic_cast<const FaceWrapper *>(asset)
+                || dynamic_cast<const QuestWrapper *>(asset)
+                ? ChildrenMayUse : DoesntUse;
     }
 };
 

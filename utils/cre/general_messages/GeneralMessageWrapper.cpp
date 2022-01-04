@@ -6,6 +6,12 @@ AssetWrapper::PossibleUse GeneralMessageWrapper::uses(const AssetWrapper *asset,
     if (face) {
         return myItem->face == face->item() ? Uses : DoesntUse;
     }
+    auto quest = dynamic_cast<const QuestWrapper *>(asset);
+    if (quest && myItem->quest_code) {
+        std::string name(myItem->quest_code);
+        size_t len = strlen(quest->item()->quest_code);
+        return (name.length() > len && name[len] == ' ' && name.substr(0, len) == quest->item()->quest_code) ? Uses : DoesntUse;
+    }
     return DoesntUse;
 }
 
