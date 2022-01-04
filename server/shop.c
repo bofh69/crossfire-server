@@ -97,8 +97,8 @@ uint64_t price_base(const object *obj) {
 
     /**
      * Shopkeepers always know the BUC status of items. Adjust the base price
-     * of items based on their BUC status. Note that later in shop_price_sell,
-     * we further decrease the sell price of cursed and damned items.
+     * of items based on their BUC status. Note that religious players can
+     * readily uncurse items, so don't make this too drastic.
      */
     if (QUERY_FLAG(obj, FLAG_BLESSED)){
         val *= 1.15;
@@ -167,113 +167,64 @@ uint64_t price_approx(const object *tmp, object *who) {
 
 /**
  * Calculate the buy price multiplier based on a player's charisma.
- *
  * @param charisma player's charisma.
- * @return buy multiplier between 2 and 0.5.
+ * @return multiplier between 0 and 1
  */
-static float shop_buy_multiplier(int charisma) {
-    float multiplier = 1 / (0.38 * pow(1.06, charisma));
+static float shop_cha_modifier(int charisma) {
+    return tanh((charisma+15.0)/20);
+}
 
-    if (multiplier > 2) {
-        return 2;
-    } else if (multiplier < 0.5) {
-        return 0.5;
-    } else {
-        return multiplier;
-    }
+/**
+ * Return the shop's efficiency (E) for a player, a number greater than (but
+ * not equal to) zero and less than or equal to one. When E is one, there is no
+ * buy/sell spread and the shop makes no money. When E is low, transaction
+ * costs to the player are high. Shops should pay players price*E for items and
+ * sell it to players for price/E.
+ */
+float shop_efficiency(const object *player) {
+    return shop_greed(player->map)
+         * shop_approval(player->map, player)
+         * shop_cha_modifier(player->stats.Cha);
 }
 
 uint64_t shop_price_buy(const object *tmp, object *who) {
     assert(who != NULL && who->type == PLAYER);
-    uint64_t val = price_base(tmp);
-
+    const uint64_t val = price_base(tmp);
     const char *key = object_get_value(tmp, "price_adjustment_buy");
+    float adj = 1;
     if (key != NULL) {
-        float ratio = atof(key);
-        return val * ratio;
+        adj = atof(key);
     }
-
-    if (tmp->type == GEM) {
-        return 1.03 * val;
+    float E = shop_efficiency(who);
+    const uint64_t adj_val = val * adj / E;
+    if (getenv("CF_DEBUG_SHOP")) {
+        LOG(llevDebug, "price_buy %s %u*adj(%.2f)/E(%.2f) = %u\n",
+                tmp->arch->name, val, adj, E, adj_val);
     }
-
-    // Further reduce the sell price of cursed and damned items.
-    if (QUERY_FLAG(tmp, FLAG_CURSED) || QUERY_FLAG(tmp, FLAG_DAMNED)) {
-        val *= 0.8;
-    }
-
-    float multiplier = shop_buy_multiplier(who->stats.Cha);
-
-    // Limit buy price multiplier to 0.5, no matter what.
-    val *= multiplier > 0.5 ? multiplier : 0.5;
-
-    /*
-        * When buying, if the item was sold by another player, it is
-        * ok to let the item be sold cheaper, according to the
-        * specialisation of the shop. If a player sold an item here,
-        * then his sale price was multiplied by the specialisation
-        * ratio, to do the same to the buy price will not generate
-        * extra money. However, the same is not true of generated
-        * items, these have to /divide/ by the specialisation, so
-        * that the price is never less than what they could
-        * be sold for (otherwise players could camp map resets to
-        * make money).
-        * In game terms, a non-specialist shop might not recognise
-        * the true value of the items it sells (much like how people
-        * sometimes find antiques in a junk shop in real life).
-        */
-    if (QUERY_FLAG(tmp, FLAG_PLAYER_SOLD)) {
-        val = (int64_t)val*shop_greed(who->map)
-            *shop_specialisation_ratio(tmp, who->map)
-            /shop_approval(who->map, who);
-    } else {
-        val = (int64_t)val*shop_greed(who->map)
-            /(shop_specialisation_ratio(tmp, who->map)
-                *shop_approval(who->map, who));
-    }
-
-    return val;
+    return adj_val;
 }
 
 uint64_t shop_price_sell(const object *tmp, object *who) {
     assert(who != NULL && who->type == PLAYER);
-    uint64_t val = price_base(tmp);
-
+    const uint64_t val = price_base(tmp);
     const char *key = object_get_value(tmp, "price_adjustment_sell");
+    float adj = 1;
     if (key != NULL) {
-        float ratio = atof(key);
-        return val * ratio;
+        adj = atof(key);
     }
-
-    if (tmp->type == GEM) {
-        return 0.97 * val;
-    }
-
-    // Shops value unidentified items less.
-    if (!is_identified(tmp)) {
-        if (tmp->arch != NULL) {
-            // Unidentified standard objects are only worth a little less.
-            if (QUERY_FLAG(tmp, FLAG_BEEN_APPLIED)) {
-                val *= 0.85;
-            } else {
-                val *= 0.70;
-            }
-        } else {
-            // No archetype, so probably an artifact.
-            val /= 2;
-        }
-    }
-
-    // Selling to shops yields roughly 50% of the base price.
-    val /= 2;
+    float spec = shop_specialisation_ratio(tmp, who->map);
+    float E = shop_efficiency(who);
+    const uint64_t adj_val = val * adj * spec * E;
 
     /* Limit amount of money you can get for really great items. */
     int number = NROF(tmp);
-    val = value_limit(val, number, who, 1);
+    uint64_t limval = value_limit(adj_val, number, who, 1);
 
-    val = (int64_t)val*shop_specialisation_ratio(tmp, who->map)*
-            shop_approval(who->map, who)/shop_greed(who->map);
-    return val;
+    if (getenv("CF_DEBUG_SHOP")) {
+        LOG(llevDebug, "price_sell %s %u*adj(%.2f)*s(%.2f)*E(%.2f) = %u limited to %u\n",
+                tmp->arch->name, val, adj, spec, E, adj_val, limval);
+    }
+    return limval;
 }
 
 /**
@@ -1053,10 +1004,12 @@ void sell_item(object *op, object *pl) {
 }
 
 /**
- * Returns a double that is the ratio of the price that a shop will offer for
- * item based on the shops specialisation. Does not take account of greed,
- * returned value is between (2*SPECIALISATION_EFFECT-1) and 1 and in any
- * event is never less than 0.1 (calling functions divide by it).
+ * Returns the ratio of the price that a shop will offer for an item based on
+ * the shop's specialisation. The ratio is between (2*SPECIALISATION_EFFECT-1)
+ * and 1 and in any event is never less than 0.1 (calling functions divide by
+ * it). This ratio should multiply only the sell price, because incorrectly
+ * coded shops that generate items outside of specialty shouldn't give away
+ * items for very low prices.
  *
  * @param item
  * item to get ratio of.
@@ -1103,7 +1056,13 @@ static double shop_specialisation_ratio(const object *item, const mapstruct *map
 }
 
 /**
- * Gets shop's greed.
+ * Gets a shop's greed. For historical reasons, this is a number between 0 and 2.
+ * Use this to compute a base efficiency for a shop:
+ *  0 ~= 1.0 (shop makes no profit)
+ *  1 ~= 0.9 (a reasonably efficient market)
+ *  2 ~= 0.5 (2x more expensive items, pays 0.5x for items)
+ *
+ * Caveat: most shops have greed unset (0), so make that 1
  *
  * @param map
  * map to get greed.
@@ -1111,16 +1070,15 @@ static double shop_specialisation_ratio(const object *item, const mapstruct *map
  * greed of the shop on map, or 1 if it isn't specified.
  */
 static double shop_greed(const mapstruct *map) {
-    double greed = 1.0;
-
-    if (map->shopgreed)
-        return map->shopgreed;
-    return greed;
+    float greed = map->shopgreed;
+    if (greed == 0) {
+        greed = 1;
+    }
+    return tanh(-greed+2.0)/2 + 0.5;
 }
 
 double shop_approval(const mapstruct *map, const object *player) {
     double approval = 1.0;
-
     if (map->shoprace) {
         approval = NEUTRAL_RATIO;
         if (player->race && !strcmp(player->race, map->shoprace))
