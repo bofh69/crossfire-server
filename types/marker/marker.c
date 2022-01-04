@@ -59,7 +59,7 @@ void init_type_marker(void) {
  * marker to move. Can be removed if it reached its marking limit.
  */
 static void move_marker(object *op) {
-    object *tmp, *tmp2;
+    object *tmp;
 
     /*
     * markers not on a map for any reason should not crash server
