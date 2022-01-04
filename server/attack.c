@@ -167,6 +167,20 @@ static void put_in_icecube(object* op, object* originator) {
     (void)object_insert_in_ob(op, tmp);
 }
 
+object *blame(object *op) {
+    if (op == NULL) {
+        return NULL;
+    }
+    if (op->type == PLAYER) {
+        return op;
+    }
+    object *owner = object_get_owner(op);
+    if (owner != NULL && owner->type == PLAYER) {
+        return owner;
+    }
+    return NULL;
+}
+
 /**
  * Object is attacked with some attacktype (fire, ice, ...).
  * Calls did_make_save_item().  It then performs the
@@ -221,6 +235,14 @@ void save_throw_object(object *op, uint32_t type, object *originator) {
                 spring_trap(inv, originator);
         FOR_INV_FINISH();
 
+        if (QUERY_FLAG(op, FLAG_UNPAID)) {
+            object *badguy = blame(originator);
+            if (badguy != NULL) {
+                // Punish player for destroying unpaid item
+                commit_crime(badguy, "Destruction of unpaid property");
+            }
+        }
+
         /* Hacked the following so that type LIGHTER will work.
          * Also, objects which are potenital "lights" that are hit by
          * flame/elect attacks will be set to glow. "lights" are any
@@ -257,12 +279,6 @@ void save_throw_object(object *op, uint32_t type, object *originator) {
             cancellation(op);
             fix_stopped_item(op, m, originator);
             return;
-        }
-        if (QUERY_FLAG(op, FLAG_UNPAID)) {
-            if (originator->owner != NULL) {
-                // Punish player for destroying unpaid item
-                commit_crime(originator->owner, "Destruction of unpaid property");
-            }
         }
         if (op->nrof > 1) {
             op = object_decrease_nrof(op, rndm(0, op->nrof-1));
