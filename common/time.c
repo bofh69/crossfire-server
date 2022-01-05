@@ -42,7 +42,7 @@ static uint32_t psaveind;                      /**< Index in ::process_utime_sav
 static uint32_t process_max_utime = 0;         /**< Longest cycle time. */
 static uint32_t process_min_utime = 999999999; /**< Shortest cycle time. */
 static uint32_t process_tot_mtime;             /**< ? */
-uint32_t pticks;                               /**< ? */
+uint32_t pticks;                               /**< Number of ticks since time reset */
 static uint32_t process_utime_long_count;      /**< Number of times server couldn't keep up with game time (tried to sleep for a negative time) */
 
 /** Ingame seasons. */
@@ -145,7 +145,6 @@ void reset_sleep(void) {
  * Adds time to our history list.
  */
 static void log_time(uint32_t process_utime) {
-    pticks++;
     if (++psaveind >= PBUFLEN)
         psaveind = 0;
     process_utime_save[psaveind] = process_utime;
@@ -179,6 +178,7 @@ static void timespec_add(struct timespec *time, long usec) {
  */
 void tick_game_time() {
     timespec_add(&game_time, tick_duration);
+    pticks++;
 }
 
 long get_sleep_remaining() {
