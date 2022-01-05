@@ -24,8 +24,6 @@
 #endif
 #include <assert.h>
 
-extern unsigned long todtick;
-
 static void dawn_to_dusk(const timeofday_t *tod);
 /** How to alter darkness, based on time of day and season. */
 static const int season_timechange[5][HOURS_PER_DAY] = {

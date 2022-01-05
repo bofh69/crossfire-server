@@ -35,6 +35,8 @@
 uint32_t tick_duration = MAX_TIME;
 static struct timespec game_time;
 
+unsigned long todtick;
+
 /** Size of history buffer. */
 #define PBUFLEN 100
 static uint32_t process_utime_save[PBUFLEN];   /**< Historic data. */
@@ -203,8 +205,6 @@ void jump_time() {
 void set_tick_duration(long t) {
     tick_duration = t;
 }
-
-extern unsigned long todtick;
 
 /**
  * Computes the ingame time of the day.

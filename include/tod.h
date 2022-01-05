@@ -8,6 +8,7 @@
 
 #include "config.h"
 
+/** Number of ticks per in-game hour. With defaults, 3 real-life minutes. */
 #define PTICKS_PER_CLOCK        1500
 
 /* game time */
@@ -27,6 +28,9 @@
 #define HOURS_PER_YEAR          (HOURS_PER_MONTH*MONTHS_PER_YEAR)
 
 #define LUNAR_DAYS              DAYS_PER_MONTH
+
+/** Game world time, in in-game hours. See PTICKS_PER_CLOCK. */
+extern unsigned long todtick;
 
 /**
  * Represents the ingame time.

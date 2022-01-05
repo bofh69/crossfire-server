@@ -1468,8 +1468,6 @@ void login_check_shutdown(object* const op) {
     }
 }
 
-extern unsigned long todtick;
-
 /**
  * Collection of functions to call from time to time.
  *

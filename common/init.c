@@ -397,9 +397,6 @@ static void init_dynamic(void) {
     }
 }
 
-/** Ingame time */
-unsigned long todtick;
-
 /**
  * Write out the current time to the file so time does not
  * reset every time the server reboots.

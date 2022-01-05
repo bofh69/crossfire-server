@@ -345,8 +345,6 @@ void watchdog(void) {
 }
 #endif
 
-extern unsigned long todtick;
-
 /**
  * Waits for new connection when there is no one connected.
  */
