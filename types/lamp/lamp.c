@@ -32,12 +32,14 @@
 #include <sproto.h>
 
 static method_ret lamp_type_apply(object *lighter, object *applier, int aflags);
+static void lamp_type_describe(const object *op, const object *observer, int use_media_tags, char *buf, size_t size);
 
 /**
  * Initializer for the LAMP object type.
  */
 void init_type_lamp(void) {
     register_apply(LAMP, lamp_type_apply);
+    register_describe(LAMP, lamp_type_describe);
 }
 
 /**
@@ -135,4 +137,45 @@ static method_ret lamp_type_apply(object *lamp, object *applier, int aflags) {
     }
 
     return METHOD_OK;
+}
+
+static void lamp_type_describe(const object *op, const object *observer, int use_media_tags, char *buf, size_t size) {
+    StringBuffer *sb = stringbuffer_new();
+    char *final;
+    (void)observer;
+    (void)use_media_tags;
+
+    buf[0] = '\0';
+    query_name(op, buf, size-1);
+    buf[size-1] = 0;
+
+    if (!QUERY_FLAG(observer, FLAG_BLIND)) {
+        stringbuffer_append_printf(sb, ". It is %s. ", QUERY_FLAG(op, FLAG_APPLIED) ? "on" : "off");
+        if (op->stats.maxsp) {
+            float fill = (float)op->stats.food / op->stats.maxsp;
+            stringbuffer_append_printf(sb, "It is ");
+            if (fill == 1) {
+                stringbuffer_append_printf(sb, "full.");
+            } else if (fill == 0) {
+                stringbuffer_append_printf(sb, "empty.");
+            } else if (fill > 1) {
+                // Lamps created before food value was adjusted
+                stringbuffer_append_printf(sb, "very full.");
+            } else if (fill > 0.9) {
+                stringbuffer_append_printf(sb, "nearly full.");
+            } else if (fill > 0.6) {
+                stringbuffer_append_printf(sb, "more than half full.");
+            } else if (fill > 0.4) {
+                stringbuffer_append_printf(sb, "about half full.");
+            } else if (fill > 0.2) {
+                stringbuffer_append_printf(sb, "less than half full.");
+            } else if (fill > 0.1) {
+                stringbuffer_append_printf(sb, "almost empty.");
+            }
+        }
+    }
+
+    final = stringbuffer_finish(sb);
+    strncat(buf, final, size);
+    free(final);
 }
