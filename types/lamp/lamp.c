@@ -118,6 +118,11 @@ static method_ret lamp_type_apply(object *lamp, object *applier, int aflags) {
     else
         tmp = NULL;
 
+    if (lamp->stats.food > lamp->stats.maxsp) {
+        // Lamps created before food value was adjusted
+        lamp->stats.food = lamp->stats.maxsp;
+    }
+
     if (QUERY_FLAG(lamp, FLAG_APPLIED))
         do_turn(lamp, applier, aflags, "off");
     else {
