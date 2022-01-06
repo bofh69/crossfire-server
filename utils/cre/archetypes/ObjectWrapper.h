@@ -29,6 +29,7 @@ class ObjectWrapper : public AssetTWrapper<object> {
     Q_PROPERTY(qint64 experience READ experience WRITE setExperience)
     Q_PROPERTY(quint32 attacktype READ attacktype)
     Q_PROPERTY(int ac READ ac WRITE setAc)
+    Q_PROPERTY(int con READ con WRITE setCon)
     Q_PROPERTY(int wc READ wc WRITE setWc)
     Q_PROPERTY(QObject* arch READ arch)
     Q_PROPERTY(int damage READ damage WRITE setDamage)
@@ -37,6 +38,8 @@ class ObjectWrapper : public AssetTWrapper<object> {
     Q_PROPERTY(QString materialName READ materialName)
     Q_PROPERTY(QObject* randomItems READ randomItems)
     Q_PROPERTY(float speed READ speed WRITE setSpeed);
+    Q_PROPERTY(float dps READ dps);
+    Q_PROPERTY(float regen READ regen);
 
     public:
         ObjectWrapper(AssetWrapper *parent, object *ob, ResourcesManager *resourcesManager);
@@ -68,6 +71,8 @@ class ObjectWrapper : public AssetTWrapper<object> {
         int8_t wc() const { return myItem->stats.wc; }
         void setWc(int8_t wc) { myItem->stats.wc = wc; }
         int16_t damage() const { return myItem->stats.dam; }
+        int8_t con() const { return myItem->stats.Con; }
+        void setCon(int8_t con) { myItem->stats.Con = con; }
         void setDamage(int16_t damage) { myItem->stats.dam = damage; }
         int16_t hp() const { return myItem->stats.hp; }
         void setHp(int16_t hp) { myItem->stats.hp = hp; }
@@ -78,6 +83,8 @@ class ObjectWrapper : public AssetTWrapper<object> {
         float speed() const { return myItem->speed; }
         void setSpeed(float speed) { myItem->speed = speed; }
         const Face *face() const { return myItem->face; }
+        float dps() const;
+        float regen() const;
 
     protected:
         ResourcesManager *myResourcesManager;

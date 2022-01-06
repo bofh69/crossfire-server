@@ -67,6 +67,14 @@ QString ObjectWrapper::materialName() const
   return myItem->materialname;
 }
 
+float ObjectWrapper::dps() const {
+    return damage() * speed() / MOVE_PER_SECOND;
+}
+
+float ObjectWrapper::regen() const {
+    return con() / 4.0 / MOVE_PER_SECOND;
+}
+
 AssetWrapper *ObjectWrapper::randomItems() {
     if (!myItem->randomitems) {
         return nullptr;

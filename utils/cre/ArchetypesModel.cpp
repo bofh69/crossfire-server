@@ -5,16 +5,19 @@
 #include "archetypes/ObjectWrapper.h"
 #include "ResourcesManager.h"
 
-#define PROPERTY_COUNT  8
+#define PROPERTY_COUNT  11
 const char *properties[PROPERTY_COUNT] = {
     "hp",
+    "con",
+    "regen",
     "ac",
     "wc",
     "weight",
     "experience",
     "level",
     "damage",
-    "speed"
+    "speed",
+    "dps"
 };
 
 ArchetypesModel::ArchetypesModel(ResourcesManager *resourcesManager) {
