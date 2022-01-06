@@ -795,6 +795,10 @@ int process_object(object *op) {
     if (events_execute_object_event(op, EVENT_TIME, NULL, NULL, NULL, SCRIPT_FIX_NOTHING) != 0)
         return 0;
 
+    if (QUERY_FLAG(op, FLAG_REMOVED)) {
+        return 1;
+    }
+
     if (QUERY_FLAG(op, FLAG_MONSTER))
         if (monster_move(op) || QUERY_FLAG(op, FLAG_FREED))
             return 1;

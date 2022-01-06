@@ -872,6 +872,11 @@ int monster_move(object *op) {
     if (op->will_apply)
         monster_apply_below(op); /* Check for items to apply below */
 
+    // Can happen due to monster_apply_below().
+    if (QUERY_FLAG(op, FLAG_REMOVED)) {
+        return 1;
+    }
+
     /* If we don't have an enemy, do special movement or the like */
     if (!enemy) {
         return monster_move_no_enemy(op);
