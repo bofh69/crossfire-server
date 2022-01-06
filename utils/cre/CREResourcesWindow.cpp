@@ -223,11 +223,12 @@ void CREResourcesWindow::updateFilters()
 
     myFiltersMenu->clear();
 
+    QAction* clear = new QAction(tr("(none)"), this);
+    connect(clear, SIGNAL(triggered()), this, SLOT(clearFilter()));
+    myFiltersMenu->addAction(clear);
+
     if (myFilters.filters().size() > 0)
     {
-        QAction* clear = new QAction(tr("(none)"), this);
-        connect(clear, SIGNAL(triggered()), this, SLOT(clearFilter()));
-        myFiltersMenu->addAction(clear);
 
         foreach(CREFilterDefinition* filter, myFilters.filters())
         {
@@ -236,9 +237,8 @@ void CREResourcesWindow::updateFilters()
             myFiltersMapper.setMapping(a, filter);
             connect(a, SIGNAL(triggered()), &myFiltersMapper, SLOT(map()));
         }
-
-        myFiltersMenu->addSeparator();
     }
+    myFiltersMenu->addSeparator();
 
     QAction* quick = new QAction(tr("Quick filter..."), this);
     connect(quick, SIGNAL(triggered()), this, SLOT(onQuickFilter()));
