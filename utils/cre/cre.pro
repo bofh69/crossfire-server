@@ -191,7 +191,7 @@ LIBS += ../../server/libserver.a ../../common/libcross.a ../../socket/libsocket.
 QMAKE_CXXFLAGS += -Wcast-qual
 # -Wold-style-cast
 
-linux-* {
+linux-*|unix {
 LIBS += -lcrypt -ldl
 CONFIG += precompile_header
 PRECOMPILED_DIR = .pch
