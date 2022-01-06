@@ -47,7 +47,6 @@ class ObjectWrapper : public AssetTWrapper<object> {
 
         virtual QString displayName() const override { return name(); }
 
-//        void setObject(object* obj);
         object *getObject() { return myItem; }
 
         AssetWrapper* arch();

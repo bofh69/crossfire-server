@@ -9,19 +9,6 @@ ObjectWrapper::ObjectWrapper(AssetWrapper *parent, object *ob, ResourcesManager 
 ObjectWrapper::~ObjectWrapper() {
 }
 
-/*
-void CREWrapperObject::setObject(object* obj)
-{
-    myItem = obj;
-    if (myArchetype == NULL)
-        myArchetype = new ArchetypeWrapper(this, obj->arch);
-    else
-        myArchetype->setArchetype(obj->arch);
-    delete myTreasure;
-    myTreasure = nullptr;
-}
- */
-
 AssetWrapper* ObjectWrapper::arch()
 {
     return myResourcesManager->wrap(myItem->arch, this);
