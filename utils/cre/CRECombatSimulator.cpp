@@ -7,6 +7,7 @@ extern "C" {
 }
 #include "assets.h"
 #include "AssetsManager.h"
+#include "archetypes/ArchetypeComboBox.h"
 
 CRECombatSimulator::CRECombatSimulator()
 {
@@ -14,21 +15,12 @@ CRECombatSimulator::CRECombatSimulator()
     int line = 0;
 
     layout->addWidget(new QLabel(tr("First fighter:"), this), line, 0);
-    myFirst = new QComboBox(this);
+    myFirst = new ArchetypeComboBox(this, false);
     layout->addWidget(myFirst, line++, 1);
 
     layout->addWidget(new QLabel(tr("Second fighter:"), this), line, 0);
-    mySecond = new QComboBox(this);
+    mySecond = new ArchetypeComboBox(this, false);
     layout->addWidget(mySecond, line++, 1);
-
-    getManager()->archetypes()->each([this] (archetype *arch)
-    {
-        if (arch->head == NULL && QUERY_FLAG(&arch->clone, FLAG_MONSTER))
-        {
-            myFirst->addItem(CREPixmap::getIcon(arch->clone.face->number), arch->name, QVariant::fromValue((void*)arch));
-            mySecond->addItem(CREPixmap::getIcon(arch->clone.face->number), arch->name, QVariant::fromValue((void*)arch));
-        }
-    });
 
     layout->addWidget(new QLabel(tr("Number of fights:"), this), line, 0);
     myCombats = new QSpinBox(this);
@@ -139,8 +131,8 @@ void CRECombatSimulator::fight()
     myFirstVictories = 0;
     mySecondVictories = 0;
 
-    const archetype* first = (const archetype*)myFirst->itemData(myFirst->currentIndex()).value<void*>();
-    const archetype* second = (const archetype*)mySecond->itemData(mySecond->currentIndex()).value<void*>();
+    const archetype* first = myFirst->arch();
+    const archetype* second = mySecond->arch();
 
     /*
      * Set min and max hp here, in case a monster doesn't ever get attacked

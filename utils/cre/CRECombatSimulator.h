@@ -12,6 +12,7 @@ extern "C" {
 
 class QComboBox;
 class QSpinBox;
+class ArchetypeComboBox;
 
 class CRECombatSimulator : public QDialog
 {
@@ -27,8 +28,8 @@ class CRECombatSimulator : public QDialog
     private:
         void fight(const archetype* first, const archetype* second);
 
-        QComboBox* myFirst;
-        QComboBox* mySecond;
+        ArchetypeComboBox* myFirst;
+        ArchetypeComboBox* mySecond;
         QSpinBox* myCombats;
         QSpinBox* myMaxRounds;
         QLabel* myResultLabel;
