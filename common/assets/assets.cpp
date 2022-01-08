@@ -131,10 +131,14 @@ void assets_collect(const char* datadir, int what) {
         collector.addLoader(new FaceLoader(manager->faces(), manager->animations()));
     if (what & ASSETS_MESSAGES)
         collector.addLoader(new MessageLoader(manager->messages(), tracker));
-    if (what & ASSETS_ARTIFACTS)
+    if (what & ASSETS_ARTIFACTS) {
         collector.addLoader(new WrapperLoader("/artifacts", init_artifacts));
-    if (what & ASSETS_FORMULAE)
+        collector.addLoader(new WrapperLoader(".artifacts", init_artifacts));
+    }
+    if (what & ASSETS_FORMULAE) {
         collector.addLoader(new WrapperLoader("/formulae", init_formulae));
+        collector.addLoader(new WrapperLoader(".formulae", init_formulae));
+    }
     if (what & ASSETS_ATTACK_MESSAGES)
         collector.addLoader(new WrapperLoader("/attackmess", init_attackmess));
     if (what & ASSETS_QUESTS)
