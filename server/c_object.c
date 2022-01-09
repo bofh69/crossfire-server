@@ -2086,7 +2086,7 @@ static void display_new_pickup(const object *op, int old) {
     if (!(i&PU_NEWMODE) || !(i&PU_DEBUG)) {
         if ((old & PU_INHIBIT) != (op->contr->mode & PU_INHIBIT)) {
             draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_INFO,
-                "Pickup is %s.", (old & PU_INHIBIT) ? "active" : "inhibited");
+                "Pickup is now %s.", (old & PU_INHIBIT) ? "active" : "inhibited");
         }
         return;
     }
