@@ -135,7 +135,7 @@ static void show_matching_spells(object *op, const char *params) {
             *cp = '\0';
 
             draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_SUCCESS,
-                                 "\n[fixed]%s spells %.*s <lvl> <sp>",
+                                 "\n[b][fixed]%s spells %.*s <lvl> <sp>",
                                  tmp, (int)(20-strlen(tmp)), "              ");
         }
         draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_SUCCESS,
