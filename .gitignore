@@ -544,6 +544,7 @@ test/performance/perf_mapsave
 test/unit/server/check_account
 test/unit/server/check_account_char
 test/unit/server/check_monster_change
+utils/cre/build/
 utils/mapper/crossfire-mapper
 utils/mapper/html
 utils/openseadragon
