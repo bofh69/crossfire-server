@@ -2,25 +2,32 @@
 #include <QTextEdit>
 #include <QFile>
 #include "CRESettings.h"
+#include <QHelpEngineCore>
 
-ChangesDock::ChangesDock(QWidget *parent) : QDockWidget(tr("Changes"), parent) {
+ChangesDock::ChangesDock(QHelpEngineCore *help, QWidget *parent) : QDockWidget(tr("Changes"), parent) {
     setAllowedAreas(Qt::RightDockWidgetArea);
     setFeatures(DockWidgetClosable);
+    setVisible(false);
 
-    QTextEdit *myText = new QTextEdit(this);
-    myText->setReadOnly(true);
-    setWidget(myText);
+    QTextEdit *changes = new QTextEdit(this);
+    changes->setReadOnly(true);
+    setWidget(changes);
 
-    QFile changes(":/resources/changes.html");
-    changes.open(QIODevice::ReadOnly);
-    QString content = changes.readAll();
+    connect(help, &QHelpEngineCore::setupFinished, [this, help, changes] () { helpReady(help, changes); });
+}
+
+void ChangesDock::helpReady(QHelpEngineCore *help, QTextEdit *edit) {
+    QString content("No content to display");
+    auto links = help->linksForIdentifier("changes");
+    if (!links.empty()) {
+        content = help->fileData(links.begin().value());
+    }
+    edit->setText(content);
 
     CRESettings settings;
-    setVisible(false);
     if (settings.showChanges() && settings.changesLength() != content.length()) {
         setVisible(true);
         settings.setChangesLength(content.length());
     }
 
-    myText->setText(content);
 }

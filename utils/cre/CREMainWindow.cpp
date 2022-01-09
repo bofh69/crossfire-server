@@ -73,10 +73,11 @@ CREMainWindow::CREMainWindow(const QString &helpRoot)
 
     fillFacesets();
 
-    myChanges = new ChangesDock(this);
+    myChanges = new ChangesDock(myHelpManager, this);
     addDockWidget(Qt::RightDockWidgetArea, myChanges);
 
     myMapManager->start();
+    myHelpManager->setupData();
 }
 
 void CREMainWindow::closeEvent(QCloseEvent* event)

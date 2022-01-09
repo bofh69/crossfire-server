@@ -3,9 +3,15 @@
 
 #include <QDockWidget>
 
+class QHelpEngineCore;
+class QTextEdit;
+
 class ChangesDock : public QDockWidget {
 public:
-    ChangesDock(QWidget *parent);
+    ChangesDock(QHelpEngineCore *help, QWidget *parent);
+
+protected:
+    void helpReady(QHelpEngineCore *help, QTextEdit *edit);
 };
 
 #endif /* CHANGES_DOCK_H */

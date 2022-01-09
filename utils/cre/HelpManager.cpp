@@ -12,8 +12,6 @@
 const char *HelpManager::helpIdProperty = "cre_help_id";
 
 HelpManager::HelpManager(const QString &helpRoot) : QHelpEngine(helpRoot + "/cre.qhc") {
-    setupData();
-
     myDisplay = new QDialog();
     QVBoxLayout *layout = new QVBoxLayout(myDisplay);
     QSplitter *horizSplitter = new QSplitter(Qt::Horizontal, myDisplay);
