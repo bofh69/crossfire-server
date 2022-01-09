@@ -364,7 +364,7 @@ static void do_wizard_hide(object *op, int silent_dm) {
         if (!silent_dm) {
             draw_ext_info(NDI_UNIQUE|NDI_ALL|NDI_LT_GREEN, 1, NULL,
                           MSG_TYPE_ADMIN, MSG_TYPE_ADMIN_DM,
-                          "The Dungeon Master is gone..");
+                          "The Dungeon Master is gone...");
         }
         draw_ext_info_format(NDI_UNIQUE|NDI_ALL|NDI_DK_ORANGE, 5, NULL,
                              MSG_TYPE_ADMIN, MSG_TYPE_ADMIN_PLAYER,
@@ -2062,7 +2062,7 @@ void command_nowiz(object *op, const char *params) { /* 'noadm' is alias */
         unhide(op);
     } else
         draw_ext_info(NDI_UNIQUE|NDI_ALL|NDI_LT_GREEN, 1, NULL, MSG_TYPE_ADMIN, MSG_TYPE_ADMIN_DM,
-                      "The Dungeon Master is gone..");
+                      "The Dungeon Master is gone...");
 
     update_los(op);
 }
