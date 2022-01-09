@@ -36,7 +36,7 @@
  * spell.
  */
 void command_invoke(object *op, const char *params) {
-    command_cast_spell(op, params, 'i');
+    command_cast_spell(op, params, 1);
 }
 
 /**
@@ -48,7 +48,7 @@ void command_invoke(object *op, const char *params) {
  * spell.
  */
 void command_cast(object *op, const char *params) {
-    command_cast_spell(op, params, 'c');
+    command_cast_spell(op, params, 0);
 }
 
 /**
@@ -153,18 +153,14 @@ static void show_matching_spells(object *op, const char *params) {
  * caster.
  * @param params
  * spell name.
- * @param command
- * first letter of the spell type (c=cast, i=invoke, p=prepare).
+ * @param cast_now
+ * 0 to ready the spell, 1 to cast it immediately
  */
-void command_cast_spell(object *op, const char *params, char command) {
-    int castnow = 0;
+void command_cast_spell(object *op, const char *params, int cast_now) {
     char *cp, cpy[MAX_BUF];
     object *spob;
 
     safe_strncpy(cpy, params, sizeof(cpy));
-
-    if (command == 'i')
-        castnow = 1;
 
     if (*cpy != '\0') {
         tag_t spellnumber = 0;
@@ -214,7 +210,7 @@ void command_cast_spell(object *op, const char *params, char command) {
 
             /* This assignment is need for casting_time logic */
             op->spell = spob;
-            if (castnow) {
+            if (cast_now) {
                 cast_spell(op, op, op->facing, spob, cp);
             } else {
                 /** @todo present the list nicely instead of comma-separated simply */

@@ -140,7 +140,7 @@ void commands_init(void) {
     RN("peaceful", command_peaceful,      0.0);
     RN("petmode", command_petmode,        0.0);
     RN("pickup", command_pickup,          1.0);
-    RN("prepare", command_prepare,        1.0);
+    RN("prepare", command_cast,           1.0);
     RN("printlos", command_printlos,      0.0);
     RN("quit", command_quit,              0.0);
     RN("ready_skill", command_rskill,     1.0);
