@@ -913,7 +913,9 @@ static int attack_ob_simple(object *op, object *hitter, int base_dam, int base_w
             return 0;
         }
 
-        if (object_value_set(hitter, "is_guard")) {
+        if (object_value_set(hitter, "is_guard") && is_criminal(op)) {
+            // Guards may attack non-criminals (e.g. if they are a pet or get
+            // hit), but don't arrest unless target is actually criminal.
             draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_VICTIM, MSG_TYPE_VICTIM_WAS_PUSHED,
                     "The %s arrests you!", hitter->name);
             player_arrest(op);
