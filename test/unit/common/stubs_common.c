@@ -6,8 +6,6 @@
 #include <global.h>
 #include <sproto.h>
 
-FILE *logfile;
-
 void apply_auto_fix(mapstruct *m) {
     (void)m;
 }

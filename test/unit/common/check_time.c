@@ -35,8 +35,12 @@
 #include <global.h>
 #include <libproto.h>
 #include "tod.h"
+#include <toolkit_common.h>
 
 static void setup(void) {
+    cctk_setdatadir(SOURCE_ROOT"lib");  // Somehow it's required to link correctly...
+//    cctk_setlog(LOGDIR"/unit/common/time.out");
+//    cctk_init_std_archetypes();
     reset_sleep();
 }
 
