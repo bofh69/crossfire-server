@@ -648,7 +648,7 @@ static void attack_message(int dam, int type, object *op, object *hitter) {
     && rndm(0, 1)
     && ((owner != NULL ? owner : hitter)->type) == PLAYER) {
         if (owner != NULL)
-            snprintf(buf, sizeof(buf), "%s's %s %s you.", owner->name, hitter->name, buf2);
+            snprintf(buf, sizeof(buf), "%s's %s%s you.", owner->name, hitter->name, buf2);
         else {
             snprintf(buf, sizeof(buf), "%s%s you.", hitter->name, buf2);
         }
