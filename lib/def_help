@@ -3,3 +3,6 @@ How to use help:
   'help commands  (list of valid commands)
   'help <command> (help on a topic or command)
 
+To report a bug or request help from dungeon masters if they are offline, use:
+
+  'report <description of issue>

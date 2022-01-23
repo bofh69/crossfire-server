@@ -1,0 +1,5 @@
+Report a bug or ask for help from a dungeon master.
+
+Usage: report <description of issue>
+
+If enabled, this command sends a bug report or request for help to the dungeon masters. The report contains your character name, current map location, and issue description.
