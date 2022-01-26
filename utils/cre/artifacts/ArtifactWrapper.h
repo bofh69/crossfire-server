@@ -27,6 +27,8 @@ public:
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;
 
+    void setSpecificItem(const object *item) { mySpecificItem = item; }
+
     QObject* item();
     int chance() const;
     int difficulty() const;
@@ -34,6 +36,7 @@ public:
 
 protected:
     ResourcesManager *myResourcesManager;
+    const object *mySpecificItem;
 };
 
 #endif // ARTIFACT_WRAPPER_H

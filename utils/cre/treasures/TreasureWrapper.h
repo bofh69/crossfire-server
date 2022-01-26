@@ -1,6 +1,8 @@
 #ifndef TREASURE_WRAPPER_H
 #define TREASURE_WRAPPER_H
 
+#include <vector>
+
 #include <QObject>
 #include <QStringList>
 
@@ -10,6 +12,7 @@ extern "C" {
 
 #include "assets/AssetWrapper.h"
 #include "CREPixmap.h"
+#include "artifacts/ArtifactWrapper.h"
 
 class ResourcesManager;
 class TreasureYesNo;
@@ -25,6 +28,7 @@ class TreasureWrapper : public AssetTWrapper<treasure> {
 
 public:
     TreasureWrapper(AssetWrapper *parent, treasure *tr, ResourcesManager *resources);
+    virtual ~TreasureWrapper();
 
     virtual QString displayName() const override;
     virtual QIcon displayIcon() const override;
@@ -58,10 +62,12 @@ protected:
     ResourcesManager *myResources;
     TreasureYesNo *myNextYes;
     TreasureYesNo *myNextNo;
+    std::vector<ArtifactWrapper *> myArtifacts;
 
     void doAddChild(TreasureYesNo **my, treasure **ti, bool isYes, int index, treasurelist *tl, archetype *arch);
     void addChild(treasurelist *tl, archetype *arch);
     void doRemoveChild(TreasureYesNo **tr, treasure **ti, int index);
+    void updateArtifacts(bool notify);
 };
 
 class TreasureYesNo : public AssetWrapper {

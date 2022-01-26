@@ -5,19 +5,29 @@
 #include "ArtifactListWrapper.h"
 
 ArtifactWrapper::ArtifactWrapper(AssetWrapper *parent, const artifact *art, ResourcesManager *resourcesManager)
- : AssetTWrapper(parent, "Artifact", art), myResourcesManager(resourcesManager)
+ : AssetTWrapper(parent, "Artifact", art), myResourcesManager(resourcesManager), mySpecificItem(nullptr)
 {
 }
 
 QString ArtifactWrapper::displayName() const {
     QString name(myItem->item->name);
-    auto list = find_artifactlist(myItem->item->type);
-    if (list && list->total_chance != 0) {
+    if (mySpecificItem) {
+        int n, d;
+        artifact_compute_chance_for_item(mySpecificItem, myItem, &n, &d);
         name = tr("%1 (%2%, %3 chances on %4)")
-            .arg(name)
-            .arg(qRound((float)100 * myItem->chance / list->total_chance))
-            .arg(myItem->chance)
-            .arg(list->total_chance);
+                .arg(name)
+                .arg(qRound(100. * n / d))
+                .arg(n)
+                .arg(d);
+    } else {
+        auto list = find_artifactlist(myItem->item->type);
+        if (list && list->total_chance != 0) {
+            name = tr("%1 (%2%, %3 chances on %4)")
+                .arg(name)
+                .arg(qRound((float)100 * myItem->chance / list->total_chance))
+                .arg(myItem->chance)
+                .arg(list->total_chance);
+        }
     }
 
     return name;

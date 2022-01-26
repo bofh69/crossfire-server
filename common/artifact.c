@@ -131,6 +131,49 @@ void free_all_artifacts(void) {
 #define ARTIFACT_TRIES 2
 
 /**
+ * Compute the chance for a specified item to become the specified artifact.
+ * This does not take into account the 10% chance of an item being made an artifact.
+ * @param op item to consider.
+ * @param art artifact to compute the chance of.
+ * @param numerator chance in denominator for the artifact to be generated.
+ * @param denominator denominator, will never be 0.
+ */
+void artifact_compute_chance_for_item(const object *op, const artifact *art, int *numerator, int *denominator) {
+    (*numerator) = 0;
+    (*denominator) = 1;
+    const artifactlist *list = find_artifactlist(op->type);
+    if (!list || list->total_chance == 0) {
+        return;
+    }
+
+    int chance_of_invalid_item = 0;
+    artifact *check = list->items;
+    while (check) {
+        if (!legal_artifact_combination(op, check)) {
+            chance_of_invalid_item += check->chance;
+        }
+        check = check->next;
+    }
+
+    /*
+        Let:
+         - 'ac' be the artifact's chance as given in the list (art->chance)
+         - 'ic' the chance to find an illegal artifact in the list (chance_of_invalid_item)
+         - 'tc' the total chance of the list (list->total_chance)
+
+        The chance of the artifact being generated at the first try is ac/tc
+        The chance of finding an invalid artifact is ic/tc
+        So the chance of generating an item on the second try is (ic/tc) * (ac/tc)
+        The chance of the artifact being generated is thus (ac/tc) + (ic/tc) * (ac/tc)
+
+        In numerator/denominator notation, this gives ac * (tc + ic) / (tc²)
+    */
+
+    (*numerator) = art->chance * (list->total_chance + chance_of_invalid_item);
+    (*denominator) = list->total_chance * list->total_chance;
+}
+
+/**
  * Decides randomly which artifact the object should be
  * turned into.  Makes sure that the item can become that
  * artifact (means magic, difficulty, and Allowed fields properly).
@@ -139,6 +182,7 @@ void free_all_artifacts(void) {
  *
  * @param op object to attempt to transform.
  * @param difficulty limit for artifact difficulty.
+ * @note if the algorithm is changed, please update @ref artifact_compute_chance_for_item above.
  */
 void generate_artifact(object *op, int difficulty) {
     const artifactlist *al;

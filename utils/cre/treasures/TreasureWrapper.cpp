@@ -5,6 +5,12 @@
 #include "AssetsManager.h"
 #include "MimeUtils.h"
 
+extern "C" {
+#include "global.h"
+#include "artifact.h"
+#include "libproto.h"
+}
+
 TreasureWrapper::TreasureWrapper(AssetWrapper *parent, treasure *tr, ResourcesManager *resources)
    : AssetTWrapper(parent, "Treasure", tr), myResources(resources), myNextYes(nullptr), myNextNo(nullptr)
 {
@@ -13,6 +19,13 @@ TreasureWrapper::TreasureWrapper(AssetWrapper *parent, treasure *tr, ResourcesMa
     }
     if (myItem->next_no) {
         myNextNo = new TreasureYesNo(this, myItem->next_no, resources, false);
+    }
+    updateArtifacts(false);
+}
+
+TreasureWrapper::~TreasureWrapper() {
+    for (auto art : myArtifacts) {
+        delete art;
     }
 }
 
@@ -74,7 +87,7 @@ int TreasureWrapper::childrenCount() const {
     if (myItem->next_no) {
         count++;
     }
-    return count;
+    return count + myArtifacts.size();
 }
 
 AssetWrapper *TreasureWrapper::child(int child) {
@@ -88,6 +101,10 @@ AssetWrapper *TreasureWrapper::child(int child) {
         if (child == 0) {
             return myNextNo;
         }
+        child--;
+    }
+    if (child < static_cast<int>(myArtifacts.size())) {
+        return myArtifacts[child];
     }
     return nullptr;
 }
@@ -104,7 +121,13 @@ int TreasureWrapper::childIndex(AssetWrapper *child) {
         if (child == myNextNo) {
             return index;
         }
+        index++;
     }
+    auto pos = std::find(myArtifacts.begin(), myArtifacts.end(), child);
+    if (pos != myArtifacts.end()) {
+        return index + (pos - myArtifacts.begin());
+    }
+    index += myArtifacts.size();
     return -1;
 }
 
@@ -212,6 +235,7 @@ void TreasureWrapper::setList(const treasurelist *list) {
         if (list) {
             myItem->name = add_string(list->name);
             myItem->item = nullptr;
+            updateArtifacts(true);
         }
         markModified(AssetUpdated);
     }
@@ -228,6 +252,7 @@ void TreasureWrapper::setArch(const archetype *arch) {
             FREE_AND_CLEAR_STR(myItem->name);
         }
         markModified(AssetUpdated);
+        updateArtifacts(true);
     }
 }
 
@@ -250,6 +275,34 @@ void TreasureWrapper::swapYesNo() {
         std::swap(myNextYes, myNextNo);
         std::swap(myItem->next_yes, myItem->next_no);
         markModified(AfterLayoutChange);
+    }
+}
+
+void TreasureWrapper::updateArtifacts(bool notify) {
+    std::vector<ArtifactWrapper *> artifacts;
+    if (myItem->item) {
+        auto list = find_artifactlist(myItem->item->clone.type);
+        if (list) {
+            auto art = list->items;
+            while (art) {
+                if (legal_artifact_combination(&myItem->item->clone, art)) {
+                    auto wrap = new ArtifactWrapper(this, art, myResources);
+                    wrap->setSpecificItem(&myItem->item->clone);
+                    artifacts.push_back(wrap);
+                }
+                art = art->next;
+            }
+        }
+    }
+
+    if (notify)
+        markModified(BeforeLayoutChange);
+    std::swap(myArtifacts, artifacts);
+    if (notify)
+    markModified(AfterLayoutChange);
+
+    for (auto art : artifacts) {
+        delete art;
     }
 }
 

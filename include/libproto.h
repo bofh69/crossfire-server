@@ -35,6 +35,7 @@ extern int is_type_valid(uint8_t type);
 /* artifact.c */
 extern void free_all_artifacts(void);
 extern void generate_artifact(object *op, int difficulty);
+extern void artifact_compute_chance_for_item(const object *op, const artifact *art, int *numerator, int *denominator);
 extern void give_artifact_abilities(object *op, const object *artifact);
 extern int legal_artifact_combination(const object *op, const artifact *art);
 extern void add_abilities(object *op, const object *change);
