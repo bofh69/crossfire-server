@@ -22,7 +22,7 @@ class ArtifactWrapper : public AssetTWrapper<const artifact> {
 public:
     ArtifactWrapper(AssetWrapper *parent, const artifact *art, ResourcesManager *resourcesManager);
 
-    virtual QString displayName() const override { return myItem->item->name; }
+    virtual QString displayName() const override;
     virtual QIcon displayIcon() const override;
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;

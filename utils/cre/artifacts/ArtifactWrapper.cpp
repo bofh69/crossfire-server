@@ -2,10 +2,25 @@
 #include "ResourcesManager.h"
 #include "CREPixmap.h"
 #include "faces/FaceWrapper.h"
+#include "ArtifactListWrapper.h"
 
 ArtifactWrapper::ArtifactWrapper(AssetWrapper *parent, const artifact *art, ResourcesManager *resourcesManager)
  : AssetTWrapper(parent, "Artifact", art), myResourcesManager(resourcesManager)
 {
+}
+
+QString ArtifactWrapper::displayName() const {
+    QString name(myItem->item->name);
+    auto list = find_artifactlist(myItem->item->type);
+    if (list && list->total_chance != 0) {
+        name = tr("%1 (%2%, %3 chances on %4)")
+            .arg(name)
+            .arg(qRound((float)100 * myItem->chance / list->total_chance))
+            .arg(myItem->chance)
+            .arg(list->total_chance);
+    }
+
+    return name;
 }
 
 QIcon ArtifactWrapper::displayIcon() const {
