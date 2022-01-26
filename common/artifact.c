@@ -730,7 +730,10 @@ uint16_t artifact_get_face(const artifact *art) {
             }
             return (uint16_t)-1;
         } else {
-            const archetype *arch = find_archetype(art->allowed->name);
+            const archetype *arch = try_find_archetype(art->allowed->name);
+            if (arch == NULL) {
+                arch = find_archetype_by_object_name(art->allowed->name);
+            }
             if (arch != NULL)
                 return arch->clone.face->number;
             return (uint16_t)-1;
