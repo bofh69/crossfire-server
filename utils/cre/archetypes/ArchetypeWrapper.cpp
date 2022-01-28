@@ -9,7 +9,10 @@
 #include "MimeUtils.h"
 
 ArchetypeWrapper::ArchetypeWrapper(AssetWrapper *parent, archetype *arch, ResourcesManager *resourcesManager)
- : AssetTWrapper(parent, "Archetype", arch), myResourcesManager(resourcesManager) {
+ : AssetWithArtifacts<archetype>(parent, "Archetype", arch, resourcesManager) {
+    if (appearsOnTreasureList()) {
+        setSpecificItem(&arch->clone, false);
+    }
 }
 
 QString ArchetypeWrapper::name() const {
@@ -17,19 +20,19 @@ QString ArchetypeWrapper::name() const {
 }
 
 QObject* ArchetypeWrapper::clone() {
-    return myResourcesManager->wrap(&myItem->clone, this);
+    return myResources->wrap(&myItem->clone, this);
 }
 
 QObject *ArchetypeWrapper::head() const {
-    return myItem->head ? myResourcesManager->wrap(myItem->head, nullptr) : nullptr;
+    return myItem->head ? myResources->wrap(myItem->head, nullptr) : nullptr;
 }
 
 QObject *ArchetypeWrapper::more() const {
-    return myItem->more ? myResourcesManager->wrap(myItem->more, nullptr) : nullptr;
+    return myItem->more ? myResources->wrap(myItem->more, nullptr) : nullptr;
 }
 
 int ArchetypeWrapper::childrenCount() const {
-    if (myItem->head || !myItem->more) {
+    if (myItem->head) {
         return 0;
     }
     int count = 0;
@@ -38,29 +41,35 @@ int ArchetypeWrapper::childrenCount() const {
         count++;
         part = part->more;
     }
-    return count;
+    return count + myArtifacts.size();
 }
 
 AssetWrapper *ArchetypeWrapper::child(int index) {
     auto part = myItem->more;
-    while (index > 0) {
+    while (index > 0 && part) {
         part = part->more;
         index--;
     }
-    return myResourcesManager->wrap(part, this);
+    if (part) {
+        return myResources->wrap(part, this);
+    }
+    return AssetWithArtifacts<archetype>::child(index);
 }
 
 int ArchetypeWrapper::childIndex(AssetWrapper *child) {
-    if (myItem->head || !myItem->more) {
+    if (myItem->head) {
         return -1;
     }
-    auto part = myItem->more;
+    auto part = myResources->wrap(myItem->more, this);
     int index = 0;
-    while (myResourcesManager->wrap(part, this) != child) {
-        part = myItem->more;
+    while (part != child && part) {
+        part = myResources->wrap(part->item()->more, this);
         index++;
     }
-    return index;
+    if (part) {
+        return index;
+    }
+    return AssetWithArtifacts<archetype>::childIndex(child);
 }
 
 static bool treasureContains(const treasure *t, const archetype *arch) {
@@ -131,4 +140,24 @@ AssetWrapper::PossibleUse ArchetypeWrapper::uses(const AssetWrapper *asset, std:
 
 void ArchetypeWrapper::drag(QMimeData *data) const {
     MimeUtils::addMime(data, MimeUtils::Archetype, myItem->name);
+}
+
+bool ArchetypeWrapper::appearsOnTreasureList() const {
+    std::function<bool(const treasure *item)> ci = [&] (const treasure *item) {
+        if (item->item == myItem) {
+            return true;
+        }
+        if (item->next_yes && ci(item->next_yes)) {
+            return true;
+        }
+        if (item->next_no && ci(item->next_no)) {
+            return true;
+        }
+        if (item->next && ci(item->next)) {
+            return true;
+        }
+        return false;
+    };
+    auto cl = [&] (const treasurelist *item) { return ci(item->items); };
+    return getManager()->treasures()->first(cl) != nullptr;
 }

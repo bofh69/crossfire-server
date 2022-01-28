@@ -7,12 +7,13 @@ extern "C"
 {
 #include "global.h"
 }
-#include "assets/AssetWrapper.h"
 #include "CREPixmap.h"
+#include "artifacts/AssetWithArtifacts.h"
+#include "artifacts/ArtifactWrapper.h"
 
 class ResourcesManager;
 
-class ArchetypeWrapper : public AssetTWrapper<archetype> {
+class ArchetypeWrapper : public AssetWithArtifacts<archetype> {
     Q_OBJECT
 
     Q_PROPERTY(QString name READ name)
@@ -40,7 +41,7 @@ public:
     QObject *more() const;
 
 protected:
-    ResourcesManager *myResourcesManager;
+    bool appearsOnTreasureList() const;
 };
 
 #endif // ARCHETYPE_WRAPPER_H

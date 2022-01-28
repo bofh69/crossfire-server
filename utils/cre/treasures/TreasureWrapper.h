@@ -10,14 +10,14 @@ extern "C" {
 #include "global.h"
 }
 
-#include "assets/AssetWrapper.h"
 #include "CREPixmap.h"
+#include "artifacts/AssetWithArtifacts.h"
 #include "artifacts/ArtifactWrapper.h"
 
 class ResourcesManager;
 class TreasureYesNo;
 
-class TreasureWrapper : public AssetTWrapper<treasure> {
+class TreasureWrapper : public AssetWithArtifacts<treasure> {
     Q_OBJECT
 
     Q_PROPERTY(quint8 chance READ chance WRITE setChance)
@@ -59,15 +59,12 @@ public slots:
     void swapYesNo();
 
 protected:
-    ResourcesManager *myResources;
     TreasureYesNo *myNextYes;
     TreasureYesNo *myNextNo;
-    std::vector<ArtifactWrapper *> myArtifacts;
 
     void doAddChild(TreasureYesNo **my, treasure **ti, bool isYes, int index, treasurelist *tl, archetype *arch);
     void addChild(treasurelist *tl, archetype *arch);
     void doRemoveChild(TreasureYesNo **tr, treasure **ti, int index);
-    void updateArtifacts(bool notify);
 };
 
 class TreasureYesNo : public AssetWrapper {

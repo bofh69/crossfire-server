@@ -12,7 +12,7 @@ extern "C" {
 }
 
 TreasureWrapper::TreasureWrapper(AssetWrapper *parent, treasure *tr, ResourcesManager *resources)
-   : AssetTWrapper(parent, "Treasure", tr), myResources(resources), myNextYes(nullptr), myNextNo(nullptr)
+   : AssetWithArtifacts<treasure>(parent, "Treasure", tr, resources), myNextYes(nullptr), myNextNo(nullptr)
 {
     if (myItem->next_yes) {
         myNextYes = new TreasureYesNo(this, myItem->next_yes, resources, true);
@@ -20,13 +20,10 @@ TreasureWrapper::TreasureWrapper(AssetWrapper *parent, treasure *tr, ResourcesMa
     if (myItem->next_no) {
         myNextNo = new TreasureYesNo(this, myItem->next_no, resources, false);
     }
-    updateArtifacts(false);
+    setSpecificItem(&tr->item->clone, false);
 }
 
 TreasureWrapper::~TreasureWrapper() {
-    for (auto art : myArtifacts) {
-        delete art;
-    }
 }
 
 QString TreasureWrapper::displayName() const {
@@ -87,7 +84,7 @@ int TreasureWrapper::childrenCount() const {
     if (myItem->next_no) {
         count++;
     }
-    return count + myArtifacts.size();
+    return count + AssetWithArtifacts<treasure>::childrenCount();
 }
 
 AssetWrapper *TreasureWrapper::child(int child) {
@@ -103,10 +100,7 @@ AssetWrapper *TreasureWrapper::child(int child) {
         }
         child--;
     }
-    if (child < static_cast<int>(myArtifacts.size())) {
-        return myArtifacts[child];
-    }
-    return nullptr;
+    return AssetWithArtifacts<treasure>::child(child);
 }
 
 int TreasureWrapper::childIndex(AssetWrapper *child) {
@@ -123,11 +117,11 @@ int TreasureWrapper::childIndex(AssetWrapper *child) {
         }
         index++;
     }
-    auto pos = std::find(myArtifacts.begin(), myArtifacts.end(), child);
-    if (pos != myArtifacts.end()) {
-        return index + (pos - myArtifacts.begin());
+
+    auto c = AssetWithArtifacts<treasure>::childIndex(child);
+    if (c != -1) {
+        return c + index;
     }
-    index += myArtifacts.size();
     return -1;
 }
 
@@ -235,7 +229,7 @@ void TreasureWrapper::setList(const treasurelist *list) {
         if (list) {
             myItem->name = add_string(list->name);
             myItem->item = nullptr;
-            updateArtifacts(true);
+            setSpecificItem(nullptr, true);
         }
         markModified(AssetUpdated);
     }
@@ -252,7 +246,7 @@ void TreasureWrapper::setArch(const archetype *arch) {
             FREE_AND_CLEAR_STR(myItem->name);
         }
         markModified(AssetUpdated);
-        updateArtifacts(true);
+        setSpecificItem(arch ? &arch->clone : nullptr, true);
     }
 }
 
@@ -275,34 +269,6 @@ void TreasureWrapper::swapYesNo() {
         std::swap(myNextYes, myNextNo);
         std::swap(myItem->next_yes, myItem->next_no);
         markModified(AfterLayoutChange);
-    }
-}
-
-void TreasureWrapper::updateArtifacts(bool notify) {
-    std::vector<ArtifactWrapper *> artifacts;
-    if (myItem->item) {
-        auto list = find_artifactlist(myItem->item->clone.type);
-        if (list) {
-            auto art = list->items;
-            while (art) {
-                if (legal_artifact_combination(&myItem->item->clone, art)) {
-                    auto wrap = new ArtifactWrapper(this, art, myResources);
-                    wrap->setSpecificItem(&myItem->item->clone);
-                    artifacts.push_back(wrap);
-                }
-                art = art->next;
-            }
-        }
-    }
-
-    if (notify)
-        markModified(BeforeLayoutChange);
-    std::swap(myArtifacts, artifacts);
-    if (notify)
-    markModified(AfterLayoutChange);
-
-    for (auto art : artifacts) {
-        delete art;
     }
 }
 
