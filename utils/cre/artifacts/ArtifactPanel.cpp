@@ -132,6 +132,7 @@ static void addArchetypes(const artifact* artifact, const char* name, bool check
             {
                 item = new QTreeWidgetItem(root, QStringList(name == NULL ? "(all)" : name));
                 item->setCheckState(0, check ? Qt::Checked : Qt::Unchecked);
+                item->setFlags(item->flags() & ~Qt::ItemIsUserCheckable);
                 root->addTopLevelItem(item);
                 item->setExpanded(true);
             }
