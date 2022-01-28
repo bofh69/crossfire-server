@@ -423,6 +423,9 @@ static void set_player_socket(player *p, socket_struct *ns) {
      * that pointer in ns, otherwise we get a double free.
      */
     ns->faces_sent = NULL;
+    ns->host = strdup_local("");
+    ns->account_name = strdup_local("");
+    ns->account_chars = NULL;
 
     if (p->socket.faces_sent == NULL)
         fatal(OUT_OF_MEMORY);
