@@ -118,7 +118,6 @@ void CREArtifactPanel::computeMadeViaAlchemy(const artifact* artifact) const
 static void addArchetypes(const artifact* artifact, const char* name, bool check, QTreeWidget* root)
 {
     QTreeWidgetItem* item = NULL;
-    item = NULL;
 
     getManager()->archetypes()->each([&artifact, &name, &check, &root, &item] (archetype *arch)
     {
