@@ -46,10 +46,10 @@ public:
     bool transmute() const;
     int minLevel() const;
     QString keycode() const;
-    int index() const { return myItem->index; }
-    QString skill() const { return myItem->skill; }
-    QString cauldron() const { return myItem->cauldron; }
-    int yield() const { return myItem->yield; }
+    int index() const { return myWrappedItem->index; }
+    QString skill() const { return myWrappedItem->skill; }
+    QString cauldron() const { return myWrappedItem->cauldron; }
+    int yield() const { return myWrappedItem->yield; }
 };
 
 #endif // CRE_WRAPPER_FORMULAE_H

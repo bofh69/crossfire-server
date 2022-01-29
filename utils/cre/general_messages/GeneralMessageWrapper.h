@@ -28,23 +28,23 @@ public:
         myResources(resources) {
     }
 
-    virtual QString displayName() const override { return (myItem->identifier && myItem->identifier[0] == '\n') ? "General message" : myItem->title; }
-    virtual QIcon displayIcon() const override { return CREPixmap::getIcon(myItem->face); }
+    virtual QString displayName() const override { return (myWrappedItem->identifier && myWrappedItem->identifier[0] == '\n') ? "General message" : myWrappedItem->title; }
+    virtual QIcon displayIcon() const override { return CREPixmap::getIcon(myWrappedItem->face); }
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;
     virtual void displayFillPanel(QWidget *panel) override;
     virtual void wasModified(AssetWrapper *asset, ChangeType type, int extra) override;
 
-    QString title() const { return myItem->title; }
+    QString title() const { return myWrappedItem->title; }
     void setTitle(const QString &title);
-    QString identifier() const { return (myItem->identifier && myItem->identifier[0] != '\n') ? myItem->identifier : ""; }
-    QString quest() const { return myItem->quest_code; }
+    QString identifier() const { return (myWrappedItem->identifier && myWrappedItem->identifier[0] != '\n') ? myWrappedItem->identifier : ""; }
+    QString quest() const { return myWrappedItem->quest_code; }
     void setQuest(const QString &quest);
-    int chance() const { return myItem->chance; }
+    int chance() const { return myWrappedItem->chance; }
     void setChance(int chance);
-    const Face *face() const { return myItem->face; }
+    const Face *face() const { return myWrappedItem->face; }
     void setFace(const Face *face);
-    QString message() const { return myItem->message; }
+    QString message() const { return myWrappedItem->message; }
     void setMessage(const QString &message);
 
 protected:

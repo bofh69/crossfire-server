@@ -79,7 +79,7 @@ void CRETreasurePanel::onGenerate(bool) {
     const int difficulty = myDifficulty->value();
     myGenerated->clear();
     object* result = object_new(), *item;
-    create_treasure(const_cast<treasurelist *>(myTreasure->item()), result, 0, difficulty, 0);
+    create_treasure(const_cast<treasurelist *>(myTreasure->wrappedItem()), result, 0, difficulty, 0);
     while ((item = result->inv)) {
         identify(result->inv);
         myGenerated->addTopLevelItem(CREUtils::objectNode(item, NULL));

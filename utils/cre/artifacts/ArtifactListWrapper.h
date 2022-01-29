@@ -18,8 +18,8 @@ public:
     ArtifactListWrapper(AssetWrapper *parent, const artifactlist *list, ResourcesManager *resourcesManager);
 
     virtual QString displayName() const override {
-        auto data = get_typedata(myItem->type);
-        return data ? data->name : tr("type %1").arg(myItem->type);
+        auto data = get_typedata(myWrappedItem->type);
+        return data ? data->name : tr("type %1").arg(myWrappedItem->type);
     }
 
     virtual int childrenCount() const override;

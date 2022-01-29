@@ -24,8 +24,8 @@ class ArchetypeWrapper : public AssetWithArtifacts<archetype> {
 public:
     ArchetypeWrapper(AssetWrapper *parent, archetype* arch, ResourcesManager *resourcesManager);
 
-    virtual QString displayName() const override { return myItem->name; }
-    virtual QIcon displayIcon() const override { return CREPixmap::getIcon(myItem->clone.face); }
+    virtual QString displayName() const override { return myWrappedItem->name; }
+    virtual QIcon displayIcon() const override { return CREPixmap::getIcon(myWrappedItem->clone.face); }
     virtual int childrenCount() const override;
     virtual AssetWrapper *child(int index) override;
     virtual int childIndex(AssetWrapper *child) override;

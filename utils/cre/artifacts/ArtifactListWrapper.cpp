@@ -9,7 +9,7 @@ ArtifactListWrapper::ArtifactListWrapper(AssetWrapper *parent, const artifactlis
 
 int ArtifactListWrapper::childrenCount() const {
     int count = 0;
-    auto item = myItem->items;
+    auto item = myWrappedItem->items;
     while (item) {
         count++;
         item = item->next;
@@ -18,7 +18,7 @@ int ArtifactListWrapper::childrenCount() const {
 }
 
 AssetWrapper *ArtifactListWrapper::child(int index) {
-    auto item = myItem->items;
+    auto item = myWrappedItem->items;
     while (index > 0) {
         index--;
         item = item->next;
@@ -27,7 +27,7 @@ AssetWrapper *ArtifactListWrapper::child(int index) {
 }
 
 int ArtifactListWrapper::childIndex(AssetWrapper *child) {
-    auto item = myItem->items;
+    auto item = myWrappedItem->items;
     int index = 0;
     while (item) {
         if (myResourcesManager->wrap(item, this) == child) {

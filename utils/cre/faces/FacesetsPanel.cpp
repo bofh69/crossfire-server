@@ -20,7 +20,7 @@ FacesetsPanel::FacesetsPanel(QWidget* parent) : AssetWrapperPanel(parent) {
 
 void FacesetsPanel::setItem(AssetWrapper *asset) {
     AssetWrapperPanel::setItem(asset);
-    auto fs = dynamic_cast<FacesetsWrapper *>(asset)->item();
+    auto fs = dynamic_cast<FacesetsWrapper *>(asset)->wrappedItem();
 
     size_t count = 0, total = getManager()->faces()->count(), licenses = 0;
 

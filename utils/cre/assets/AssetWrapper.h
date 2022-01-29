@@ -67,20 +67,20 @@ protected:
 template<typename T>
 class AssetTWrapper : public AssetWrapper {
 public:
-    AssetTWrapper(AssetWrapper *parent, const QString &panelName, T* item)
+    AssetTWrapper(AssetWrapper *parent, const QString &panelName, T* wrappedItem)
         : AssetWrapper(parent, panelName) {
-        myItem = item;
+        myWrappedItem = wrappedItem;
     };
 
-    T *item() const { return myItem; }
+    T *wrappedItem() const { return myWrappedItem; }
 
     virtual void displayFillPanel(QWidget *panel) override {
         CRETPanel<T>* p = static_cast<CRETPanel<T>*>(panel);
-        p->setItem(myItem);
+        p->setItem(myWrappedItem);
     }
 
 protected:
-    T *myItem;
+    T *myWrappedItem;
 };
 
 #endif /* ASSETWRAPPER_H */

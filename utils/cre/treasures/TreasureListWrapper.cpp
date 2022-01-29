@@ -13,7 +13,7 @@ TreasureListWrapper::TreasureListWrapper(AssetWrapper *parent, treasurelist *lis
 
 int TreasureListWrapper::itemCount() const {
     int count = 0;
-    auto item = myItem->items;
+    auto item = myWrappedItem->items;
     while (item) {
         count++;
         item = item->next;
@@ -26,7 +26,7 @@ int TreasureListWrapper::childrenCount() const {
 }
 
 AssetWrapper *TreasureListWrapper::child(int child) {
-    auto item = myItem->items;
+    auto item = myWrappedItem->items;
     while (item && child > 0) {
         item = item->next;
         child--;
@@ -35,7 +35,7 @@ AssetWrapper *TreasureListWrapper::child(int child) {
 }
 
 int TreasureListWrapper::childIndex(AssetWrapper *child) {
-    auto item = myItem->items;
+    auto item = myWrappedItem->items;
     int index = 0;
     while (item) {
         if (myResources->wrap(item, this) == child) {
@@ -59,24 +59,24 @@ void TreasureListWrapper::setSingleItem(bool isSingle) {
     if (isSingle) {
         fixTotalChance();
     } else {
-        myItem->total_chance = 0;
+        myWrappedItem->total_chance = 0;
     }
     markModified(AssetUpdated, 1);
 }
 
 void TreasureListWrapper::fixTotalChance() {
-    myItem->total_chance = 0;
-    auto item = myItem->items;
+    myWrappedItem->total_chance = 0;
+    auto item = myWrappedItem->items;
     while (item) {
-        myItem->total_chance += item->chance;
+        myWrappedItem->total_chance += item->chance;
         item = item->next;
     }
 }
 
 void TreasureListWrapper::wasModified(AssetWrapper *asset, ChangeType type, int extra) {
-    myResources->treasureModified(myItem);
+    myResources->treasureModified(myWrappedItem);
     if (childIndex(asset) != -1 && type == AssetUpdated) {
-        if (myItem->total_chance) {
+        if (myWrappedItem->total_chance) {
             fixTotalChance();
             markModified(AssetUpdated, 1);
             return;
@@ -88,7 +88,7 @@ void TreasureListWrapper::wasModified(AssetWrapper *asset, ChangeType type, int 
 void TreasureListWrapper::drag(QMimeData *data) const {
     QByteArray ba(data->data(MimeUtils::TreasureList));
     QDataStream df(&ba, QIODevice::WriteOnly);
-    df << QString(myItem->name);
+    df << QString(myWrappedItem->name);
     data->setData(MimeUtils::TreasureList, ba);
 }
 
@@ -109,7 +109,7 @@ void TreasureListWrapper::drop(const QMimeData *data, int row) {
     modified |= !archs.empty();
     for (auto arch : archs) {
         markModified(BeforeChildAdd, row);
-        auto item = treasure_insert(myItem, row);
+        auto item = treasure_insert(myWrappedItem, row);
         item->item = arch;
         markModified(AfterChildAdd, row);
         row++;
@@ -119,12 +119,12 @@ void TreasureListWrapper::drop(const QMimeData *data, int row) {
     modified |= !lists.empty();
     for (auto list : lists) {
         markModified(BeforeChildAdd, row);
-        auto item = treasure_insert(myItem, row);
+        auto item = treasure_insert(myWrappedItem, row);
         item->name = add_string(list->name);
         markModified(AfterChildAdd, row);
         row++;
     }
-    if (modified && myItem->total_chance) {
+    if (modified && myWrappedItem->total_chance) {
         fixTotalChance();
         markModified(AssetUpdated, 1);
     }
@@ -135,10 +135,10 @@ void TreasureListWrapper::removeChild(AssetWrapper *child) {
     if (index != -1) {
         auto t = dynamic_cast<TreasureWrapper *>(child);
         markModified(BeforeChildRemove, index);
-        myResources->remove(t->item());
-        treasure_remove_item(myItem, index);
+        myResources->remove(t->wrappedItem());
+        treasure_remove_item(myWrappedItem, index);
         markModified(AfterChildRemove, index);
-        if (myItem->total_chance) {
+        if (myWrappedItem->total_chance) {
             fixTotalChance();
             markModified(AssetUpdated, 1);
             return;

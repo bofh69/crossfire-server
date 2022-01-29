@@ -11,47 +11,47 @@ ObjectWrapper::~ObjectWrapper() {
 
 AssetWrapper* ObjectWrapper::arch()
 {
-    return myResourcesManager->wrap(myItem->arch, this);
+    return myResourcesManager->wrap(myWrappedItem->arch, this);
 }
 
 QString ObjectWrapper::name() const
 {
-    return myItem->name;
+    return myWrappedItem->name;
 }
 
 QString ObjectWrapper::race() const
 {
-    return myItem->race;
+    return myWrappedItem->race;
 }
 
 int ObjectWrapper::type() const
 {
-    return myItem->type;
+    return myWrappedItem->type;
 }
 
 int ObjectWrapper::level() const
 {
-    return myItem->level;
+    return myWrappedItem->level;
 }
 
 bool ObjectWrapper::isMonster() const
 {
-    return QUERY_FLAG(myItem, FLAG_MONSTER);
+    return QUERY_FLAG(myWrappedItem, FLAG_MONSTER);
 }
 
 bool ObjectWrapper::isAlive() const
 {
-    return QUERY_FLAG(myItem, FLAG_ALIVE);
+    return QUERY_FLAG(myWrappedItem, FLAG_ALIVE);
 }
 
 quint32 ObjectWrapper::attacktype() const
 {
-    return myItem->attacktype;
+    return myWrappedItem->attacktype;
 }
 
 QString ObjectWrapper::materialName() const
 {
-  return myItem->materialname;
+  return myWrappedItem->materialname;
 }
 
 float ObjectWrapper::dps() const {
@@ -63,8 +63,8 @@ float ObjectWrapper::regen() const {
 }
 
 AssetWrapper *ObjectWrapper::randomItems() {
-    if (!myItem->randomitems) {
+    if (!myWrappedItem->randomitems) {
         return nullptr;
     }
-    return myResourcesManager->wrap(myItem->randomitems, nullptr);
+    return myResourcesManager->wrap(myWrappedItem->randomitems, nullptr);
 }

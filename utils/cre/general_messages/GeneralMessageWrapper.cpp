@@ -4,13 +4,13 @@
 AssetWrapper::PossibleUse GeneralMessageWrapper::uses(const AssetWrapper *asset, std::string &) const {
     auto face = dynamic_cast<const FaceWrapper *> (asset);
     if (face) {
-        return myItem->face == face->item() ? Uses : DoesntUse;
+        return myWrappedItem->face == face->wrappedItem() ? Uses : DoesntUse;
     }
     auto quest = dynamic_cast<const QuestWrapper *>(asset);
-    if (quest && myItem->quest_code) {
-        std::string name(myItem->quest_code);
-        size_t len = strlen(quest->item()->quest_code);
-        return (name.length() > len && name[len] == ' ' && name.substr(0, len) == quest->item()->quest_code) ? Uses : DoesntUse;
+    if (quest && myWrappedItem->quest_code) {
+        std::string name(myWrappedItem->quest_code);
+        size_t len = strlen(quest->wrappedItem()->quest_code);
+        return (name.length() > len && name[len] == ' ' && name.substr(0, len) == quest->wrappedItem()->quest_code) ? Uses : DoesntUse;
     }
     return DoesntUse;
 }
@@ -21,34 +21,34 @@ void GeneralMessageWrapper::displayFillPanel(QWidget *panel) {
 }
 
 void GeneralMessageWrapper::wasModified(AssetWrapper *asset, ChangeType type, int extra) {
-    myResources->generalMessageModified(myItem);
+    myResources->generalMessageModified(myWrappedItem);
     AssetWrapper::wasModified(asset, type, extra);
 }
 
 void GeneralMessageWrapper::setTitle(const QString &title) {
-    if (myItem->title != title) {
-        FREE_AND_COPY_IF(myItem->title, title.toLocal8Bit().data());
+    if (myWrappedItem->title != title) {
+        FREE_AND_COPY_IF(myWrappedItem->title, title.toLocal8Bit().data());
         markModified(AssetUpdated);
     }
 }
 
 void GeneralMessageWrapper::setQuest(const QString &quest) {
-    if (myItem->quest_code != quest) {
-        FREE_AND_COPY_IF(myItem->quest_code, quest.toLocal8Bit().data());
+    if (myWrappedItem->quest_code != quest) {
+        FREE_AND_COPY_IF(myWrappedItem->quest_code, quest.toLocal8Bit().data());
         markModified(AssetUpdated);
     }
 }
 
 void GeneralMessageWrapper::setChance(int chance) {
-    if (chance != myItem->chance) {
-        myItem->chance = chance;
+    if (chance != myWrappedItem->chance) {
+        myWrappedItem->chance = chance;
         markModified(AssetUpdated);
     }
 }
 
 void GeneralMessageWrapper::setFace(const Face *face) {
-    if (myItem->face != face) {
-        myItem->face = face;
+    if (myWrappedItem->face != face) {
+        myWrappedItem->face = face;
         markModified(AssetUpdated);
     }
 }
@@ -58,8 +58,8 @@ void GeneralMessageWrapper::setMessage(const QString &message) {
     if (!msg.isEmpty() && msg[msg.size() - 1] != '\n') {
         msg += "\n";
     }
-    if (myItem->message != msg) {
-        FREE_AND_COPY_IF(myItem->message, msg.toLocal8Bit().data());
+    if (myWrappedItem->message != msg) {
+        FREE_AND_COPY_IF(myWrappedItem->message, msg.toLocal8Bit().data());
         markModified(AssetUpdated);
     }
 }

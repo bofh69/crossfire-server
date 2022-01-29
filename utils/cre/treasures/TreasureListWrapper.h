@@ -25,8 +25,8 @@ class TreasureListWrapper : public AssetTWrapper<treasurelist> {
 public:
     TreasureListWrapper(AssetWrapper *parent, treasurelist *list, ResourcesManager *resources);
 
-    virtual QString displayName() const override { return myItem->name; }
-    virtual QIcon displayIcon() const override { return myItem->total_chance == 0 ? CREPixmap::getTreasureIcon() : CREPixmap::getTreasureOneIcon(); }
+    virtual QString displayName() const override { return myWrappedItem->name; }
+    virtual QIcon displayIcon() const override { return myWrappedItem->total_chance == 0 ? CREPixmap::getTreasureIcon() : CREPixmap::getTreasureOneIcon(); }
     virtual void displayFillPanel(QWidget *panel) override;
 
     virtual int childrenCount() const override;
@@ -39,9 +39,9 @@ public:
     virtual bool canDrop(const QMimeData *data, int row) const override;
     virtual void drop(const QMimeData *data, int row) override;
 
-    int totalChance() const { return myItem->total_chance; }
+    int totalChance() const { return myWrappedItem->total_chance; }
     void fixTotalChance();
-    bool isSingleItem() const { return myItem->total_chance != 0; }
+    bool isSingleItem() const { return myWrappedItem->total_chance != 0; }
     void setSingleItem(bool isSingle);
     int itemCount() const;
 

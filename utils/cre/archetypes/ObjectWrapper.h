@@ -47,41 +47,41 @@ class ObjectWrapper : public AssetTWrapper<object> {
 
         virtual QString displayName() const override { return name(); }
 
-        object *getObject() { return myItem; }
+        object *getObject() { return myWrappedItem; }
 
         AssetWrapper* arch();
         QString name() const;
         QString race() const;
-        QString title() const { return myItem->title; }
-        QString slaying() const { return myItem->slaying; }
-        QString skill() const { return myItem->skill; }
+        QString title() const { return myWrappedItem->title; }
+        QString slaying() const { return myWrappedItem->slaying; }
+        QString skill() const { return myWrappedItem->skill; }
         int type() const;
-        int subType() const { return myItem->subtype; }
+        int subType() const { return myWrappedItem->subtype; }
         int level() const;
-        void setLevel(int level) { myItem->level = level; }
+        void setLevel(int level) { myWrappedItem->level = level; }
         bool isMonster() const;
         bool isAlive() const;
-        bool isGenerator() const { return QUERY_FLAG(myItem, FLAG_GENERATOR); }
-        int64_t experience() const { return myItem->stats.exp; }
-        void setExperience(int64_t experience) { myItem->stats.exp = experience; }
+        bool isGenerator() const { return QUERY_FLAG(myWrappedItem, FLAG_GENERATOR); }
+        int64_t experience() const { return myWrappedItem->stats.exp; }
+        void setExperience(int64_t experience) { myWrappedItem->stats.exp = experience; }
         quint32 attacktype() const;
-        int8_t ac() const { return myItem->stats.ac; }
-        void setAc(int8_t ac) { myItem->stats.ac = ac; }
-        int8_t wc() const { return myItem->stats.wc; }
-        void setWc(int8_t wc) { myItem->stats.wc = wc; }
-        int16_t damage() const { return myItem->stats.dam; }
-        int8_t con() const { return myItem->stats.Con; }
-        void setCon(int8_t con) { myItem->stats.Con = con; }
-        void setDamage(int16_t damage) { myItem->stats.dam = damage; }
-        int16_t hp() const { return myItem->stats.hp; }
-        void setHp(int16_t hp) { myItem->stats.hp = hp; }
-        int32_t weight() const { return myItem->weight; }
-        void setWeight(int32_t weight) { myItem->weight = weight; }
+        int8_t ac() const { return myWrappedItem->stats.ac; }
+        void setAc(int8_t ac) { myWrappedItem->stats.ac = ac; }
+        int8_t wc() const { return myWrappedItem->stats.wc; }
+        void setWc(int8_t wc) { myWrappedItem->stats.wc = wc; }
+        int16_t damage() const { return myWrappedItem->stats.dam; }
+        int8_t con() const { return myWrappedItem->stats.Con; }
+        void setCon(int8_t con) { myWrappedItem->stats.Con = con; }
+        void setDamage(int16_t damage) { myWrappedItem->stats.dam = damage; }
+        int16_t hp() const { return myWrappedItem->stats.hp; }
+        void setHp(int16_t hp) { myWrappedItem->stats.hp = hp; }
+        int32_t weight() const { return myWrappedItem->weight; }
+        void setWeight(int32_t weight) { myWrappedItem->weight = weight; }
         QString materialName() const;
         AssetWrapper *randomItems();
-        float speed() const { return myItem->speed; }
-        void setSpeed(float speed) { myItem->speed = speed; }
-        const Face *face() const { return myItem->face; }
+        float speed() const { return myWrappedItem->speed; }
+        void setSpeed(float speed) { myWrappedItem->speed = speed; }
+        const Face *face() const { return myWrappedItem->face; }
         float dps() const;
         float regen() const;
 

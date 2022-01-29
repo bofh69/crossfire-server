@@ -14,11 +14,11 @@ extern "C" {
 TreasureWrapper::TreasureWrapper(AssetWrapper *parent, treasure *tr, ResourcesManager *resources)
    : AssetWithArtifacts<treasure>(parent, "Treasure", tr, resources), myNextYes(nullptr), myNextNo(nullptr)
 {
-    if (myItem->next_yes) {
-        myNextYes = new TreasureYesNo(this, myItem->next_yes, resources, true);
+    if (myWrappedItem->next_yes) {
+        myNextYes = new TreasureYesNo(this, myWrappedItem->next_yes, resources, true);
     }
-    if (myItem->next_no) {
-        myNextNo = new TreasureYesNo(this, myItem->next_no, resources, false);
+    if (myWrappedItem->next_no) {
+        myNextNo = new TreasureYesNo(this, myWrappedItem->next_no, resources, false);
     }
     setSpecificItem(&tr->item->clone, false);
 }
@@ -28,43 +28,43 @@ TreasureWrapper::~TreasureWrapper() {
 
 QString TreasureWrapper::displayName() const {
     QString name;
-    if (myItem->item) {
-        name = myItem->item->clone.name;
+    if (myWrappedItem->item) {
+        name = myWrappedItem->item->clone.name;
     }
-    else if (!myItem->name || strcmp(myItem->name, "NONE") == 0) {
+    else if (!myWrappedItem->name || strcmp(myWrappedItem->name, "NONE") == 0) {
         name = "Nothing";
     }
     else {
-        name = myItem->name;
+        name = myWrappedItem->name;
     }
 
     auto tlw = dynamic_cast<TreasureListWrapper *>(displayParent());
     if (tlw && tlw->totalChance() != 0) {
         name = tr("%1 (%2%3%, %4 chances on %5)")
             .arg(name)
-            .arg(myItem->nrof > 0 ? tr("1 to %2, ").arg(myItem->nrof) : "")
-            .arg(qRound((float)100 * myItem->chance / tlw->totalChance()))
-            .arg(myItem->chance)
+            .arg(myWrappedItem->nrof > 0 ? tr("1 to %2, ").arg(myWrappedItem->nrof) : "")
+            .arg(qRound((float)100 * myWrappedItem->chance / tlw->totalChance()))
+            .arg(myWrappedItem->chance)
             .arg(tlw->totalChance());
     } else {
         name = tr("%1 (%2%3%)")
             .arg(name)
-            .arg(myItem->nrof > 0 ? tr("1 to %2, ").arg(myItem->nrof) : "")
-            .arg(myItem->chance);
+            .arg(myWrappedItem->nrof > 0 ? tr("1 to %2, ").arg(myWrappedItem->nrof) : "")
+            .arg(myWrappedItem->chance);
     }
 
     return name;
 }
 
 QIcon TreasureWrapper::displayIcon() const {
-    if (myItem->item) {
-        return CREPixmap::getIcon(myItem->item->clone.face);
+    if (myWrappedItem->item) {
+        return CREPixmap::getIcon(myWrappedItem->item->clone.face);
     }
-    if (!myItem->name || strcmp(myItem->name, "NONE") == 0) {
+    if (!myWrappedItem->name || strcmp(myWrappedItem->name, "NONE") == 0) {
         return QIcon();
     }
 
-    auto tl = getManager()->treasures()->find(myItem->name);
+    auto tl = getManager()->treasures()->find(myWrappedItem->name);
     if (!tl) {
         return QIcon();
     }
@@ -78,10 +78,10 @@ void TreasureWrapper::displayFillPanel(QWidget *panel) {
 
 int TreasureWrapper::childrenCount() const {
     int count = 0;
-    if (myItem->next_yes) {
+    if (myWrappedItem->next_yes) {
         count++;
     }
-    if (myItem->next_no) {
+    if (myWrappedItem->next_no) {
         count++;
     }
     return count + AssetWithArtifacts<treasure>::childrenCount();
@@ -138,11 +138,11 @@ void TreasureWrapper::doRemoveChild(TreasureYesNo **tr, treasure **ti, int index
 
 void TreasureWrapper::removeChild(AssetWrapper *child) {
     if (child == myNextYes) {
-        doRemoveChild(&myNextYes, &myItem->next_yes, 0);
+        doRemoveChild(&myNextYes, &myWrappedItem->next_yes, 0);
         return;
     }
     if (child == myNextNo) {
-        doRemoveChild(&myNextNo, &myItem->next_no, myNextYes ? 1 : 0);
+        doRemoveChild(&myNextNo, &myWrappedItem->next_no, myNextYes ? 1 : 0);
     }
 }
 
@@ -159,11 +159,11 @@ void TreasureWrapper::doAddChild(TreasureYesNo **my, treasure **ti, bool isYes, 
 
 void TreasureWrapper::addChild(treasurelist *tl, archetype *arch) {
     if (!myNextYes) {
-        doAddChild(&myNextYes, &myItem->next_yes, true, 0, tl, arch);
+        doAddChild(&myNextYes, &myWrappedItem->next_yes, true, 0, tl, arch);
         return;
     }
     if (!myNextNo) {
-        doAddChild(&myNextNo, &myItem->next_no, false, 1, tl, arch);
+        doAddChild(&myNextNo, &myWrappedItem->next_no, false, 1, tl, arch);
     }
 }
 
@@ -187,48 +187,48 @@ void TreasureWrapper::drop(const QMimeData *data, int) {
 }
 
 uint8_t TreasureWrapper::chance() const {
-    return myItem->chance;
+    return myWrappedItem->chance;
 }
 
 void TreasureWrapper::setChance(uint8_t chance) {
-    if (chance != myItem->chance) {
-        myItem->chance = chance;
+    if (chance != myWrappedItem->chance) {
+        myWrappedItem->chance = chance;
         markModified(AssetUpdated);
     }
 }
 
 uint8_t TreasureWrapper::magic() const {
-    return myItem->magic;
+    return myWrappedItem->magic;
 }
 
 void TreasureWrapper::setMagic(uint8_t magic) {
-    if (magic != myItem->magic) {
-        myItem->magic = magic;
+    if (magic != myWrappedItem->magic) {
+        myWrappedItem->magic = magic;
         markModified(AssetUpdated);
     }
 }
 
 uint16_t TreasureWrapper::nrof() const {
-    return myItem->nrof;
+    return myWrappedItem->nrof;
 }
 
 void TreasureWrapper::setNrof(uint16_t nrof) {
-    if (nrof != myItem->nrof) {
-        myItem->nrof = nrof;
+    if (nrof != myWrappedItem->nrof) {
+        myWrappedItem->nrof = nrof;
         markModified(AssetUpdated);
     }
 }
 
 const treasurelist *TreasureWrapper::list() const {
-    return myItem->name ? getManager()->treasures()->find(myItem->name) : nullptr;
+    return myWrappedItem->name ? getManager()->treasures()->find(myWrappedItem->name) : nullptr;
 }
 
 void TreasureWrapper::setList(const treasurelist *list) {
-    if (myItem->name != (list ? list->name : nullptr)) {
-        FREE_AND_CLEAR_STR_IF(myItem->name);
+    if (myWrappedItem->name != (list ? list->name : nullptr)) {
+        FREE_AND_CLEAR_STR_IF(myWrappedItem->name);
         if (list) {
-            myItem->name = add_string(list->name);
-            myItem->item = nullptr;
+            myWrappedItem->name = add_string(list->name);
+            myWrappedItem->item = nullptr;
             setSpecificItem(nullptr, true);
         }
         markModified(AssetUpdated);
@@ -236,14 +236,14 @@ void TreasureWrapper::setList(const treasurelist *list) {
 }
 
 const archetype *TreasureWrapper::arch() const {
-    return myItem->item;
+    return myWrappedItem->item;
 }
 
 void TreasureWrapper::setArch(const archetype *arch) {
-    if (arch != myItem->item) {
-        myItem->item = const_cast<archetype *>(arch);
-        if (myItem->item && myItem->name) {
-            FREE_AND_CLEAR_STR(myItem->name);
+    if (arch != myWrappedItem->item) {
+        myWrappedItem->item = const_cast<archetype *>(arch);
+        if (myWrappedItem->item && myWrappedItem->name) {
+            FREE_AND_CLEAR_STR(myWrappedItem->name);
         }
         markModified(AssetUpdated);
         setSpecificItem(arch ? &arch->clone : nullptr, true);
@@ -267,7 +267,7 @@ void TreasureWrapper::swapYesNo() {
             myNextNo->setIsYes(true);
         }
         std::swap(myNextYes, myNextNo);
-        std::swap(myItem->next_yes, myItem->next_no);
+        std::swap(myWrappedItem->next_yes, myWrappedItem->next_no);
         markModified(AfterLayoutChange);
     }
 }

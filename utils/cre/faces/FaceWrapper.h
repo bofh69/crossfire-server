@@ -20,12 +20,12 @@ class FaceWrapper : public AssetTWrapper<Face> {
 public:
     FaceWrapper(AssetWrapper *parent, Face* face, ResourcesManager *resourcesManager);
 
-    virtual QString displayName() const override { return myItem->name; }
-    virtual QIcon displayIcon() const override { return CREPixmap::getIcon(myItem); }
+    virtual QString displayName() const override { return myWrappedItem->name; }
+    virtual QIcon displayIcon() const override { return CREPixmap::getIcon(myWrappedItem); }
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;
 
-    QString name() const { return myItem->name; }
+    QString name() const { return myWrappedItem->name; }
 
 protected:
     ResourcesManager *myResourcesManager;

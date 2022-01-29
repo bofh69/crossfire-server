@@ -18,8 +18,8 @@ class QuestWrapper : public AssetTWrapper<quest_definition> {
 public:
     QuestWrapper(AssetWrapper *parent, quest_definition* quest, ResourcesManager *) : AssetTWrapper(parent, "Quest", quest) { }
 
-    virtual QString displayName() const override { return myItem->quest_title; }
-    virtual QIcon displayIcon() const override { return CREPixmap::getIcon(myItem->face); }
+    virtual QString displayName() const override { return myWrappedItem->quest_title; }
+    virtual QIcon displayIcon() const override { return CREPixmap::getIcon(myWrappedItem->face); }
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;
 };

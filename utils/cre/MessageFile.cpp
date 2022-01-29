@@ -393,7 +393,7 @@ AssetWrapper::PossibleUse MessageFile::uses(const AssetWrapper *asset, std::stri
             QList<QStringList> conditions = rule->preconditions();
             conditions.append(rule->postconditions());
             foreach(QStringList list, conditions) {
-                if (list.size() > 1 && (list[0] == "quest" || list[0] == "questdone") && list[1] == quest->item()->quest_code) {
+                if (list.size() > 1 && (list[0] == "quest" || list[0] == "questdone") && list[1] == quest->wrappedItem()->quest_code) {
                     return Uses;
                 }
             }

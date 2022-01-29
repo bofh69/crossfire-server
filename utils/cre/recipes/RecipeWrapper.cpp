@@ -8,30 +8,30 @@ RecipeWrapper::RecipeWrapper(AssetWrapper *parent, const recipe *rp, ResourcesMa
 
 QString RecipeWrapper::title() const
 {
-    return myItem->title;
+    return myWrappedItem->title;
 }
 
 int RecipeWrapper::chance() const
 {
-    return myItem->chance;
+    return myWrappedItem->chance;
 }
 
 int RecipeWrapper::difficulty() const
 {
-    return myItem->diff;
+    return myWrappedItem->diff;
 }
 
 int RecipeWrapper::experience() const
 {
-    return myItem->exp;
+    return myWrappedItem->exp;
 }
 
 QStringList RecipeWrapper::archs() const
 {
     QStringList archs;
-    for (size_t i = 0; i < myItem->arch_names; i++)
+    for (size_t i = 0; i < myWrappedItem->arch_names; i++)
     {
-        archs.append(myItem->arch_name[i]);
+        archs.append(myWrappedItem->arch_name[i]);
     }
     return archs;
 }
@@ -39,7 +39,7 @@ QStringList RecipeWrapper::archs() const
 QStringList RecipeWrapper::ingredients() const
 {
     QStringList ingredients;
-    for (linked_char* ing = myItem->ingred; ing; ing = ing->next)
+    for (linked_char* ing = myWrappedItem->ingred; ing; ing = ing->next)
     {
         ingredients.append(ing->name);
     }
@@ -48,42 +48,42 @@ QStringList RecipeWrapper::ingredients() const
 
 bool RecipeWrapper::transmute() const
 {
-    return myItem->transmute != 0;
+    return myWrappedItem->transmute != 0;
 }
 
 int RecipeWrapper::minLevel() const
 {
-    return myItem->min_level;
+    return myWrappedItem->min_level;
 }
 
 QString RecipeWrapper::keycode() const
 {
-    return myItem->keycode;
+    return myWrappedItem->keycode;
 }
 
 QString RecipeWrapper::displayName() const {
-    if (myItem->arch_names == 0) {
-        return QString("%1 (no archetype?)").arg(myItem->title);
+    if (myWrappedItem->arch_names == 0) {
+        return QString("%1 (no archetype?)").arg(myWrappedItem->title);
     }
-    auto base = find_archetype(myItem->arch_name[0]);
+    auto base = find_archetype(myWrappedItem->arch_name[0]);
     if (!base) {
-        return QString("%1 (no archetype?)").arg(myItem->title);
+        return QString("%1 (no archetype?)").arg(myWrappedItem->title);
     }
 
-    if (strcmp(myItem->title, "NONE") == 0) {
+    if (strcmp(myWrappedItem->title, "NONE") == 0) {
         if (base->clone.title) {
             return QString("%1 %2").arg(base->clone.name, base->clone.title);
         }
         return base->clone.name;
     }
-    return QString("%1 of %2").arg(base->clone.name, myItem->title);
+    return QString("%1 of %2").arg(base->clone.name, myWrappedItem->title);
 }
 
 QIcon RecipeWrapper::displayIcon() const {
-    const Face *face = recipe_get_face(myItem);
+    const Face *face = recipe_get_face(myWrappedItem);
     const archt* base = NULL;
-    if (myItem->arch_names > 0) {
-        base = find_archetype(myItem->arch_name[0]);
+    if (myWrappedItem->arch_names > 0) {
+        base = find_archetype(myWrappedItem->arch_name[0]);
     }
     if (!face && base != NULL) {
         return CREPixmap::getIcon(base->clone.face);

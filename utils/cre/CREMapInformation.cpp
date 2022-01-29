@@ -254,15 +254,15 @@ void CREMapInformation::addRandomMap(RandomMap* map)
 AssetWrapper::PossibleUse CREMapInformation::uses(const AssetWrapper *asset, std::string &) const {
     auto quest = dynamic_cast<const QuestWrapper *>(asset);
     if (quest) {
-        return myQuests.indexOf(quest->item()->quest_code) == -1 ? DoesntUse : Uses;
+        return myQuests.indexOf(quest->wrappedItem()->quest_code) == -1 ? DoesntUse : Uses;
     }
     auto face = dynamic_cast<const FaceWrapper *>(asset);
     if (face) {
-        return myFaces.find(face->item()->name) == myFaces.end() ? DoesntUse : Uses;
+        return myFaces.find(face->wrappedItem()->name) == myFaces.end() ? DoesntUse : Uses;
     }
     auto anim = dynamic_cast<const AnimationWrapper *>(asset);
     if (anim) {
-        return myAnimations.find(anim->item()->name) == myAnimations.end() ? DoesntUse : Uses;
+        return myAnimations.find(anim->wrappedItem()->name) == myAnimations.end() ? DoesntUse : Uses;
     }
     return DoesntUse;
 }

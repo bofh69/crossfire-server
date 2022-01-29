@@ -16,7 +16,7 @@ class RecipeListWrapper : public AssetTWrapper<const recipelist> {
 public:
     RecipeListWrapper(AssetWrapper *parent, const recipelist *list, ResourcesManager *resources);
 
-    virtual QString displayName() const override { return myItem->items ? tr("%1 ingredients").arg(myItem->items->ingred_count) : "??"; }
+    virtual QString displayName() const override { return myWrappedItem->items ? tr("%1 ingredients").arg(myWrappedItem->items->ingred_count) : "??"; }
     virtual int childrenCount() const override;
     virtual AssetWrapper *child(int) override;
     virtual int childIndex(AssetWrapper *) override;

@@ -10,8 +10,8 @@ AnimationWrapper::AnimationWrapper(AssetWrapper *parent, Animations *anim, Resou
 AssetWrapper::PossibleUse AnimationWrapper::uses(const AssetWrapper *asset, std::string &) const {
     auto face = dynamic_cast<const FaceWrapper *>(asset);
     if (face) {
-        for (uint16_t f = 0; f < myItem->num_animations; f++) {
-            if (face->item() == myItem->faces[f]) {
+        for (uint16_t f = 0; f < myWrappedItem->num_animations; f++) {
+            if (face->wrappedItem() == myWrappedItem->faces[f]) {
                 return Uses;
             }
         }

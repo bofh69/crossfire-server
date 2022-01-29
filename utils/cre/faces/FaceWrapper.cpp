@@ -9,7 +9,7 @@ FaceWrapper::FaceWrapper(AssetWrapper *parent, Face *face, ResourcesManager *res
 AssetWrapper::PossibleUse FaceWrapper::uses(const AssetWrapper *asset, std::string &hint) const {
     auto face = dynamic_cast<const FaceWrapper *>(asset);
     if (face) {
-        if (myItem->smoothface == face->myItem) {
+        if (myWrappedItem->smoothface == face->myWrappedItem) {
             hint = "as smoothed face";
             return Uses;
         }

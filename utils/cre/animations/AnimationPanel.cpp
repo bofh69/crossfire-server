@@ -40,7 +40,7 @@ AnimationPanel::AnimationPanel(QWidget* parent, AssetModel *assets) : AssetWrapp
 void AnimationPanel::setItem(AssetWrapper *asset) {
     auto anim = dynamic_cast<AnimationWrapper *>(asset);
     Q_ASSERT(anim);
-    myAnimation = anim->item();
+    myAnimation = anim->wrappedItem();
 
     myAssets->setFilter(asset);
     myUsingView->expandAll();
@@ -52,8 +52,8 @@ void AnimationPanel::setItem(AssetWrapper *asset) {
     myFaces->addTopLevelItem(root);
     root->setExpanded(true);
 
-    for (int face = 0; face < anim->item()->num_animations; face++)
+    for (int face = 0; face < anim->wrappedItem()->num_animations; face++)
     {
-      CREUtils::faceNode(anim->item()->faces[face], root);
+      CREUtils::faceNode(anim->wrappedItem()->faces[face], root);
     }
 }

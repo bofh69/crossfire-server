@@ -20,13 +20,13 @@ class AnimationWrapper : public AssetTWrapper<Animations> {
 public:
     AnimationWrapper(AssetWrapper *parent, Animations* anim, ResourcesManager *resourcesManager);
 
-    virtual QString displayName() const override { return myItem->name; }
-    virtual QIcon displayIcon() const { return CREPixmap::getIcon(myItem->faces[0]); }
+    virtual QString displayName() const override { return myWrappedItem->name; }
+    virtual QIcon displayIcon() const { return CREPixmap::getIcon(myWrappedItem->faces[0]); }
     virtual void displayFillPanel(QWidget *panel) override;
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;
 
-    QString name() const { return myItem->name; }
+    QString name() const { return myWrappedItem->name; }
 
 protected:
     ResourcesManager *myResourcesManager;

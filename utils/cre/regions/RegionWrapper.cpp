@@ -36,13 +36,13 @@ AssetWrapper::PossibleUse RegionWrapper::uses(const AssetWrapper *asset, std::st
 
 void RegionWrapper::refresh() const {
     if (myNeedRefresh) {
-        myMaps = myResourcesManager->getMapInformationManager()->getMapsForRegion(myItem->name);
+        myMaps = myResourcesManager->getMapInformationManager()->getMapsForRegion(myWrappedItem->name);
         myNeedRefresh = false;
     }
 }
 
 void RegionWrapper::mapAdded(CREMapInformation *map) {
-    if (map->region() == myItem->name) {
+    if (map->region() == myWrappedItem->name) {
         myNeedRefresh = true;
     }
 }

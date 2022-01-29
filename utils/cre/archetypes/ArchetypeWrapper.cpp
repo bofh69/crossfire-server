@@ -16,27 +16,27 @@ ArchetypeWrapper::ArchetypeWrapper(AssetWrapper *parent, archetype *arch, Resour
 }
 
 QString ArchetypeWrapper::name() const {
-    return myItem->name;
+    return myWrappedItem->name;
 }
 
 QObject* ArchetypeWrapper::clone() {
-    return myResources->wrap(&myItem->clone, this);
+    return myResources->wrap(&myWrappedItem->clone, this);
 }
 
 QObject *ArchetypeWrapper::head() const {
-    return myItem->head ? myResources->wrap(myItem->head, nullptr) : nullptr;
+    return myWrappedItem->head ? myResources->wrap(myWrappedItem->head, nullptr) : nullptr;
 }
 
 QObject *ArchetypeWrapper::more() const {
-    return myItem->more ? myResources->wrap(myItem->more, nullptr) : nullptr;
+    return myWrappedItem->more ? myResources->wrap(myWrappedItem->more, nullptr) : nullptr;
 }
 
 int ArchetypeWrapper::childrenCount() const {
-    if (myItem->head) {
+    if (myWrappedItem->head) {
         return 0;
     }
     int count = 0;
-    auto part = myItem;
+    auto part = myWrappedItem;
     while (part->more) {
         count++;
         part = part->more;
@@ -45,7 +45,7 @@ int ArchetypeWrapper::childrenCount() const {
 }
 
 AssetWrapper *ArchetypeWrapper::child(int index) {
-    auto part = myItem->more;
+    auto part = myWrappedItem->more;
     while (index > 0 && part) {
         part = part->more;
         index--;
@@ -57,13 +57,13 @@ AssetWrapper *ArchetypeWrapper::child(int index) {
 }
 
 int ArchetypeWrapper::childIndex(AssetWrapper *child) {
-    if (myItem->head) {
+    if (myWrappedItem->head) {
         return -1;
     }
-    auto part = myResources->wrap(myItem->more, this);
+    auto part = myResources->wrap(myWrappedItem->more, this);
     int index = 0;
     while (part != child && part) {
-        part = myResources->wrap(part->item()->more, this);
+        part = myResources->wrap(part->wrappedItem()->more, this);
         index++;
     }
     if (part) {
@@ -111,15 +111,15 @@ static bool isValidArchFlesh(const archetype *arch, const Face *fleshFace) {
 AssetWrapper::PossibleUse ArchetypeWrapper::uses(const AssetWrapper *asset, std::string &hint) const {
     auto face = dynamic_cast<const FaceWrapper *>(asset);
     if (face != nullptr) {
-        auto key = object_get_value(&myItem->clone, "identified_face");
-        if (face->item() == myItem->clone.face || (key && strcmp(face->item()->name, key) == 0)) {
+        auto key = object_get_value(&myWrappedItem->clone, "identified_face");
+        if (face->wrappedItem() == myWrappedItem->clone.face || (key && strcmp(face->wrappedItem()->name, key) == 0)) {
             return Uses;
         }
 
-        auto len = strlen(myItem->name);
-        if (strncmp(myItem->name, face->item()->name, len) == 0 && face->item()->name[len] == '_') {
-            auto flesh = getManager()->faces()->find(face->item()->name + len + 1);
-            if (isValidArchFlesh(myItem, flesh)) {
+        auto len = strlen(myWrappedItem->name);
+        if (strncmp(myWrappedItem->name, face->wrappedItem()->name, len) == 0 && face->wrappedItem()->name[len] == '_') {
+            auto flesh = getManager()->faces()->find(face->wrappedItem()->name + len + 1);
+            if (isValidArchFlesh(myWrappedItem, flesh)) {
                 hint = "flesh face";
                 return Uses;
             }
@@ -129,8 +129,8 @@ AssetWrapper::PossibleUse ArchetypeWrapper::uses(const AssetWrapper *asset, std:
     }
     auto anim = dynamic_cast<const AnimationWrapper *>(asset);
     if (anim) {
-        auto key = object_get_value(&myItem->clone, "identified_animation");
-        if (anim->item() == myItem->clone.animation || (key && strcmp(anim->item()->name, key) == 0)) {
+        auto key = object_get_value(&myWrappedItem->clone, "identified_animation");
+        if (anim->wrappedItem() == myWrappedItem->clone.animation || (key && strcmp(anim->wrappedItem()->name, key) == 0)) {
             return Uses;
         }
         return DoesntUse;
@@ -139,12 +139,12 @@ AssetWrapper::PossibleUse ArchetypeWrapper::uses(const AssetWrapper *asset, std:
 }
 
 void ArchetypeWrapper::drag(QMimeData *data) const {
-    MimeUtils::addMime(data, MimeUtils::Archetype, myItem->name);
+    MimeUtils::addMime(data, MimeUtils::Archetype, myWrappedItem->name);
 }
 
 bool ArchetypeWrapper::appearsOnTreasureList() const {
     std::function<bool(const treasure *item)> ci = [&] (const treasure *item) {
-        if (item->item == myItem) {
+        if (item->item == myWrappedItem) {
             return true;
         }
         if (item->next_yes && ci(item->next_yes)) {

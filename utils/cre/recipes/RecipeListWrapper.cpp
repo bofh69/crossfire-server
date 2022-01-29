@@ -9,7 +9,7 @@ RecipeListWrapper::RecipeListWrapper(AssetWrapper *parent, const recipelist *lis
 
 int RecipeListWrapper::childrenCount() const {
     int count = 0;
-    auto item = myItem->items;
+    auto item = myWrappedItem->items;
     while (item) {
         count++;
         item = item->next;
@@ -18,7 +18,7 @@ int RecipeListWrapper::childrenCount() const {
 }
 
 AssetWrapper *RecipeListWrapper::child(int index) {
-    auto item = myItem->items;
+    auto item = myWrappedItem->items;
     while (index > 0) {
         index--;
         item = item->next;
@@ -27,7 +27,7 @@ AssetWrapper *RecipeListWrapper::child(int index) {
 }
 
 int RecipeListWrapper::childIndex(AssetWrapper *child) {
-    auto item = myItem->items;
+    auto item = myWrappedItem->items;
     int index = 0;
     while (item) {
         if (myResourcesManager->wrap(item, this) == child) {
