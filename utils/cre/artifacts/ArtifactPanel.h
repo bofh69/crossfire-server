@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QtWidgets>
-#include "CREPanel.h"
+#include "assets/AssetWrapperPanel.h"
 #include "../animations/AnimationControl.h"
 
 extern "C" {
@@ -11,13 +11,13 @@ extern "C" {
 #include "artifact.h"
 }
 
-class ArtifactPanel : public CRETPanel<const artifact>
+class ArtifactPanel : public AssetWrapperPanel
 {
     Q_OBJECT
 
     public:
         ArtifactPanel(QWidget* parent);
-        virtual void setItem(const artifact* artifact) override;
+        virtual void setItem(AssetWrapper *item) override;
 
     protected:
         const artifact* myArtifact;

@@ -36,13 +36,14 @@ QLabel *AssetWrapperPanel::addLabel(const QString &label, const char *property) 
     return addWidget(label, new QLabel(this), true, property, "text");
 }
 
-void AssetWrapperPanel::addLineEdit(const QString &label, const char *property, bool readOnly) {
+QLineEdit *AssetWrapperPanel::addLineEdit(const QString &label, const char *property, bool readOnly) {
     auto widget = addWidget(label, new QLineEdit(this), true, property, "text");
     if (readOnly) {
         widget->setReadOnly(readOnly);
     } else {
         connect(widget, SIGNAL(editingFinished()), this, SLOT(dataChanged()));
     }
+    return widget;
 }
 
 QTextEdit *AssetWrapperPanel::addTextEdit(const QString &label, const char *property, bool readOnly) {

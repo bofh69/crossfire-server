@@ -5,57 +5,39 @@
 #include "assets.h"
 #include "AssetsManager.h"
 #include "Archetypes.h"
+#include "assets/AssetWrapper.h"
+#include "artifacts/ArtifactWrapper.h"
 
-ArtifactPanel::ArtifactPanel(QWidget* parent) : CRETPanel(parent)
+ArtifactPanel::ArtifactPanel(QWidget* parent) : AssetWrapperPanel(parent)
 {
     myArtifact = NULL;
 
-    QGridLayout* layout = new QGridLayout(this);
+    addLineEdit(tr("Name:"), "name");
+    addSpinBox(tr("Chance:"), "chance", 0, 65535, true);
+    myType = addLineEdit(tr("Type:"), nullptr, true);
 
-    QLabel* label = new QLabel(this);
-    label->setText("Name:");
-    layout->addWidget(label, 1, 1);
-    myName = new QLineEdit(this);
-    layout->addWidget(myName, 1, 2);
-    myName->setReadOnly(true);
-
-    label = new QLabel(this);
-    label->setText("Chance:");
-    layout->addWidget(label, 2, 1);
-    myChance = new QLineEdit(this);
-    layout->addWidget(myChance, 2, 2);
-    myChance->setReadOnly(true);
-
-    label = new QLabel(this);
-    label->setText("Type:");
-    layout->addWidget(label, 3, 1);
-    myType = new QLineEdit(this);
-    layout->addWidget(myType, 3, 2);
-    myType->setReadOnly(true);
-
-    myViaAlchemy = new QLabel(this);
+    myViaAlchemy = addWidget(QString(), new QLabel(this), false, nullptr, nullptr);
     myViaAlchemy->setWordWrap(true);
-    layout->addWidget(myViaAlchemy, 4, 1, 1, 2);
 
-    layout->addWidget(new QLabel(tr("Values:"), this), 5, 1, 1, 2);
+    myLayout->addWidget(new QLabel(tr("Values:"), this), 5, 0, 1, 2);
     myValues = new QTextEdit(this);
-    layout->addWidget(myValues, 6, 1, 1, 2);
+    myLayout->addWidget(myValues, 6, 0, 1, 2);
     myValues->setReadOnly(true);
 
     myArchetypes = new QTreeWidget(this);
-    layout->addWidget(myArchetypes, 7, 1, 3, 1);
+    myLayout->addWidget(myArchetypes, 7, 0, 3, 1);
     myArchetypes->setHeaderLabel("Allowed/forbidden archetypes");
     myArchetypes->setIconSize(QSize(32, 32));
     myArchetypes->setRootIsDecorated(false);
     connect(myArchetypes, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(artifactChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
 
-    layout->addWidget(new QLabel(tr("Result:"), this), 7, 2);
+    myLayout->addWidget(new QLabel(tr("Result:"), this), 7, 1);
     myInstance = new QTextEdit(this);
-    layout->addWidget(myInstance, 8, 2);
+    myLayout->addWidget(myInstance, 8, 1);
     myInstance->setReadOnly(true);
 
-    layout->addWidget(myAnimation = new AnimationControl(this), 9, 2);
-    layout->addWidget(myFace = new AnimationWidget(this), 9, 2);
+    myLayout->addWidget(myAnimation = new AnimationControl(this), 9, 1);
+    myLayout->addWidget(myFace = new AnimationWidget(this), 9, 1);
 }
 
 void ArtifactPanel::computeMadeViaAlchemy(const artifact* artifact) const
@@ -141,22 +123,24 @@ static void addArchetypes(const artifact* artifact, const char* name, bool check
     });
 }
 
-void ArtifactPanel::setItem(const artifact* artifact)
+void ArtifactPanel::setItem(AssetWrapper *item)
 {
-    Q_ASSERT(artifact);
-    myArtifact = artifact;
+    AssetWrapperPanel::setItem(item);
 
-    myName->setText(artifact->item->name);
-    myChance->setText(QString::number(artifact->chance));
-    myType->setText(QString::number(artifact->item->type));
+    auto aw = dynamic_cast<ArtifactWrapper *>(item);
+    auto art = (((AssetTWrapper<artifact> *)aw)->wrappedItem());
+    Q_ASSERT(art);
+    myArtifact = art;
 
-    computeMadeViaAlchemy(artifact);
+    myType->setText(QString::number(myArtifact->item->type));
+
+    computeMadeViaAlchemy(myArtifact);
 
     myArchetypes->clear();
     myInstance->clear();
 
     /* 'allowed' is either the archetype name or the item's name, so check all archetypes for each word */
-    for (const linked_char* allowed = artifact->allowed; allowed; allowed = allowed->next) {
+    for (const linked_char* allowed = myArtifact->allowed; allowed; allowed = allowed->next) {
         auto name = allowed->name;
         bool check = true;
         if (name[0] == '!') {
@@ -168,7 +152,7 @@ void ArtifactPanel::setItem(const artifact* artifact)
     }
 
     /* all items are allowed, so add them */
-    if (artifact->allowed == NULL) {
+    if (myArtifact->allowed == NULL) {
         addArchetypes(myArtifact, NULL, true, myArchetypes);
     }
 

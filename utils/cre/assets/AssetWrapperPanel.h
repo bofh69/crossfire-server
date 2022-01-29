@@ -20,7 +20,7 @@ public:
     virtual void setItem(AssetWrapper *item) override;
 
     QLabel *addLabel(const QString &label, const char *property);
-    void addLineEdit(const QString &label, const char *property, bool readOnly = true);
+    QLineEdit *addLineEdit(const QString &label, const char *property, bool readOnly = true);
     QTextEdit *addTextEdit(const QString &label, const char *property, bool readOnly = true);
     QCheckBox *addCheckBox(const QString &label, const char *property, bool readOnly = true);
     void addFaceChoice(const QString &label, const char *property, bool readOnly = true, bool allowNone = true);

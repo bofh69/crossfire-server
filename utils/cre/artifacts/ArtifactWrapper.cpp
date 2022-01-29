@@ -4,7 +4,7 @@
 #include "faces/FaceWrapper.h"
 #include "ArtifactListWrapper.h"
 
-ArtifactWrapper::ArtifactWrapper(AssetWrapper *parent, const artifact *art, ResourcesManager *resourcesManager)
+ArtifactWrapper::ArtifactWrapper(AssetWrapper *parent, artifact *art, ResourcesManager *resourcesManager)
  : AssetTWrapper(parent, "Artifact", art), myResourcesManager(resourcesManager), mySpecificItem(nullptr)
 {
 }
@@ -35,6 +35,10 @@ QString ArtifactWrapper::displayName() const {
 
 QIcon ArtifactWrapper::displayIcon() const {
     return CREPixmap::getIcon(artifact_get_face(myWrappedItem));
+}
+
+QString ArtifactWrapper::name() const {
+    return myWrappedItem->item->name;
 }
 
 QObject* ArtifactWrapper::item() {
