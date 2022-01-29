@@ -1,3 +1,7 @@
+# 2022-01-30
+
+**Option to restore windows positions** when application starts, in *Windows* menu.
+
 # 2022-01-28
 
 **Display artifacts** for archetypes and treasure items, with their associated generation chance.

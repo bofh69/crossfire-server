@@ -31,6 +31,21 @@ class CRESettings : protected QSettings
 
         int changesLength() const;
         void setChangesLength(int length);
+
+        bool storeWindowsState() const;
+        void setStoreWindowState(bool store);
+
+        QByteArray mainWindowGeometry();
+        void setMainWindowGeometry(const QByteArray &data);
+
+        int subWindowCount() const;
+        void setSubWindowCount(int count);
+
+        int subWindowType(int subWindow) const;
+        void setSubWindowType(int subWindow, int type);
+
+        QByteArray subWindowPosition(int subWindow) const;
+        void setSubWindowPosition(int subWindow, const QByteArray &data);
 };
 
 #endif // CLASS_CRE_SETTINGS_H

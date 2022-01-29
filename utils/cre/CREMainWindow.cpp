@@ -78,6 +78,21 @@ CREMainWindow::CREMainWindow(const QString &helpRoot)
 
     myMapManager->start();
     myHelpManager->setupData();
+
+    CRESettings settings;
+    if (settings.storeWindowsState()) {
+        restoreGeometry(settings.mainWindowGeometry());
+
+        int count = settings.subWindowCount();
+        for (int idx = 0; idx < count; idx++) {
+            int type = settings.subWindowType(idx);
+            if (type == -2) {
+                onOpenExperience(settings.subWindowPosition(idx));
+            } else {
+                doResourceWindow(type, settings.subWindowPosition(idx));
+            }
+        }
+    }
 }
 
 void CREMainWindow::closeEvent(QCloseEvent* event)
@@ -87,6 +102,25 @@ void CREMainWindow::closeEvent(QCloseEvent* event)
             event->ignore();
             return;
         }
+    }
+
+    CRESettings settings;
+    if (settings.storeWindowsState()) {
+        auto windows = myArea->subWindowList();
+        settings.setSubWindowCount(windows.size());
+        for (int idx = 0; idx < windows.size(); idx++) {
+            settings.setSubWindowPosition(idx, windows[idx]->saveGeometry());
+            auto widget = windows[idx]->widget();
+            auto crew = dynamic_cast<CREResourcesWindow *>(widget);
+            if (crew != nullptr) {
+                settings.setSubWindowType(idx, crew->rootIndex());
+            }
+            auto ew = dynamic_cast<CREExperienceWindow *>(widget);
+            if (ew) {
+                settings.setSubWindowType(idx, -2);
+            }
+        }
+        settings.setMainWindowGeometry(saveGeometry());
     }
 
     myMapManager->cancel();
@@ -204,8 +238,19 @@ void CREMainWindow::createMenus()
     myToolsMenu->addAction(myClearMapCache);
     myToolsMenu->addAction(createAction(tr("Reload assets"), tr("Reload all assets from the data directory."), this, SLOT(onToolReloadAssets())));
 
+    CRESettings set;
+
     myWindows = menuBar()->addMenu(tr("&Windows"));
     connect(myWindows, SIGNAL(aboutToShow()), this, SLOT(onWindowsShowing()));
+    auto store = createAction(tr("Restore windows positions at launch"), tr("If enabled then opened windows are automatically opened again when the application starts"));
+    store->setCheckable(true);
+    store->setChecked(set.storeWindowsState());
+    myWindows->addAction(store);
+    connect(store, &QAction::triggered, [store] {
+        CRESettings set;
+        set.setStoreWindowState(store->isChecked());
+    } );
+    
     myWindows->addAction(createAction(tr("Close current window"), tr("Close the currently focused window"), myArea, SLOT(closeActiveSubWindow())));
     myWindows->addAction(createAction(tr("Close all windows"), tr("Close all opened windows"), myArea, SLOT(closeAllSubWindows())));
     myWindows->addAction(createAction(tr("Tile windows"), tr("Tile all windows"), myArea, SLOT(tileSubWindows())));
@@ -240,7 +285,7 @@ void CREMainWindow::createMenus()
     connect(changes, &QAction::triggered, [=] () { myChanges->setVisible(true); });
 }
 
-void CREMainWindow::doResourceWindow(int assets)
+void CREMainWindow::doResourceWindow(int assets, const QByteArray& position)
 {
     QModelIndex root;
     if (assets != -1) {
@@ -253,14 +298,24 @@ void CREMainWindow::doResourceWindow(int assets)
     connect(this, SIGNAL(updateReports()), resources, SLOT(updateReports()));
     connect(resources, SIGNAL(reportsModified()), this, SLOT(onReportsModified()));
     connect(this, SIGNAL(commitData()), resources, SLOT(commitData()));
-    myArea->addSubWindow(resources)->setWindowState(Qt::WindowMaximized);
+    auto widget = myArea->addSubWindow(resources);
+    if (position.isEmpty()) {
+        if (myArea->subWindowList().size() == 1) {
+            widget->setWindowState(Qt::WindowMaximized);
+        }
+    } else {
+        widget->restoreGeometry(position);
+    }
     resources->show();
 }
 
-void CREMainWindow::onOpenExperience()
+void CREMainWindow::onOpenExperience(const QByteArray& position)
 {
     QWidget* experience = new CREExperienceWindow();
-    myArea->addSubWindow(experience);
+    auto widget = myArea->addSubWindow(experience);
+    if (!position.isEmpty()) {
+        widget->restoreGeometry(position);
+    }
     experience->show();
 }
 
@@ -1691,13 +1746,13 @@ void CREMainWindow::onWindowsShowing() {
     auto windows = myArea->subWindowList();
     bool hasWindows = !windows.empty();
 
-    while (myWindows->actions().size() > 5) {
-        myWindows->removeAction(myWindows->actions()[5]);
+    while (myWindows->actions().size() > 6) {
+        myWindows->removeAction(myWindows->actions()[6]);
     }
     for (auto a : myWindows->actions()) {
         if (a->isSeparator()) {
             a->setVisible(hasWindows);
-        } else {
+        } else if (a != myWindows->actions()[0]) {
             a->setEnabled(hasWindows);
         }
     }

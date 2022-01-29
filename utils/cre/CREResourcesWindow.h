@@ -24,6 +24,8 @@ class CREResourcesWindow : public QWidget
         CREResourcesWindow(CREMapInformationManager* store, MessageManager* messages, ResourcesManager* resources, ScriptFileManager* scripts, AssetModel *model, const QModelIndex &root, QWidget* parent);
         virtual ~CREResourcesWindow();
 
+        int rootIndex() const { return myTreeRoot.isValid() ? myTreeRoot.row() : -1; }
+
     public slots:
         void updateFilters();
         void updateReports();

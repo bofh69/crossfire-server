@@ -68,13 +68,13 @@ class CREMainWindow : public QMainWindow
 
     protected:
         void closeEvent(QCloseEvent* event);
-        void doResourceWindow(int assets);
+        void doResourceWindow(int assets, const QByteArray& position = QByteArray());
         void fillFacesets();
         QAction *createAction(const QString &title, const QString &statusTip);
         QAction *createAction(const QString &title, const QString &statusTip, QObject *target, const char *slot);
 
     private slots:
-        void onOpenExperience();
+        void onOpenExperience(const QByteArray& position = QByteArray());
         void onSaveFormulae();
         void onSaveQuests();
         void onSaveMessages();

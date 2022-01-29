@@ -104,3 +104,45 @@ int CRESettings::changesLength() const {
 void CRESettings::setChangesLength(int length) {
     setValue("changesLength", length);
 }
+
+bool CRESettings::storeWindowsState() const {
+    return value("storeWindowsState").toBool();
+}
+
+void CRESettings::setStoreWindowState(bool store) {
+    setValue("storeWindowsState", store);
+}
+
+QByteArray CRESettings::mainWindowGeometry() {
+    return value("mainWindowGeometry").toByteArray();
+}
+
+void CRESettings::setMainWindowGeometry(const QByteArray &data) {
+    setValue("mainWindowGeometry", data);
+    sync();
+}
+
+int CRESettings::subWindowCount() const {
+    return value("subWindows/count").toInt();
+}
+
+void CRESettings::setSubWindowCount(int count) {
+    remove("subWindows");
+    setValue("subWindows/count", count);
+}
+
+int CRESettings::subWindowType(int subWindow) const {
+    return value(tr("subWindows/win_%1/type").arg(subWindow)).toInt();
+}
+
+void CRESettings::setSubWindowType(int subWindow, int type) {
+    setValue(tr("subWindows/win_%1/type").arg(subWindow), type);
+}
+
+QByteArray CRESettings::subWindowPosition(int subWindow) const {
+    return value(tr("subWindows/win_%1/position").arg(subWindow)).toByteArray();
+}
+
+void CRESettings::setSubWindowPosition(int subWindow, const QByteArray &data) {
+    setValue(tr("subWindows/win_%1/position").arg(subWindow), data);
+}
