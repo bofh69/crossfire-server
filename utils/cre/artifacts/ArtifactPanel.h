@@ -11,12 +11,12 @@ extern "C" {
 #include "artifact.h"
 }
 
-class CREArtifactPanel : public CRETPanel<const artifact>
+class ArtifactPanel : public CRETPanel<const artifact>
 {
     Q_OBJECT
 
     public:
-        CREArtifactPanel(QWidget* parent);
+        ArtifactPanel(QWidget* parent);
         virtual void setItem(const artifact* artifact) override;
 
     protected:

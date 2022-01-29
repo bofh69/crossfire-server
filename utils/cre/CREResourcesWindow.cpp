@@ -128,7 +128,7 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     addPanel("Archetype", new ArchetypePanel(myStore, myResources, this));
     addPanel("Face", new CREFacePanel(this, model, myResources, myStore));
     addPanel("Animation", new AnimationPanel(this, model));
-    addPanel("Artifact", new CREArtifactPanel(this));
+    addPanel("Artifact", new ArtifactPanel(this));
     addPanel("ArtifactList", new ArtifactListPanel(this));
     addPanel("Recipe", new RecipePanel(this));
     addPanel("Treasure", new TreasurePanel(this));

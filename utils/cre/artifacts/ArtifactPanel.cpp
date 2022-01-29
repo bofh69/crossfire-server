@@ -6,7 +6,7 @@
 #include "AssetsManager.h"
 #include "Archetypes.h"
 
-CREArtifactPanel::CREArtifactPanel(QWidget* parent) : CRETPanel(parent)
+ArtifactPanel::ArtifactPanel(QWidget* parent) : CRETPanel(parent)
 {
     myArtifact = NULL;
 
@@ -58,7 +58,7 @@ CREArtifactPanel::CREArtifactPanel(QWidget* parent) : CRETPanel(parent)
     layout->addWidget(myFace = new AnimationWidget(this), 9, 2);
 }
 
-void CREArtifactPanel::computeMadeViaAlchemy(const artifact* artifact) const
+void ArtifactPanel::computeMadeViaAlchemy(const artifact* artifact) const
 {
     Q_ASSERT(artifact != NULL);
 
@@ -141,7 +141,7 @@ static void addArchetypes(const artifact* artifact, const char* name, bool check
     });
 }
 
-void CREArtifactPanel::setItem(const artifact* artifact)
+void ArtifactPanel::setItem(const artifact* artifact)
 {
     Q_ASSERT(artifact);
     myArtifact = artifact;
@@ -179,7 +179,7 @@ void CREArtifactPanel::setItem(const artifact* artifact)
     free(final);
 }
 
-void CREArtifactPanel::artifactChanged(QTreeWidgetItem* current, QTreeWidgetItem*)
+void ArtifactPanel::artifactChanged(QTreeWidgetItem* current, QTreeWidgetItem*)
 {
     myAnimation->setVisible(false);
     myFace->setVisible(false);
