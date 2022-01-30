@@ -1,7 +1,7 @@
 /*
  * Crossfire -- cooperative multi-player graphical RPG and adventure game
  *
- * Copyright (c) 1999-2014 Mark Wedel and the Crossfire Development Team
+ * Copyright (c) 1999-2022 the Crossfire Development Team
  * Copyright (c) 1992 Frank Tore Johansen
  *
  * Crossfire is free software and comes with ABSOLUTELY NO WARRANTY. You are

@@ -1,7 +1,7 @@
 /*
  * Crossfire -- cooperative multi-player graphical RPG and adventure game
  *
- * Copyright (c) 1999-2014 Mark Wedel and the Crossfire Development Team
+ * Copyright (c) 1999-2022 the Crossfire Development Team
  * Copyright (c) 1992 Frank Tore Johansen
  *
  * Crossfire is free software and comes with ABSOLUTELY NO WARRANTY. You are
@@ -83,7 +83,7 @@ static command_registration do_register(const char *name, uint8_t type, command_
     return add->registration;
 }
 
-static void command_allow_partial(object *op, const char *params) {
+static void command_partial_commands(object *op, const char *params) {
     if (strcmp(params, "1") == 0 || strcmp(params, "on") == 0) {
         op->contr->partial_commands = 1;
     }
@@ -147,7 +147,7 @@ void commands_init(void) {
     RN("mark", command_mark,              0.0);
     RN("motd", command_motd,              0.0);
     RN("news", command_news,              0.0);
-    RN("partial_commands", command_allow_partial, 0.0);
+    RN("partial_commands", command_partial_commands, 0.0);
     RN("party", command_party,            0.0);
     RN("party_rejoin", command_party_rejoin, 0.0);
     RN("passwd", command_passwd,          0.0);
