@@ -506,11 +506,16 @@ static PyObject *registerCommand(PyObject *self, PyObject *args) {
     int type = COMMAND_TYPE_NORMAL, index;
     (void)self;
 
-    if (!PyArg_ParseTuple(args, "ssd|d", &cmdname, &scriptname, &cmdspeed, &type))
+    if (!PyArg_ParseTuple(args, "ssd|i", &cmdname, &scriptname, &cmdspeed, &type))
         return NULL;
 
     if (cmdspeed < 0) {
         set_exception("speed must not be negative");
+        return NULL;
+    }
+
+    if (type < 0 || type > COMMAND_TYPE_WIZARD) {
+        set_exception("type must be between 0 and 2");
         return NULL;
     }
 
