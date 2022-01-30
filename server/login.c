@@ -313,6 +313,7 @@ int save_player(object *op, int flag) {
     fprintf(fp, "no_shout %d\n", pl->no_shout);
     fprintf(fp, "digestion %d\n", pl->digestion);
     fprintf(fp, "pickup %u\n", pl->mode);
+    fprintf(fp, "partial_commands %u\n", pl->partial_commands);
     /*
      * outputs_sync and outputs_count are now unused in favor of the facility
      * being supported on the client instead of in the server, but for now,
@@ -676,6 +677,8 @@ void check_login(object *op, const char *password) {
             pl->digestion = value;
         else if (!strcmp(buf, "pickup")) {
             pl->mode = uvalue;
+        } else if (!strcmp(buf, "partial_commands")) {
+            pl->partial_commands = uvalue;
         }
         else if (!strcmp(buf, "map"))
             strlcpy(pl->maplevel, val_string, sizeof(pl->maplevel));

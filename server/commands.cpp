@@ -83,6 +83,16 @@ static command_registration do_register(const char *name, uint8_t type, command_
     return add->registration;
 }
 
+static void command_allow_partial(object *op, const char *params) {
+    if (strcmp(params, "1") == 0 || strcmp(params, "on") == 0) {
+        op->contr->partial_commands = 1;
+    }
+    if (strcmp(params, "0") == 0 || strcmp(params, "off") == 0) {
+        op->contr->partial_commands = 0;
+    }
+    draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_INFO, "Partial commands %s.", op->contr->partial_commands ? "enabled" : "disabled");
+}
+
 /**
  * Register a player-issued command. The only cause of failure is trying to
  * override an existing command with one having a different type.
@@ -137,6 +147,7 @@ void commands_init(void) {
     RN("mark", command_mark,              0.0);
     RN("motd", command_motd,              0.0);
     RN("news", command_news,              0.0);
+    RN("partial_commands", command_allow_partial, 0.0);
     RN("party", command_party,            0.0);
     RN("party_rejoin", command_party_rejoin, 0.0);
     RN("passwd", command_passwd,          0.0);
@@ -392,11 +403,25 @@ void command_list(object *pl, bool is_dm) {
  * Find a command by its name.
  * @param name command name.
  * @param is_dm whether the player is DM or not.
+ * @param allow_partial if true then the first letters of a command are enough if no ambiguity.
  * @return command, NULL if no match found.
  */
-static registered_command *command_find(const char *name, bool is_dm) {
+static registered_command *command_find(const char *name, bool is_dm, bool allow_partial) {
     auto existing = registered_commands.find(name);
     if (existing == registered_commands.end()) {
+        if (allow_partial) {
+            size_t len = strlen(name);
+            registered_command *candidate = nullptr;
+            for (auto command : registered_commands) {
+                if (command.first.length() >= len && command.first.compare(0, len, name) == 0) {
+                    if (candidate) {
+                        return nullptr;
+                    }
+                    candidate = command.second.back();
+                }
+            }
+            return candidate;
+        }
         return NULL;
     }
     if (!is_dm && existing->second.back()->type == COMMAND_TYPE_WIZARD) {
@@ -439,13 +464,13 @@ void command_execute(object *pl, char *command) {
     for (low = command; *low; low++)
         *low = tolower(*low);
 
-    csp = command_find(command, QUERY_FLAG(pl, FLAG_WIZ));
+    csp = command_find(command, QUERY_FLAG(pl, FLAG_WIZ), pl->contr->partial_commands);
 
     if (csp == NULL) {
         draw_ext_info_format(NDI_UNIQUE, 0, pl,
                              MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
-                             "'%s' is not a valid command.",
-                             command);
+                             "'%s' is not a valid command%s.",
+                             command, pl->contr->partial_commands ? " or is ambiguous" : "");
         return;
     }
 

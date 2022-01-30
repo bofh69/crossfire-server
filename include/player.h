@@ -134,6 +134,7 @@ typedef struct pl {
     uint32_t      hidden:1;            /**< If True, player (DM) is hidden from view. */
     uint32_t      no_shout:1;          /**< if True, player is *not *able to use shout command. */
     uint32_t      has_directory:1;     /**< If 0, the player was not yet saved, its directory doesn't exist. */
+    uint32_t      partial_commands:1;  /**< If 1, then first letters of a command are enough if no ambiguity in name. */
     const char  *invis_race;         /**< What race invisible to? */
 
     object      *last_skill_ob[MAX_SKILLS];     /**< Exp objects sent to client. */
