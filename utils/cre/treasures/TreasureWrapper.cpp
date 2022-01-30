@@ -20,7 +20,9 @@ TreasureWrapper::TreasureWrapper(AssetWrapper *parent, treasure *tr, ResourcesMa
     if (myWrappedItem->next_no) {
         myNextNo = new TreasureYesNo(this, myWrappedItem->next_no, resources, false);
     }
-    setSpecificItem(&tr->item->clone, false);
+    if (tr->item) {
+        setSpecificItem(&tr->item->clone, false);
+    }
 }
 
 TreasureWrapper::~TreasureWrapper() {
