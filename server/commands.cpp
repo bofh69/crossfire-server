@@ -413,7 +413,7 @@ static registered_command *command_find(const char *name, bool is_dm, bool allow
             size_t len = strlen(name);
             registered_command *candidate = nullptr;
             for (auto command : registered_commands) {
-                if (command.first.length() >= len && command.first.compare(0, len, name) == 0) {
+                if ((command.second.back()->type != COMMAND_TYPE_WIZARD || is_dm) && command.first.length() >= len && command.first.compare(0, len, name) == 0) {
                     if (candidate) {
                         return nullptr;
                     }
