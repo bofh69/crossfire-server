@@ -2362,7 +2362,14 @@ void do_harvest(object *pl, int dir, object *skill) {
         if (count == 1 && inv->nrof == 1) {
             check_exhaust = 1;
         }
-        harvested = object_split(inv, 1, NULL, 0);
+        if ( inv->nrof == 1 ) {
+            /* Avoid dumping object inventory like a dead monster if it has an inventory */
+            object_remove(inv);
+            harvested = inv;
+        }
+        else {
+            harvested = object_split(inv, 1, NULL, 0);
+        }
     }
     object_set_value(harvested, "harvestable", NULL, 0);
     if (QUERY_FLAG(harvested, FLAG_MONSTER)) {
