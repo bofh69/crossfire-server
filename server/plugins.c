@@ -4466,10 +4466,10 @@ static void cfapi_player_quest(int *type, ...) {
 
 static void cfapi_register_command(int *type, ...) {
     va_list args;
-    const char *name, *extra;
+    const char *name = NULL, *extra = NULL;
     float time;
-    command_function func;
-    command_function_extra func_extra;
+    command_function func = NULL;
+    command_function_extra func_extra = NULL;
     uint8_t register_type, command_type;
     command_registration *cr;
 
