@@ -4390,6 +4390,24 @@ bool object_value_set(const object *op, const char *const key) {
 }
 
 /**
+ * Determine if an extra value is set to a non empty or 0 value.
+ * @param op object which may contain the value.
+ * @param key value to search for, must be a shared string.
+ * @return true if the value is set to non 0 or empty, false else.
+ */
+bool object_value_set_shared(const object *op, sstring key) {
+    for (key_value *link = op->key_values; link != NULL; link = link->next) {
+        if (link->key == key) {
+            if ((strcmp(link->value, "") == 0) || (strcmp(link->value, "0") == 0)) {
+                return false;
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * Updates or sets a key value.
  *
  * @param op

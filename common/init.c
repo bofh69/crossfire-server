@@ -300,6 +300,7 @@ void init_globals(void) {
     ring_arch = NULL;
     amulet_arch = NULL;
     undead_name = add_string("undead");
+    blocks_prayer = add_string("blocks_prayer");
     trying_emergency_save = 0;
     init_defaults();
 }
@@ -320,6 +321,7 @@ void free_globals(void) {
     region *reg;
 
     FREE_AND_CLEAR_STR(undead_name);
+    FREE_AND_CLEAR_STR(blocks_prayer);
     for (msg = 0; msg < NROFATTACKMESS; msg++)
         for (attack = 0; attack < MAXATTACKMESS; attack++) {
             free(attack_mess[msg][attack].buf1);

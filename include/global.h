@@ -153,6 +153,7 @@ extern const char *const spell_mapping[SPELL_MAPPINGS];
  */
 EXTERN archetype *ring_arch, *amulet_arch, *crown_arch;
 EXTERN const char *undead_name; /* Used in hit_player() in main.c */
+EXTERN sstring blocks_prayer;   /**< For update_position() mostly. */
 
 /* Rotate right from bsd sum. This is used in various places for checksumming */
 #define ROTATE_RIGHT(c) if ((c)&01) (c) = ((c)>>1)+0x80000000; else (c) >>= 1;
