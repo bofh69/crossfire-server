@@ -727,6 +727,22 @@ void enter_exit(object *op, object *exit_ob) {
     if (op->type != PLAYER)
         return;
 
+    /* Don't word-of-recall out of a shop */
+    if ( exit_ob->subtype == SP_WORD_OF_RECALL ) {
+        /* Scan inventory for unpaid objects */
+        object *item = op->inv;
+        FOR_OB_AND_BELOW_PREPARE(item) {
+            if (QUERY_FLAG(item, FLAG_UNPAID)) {
+                char buf[MAX_BUF];
+
+                ob_describe(item, op, 1, buf, sizeof(buf));
+                draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_SPELL, MSG_TYPE_SPELL_FAILURE,
+                                     "You feel a force fizzling away.  You feel a vibration from: %s",buf);
+                return;
+            }
+        } FOR_OB_AND_BELOW_FINISH();
+    }
+
     /* Need to remove player from transport */
     if (op->contr->transport)
         ob_apply(op->contr->transport, op, AP_UNAPPLY);
