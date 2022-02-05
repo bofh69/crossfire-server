@@ -72,13 +72,13 @@ END_TEST
 
 START_TEST(test_treasure_remove_item) {
     treasurelist list;
+    memset(&list, 0, sizeof(list));
     treasure *first = treasure_insert(&list, 0),
             *second = treasure_insert(&list, 1),
             *third = treasure_insert(&list, 2),
             *fourth = treasure_insert(&list, 3),
             *fifth = treasure_insert(&list, 4)
             ;
-
     treasure_remove_item(&list, 0);
     fail_unless(list.items == second, "first not removed");
     treasure_remove_item(&list, 1);
