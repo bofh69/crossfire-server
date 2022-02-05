@@ -191,6 +191,7 @@ void load_assets(void) {
  */
 void init_library(void) {
     init_environ();
+    init_hash_table();
     init_globals();
     init_stats(FALSE);   /* Needs to be fairly early, since the loader will check
                           * against the settings.max_stat value
@@ -206,7 +207,6 @@ void init_library(void) {
     }
 
     assets_init();
-    init_hash_table();
     i18n_init();
     init_objects();
     init_block();
