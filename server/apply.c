@@ -1451,6 +1451,64 @@ int apply_auto(object *op) {
 }
 
 /**
+ * Go through one object on a map and process any special treasure creation
+ * or such for anything in it's inventory.  Recurse through any inventory
+ * objects that have inventories of their own.
+ * This is only called by auto_apply_fix() below and by itself for recursion.
+ *
+ * @param m
+ * map to fix (only for the difficulty level for treasure creation)
+ * @param tmp
+ * object with inventory to scan
+ */
+
+static void auto_apply_fix_inventory(mapstruct *m, object *tmp)
+{
+   if ( !tmp->inv ) return;
+   FOR_INV_PREPARE(tmp, invtmp) {
+       if ( invtmp->inv ) auto_apply_fix_inventory(m,invtmp); // Recurse for containers in objects
+       if (QUERY_FLAG(invtmp, FLAG_AUTO_APPLY))
+           apply_auto(invtmp);
+       else if (invtmp->type == TREASURE && HAS_RANDOM_ITEMS(invtmp)) {
+           while (invtmp->stats.hp-- > 0)
+               create_treasure(invtmp->randomitems, invtmp, 0, m->difficulty, 0);
+           invtmp->randomitems = NULL;
+       } else if (invtmp && invtmp->arch
+                  && invtmp->type != TREASURE
+                  && invtmp->type != SPELL
+                  && invtmp->type != CLASS
+                  && HAS_RANDOM_ITEMS(invtmp)) {
+           create_treasure(invtmp->randomitems, invtmp, 0, m->difficulty, 0);
+           /* Need to clear this so that we never try to
+            * create treasure again for this object
+            */
+           invtmp->randomitems = NULL;
+       }
+   } FOR_INV_FINISH();
+   /* This is really temporary - the code at the
+    * bottom will also set randomitems to null.
+    * The problem is there are bunches of maps/players
+    * already out there with items that have spells
+    * which haven't had the randomitems set
+    * to null yet.
+    * MSW 2004-05-13
+    *
+    * And if it's a spellbook, it's better to set
+    * randomitems to NULL too, else you get two spells
+    * in the book ^_-
+    * Ryo 2004-08-16
+    */
+   if (tmp->type == WAND
+       || tmp->type == ROD
+       || tmp->type == SCROLL
+       || tmp->type == FIREWALL
+       || tmp->type == POTION
+       || tmp->type == ALTAR
+       || tmp->type == SPELLBOOK)
+       tmp->randomitems = NULL;
+}
+
+/**
  * Go through the entire map (only the first time
  * when an original map is loaded) and performs special actions for
  * certain objects (most initialization of chests and creation of
@@ -1470,48 +1528,8 @@ void apply_auto_fix(mapstruct *m) {
         for (y = 0; y < MAP_HEIGHT(m); y++)
             FOR_MAP_PREPARE(m, x, y, tmp) {
                 if (tmp->inv) {
-                    FOR_INV_PREPARE(tmp, invtmp) {
-                        if (QUERY_FLAG(invtmp, FLAG_AUTO_APPLY))
-                            apply_auto(invtmp);
-                        else if (invtmp->type == TREASURE && HAS_RANDOM_ITEMS(invtmp)) {
-                            while (invtmp->stats.hp-- > 0)
-                                create_treasure(invtmp->randomitems, invtmp, 0, m->difficulty, 0);
-                            invtmp->randomitems = NULL;
-                        } else if (invtmp && invtmp->arch
-                        && invtmp->type != TREASURE
-                        && invtmp->type != SPELL
-                        && invtmp->type != CLASS
-                        && HAS_RANDOM_ITEMS(invtmp)) {
-                            create_treasure(invtmp->randomitems, invtmp, 0, m->difficulty, 0);
-                            /* Need to clear this so that we never try to
-                             * create treasure again for this object
-                             */
-                            invtmp->randomitems = NULL;
-                        }
-                    } FOR_INV_FINISH();
-                    /* This is really temporary - the code at the
-                     * bottom will also set randomitems to null.
-                     * The problem is there are bunches of maps/players
-                     * already out there with items that have spells
-                     * which haven't had the randomitems set
-                     * to null yet.
-                     * MSW 2004-05-13
-                     *
-                     * And if it's a spellbook, it's better to set
-                     * randomitems to NULL too, else you get two spells
-                     * in the book ^_-
-                     * Ryo 2004-08-16
-                     */
-                    if (tmp->type == WAND
-                    || tmp->type == ROD
-                    || tmp->type == SCROLL
-                    || tmp->type == FIREWALL
-                    || tmp->type == POTION
-                    || tmp->type == ALTAR
-                    || tmp->type == SPELLBOOK)
-                        tmp->randomitems = NULL;
+                    auto_apply_fix_inventory(m, tmp);
                 }
-
                 if (QUERY_FLAG(tmp, FLAG_AUTO_APPLY))
                     apply_auto(tmp);
                 else if ((tmp->type == TREASURE || tmp->type == CONTAINER)
