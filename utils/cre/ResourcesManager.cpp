@@ -46,7 +46,8 @@ void ResourcesManager::load()
 
     settings.archetypes_tracker = (AssetsTracker *)(this);
     add_server_collect_hooks();
-    settings.hooks[settings.hooks_count] = LicenseManager::readLicense;
+    static std::function<void(BufferReader *, const char *)> dummy = [this] (BufferReader *reader, const char *filename) { myLicenseManager.readLicense(reader, filename); };
+    settings.hooks[settings.hooks_count] = [] (BufferReader *reader, const char *filename) { dummy(reader, filename); };
     settings.hooks_filename[settings.hooks_count] = ".LICENSE";
     settings.hooks_count++;
     settings.fatal_hook = onFatalInit;

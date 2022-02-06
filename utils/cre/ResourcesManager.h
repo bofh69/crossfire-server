@@ -10,6 +10,7 @@ extern "C" {
 #include <set>
 #include <QObject>
 #include "ModifiedAssetsManager.h"
+#include "LicenseManager.h"
 
 #include "animations/AnimationWrapper.h"
 #include "archetypes/ArchetypeWrapper.h"
@@ -122,6 +123,8 @@ class ResourcesManager : public QObject, AssetsTracker
         AssetWrapper *wrap(recipe *rc, AssetWrapper *parent) { return myWrappedRecipes.wrap(rc, parent, this); }
         void remove(treasure *tr) { myWrappedTreasures.remove(tr); }
 
+        LicenseManager *licenseManager() { return &myLicenseManager; }
+
     public slots:
       void archetypeModified(archetype *arch);
       void saveArchetypes();
@@ -153,6 +156,7 @@ class ResourcesManager : public QObject, AssetsTracker
         AssetWrapperManager<artifact, ArtifactWrapper> myWrappedArtifacts;
         AssetWrapperManager<recipelist, RecipeListWrapper> myWrappedRecipeLists;
         AssetWrapperManager<recipe, RecipeWrapper> myWrappedRecipes;
+        LicenseManager myLicenseManager;
 };
 
 #endif /* RESOURCESMANAGER_H */

@@ -1618,7 +1618,7 @@ void CREMainWindow::onReportLicenses()
   QString report;
   report += "<html>";
 
-  auto all = LicenseManager::get()->getAll();
+  auto all = myResourcesManager->licenseManager()->getAll();
   std::set<std::string> faces, facesets;
 
   for (auto item : all)
@@ -1735,7 +1735,7 @@ void CREMainWindow::onToolFacesetUseFallback()
 void CREMainWindow::onToolReloadAssets()
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    LicenseManager::get()->reset();
+    myResourcesManager->licenseManager()->reset();
     assets_collect(settings.datadir, ASSETS_ALL);
     CREPixmap::clearFaceCache();
     QApplication::restoreOverrideCursor();

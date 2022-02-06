@@ -18,19 +18,10 @@ extern "C" {
 }
 #include <memory>
 
-LicenseManager *LicenseManager::instance = nullptr;
-
 LicenseManager::LicenseManager() {
 }
 
 LicenseManager::~LicenseManager() {
-}
-
-LicenseManager *LicenseManager::get() {
-    if (LicenseManager::instance == nullptr) {
-        LicenseManager::instance = new LicenseManager();
-    }
-    return LicenseManager::instance;
 }
 
 void LicenseManager::readLicense(BufferReader *reader, const char *filename) {
@@ -60,7 +51,7 @@ void LicenseManager::readLicense(BufferReader *reader, const char *filename) {
     }
     c++;
 
-    auto &licenses = get()->m_licenses[c];
+    auto &licenses = m_licenses[c];
     auto &item = licenses[faceset];
 
     while ((line = bufferreader_next_line(reader)) != nullptr) {

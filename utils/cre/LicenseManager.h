@@ -56,13 +56,7 @@ public:
    * @param reader source.
    * @param filename full file name.
    */
-  static void readLicense(BufferReader *reader, const char *filename);
-
-  /**
-   * Get the single instance of the LicenseManager.
-   * @return instance.
-   */
-  static LicenseManager *get();
+  void readLicense(BufferReader *reader, const char *filename);
 
   /**
    * Get the expected license name from a face name.
@@ -72,7 +66,6 @@ public:
   static std::string licenseNameFromFaceName(const std::string &face);
 
 private:
-  static LicenseManager *instance;                /**< Single instance. */
   std::map<std::string, LicenseItems> m_licenses; /**< License information for all faces. */
 };
 

@@ -84,7 +84,7 @@ void CREFacePanel::setItem(Face* face)
 
     myLicenses->clear();
 
-    auto licenses = LicenseManager::get()->getForFace(myFace->name);
+    auto licenses = myResources->licenseManager()->getForFace(myFace->name);
     for (auto l : licenses) {
         QTreeWidgetItem *wi = new QTreeWidgetItem(QStringList(QString(l.first.c_str())));
         for (auto p : l.second) {
