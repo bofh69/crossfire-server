@@ -117,11 +117,13 @@ mapstruct *generate_random_map(const char *OutFileName, RMParms *RP, char **use_
         dump_layout(layout, RP);
 #endif
 
-        /*  rotate the layout randomly */
-        layout = rotate_layout(layout, RANDOM()%4, RP);
+        if (RP->map_layout_style != ROGUELIKE_LAYOUT) {
+            /*  rotate the layout randomly */
+            layout = rotate_layout(layout, RANDOM()%4, RP);
 #ifdef RMAP_DEBUG
-        dump_layout(layout, RP);
+            dump_layout(layout, RP);
 #endif
+        }
     } else {
         layout = use_layout;
     }
@@ -153,7 +155,9 @@ mapstruct *generate_random_map(const char *OutFileName, RMParms *RP, char **use_
         place_exits(theMap, layout, RP->exitstyle, RP->orientation, RP);
     }
 
-    place_specials_in_map(theMap, layout, RP);
+    if (RP->map_layout_style != ROGUELIKE_LAYOUT) {
+        place_specials_in_map(theMap, layout, RP);
+    }
 
     /* create monsters unless the monsterstyle is "none" */
     if (strcmp(RP->monsterstyle, "none")) {
