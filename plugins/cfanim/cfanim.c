@@ -877,7 +877,7 @@ static int start_animation(object *who, object *activator, object *event, const 
     int     paralyzed = 1;
     int     invisible = 0;
     int     wizard = 0;
-    enum    time_enum timetype;
+    enum    time_enum timetype = time_second;
     int     errors_allowed = 0;
     int     verbose = 0;
     const char *animationitem = NULL;
