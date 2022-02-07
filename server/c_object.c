@@ -715,7 +715,7 @@ typedef struct {
             int item_number;    /**< Index of the checked item, 1-based. */
             int item_must_be_pickable;  /**< If non zero, then the item number is increased only if the item is pickable. */
         };
-        char name[100];         /**< Name to match for. */
+        char name[MAX_BUF];     /**< Name to match for. */
         int pickup_type;        /**< Value in @ref PU_xxx to match against. */
     };
     int missed;                 /**< How many items were missed when matching. */

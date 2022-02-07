@@ -4619,7 +4619,7 @@ int object_matches_string(object *pl, object *op, const char *name) {
         }
 
         if (!cp || cp[0] == '\0' || count < 0)
-            return 0;
+            continue;
 
         /* The code here should go from highest retval to lowest.  That
          * is because of the 'else' handling - we don't want to match on
