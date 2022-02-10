@@ -241,8 +241,6 @@ void init_formulae(BufferReader *reader, const char *filename) {
                 fl = fl->next;
                 numb_ingred--;
             }
-            fl->total_chance += formula->chance;
-            fl->number++;
             formula->next = fl->items;
             fl->items = formula;
         } else if (!strncmp(cp, "arch", 4)) {
@@ -263,6 +261,18 @@ void init_formulae(BufferReader *reader, const char *filename) {
             formula->is_combination = value ? 1 : 0;
         } else
             LOG(llevError, "Unknown input in file %s: %s\n", filename, buf);
+    }
+    /* Set the total chance and count for each formula list.
+     * This needs to be done at the end to avoid dependancies on the field order in the file
+     */
+    for ( fl = formulalist; fl; fl = fl->next ) {
+        fl->total_chance = 0;
+        fl->number = 0;
+        for ( formula = fl->items; formula; formula = formula->next )
+        {
+            fl->total_chance += formula->chance;
+            fl->number++;
+        }
     }
     LOG(llevDebug, "done.\n");
 }
