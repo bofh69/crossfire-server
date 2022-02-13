@@ -196,12 +196,16 @@ uint64_t shop_price_buy(const object *tmp, object *who) {
         adj = atof(key);
     }
     float E = shop_efficiency(who);
-    const uint64_t adj_val = val * adj / E;
+    const float adj_val = val * adj / E;
     if (getenv("CF_DEBUG_SHOP")) {
         LOG(llevDebug, "price_buy %s %u*adj(%.2f)/E(%.2f) = %u\n",
                 tmp->arch->name, val, adj, E, adj_val);
     }
-    return adj_val;
+    if (isfinite(adj_val)) {
+        return adj_val;
+    } else {
+        return UINT64_MAX;
+    }
 }
 
 uint64_t shop_price_sell(const object *tmp, object *who) {
@@ -281,6 +285,11 @@ char* cost_string_from_value(uint64_t cost, int largest_coin) {
         cointype = NUM_COINS - 1;
 
     StringBuffer* buf = stringbuffer_new();
+    if (cost == UINT64_MAX) {
+        stringbuffer_append_string(buf, "an unimaginable sum of money");
+        goto done;
+    }
+
     coin = find_next_coin(cost, &cointype);
     if (coin == NULL) {
         stringbuffer_append_string(buf, "nothing");
@@ -293,7 +302,7 @@ char* cost_string_from_value(uint64_t cost, int largest_coin) {
      * is basically true.
      */
     if ((cost/coin->clone.value) > UINT32_MAX) {
-        stringbuffer_append_string(buf, "an unimaginable sum of money.");
+        stringbuffer_append_string(buf, "an unimaginable sum of money");
         goto done;
     }
 
@@ -725,28 +734,46 @@ static uint64_t pay_from_container(object *pl, object *pouch, uint64_t to_pay) {
  * how many unpaid items are left.
  * @param[out] unpaid_price
  * total price unpaid.
- * @param coincount
- * array of NUM_COINS size, will contain how many coins of the type the player has.
  */
-static void count_unpaid(object *pl, object *item, int *unpaid_count, uint64_t *unpaid_price, uint32_t *coincount) {
-    int i;
-
+static void count_unpaid(object *pl, object *item, int *unpaid_count, uint64_t *unpaid_price) {
     FOR_OB_AND_BELOW_PREPARE(item) {
         if (QUERY_FLAG(item, FLAG_UNPAID)) {
             (*unpaid_count)++;
-            (*unpaid_price) += shop_price_buy(item, pl);
+            uint64_t price = shop_price_buy(item, pl);
+            if (*unpaid_price != UINT64_MAX) {
+                if (UINT64_MAX - (*unpaid_price) < price) {
+                    // Overflow
+                    *unpaid_price = UINT64_MAX;
+                } else {
+                    *unpaid_price += price;
+                }
+            }
         }
+        if (item->inv) {
+            count_unpaid(pl, item->inv, unpaid_count, unpaid_price);
+        }
+    } FOR_OB_AND_BELOW_FINISH();
+}
+
+/**
+ * @param coincount
+ * array of NUM_COINS size, will contain how many coins of the type the player has.
+ */
+static void count_coins(object *item, uint32_t *coincount) {
+    FOR_OB_AND_BELOW_PREPARE(item) {
         /* Merely converting the player's monetary wealth won't do.
          * If we did that, we could print the wrong numbers for the
          * coins, so we count the money instead.
          */
-        for (i = 0; i < NUM_COINS; i++)
+        for (int i = 0; i < NUM_COINS; i++) {
             if (!strcmp(coins[i], item->arch->name)) {
                 coincount[i] += item->nrof;
                 break;
             }
-        if (item->inv)
-            count_unpaid(pl, item->inv, unpaid_count, unpaid_price, coincount);
+        }
+        if (item->inv) {
+            count_coins(item->inv, coincount);
+        }
     } FOR_OB_AND_BELOW_FINISH();
 }
 
@@ -792,7 +819,8 @@ int can_pay(object *pl) {
     for (i = 0; i < NUM_COINS; i++)
         coincount[i] = 0;
 
-    count_unpaid(pl, pl->inv, &unpaid_count, &unpaid_price, coincount);
+    count_unpaid(pl, pl->inv, &unpaid_count, &unpaid_price);
+    count_coins(pl->inv, coincount);
 
     if (unpaid_price > player_wealth) {
         char buf[MAX_BUF], coinbuf[MAX_BUF];
