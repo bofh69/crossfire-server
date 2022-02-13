@@ -275,28 +275,30 @@ static void generate_monster(object *gen) {
         did_gen = generate_monster_arch(gen);
 
     /* See if generator has a generator_limit limit set */
-    value = object_get_value(gen, "generator_limit");
+    if (object_value_set(gen, "generator_limit")) {
+        value = object_get_value(gen, "generator_limit");
 
-    /* Only do this if we actually made a monster.  If the generator
-     * was unable to create a monster (no space for example),
-     * we don't want to prematurely remove the generator.
-     */
-    if (value && did_gen) {
-        int limit = atoi(value), num_generated = 0;
+        /* Only do this if we actually made a monster.  If the generator
+         * was unable to create a monster (no space for example),
+         * we don't want to prematurely remove the generator.
+         */
+        if (value && did_gen) {
+            int limit = atoi(value), num_generated = 0;
 
-        value = object_get_value(gen, "generator_generated");
-        if (value)
-            num_generated = atoi(value);
+            value = object_get_value(gen, "generator_generated");
+            if (value)
+                num_generated = atoi(value);
 
-        if (num_generated++ >= limit) {
-            object_handle_death_animation(gen);
-            object_remove(gen);
-            object_free_drop_inventory(gen);
-        } else {
-            char buf[50];
+            if (num_generated++ >= limit) {
+                object_handle_death_animation(gen);
+                object_remove(gen);
+                object_free_drop_inventory(gen);
+            } else {
+                char buf[50];
 
-            snprintf(buf, sizeof(buf), "%d", num_generated);
-            object_set_value(gen, "generator_generated", buf, 1);
+                snprintf(buf, sizeof(buf), "%d", num_generated);
+                object_set_value(gen, "generator_generated", buf, 1);
+            }
         }
     }
 }
