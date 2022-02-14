@@ -1464,9 +1464,11 @@ int apply_auto(object *op) {
 
 static void auto_apply_fix_inventory(mapstruct *m, object *tmp)
 {
-   if ( !tmp->inv ) return;
+   if (!tmp->inv)
+       return;
    FOR_INV_PREPARE(tmp, invtmp) {
-       if ( invtmp->inv ) auto_apply_fix_inventory(m,invtmp); // Recurse for containers in objects
+       if (invtmp->inv)
+           auto_apply_fix_inventory(m,invtmp); // Recurse for containers in objects
        if (QUERY_FLAG(invtmp, FLAG_AUTO_APPLY))
            apply_auto(invtmp);
        else if (invtmp->type == TREASURE && HAS_RANDOM_ITEMS(invtmp)) {

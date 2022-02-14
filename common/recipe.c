@@ -265,11 +265,10 @@ void init_formulae(BufferReader *reader, const char *filename) {
     /* Set the total chance and count for each formula list.
      * This needs to be done at the end to avoid dependancies on the field order in the file
      */
-    for ( fl = formulalist; fl; fl = fl->next ) {
+    for (fl = formulalist; fl; fl = fl->next) {
         fl->total_chance = 0;
         fl->number = 0;
-        for ( formula = fl->items; formula; formula = formula->next )
-        {
+        for (formula = fl->items; formula; formula = formula->next) {
             fl->total_chance += formula->chance;
             fl->number++;
         }
