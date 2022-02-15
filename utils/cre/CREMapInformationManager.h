@@ -68,7 +68,6 @@ class CREMapInformationManager : public QObject
         void addQuestUse(const QString &name, CREMapInformation *map);
         void checkEvent(const object* item, CREMapInformation* map, const object* env);
         void recurseStyleDirectory(const QString& from);
-        void fixMapInformation(CREMapInformation *map);
 };
 
 #endif // CLASS_CRE_MAP_INFORMATION_MANAGER_H

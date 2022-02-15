@@ -809,9 +809,3 @@ void CREMapInformationManager::recurseStyleDirectory(const QString& from)
         }
     }
 }
-
-void CREMapInformationManager::fixMapInformation(CREMapInformation *map) {
-    map->moveToThread(thread());
-    map->setParent(this);
-    emit mapAdded(map);
-}
