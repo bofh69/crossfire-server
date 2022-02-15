@@ -43,10 +43,7 @@ public:
 
 protected:
     ResourcesManager *myResourcesManager;
-    mutable bool myNeedRefresh;
-    mutable QList<CREMapInformation *> myMaps;
-
-    void refresh() const;
+    QList<CREMapInformation *> myMaps;
 
 protected slots:
     void mapAdded(CREMapInformation *map);

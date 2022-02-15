@@ -3,22 +3,19 @@
 #include "../CREMapInformationManager.h"
 
 RegionWrapper::RegionWrapper(AssetWrapper *parent, region *reg, ResourcesManager *resources) : AssetTWrapper(parent, "Region", reg),
-        myResourcesManager(resources), myNeedRefresh(false) {
+        myResourcesManager(resources) {
     connect(resources->getMapInformationManager(), SIGNAL(mapAdded(CREMapInformation *)), this, SLOT(mapAdded(CREMapInformation *)));
 }
 
 int RegionWrapper::childrenCount() const {
-    refresh();
     return myMaps.size();
 }
 
 AssetWrapper *RegionWrapper::child(int index) {
-    refresh();
     return myMaps[index];
 }
 
 int RegionWrapper::childIndex(AssetWrapper *child) {
-    refresh();
     for (int idx = 0; idx < myMaps.size(); idx++) {
         if (myMaps[idx] == child) {
             return idx;
@@ -34,15 +31,10 @@ AssetWrapper::PossibleUse RegionWrapper::uses(const AssetWrapper *asset, std::st
             ) ? ChildrenMayUse : DoesntUse;
 }
 
-void RegionWrapper::refresh() const {
-    if (myNeedRefresh) {
-        myMaps = myResourcesManager->getMapInformationManager()->getMapsForRegion(myWrappedItem->name);
-        myNeedRefresh = false;
-    }
-}
-
 void RegionWrapper::mapAdded(CREMapInformation *map) {
     if (map->region() == myWrappedItem->name) {
-        myNeedRefresh = true;
+        markModified(BeforeLayoutChange);
+        myMaps = myResourcesManager->getMapInformationManager()->getMapsForRegion(myWrappedItem->name);
+        markModified(AfterLayoutChange);
     }
 }
