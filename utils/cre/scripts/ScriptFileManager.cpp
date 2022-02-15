@@ -28,7 +28,9 @@ ScriptFile* ScriptFileManager::getFile(const QString& path)
 {
     if (!myScripts.contains(path))
     {
+        markModified(BeforeChildAdd, myScripts.size());
         myScripts.insert(path, new ScriptFile(this, path));
+        markModified(AfterChildAdd);
     }
     return myScripts[path];
 }
