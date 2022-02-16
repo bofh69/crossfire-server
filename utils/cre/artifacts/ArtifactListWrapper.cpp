@@ -3,7 +3,7 @@
 #include "CREPixmap.h"
 #include "faces/FaceWrapper.h"
 
-ArtifactListWrapper::ArtifactListWrapper(AssetWrapper *parent, const artifactlist *list, ResourcesManager *resourcesManager)
+ArtifactListWrapper::ArtifactListWrapper(AssetWrapper *parent, artifactlist *list, ResourcesManager *resourcesManager)
  : AssetTWrapper(parent, "ArtifactList", list), myResourcesManager(resourcesManager) {
 }
 
@@ -44,4 +44,18 @@ AssetWrapper::PossibleUse ArtifactListWrapper::uses(const AssetWrapper *asset, s
         return ChildrenMayUse;
     }
     return DoesntUse;
+}
+
+void ArtifactListWrapper::wasModified(AssetWrapper *asset, ChangeType type, int extra) {
+    if (childIndex(asset) != -1 && type == AssetUpdated) {
+        myWrappedItem->total_chance = 0;
+        auto item = myWrappedItem->items;
+        while (item) {
+            myWrappedItem->total_chance += item->chance;
+            item = item->next;
+        }
+        markModified(AssetUpdated, 1);
+        return;
+    }
+    AssetWrapper::wasModified(asset, type, extra);
 }

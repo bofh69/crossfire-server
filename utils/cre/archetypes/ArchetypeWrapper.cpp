@@ -60,16 +60,18 @@ int ArchetypeWrapper::childIndex(AssetWrapper *child) {
     if (myWrappedItem->head) {
         return -1;
     }
-    auto part = myResources->wrap(myWrappedItem->more, this);
     int index = 0;
-    while (part != child && part) {
-        part = myResources->wrap(part->wrappedItem()->more, this);
-        index++;
+    if (myWrappedItem->more) {
+        auto part = myResources->wrap(myWrappedItem->more, this);
+        while (part != child && part) {
+            part = myResources->wrap(part->wrappedItem()->more, this);
+            index++;
+        }
+        if (part) {
+            return index;
+        }
     }
-    if (part) {
-        return index;
-    }
-    return AssetWithArtifacts<archetype>::childIndex(child);
+    return index + AssetWithArtifacts<archetype>::childIndex(child);
 }
 
 static bool treasureContains(const treasure *t, const archetype *arch) {

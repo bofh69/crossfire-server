@@ -35,6 +35,7 @@ extern "C" {
 #include "WrapperLoader.h"
 #include "MessageLoader.h"
 #include "QuestLoader.h"
+#include "ArtifactLoader.h"
 #include "Faces.h"
 #include <string.h>
 
@@ -132,8 +133,7 @@ void assets_collect(const char* datadir, int what) {
     if (what & ASSETS_MESSAGES)
         collector.addLoader(new MessageLoader(manager->messages(), tracker));
     if (what & ASSETS_ARTIFACTS) {
-        collector.addLoader(new WrapperLoader("/artifacts", init_artifacts));
-        collector.addLoader(new WrapperLoader(".artifacts", init_artifacts));
+        collector.addLoader(new ArtifactLoader(tracker));
     }
     if (what & ASSETS_FORMULAE) {
         collector.addLoader(new WrapperLoader("/formulae", init_formulae));
@@ -377,7 +377,11 @@ static void pack_artifacts(StringBuffer *buf) {
     ArtifactWriter writer;
     artifactlist *list = first_artifactlist;
     while (list) {
-        writer.write(list, buf);
+        auto item = list->items;
+        while (item) {
+            writer.write(item, buf);
+            item = item->next;
+        }
         list = list->next;
     }
 }

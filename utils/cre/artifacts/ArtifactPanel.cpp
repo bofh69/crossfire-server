@@ -13,7 +13,7 @@ ArtifactPanel::ArtifactPanel(QWidget* parent) : AssetWrapperPanel(parent)
     myArtifact = NULL;
 
     addLineEdit(tr("Name:"), "name");
-    addSpinBox(tr("Chance:"), "chance", 0, 65535, true);
+    addSpinBox(tr("Chance:"), "chance", 0, 65535, false);
     myType = addLineEdit(tr("Type:"), nullptr, true);
 
     myViaAlchemy = addWidget(QString(), new QLabel(this), false, nullptr, nullptr);

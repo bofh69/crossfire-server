@@ -25,8 +25,6 @@
 
 #include "loader.h"
 
-int artifact_init;  /**< 1 if doing archetypes initialization */
-
 /**
  * Allocate and return the pointer to an empty artifactlist structure.
  *
@@ -36,7 +34,7 @@ int artifact_init;  /**< 1 if doing archetypes initialization */
  * @note
  * will fatal() if memory error.
  */
-static artifactlist *get_empty_artifactlist(void) {
+artifactlist *get_empty_artifactlist(void) {
     artifactlist *tl = (artifactlist *)malloc(sizeof(artifactlist));
     if (tl == NULL)
         fatal(OUT_OF_MEMORY);
@@ -55,7 +53,7 @@ static artifactlist *get_empty_artifactlist(void) {
  * @note
  * will fatal() if memory error.
  */
-static artifact *get_empty_artifact(void) {
+artifact *get_empty_artifact(void) {
     artifact *t = (artifact *)malloc(sizeof(artifact));
     if (t == NULL)
         fatal(OUT_OF_MEMORY);
@@ -566,130 +564,19 @@ void add_abilities(object *op, const object *change) {
 }
 
 /**
- * Searches the artifact lists and returns one that has the same type
- * of objects on it, non-const version of find_artifactlist() used only
- * during artifact loading.
- *
- * @param type object type to get artifacts for.
- * @return
- * NULL if no suitable list found.
- */
-static artifactlist *find_artifactlist_internal(int type) {
-    artifactlist *al;
-
-    for (al = first_artifactlist; al != NULL; al = al->next)
-        if (al->type == type)
-            return al;
-    return NULL;
-}
-
-/**
- * Initialize artifacts from the specified reader.
- *
- * @param reader data to init from.
- * @param filename used to display source in case of errors.
- */
-void init_artifacts(BufferReader *reader, const char *filename) {
-    char *buf, *cp, *next;
-    artifact *art = NULL;
-    linked_char *tmp;
-    int value;
-    artifactlist *al;
-    archetype dummy_archetype;
-
-    memset(&dummy_archetype, 0, sizeof(archetype));
-
-    artifact_init = 1;
-
-    while ((buf = bufferreader_next_line(reader)) != NULL) {
-        if (*buf == '#')
-            continue;
-        cp = buf;
-        while (*cp == ' ') /* Skip blanks */
-            cp++;
-        if (*cp == '\0')
-            continue;
-
-        if (!strncmp(cp, "Allowed", 7)) {
-            if (art == NULL) {
-                art = get_empty_artifact();
-                nrofartifacts++;
-            }
-
-            cp = strchr(cp, ' ')+1;
-            while (*(cp+strlen(cp)-1) == ' ')
-                cp[strlen(cp)-1] = '\0';
-
-            if (!strcmp(cp, "all"))
-                continue;
-
-            do {
-                while (*cp == ' ')
-                    cp++;
-                nrofallowedstr++;
-                if ((next = strchr(cp, ',')) != NULL)
-                    *(next++) = '\0';
-                tmp = (linked_char *)malloc(sizeof(linked_char));
-                tmp->name = add_string(cp);
-                tmp->next = art->allowed;
-                art->allowed = tmp;
-                art->allowed_size++;
-            } while ((cp = next) != NULL);
-        } else if (sscanf(cp, "chance %d", &value))
-            art->chance = (uint16_t)value;
-        else if (sscanf(cp, "difficulty %d", &value))
-            art->difficulty = (uint8_t)value;
-        else if (!strncmp(cp, "Object", 6)) {
-            art->item = (object *)calloc(1, sizeof(object));
-            if (art->item == NULL) {
-                LOG(llevError, "init_artifacts: memory allocation failure.\n");
-                abort();
-            }
-            object_reset(art->item);
-            art->item->arch = &dummy_archetype;
-            if (!load_object_from_reader(reader, art->item, MAP_STYLE))
-                LOG(llevError, "Init_Artifacts: Could not load object.\n");
-            art->item->arch = NULL;
-            art->item->name = add_string((strchr(cp, ' ')+1));
-            al = find_artifactlist_internal(art->item->type);
-            if (al == NULL) {
-                al = get_empty_artifactlist();
-                al->type = art->item->type;
-                al->next = first_artifactlist;
-                first_artifactlist = al;
-            }
-            art->next = al->items;
-            al->items = art;
-            art = NULL;
-        } else
-            LOG(llevError, "Unknown input in artifact file %s:%d: %s\n", filename, bufferreader_current_line(reader), buf);
-    }
-
-    for (al = first_artifactlist; al != NULL; al = al->next) {
-        al->total_chance = 0;
-        for (art = al->items; art != NULL; art = art->next) {
-            if (!art->chance)
-                LOG(llevDebug, "Artifact with no chance: %s\n", art->item->name);
-            else
-                al->total_chance += art->chance;
-        }
-#if 0
-        LOG(llevDebug, "Artifact list type %d has %d total chance\n", al->type, al->total_chance);
-#endif
-    }
-
-    artifact_init = 0;
-}
-
-/**
  * Finds the artifact list for a certain item type.
  *
  * @param type item type to get the artifacts of.
  * @return
  * NULL if no suitable list found.
  */
-const artifactlist *find_artifactlist(int type) {
-    return find_artifactlist_internal(type);
+artifactlist *find_artifactlist(int type) {
+    artifactlist *al;
+
+    for (al = first_artifactlist; al != NULL; al = al->next)
+        if (al->type == type)
+            return al;
+    return NULL;
 }
 
 /**
@@ -706,7 +593,7 @@ const artifact *find_artifact(const object *op, const char *name) {
     if (sname == NULL)
         return NULL;
 
-    list = find_artifactlist_internal(op->type);
+    list = find_artifactlist(op->type);
     if (list == NULL)
         return NULL;
 

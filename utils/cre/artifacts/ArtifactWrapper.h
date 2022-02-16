@@ -17,7 +17,7 @@ class ArtifactWrapper : public AssetTWrapper<artifact> {
 
     Q_PROPERTY(QString name READ name)
     Q_PROPERTY(QObject* item READ item)
-    Q_PROPERTY(int chance READ chance)
+    Q_PROPERTY(int chance READ chance WRITE setChance)
     Q_PROPERTY(int difficulty READ difficulty)
     Q_PROPERTY(QStringList allowed READ allowed)
 
@@ -39,6 +39,7 @@ public:
     QString name() const;
     QObject* item();
     int chance() const;
+    void setChance(int chance);
     int difficulty() const;
     QStringList allowed() const;
 

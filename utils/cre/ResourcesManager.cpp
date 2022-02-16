@@ -22,13 +22,14 @@ extern "C" {
 #include "QuestWriter.h"
 #include "MessageWriter.h"
 #include "TreasureWriter.h"
+#include "ArtifactWriter.h"
 #include "archetypes/ArchetypeWrapper.h"
 #include "archetypes/ObjectWrapper.h"
 #include "faces/FaceWrapper.h"
 #include "animations/AnimationWrapper.h"
 
 ResourcesManager::ResourcesManager() : myMapInformationManager(nullptr), myArchetypes(new ArchetypeWriter()), myQuests(new QuestWriter()), myTreasures(new TreasureWriter()),
-        myGeneralMessages(new MessageWriter())
+        myGeneralMessages(new MessageWriter()), myArtifacts(new ArtifactWriter())
 {
 }
 
@@ -204,4 +205,8 @@ void ResourcesManager::generalMessageModified(GeneralMessage *asset) {
 
 void ResourcesManager::saveGeneralMessages() {
     myGeneralMessages.saveModifiedAssets();
+}
+
+void ResourcesManager::saveArtifacts() {
+    myArtifacts.saveModifiedAssets();
 }

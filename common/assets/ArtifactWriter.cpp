@@ -1,7 +1,7 @@
 /*
  * Crossfire -- cooperative multi-player graphical RPG and adventure game
  *
- * Copyright (c) 2020 the Crossfire Development Team
+ * Copyright (c) 2020-2022 the Crossfire Development Team
  *
  * Crossfire is free software and comes with ABSOLUTELY NO WARRANTY. You are
  * welcome to redistribute it under certain conditions. For details, please
@@ -18,7 +18,7 @@
 #include <string>
 #include <vector>
 
-static void writeItem(const artifactstruct *item, StringBuffer *buf) {
+void ArtifactWriter::write(const artifact *item, StringBuffer *buf) {
     stringbuffer_append_string(buf, "Allowed");
     if (!item->allowed) {
         stringbuffer_append_string(buf, " all");
@@ -52,13 +52,5 @@ static void writeItem(const artifactstruct *item, StringBuffer *buf) {
             inv = inv->below;
         }
         stringbuffer_append_string(buf, "end\n");
-    }
-}
-
-void ArtifactWriter::write(const artifactlist *list, StringBuffer *buf) {
-    auto item = list->items;
-    while (item) {
-        writeItem(item, buf);
-        item = item->next;
     }
 }

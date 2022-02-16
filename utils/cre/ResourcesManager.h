@@ -89,6 +89,7 @@ class ResourcesManager : public QObject, AssetsTracker
         virtual void assetDefined(const quest_definition *asset, const std::string &filename) override { myQuests.assetDefined(asset, filename); }
         virtual void assetDefined(const treasurelist *asset, const std::string &filename) override { myTreasures.assetDefined(asset, filename); }
         virtual void assetDefined(const GeneralMessage *asset, const std::string &filename) override { myGeneralMessages.assetDefined(asset, filename); }
+        virtual void assetDefined(const artifact *asset, const std::string &filename) override { myArtifacts.assetDefined(asset, filename); }
 
         const std::map<std::string, std::set<const archt*> >& origins() const { return myArchetypes.origins(); }
         std::string originOf(const archt *arch) const { return myArchetypes.originOf(arch); }
@@ -104,6 +105,7 @@ class ResourcesManager : public QObject, AssetsTracker
                     || myQuests.hasPendingChanges()
                     || myTreasures.hasPendingChanges()
                     || myGeneralMessages.hasPendingChanges()
+                    || myArtifacts.hasPendingChanges()
                     ;
         }
 
@@ -118,7 +120,11 @@ class ResourcesManager : public QObject, AssetsTracker
         AssetWrapper *wrap(GeneralMessage *message, AssetWrapper *parent) { return myWrappedMessages.wrap(message, parent, this); }
         AssetWrapper *wrap(quest_definition *quest, AssetWrapper *parent) { return myWrappedQuests.wrap(quest, parent, this); }
         AssetWrapper *wrap(artifactlist *al, AssetWrapper *parent) { return myWrappedArtifactLists.wrap(al, parent, this); }
-        AssetWrapper *wrap(artifact *art, AssetWrapper *parent) { return myWrappedArtifacts.wrap(art, parent, this); }
+        AssetWrapper *wrap(artifact *art, AssetWrapper *parent) {
+            auto wrapper = myWrappedArtifacts.wrap(art, parent, this);
+            connect(wrapper, &AssetWrapper::modified, [wrapper, this] { myArtifacts.assetModified(wrapper->wrappedItem()); });
+            return wrapper;
+        }
         AssetWrapper *wrap(recipelist *list, AssetWrapper *parent) { return myWrappedRecipeLists.wrap(list, parent, this); }
         AssetWrapper *wrap(recipe *rc, AssetWrapper *parent) { return myWrappedRecipes.wrap(rc, parent, this); }
         void remove(treasure *tr) { myWrappedTreasures.remove(tr); }
@@ -134,6 +140,7 @@ class ResourcesManager : public QObject, AssetsTracker
       void saveTreasures();
       void generalMessageModified(GeneralMessage *message);
       void saveGeneralMessages();
+      void saveArtifacts();
 
     protected:
         CREMapInformationManager *myMapInformationManager;
@@ -142,6 +149,7 @@ class ResourcesManager : public QObject, AssetsTracker
         ModifiedAssetsManager<quest_definition> myQuests;
         ModifiedAssetsManager<treasurelist> myTreasures;
         ModifiedAssetsManager<GeneralMessage> myGeneralMessages;
+        ModifiedAssetsManager<artifact> myArtifacts;
         AssetWrapperManager<archt, ArchetypeWrapper> myWrappedArchetypes;
         AssetWrapperManager<object, ObjectWrapper> myWrappedObjects;
         AssetWrapperManager<Face, FaceWrapper> myWrappedFaces;

@@ -49,6 +49,13 @@ int ArtifactWrapper::chance() const {
     return myWrappedItem->chance;
 }
 
+void ArtifactWrapper::setChance(int chance) {
+    if (myWrappedItem->chance != chance) {
+        myWrappedItem->chance = chance;
+        markModified(AssetUpdated);
+    }
+}
+
 int ArtifactWrapper::difficulty() const {
     return myWrappedItem->difficulty;
 }

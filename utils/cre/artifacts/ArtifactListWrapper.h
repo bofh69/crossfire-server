@@ -11,11 +11,11 @@ extern "C" {
 #include "assets/AssetWrapper.h"
 class ResourcesManager;
 
-class ArtifactListWrapper : public AssetTWrapper<const artifactlist> {
+class ArtifactListWrapper : public AssetTWrapper<artifactlist> {
 Q_OBJECT
 
 public:
-    ArtifactListWrapper(AssetWrapper *parent, const artifactlist *list, ResourcesManager *resourcesManager);
+    ArtifactListWrapper(AssetWrapper *parent, artifactlist *list, ResourcesManager *resourcesManager);
 
     virtual QString displayName() const override {
         auto data = get_typedata(myWrappedItem->type);
@@ -25,6 +25,8 @@ public:
     virtual int childrenCount() const override;
     virtual AssetWrapper *child(int) override;
     virtual int childIndex(AssetWrapper *) override;
+
+    virtual void wasModified(AssetWrapper *asset, ChangeType type, int extra) override;
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;
 

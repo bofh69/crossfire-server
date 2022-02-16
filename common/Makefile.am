@@ -10,6 +10,7 @@ libcross_a_SOURCES = \
 	assets/ArchetypeLoader.cpp \
 	assets/ArchetypeWriter.cpp \
 	assets/Archetypes.cpp \
+	assets/ArtifactLoader.cpp \
 	assets/ArtifactWriter.cpp \
 	assets/AssetCollector.cpp \
 	assets/AssetsManager.cpp \

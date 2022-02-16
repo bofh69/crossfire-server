@@ -33,14 +33,15 @@ void first_arch_pass(FILE *fp, const char *filename);
 /* arch_types_valid.c */
 extern int is_type_valid(uint8_t type);
 /* artifact.c */
+extern artifactlist *get_empty_artifactlist(void);
+extern artifact *get_empty_artifact(void);
 extern void free_all_artifacts(void);
 extern void generate_artifact(object *op, int difficulty);
 extern void artifact_compute_chance_for_item(const object *op, const artifact *art, int *numerator, int *denominator);
 extern void give_artifact_abilities(object *op, const object *artifact);
 extern int legal_artifact_combination(const object *op, const artifact *art);
 extern void add_abilities(object *op, const object *change);
-extern void init_artifacts(BufferReader *reader, const char *filename);
-extern const artifactlist *find_artifactlist(int type);
+extern artifactlist *find_artifactlist(int type);
 extern const artifact *find_artifact(const object *op, const char *name);
 extern void dump_artifacts(void);
 extern uint16_t artifact_get_face(const artifact *art);
