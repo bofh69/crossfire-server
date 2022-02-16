@@ -55,6 +55,7 @@ extern int surround_check(char **maze, int i, int j, int xsize, int ysize);
  * layout size.
  * @param option
  * combination of @ref SPIRAL_xxx "SPIRAL_xxx" values.
+ * @param _unused_layers unused.
  * @return
  * generated layout.
  */

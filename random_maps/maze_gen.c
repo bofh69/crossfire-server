@@ -50,6 +50,7 @@ static int find_free_point(char **maze, int *x, int *y, int xc, int yc, int xsiz
  * wanted map size.
  * @param option
  * if 0, maze will be sparse (sizeable rooms), else totally filled.
+ * @param _unused_layers unused.
  * @return
  * a char** array with # and . for closed and open respectively.
  * a char value of 0 represents a blank space:  a '#' is

@@ -70,6 +70,8 @@ void find_top_left_corner(char **maze, int *cx, int *cy)
  * @param xsize
  * @param ysize
  * size of the layout.
+ * @param _unused_option unused.
+ * @param _unused_layers unused.
  * @return
  * generated layout.
  * @todo

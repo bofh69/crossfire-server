@@ -305,6 +305,7 @@ int surround_check(char **layout, int i, int j, int Xsize, int Ysize) {
  * wanted layout size.
  * @param options
  * 2 to have circular rooms, 1 for rectanglar ones, another value for random choice.
+ * @param _unused_layers unused.
  * @return
  * generated layout.
  */

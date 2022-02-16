@@ -28,6 +28,8 @@
  * @param xsize
  * @param ysize
  * layout size.
+ * @param _unused_option unused.
+ * @param _unused_layers unused.
  * @return
  * generated layout.
  */

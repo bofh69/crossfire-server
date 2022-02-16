@@ -756,6 +756,9 @@ static void count_unpaid(object *pl, object *item, int *unpaid_count, uint64_t *
 }
 
 /**
+ * Count the number of coins for each type, for all items below item and in inventory.
+ * @param item
+ * item to get the money from.
  * @param coincount
  * array of NUM_COINS size, will contain how many coins of the type the player has.
  */

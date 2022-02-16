@@ -172,6 +172,9 @@ void minheap_init_static(MinHeap *heap, void **arr, int amt, int (*measure_func)
 /**
  * Inserts an element into the min-heap
  *
+ * @param heap
+ * Heap to insert into.
+ *
  * @param ob
  * The data object being inserted.
  *
@@ -196,6 +199,9 @@ int minheap_insert(MinHeap *heap, void *ob) {
 
 /**
  * Pops the top of the minheap off.
+ *
+ * @param heap
+ * Heap to pop from.
  *
  * @return
  * The popped element, or NULL if the heap is empty.
