@@ -31,7 +31,7 @@ TreasureWrapper::~TreasureWrapper() {
 QString TreasureWrapper::displayName() const {
     QString name;
     if (myWrappedItem->item) {
-        name = myWrappedItem->item->clone.name;
+        name = tr("%1 (%2)").arg(myWrappedItem->item->clone.name, myWrappedItem->item->name);
     }
     else if (!myWrappedItem->name || strcmp(myWrappedItem->name, "NONE") == 0) {
         name = "Nothing";

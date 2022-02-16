@@ -14,8 +14,9 @@ ArchetypeComboBox::ArchetypeComboBox(QWidget *parent, bool allowNone) : QComboBo
         if (arch->head) {
             return;
         }
-        addItem(CREPixmap::getIcon(arch->clone.face), arch->clone.name, QVariant::fromValue(static_cast<void *>(const_cast<archetype *>(arch))));
-        names << arch->clone.name;
+        QString name = tr("%1 (%2)").arg(arch->clone.name, arch->name);
+        addItem(CREPixmap::getIcon(arch->clone.face), name, QVariant::fromValue(static_cast<void *>(const_cast<archetype *>(arch))));
+        names << name;
     });
 
     setEditable(true);
