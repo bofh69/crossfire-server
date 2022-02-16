@@ -123,10 +123,8 @@ static int roguelike_place_room(Room *Rooms, int xsize, int ysize) {
  * list of rooms to write.
  * @param maze
  * where to write to.
- * @param options
- * ignored
  */
-static void roguelike_make_rooms(Room *Rooms, char **maze, int options) {
+static void roguelike_make_rooms(Room *Rooms, char **maze) {
     int making_circle = 0;
     int i, j;
     int R;
@@ -368,7 +366,7 @@ char **roguelike_layout_gen(int xsize, int ysize, int options, int _unused_layer
     }
 
     /* erase the areas occupied by the rooms */
-    roguelike_make_rooms(Rooms, maze, options);
+    roguelike_make_rooms(Rooms, maze);
 
     roguelike_link_rooms(Rooms, maze);
 
