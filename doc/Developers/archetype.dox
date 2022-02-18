@@ -5,9 +5,9 @@ Archetypes define the standard properties of predefined objects: monsters, weapo
 
 Archetypes are not manipulated at runtime (with the exception of @ref sec_arch_temporary "temporary archetypes", see below), and are loaded into memory during the server startup.
 
-Archetypes are defined in the <tt>arch</tt> Subversion module. The definition is split in many <tt>.arc</tt> files, usually one per predefined item.
+Archetypes are defined in the <tt>arch</tt> git module. The definition is split in many <tt>.arc</tt> files, usually one per predefined item.
 
-Archetype manipulation functions are defined in the @ref arch.c file, and the structure is ::archt.
+Archetype manipulation functions are defined in the @ref arch.cpp file, and the structure is ::archt.
 
 @section sec_arch_inventory Objects in objects
 
