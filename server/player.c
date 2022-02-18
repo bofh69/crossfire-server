@@ -4442,7 +4442,7 @@ void player_unready_range_ob(player *pl, object *ob) {
 void player_set_state(player *pl, uint8_t state) {
 
     assert(pl);
-    assert(state >= ST_PLAYING && state <= ST_CHANGE_PASSWORD_CONFIRM);
+    assert(state <= ST_CHANGE_PASSWORD_CONFIRM);
     pl->state = state;
 }
 
