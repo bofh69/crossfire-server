@@ -35,7 +35,7 @@
 #define CONV_NR(xyz)    (unsigned char)xyz->stats.sp
 #define CONV_LIMIT(xyz) ((xyz->stats.wc > 0) ? ((unsigned long)xyz->stats.wc) : INT32_MAX)
 #define CONV_NEED(xyz)  (unsigned long)xyz->stats.food
-#define CONV_FROM_MATCH(xyz,_match) (CONV_FROM(xyz) == (_match) || (strchr(CONV_FROM(xyz),'*')) && wildcard_match(CONV_FROM(xyz),(_match)))
+#define CONV_FROM_MATCH(xyz,_match) (CONV_FROM(xyz) == (_match) || ((strchr(CONV_FROM(xyz),'*')) && wildcard_match(CONV_FROM(xyz),(_match))))
 
 static int convert_item(object *item, object *converter);
 
