@@ -179,6 +179,12 @@ void enter_player_savebed(object *op) {
 static void enter_map(object *op, mapstruct *newmap, int x, int y) {
     mapstruct *oldmap = op->map;
 
+    /* Default hp/sp for exits changed to -1 to use enter_x/enter_y values by default, but if one value
+     * is specified, we want the other to default to zero like before the change.
+     */
+    if (x < 0 && y >= 0) x=0;
+    if (y < 0 && x >= 0) y=0;
+
     if (out_of_map(newmap, x, y)) {
         LOG(llevError, "enter_map: supplied coordinates are not within the map! (%s: %d, %d)\n", newmap->path, x, y);
         /* If op has invalid (probably -1,-1) coordinates, force them to a correct value, else issues later on. */
