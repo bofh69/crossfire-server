@@ -1,3 +1,7 @@
+# 2022-02-18
+
+**Graphical overview of monster resistances** to fire, cold, electricity, poison, in *Tools* menu.
+
 # 2022-01-30
 
 **Option to restore windows positions** when application starts, in *Windows* menu.

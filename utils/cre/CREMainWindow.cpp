@@ -30,6 +30,7 @@ extern "C" {
 #include "assets/AssetModel.h"
 #include "ChangesDock.h"
 #include "HelpManager.h"
+#include "MonsterResistances.h"
 
 const char *AssetWrapper::tipProperty = "_cre_internal";
 
@@ -232,6 +233,12 @@ void CREMainWindow::createMenus()
 
     myToolsMenu = menuBar()->addMenu("&Tools");
     myToolsMenu->addAction(createAction(tr("Edit monsters"), tr("Edit monsters in a table."), this, SLOT(onToolEditMonsters())));
+    auto resist = createAction(tr("Monster resistances overview"), tr("Display an overview of resistances of monsters"));
+    connect(resist, &QAction::triggered, [&] {
+        MonsterResistances dlg(this);
+        dlg.exec();
+    });
+    myToolsMenu->addAction(resist);
     myToolsMenu->addAction(createAction(tr("Generate smooth face base"), tr("Generate the basic smoothed picture for a face."), this, SLOT(onToolSmooth())));
     myToolsMenu->addAction(createAction(tr("Generate HP bar"), tr("Generate faces for a HP bar."), this, SLOT(onToolBarMaker())));
     myToolsMenu->addAction(createAction(tr("Combat simulator"), tr("Simulate fighting between two objects."), this, SLOT(onToolCombatSimulator())));
