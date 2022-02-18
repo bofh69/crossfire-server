@@ -45,12 +45,8 @@ image sets are optional, but if an arch has one image version -it has to be call
   All images within crossfire are still known without the set or png
 extension.  Thus, for archetypes, the image name is sword.111, not
 sword.base.111.png.
- The collect script only collects the images for the set.  If the client
-requests an image that is not in the set it is using, the server will
-use the fallback logic to find an image to send to the client.  Collecting
-only the images in the set results in smaller installed image files,
-a smaller memory footprint for the server, and faster loading time.
-
+ If the client requests an image that is not in the set it is using, the server will
+use the fallback logic to find an image to send to the client.
 
  The server does not care about the image content.  As far as the server
 is concerned, it is just a bunch of bits it serves to the client.
@@ -86,4 +82,4 @@ they will just use the image in the base set.
 parts of an image are the same.  The server makes this check based on name to
 know if it should handle this object as a combined image or not.
 
-   5. Rebuild the archetypes, collect the images, and install.
+   5. Install and test.

@@ -19,11 +19,7 @@ Treasure lists exist in two variations:
 
 @section sec_tl_files Treasure files
 
-Treasures are defined in two places:
-- in the lib/treasures file
-- in individual .trs files in the archetypes tree
-
-During the @ref page_collect "collect process", all .trs files will be aggregated to the lib/treasures files to produce the final treasures files.
+Treasures are defined in .trs files in the archetypes tree. For historical reasons, many are groupes in <tt>treasures.trs</tt> at the root or archetypes.
 
 
 @section sec_tl_gen Treasure generation

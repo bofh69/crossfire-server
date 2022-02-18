@@ -9,12 +9,6 @@ Archetypes are defined in the <tt>arch</tt> Subversion module. The definition is
 
 Archetype manipulation functions are defined in the @ref arch.c file, and the structure is ::archt.
 
-@section sec_arch_collect Archetypes collection
-
-In order for archetypes to be usable by the server, they need to be collected into the <tt>lib/archetypes</tt> file. This is merely the concatenation of all <tt>.arc</tt> files, bundled together for distribution/installation ease.
-
-The <tt>lib/collect.pl</tt> script handles this collecting process.
-
 @section sec_arch_inventory Objects in objects
 
 It is possible to add objects in an archetype's inventory. All objects created from this archetype will have a copy of those objects, and additional objects if defined.

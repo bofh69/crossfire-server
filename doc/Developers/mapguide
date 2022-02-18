@@ -321,8 +321,7 @@ etc.
 
 3) Changing color is no longer possible in maps - instead, a new face
 and image must be created, and then put in the standard distribution.
-The archetype collection script will automatically pull out face information
-from archetype files.
+The server will automatically pull out face information from face files.
 
 4) Try to keep maps readable by other people who might edit them.  Thus,
 instead of modifying a woods space so it also acts as an exit, just put an

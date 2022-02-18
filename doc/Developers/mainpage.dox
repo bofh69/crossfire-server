@@ -10,6 +10,7 @@ Here is a list of topics:
 - @ref page_general
 - @ref page_object, one of the main Crossfire structure
 - @ref page_map, and everything related
+- @ref page_assets
 - @ref page_archetype
 - @ref page_artifact
 - @ref page_player
@@ -20,7 +21,6 @@ Here is a list of topics:
 - @ref page_region
 - @ref page_treasure_list
 - @ref page_client
-- @ref page_collect
 - @ref page_custom_attributes
 - @ref page_animations
 - @ref page_dialog

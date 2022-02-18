@@ -1,0 +1,75 @@
+/**
+
+@page page_assets Assets
+
+<b>Assets</b> are @ref page_archetype "archetypes", @ref page_treasure_list "treasures", @ref page_artifact "artifacts", in short anything except @ref page_map "maps" and @ref page_region "regions".
+
+They reside in the <tt>arch</tt> project.
+
+The server can run directly using this <tt>arch</tt> project, or it may pack everything in consolidated files.
+
+The following files are recognized as assets.
+
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Packed to</th>
+		<th>Meaning</th>
+	</tr>
+	<tr>
+		<td>*.arc</td>
+		<td>crossfire.arc</td>
+		<td>@ref page_archetype "archetype definition"</td>
+	</tr>
+	<tr>
+		<td>*.trs</td>
+		<td>crossfire.trs</td>
+		<td>@ref page_treasure_list "treasure definition"</td>
+	</tr>
+	<tr>
+		<td>*.face</td>
+		<td>crossfire.face</td>
+		<td>face and animation definition</td>
+	</tr>
+	<tr>
+		<td>*.png (if the name conforms to the expected format)</td>
+		<td>crossfire.tar</td>
+		<td>image displayed by the client</td>
+	</tr>
+	<tr>
+		<td>image_info</td>
+		<td>image_info</td>
+		<td>faceset definition</td>
+	</tr>
+	<tr>
+		<td>messages</td>
+		<td>messages</td>
+		<td>general messages found in readable items</td>
+	</tr>
+	<tr>
+		<td>*.formulea and formulae</td>
+		<td>formulae</td>
+		<td>crafting recipes</td>
+	</tr>
+	<tr>
+		<td>*.artifact and artifact</td>
+		<td>artifact</td>
+		<td>@ref page_artifact "artifacts"</td>
+	</tr>
+	<tr>
+		<td>*.quests</td>
+		<td>crossfire.quests</td>
+		<td>quest definition</td>
+	</tr>
+</table>
+ 
+The packing process is handled by the server binary itself, through the <code>-pack-assets</code> option.
+
+Note that if you have packed assets, then you don't need the <tt>arch</tt> directory under the installation directory.
+
+Packing assets makes for a faster server start and easier distribution, but makes it harder to contribute back changes -- one would need to figure the original split file names.
+
+@todo link to relevant documentation.
+@todo Add file extension to the relevant places also.
+
+*/
