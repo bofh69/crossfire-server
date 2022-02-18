@@ -19,7 +19,7 @@
 /**
  * @defgroup QUESTFILE_xxx Quest file parsing state.
  *
- * This is the parsing state when loading a file through load_quests_from_file().
+ * This is the parsing state when loading a file through QuestLoader::load().
  */
 /*@{*/
 #define QUESTFILE_NEXTQUEST 0   /**< Waiting for next quest definition. */

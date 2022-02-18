@@ -23,7 +23,7 @@ another format, function will need to convert it (eg, atoi) as needed.
 
 The following functions are available:
 
-@subsubsection sssec_get const char *get_ob_key_value(object *op, const char *key)
+@subsubsection sssec_get const char *object_get_value(object *op, const char *key)
 
   Returns the value parameter for the given key, or NULL if the
   object doesn't have such an extra_field.  The string returned is
@@ -33,7 +33,7 @@ The following functions are available:
   been set to an empty value.  If this differentiation is necessary,
   a value should be stored away.
 
-@subsubsection sssec_set int set_ob_key_value(object *op, const char *key, const char *value, int add_key)
+@subsubsection sssec_set int object_set_value(object *op, const char *key, const char *value, int add_key)
 
   Sets the value for the given key. If add_key is true, it will add the key
   if not defined, otherwise, it only updates existing keys.  Returns
@@ -106,11 +106,11 @@ The following should be considered:
 3) Key/value fields shouldn't be used if they are related to an existing
    field.  For example, if there is a 'foo' field, add you want a
    maxfoo value, it should be done as another field and not as a
-   get_ob_key_value(op, "maxfoo") - trying to main that is difficult.
+   object_get_value(op, "maxfoo") - trying to main that is difficult.
 
 @section sec_keyval_caveats Caveats
 
-- key/values don't guard against real fields being used: <code>set_ob_key_value(ob, "hp", "acidic")</code>
+- key/values don't guard against real fields being used: <code>object_set_value(ob, "hp", "acidic")</code>
   will not have the desired effect.
   The load/save code is such that it will save the key/value lists
   before actual field values.  When loading, the last value is
@@ -122,14 +122,10 @@ The following should be considered:
   After load, the value of hp will be 20, since that is the last value
   loaded.
 
-- Using get_ob_key_value() with a key for an actual field in the object
-  will not work.  Eg, get_ob_key_value(op, "hp") will not return the
+- Using object_get_value() with a key for an actual field in the object
+  will not work.  Eg, object_get_value(op, "hp") will not return the
   hp value of the object - there is no easy way for the functions to
   to access all the fields.
-
-- Thanks to its partial dependence on the loader, Crossedit will correctly
-  save and load extra_fields. It can't set or change them, however; there's a
-  whitelist in Attr.c::allowed_variables.
 
 -  Since all lines are valid, catching errors in arches is now difficult.
   For now, there is a debug statement when we get key/values.  When
@@ -146,7 +142,7 @@ The following should be considered:
   quite long.
 
 - There is no function that walks the key/value list for you. If this
-  is needed, should write your own.  However, such functionality really
+  is needed, you should write your own. However, such functionality really
   shouldn't be needed.
 
 - key names with no value are an indicator to the loader that there is

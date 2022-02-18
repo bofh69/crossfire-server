@@ -374,9 +374,11 @@ extern Statistics statistics;
  * @defgroup SCRIPT_FIX_xxx For plugin events
  * GROS: Those are used by plugin events (argument fixthem).
  */
+/*@{*/
 #define SCRIPT_FIX_ACTIVATOR 2
 #define SCRIPT_FIX_ALL 1
 #define SCRIPT_FIX_NOTHING 0
+/*@}*/
 
 #include "plugin.h"
 

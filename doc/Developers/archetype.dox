@@ -21,6 +21,6 @@ Temporary archetypes are special archetypes used for custom monsters. When the m
 
 This temporary archetype is required for the custom values to survive a call to fix_object(), call that will happen when the monster picks/drops items, is cursed, etc.
 
-Temporary archetypes will be automatically destroyed when the last object they are linked to is free_object()'d.
+Temporary archetypes will be automatically destroyed when the last object they are linked to is object_free()'d.
 
 */
