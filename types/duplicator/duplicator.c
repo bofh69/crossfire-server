@@ -70,10 +70,10 @@ static void move_duplicator(object *op) {
                     new_nrof = 1UL<<31;
                 tmp->nrof = new_nrof;
             }
-            if ( op->stats.food ) {
+            if (op->stats.food) {
                 --op->stats.food;
-                if ( !op->stats.food ) {
-                    object_remove( op );
+                if (!op->stats.food) {
+                    object_remove(op);
                     object_free_drop_inventory(op);
                     return;
                 }
