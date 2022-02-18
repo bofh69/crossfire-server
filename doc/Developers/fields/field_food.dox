@@ -43,6 +43,12 @@
 	</tr>
 	<tr>
 		<td>
+@ref page_type_83
+		</td><td>            The number of times this duplicator can be used. If not 0, then the duplicator
+            will be removed after being used this number of times.</td>
+	</tr>
+	<tr>
+		<td>
 @ref page_type_163
 		</td><td>            &lt;number of uses&gt; controls how many times the item transformer
             can be used. The value 0 means "unlimited"</td>

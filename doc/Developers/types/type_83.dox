@@ -281,6 +281,13 @@ Type defined by:
 		</td>
 	</tr>
 	<tr>
+		<td>use count</td>
+		<td>@ref liv::food</td>
+		<td>            The number of times this duplicator can be used. If not 0, then the duplicator
+            will be removed after being used this number of times.
+		</td>
+	</tr>
+	<tr>
 		<td>value</td>
 		<td>@ref obj::value</td>
 		<td>            Adds a certain value to the object: It will be worth that many times
