@@ -41,6 +41,7 @@ void init_type_duplicator(void) {
  * - connected: what will trigger it.
  * - level: multiplier.  0 to destroy.
  * - other_arch: the object to look for and duplicate.
+ * - food: if non-zero, self-destruct after activating this many times
  *
  * @param op
  * duplicator.
@@ -68,6 +69,14 @@ static void move_duplicator(object *op) {
                 if (new_nrof >= 1UL<<31)
                     new_nrof = 1UL<<31;
                 tmp->nrof = new_nrof;
+            }
+            if ( op->stats.food ) {
+                --op->stats.food;
+                if ( !op->stats.food ) {
+                    object_remove( op );
+                    object_free_drop_inventory(op);
+                    return;
+                }
             }
             if ( count <= 1 ) break;
             --count;
