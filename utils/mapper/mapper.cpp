@@ -1987,7 +1987,7 @@ static void fix_exits_to_tiled_maps(void) {
     int map, max;
     struct_map_info *group;
 
-    for (map = 0; map < maps_list.count; map++) {
+    for (map = 0; static_cast<size_t>(map) < maps_list.count; map++) {
         fix_exits_for_map(maps_list.maps[map], &maps_list.maps[map]->exits_from, 1);
         fix_exits_for_map(maps_list.maps[map], &maps_list.maps[map]->exits_to, 0);
     }
@@ -2029,7 +2029,7 @@ static void fix_tiled_map_monsters(void) {
         }
     }
 
-    for (map = 0; map < maps_list.count; map++) {
+    for (map = 0; static_cast<size_t>(map) < maps_list.count; map++) {
         if (maps_list.maps[map]->tiled_group) {
             for (size_t race = 0; race < maps_list.maps[map]->monsters.count; race++) {
                 add_race_to_list(maps_list.maps[map]->monsters.races[race], &maps_list.maps[map]->tiled_group->monsters, 1);
@@ -3148,7 +3148,7 @@ int main(int argc, char **argv) {
         if (current_map%100 == 0) {
             printf(" %zu maps processed, %d map pictures created, %d map pictures were uptodate. %d faces used.\n", current_map, created_pics, cached_pics, pics_allocated);
         }
-        if ((map_limit != -1) && (current_map == map_limit)) {
+        if ((map_limit != -1) && (current_map == static_cast<size_t>(map_limit))) {
             printf(" --- map limit reached, stopping ---\n");
             break;
         }
