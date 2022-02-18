@@ -78,7 +78,8 @@ static void move_duplicator(object *op) {
                     return;
                 }
             }
-            if ( count <= 1 ) break;
+            if (count <= 1)
+                break;
             --count;
         }
     }
