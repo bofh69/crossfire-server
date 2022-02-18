@@ -814,7 +814,7 @@ void command_quest(object *op, const char *params) {
         quest_state *qs = qp ? qp->quests : NULL;
         while (qs) {
             quest_definition *q = quest_get_by_code(qs->code);
-            if (q && q->client_code == number) {
+            if (q && q->client_code == (uint32_t)number) {
                 break;
             }
             qs = qs->next;
