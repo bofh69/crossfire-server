@@ -301,19 +301,19 @@ int surround_check(char **layout, int i, int j, int Xsize, int Ysize) {
  * @param xsize
  * @param ysize
  * wanted layout size.
- * @param options
- * 2 to have circular rooms, 1 for rectanglar ones, another value for random choice.
+ * @param _unused_options unused.
  * @param _unused_layers unused.
  * @return
  * generated layout.
  */
-char **roguelike_layout_gen(int xsize, int ysize, int options, int _unused_layers) {
+char **roguelike_layout_gen(int xsize, int ysize, int _unused_options, int _unused_layers) {
     int i, j;
     Room *Rooms = NULL;
     Room *walk;
     int nrooms = 0;
     int tries = 0;
 
+    (void)_unused_options;
     (void)_unused_layers;
 
     /* allocate that array, write walls everywhere up */
