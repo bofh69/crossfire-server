@@ -40,7 +40,7 @@ void init_type_food(void) {
     register_apply(FLESH, food_type_apply);
 }
 
-static void cursed_food_effects(object *who, object *food) {
+static void check_heal_and_mana(object *who, object *food) {
     /* check for hp, sp change */
     if (food->stats.hp != 0 && !is_wraith_pl(who)) {
         if (QUERY_FLAG(food, FLAG_CURSED)) {
@@ -136,9 +136,8 @@ static method_ret food_type_apply(object *food, object *applier, int aflags) {
             if (!QUERY_FLAG(food, FLAG_CURSED)) {
                 dragon_eat_flesh(applier, food);
                 eat_common(applier, food);
-            } else {
-                cursed_food_effects(applier, food);
             }
+            check_heal_and_mana(applier, food);
         } else if (is_old_wraith_pl(applier)) {
             /* Check for old wraith player, give them the feeding skill */
             object *skill = give_skill_by_name(applier, "wraith feed");
@@ -173,9 +172,8 @@ static method_ret food_type_apply(object *food, object *applier, int aflags) {
                 }
                 draw_ext_info(0, 0, applier, MSG_TYPE_APPLY, MSG_TYPE_APPLY_SUCCESS, buf);
                 eat_common(applier, food);
-            } else {
-                cursed_food_effects(applier, food);
             }
+            check_heal_and_mana(applier, food);
 
             /* special food hack -b.t. */
             if (food->title)
