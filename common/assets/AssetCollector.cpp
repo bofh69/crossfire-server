@@ -73,10 +73,6 @@ void AssetCollector::collect(const std::string& directory) {
         if (d->d_name[0] == 0 || d->d_name[0] == '.' || strcmp(d->d_name, "dev") == 0 || strcmp(d->d_name, "trashbin") == 0)
             continue;
 
-        if (strcmp(d->d_name, settings.mapdir) == 0 && strcmp(directory.c_str(), settings.datadir) == 0) {
-            /* For now no asset in the maps directory, so speed up collect by ignoring the whole maps directory */
-            continue;
-        }
         snprintf(full_path, sizeof(full_path), "%s/%s", directory.c_str(), d->d_name);
         stat(full_path, &sb);
         type = S_ISDIR(sb.st_mode) ? 0 : 1;
