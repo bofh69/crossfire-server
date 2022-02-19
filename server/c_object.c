@@ -1717,7 +1717,7 @@ void examine(object *op, object *tmp) {
         return;
     tmptype = get_typedata(tmp->type);
     if (!tmptype) {
-        LOG(llevError, "Attempted to examine item %d with type %d, which is invalid", tmp->count, tmp->type);
+        LOG(llevError, "Attempted to examine item %d with type %d, which is invalid\n", tmp->count, tmp->type);
         return;
     }
     /* first of all check whether this is an item we need to identify, and identify it as best we can.*/
