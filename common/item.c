@@ -78,6 +78,7 @@ body_locations_struct body_locations[NUM_BODY_LOCATIONS] = {
 static const typedata item_types[] = {
     { 0, "none", "none", 0, 0 },
     { PLAYER, "player", "players", 0, 0 },
+    { TRANSPORT, "transport", "transports", 0, 0 },
     { ROD, "rod", "rods", SK_THAUMATURGY, 0 },
     { TREASURE, "treasure", "treasure", 0, 0 },
     { POTION, "potion", "potions", SK_ALCHEMY, 0 },
