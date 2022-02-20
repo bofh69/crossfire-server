@@ -1997,8 +1997,10 @@ void monster_npc_call_help(object *op) {
                 continue;
 
             FOR_MAP_PREPARE(m, sx, sy, npc)
-                if (QUERY_FLAG(npc, FLAG_ALIVE) && QUERY_FLAG(npc, FLAG_UNAGGRESSIVE))
+                if (QUERY_FLAG(npc, FLAG_ALIVE) && QUERY_FLAG(npc, FLAG_UNAGGRESSIVE)) {
                     object_set_enemy(npc, op->enemy);
+                    CLEAR_FLAG(npc, FLAG_UNAGGRESSIVE);
+                }
             FOR_MAP_FINISH();
         }
 }
