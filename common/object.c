@@ -4607,6 +4607,8 @@ int object_matches_string(object *pl, object *op, const char *name) {
 
         /* Allow for things like '100 arrows' */
         count = atoi(cp);
+        if (*cp == '+' || *cp == '-')
+            count=0; // Let +/- searches look in description for magic bonuses
         if (count != 0) {
             cp = strchr(cp, ' ');
             while (cp && cp[0] == ' ')
