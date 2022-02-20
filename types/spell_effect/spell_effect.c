@@ -750,6 +750,21 @@ static void move_aura(object *aura) {
     int i, j, mflags;
     object *env;
     mapstruct *m;
+    uint8_t aura_animation_state = 0;
+    sstring whole_aura_animation = NULL;
+    char aura_animation_name[200];
+    if (aura->other_arch && aura->other_arch->clone.type != SPELL) {
+        whole_aura_animation = object_get_value(&aura->other_arch->clone, "whole_aura_animation");
+        if (whole_aura_animation) {
+            snprintf(aura_animation_name, sizeof(aura_animation_name), "%s_0_0", whole_aura_animation);
+            Animations *anim = try_find_animation(aura_animation_name);
+            if (anim) {
+                aura_animation_state = aura->duration % (anim->num_animations / anim->facings);
+            } else {
+                whole_aura_animation = NULL;
+            }
+        }
+    }
 
     /* auras belong in inventories */
     env = aura->env;
@@ -775,11 +790,6 @@ static void move_aura(object *aura) {
         for (j = -aura->range; j <= aura->range; ++j) {
             int16_t nx, ny;
 
-            // Don't put the aura on yourself.
-            if (i == 0 && j == 0) {
-                continue;
-            }
-
             // Env should be the starting location for the aura, so use
             // it as the base positioning instead of the aura.
             // This allows us to be less hacky when handling the long-range aura.
@@ -794,7 +804,7 @@ static void move_aura(object *aura) {
             if (!(mflags&P_OUT_OF_MAP) && !(OB_TYPE_MOVE_BLOCK(env, GET_MAP_MOVE_BLOCK(m, nx, ny)))) {
                 // If the aura has no attacktype, don't try to hit the map with it.
                 // Chances are, it is casting it's own spell instead.
-                if (aura->attacktype != 0) {
+                if (aura->attacktype != 0 && (i != 0 || j != 0)) {
                     // Instead of using freearr in hit_map, be move the aura around,
                     // and then call hit_map with direction 0. This allows us to have range > 3.
 
@@ -814,9 +824,19 @@ static void move_aura(object *aura) {
                     new_ob = arch_to_object(aura->other_arch);
                     // If the aura contains a spell, we attempt to cast the spell on every tile we affect.
                     if (new_ob->type != SPELL) {
-                        object_insert_in_map_at(new_ob, m, aura, 0, nx, ny);
+                        new_ob = object_insert_in_map_at(new_ob, m, aura, 0, nx, ny);
+                        if (new_ob && whole_aura_animation) {
+                            snprintf(aura_animation_name, sizeof(aura_animation_name), "%s_%d_%d", whole_aura_animation, i + aura->range, j + aura->range);
+                            Animations *anim = try_find_animation(aura_animation_name);
+                            if (anim) {
+                                SET_FLAG(new_ob, FLAG_ANIMATE);
+                                new_ob->animation = anim;
+                                new_ob->state = aura_animation_state;
+                                animate_object(new_ob, 0);
+                            }
+                        }
                     }
-                    else {
+                    else if (i != 0 || j != 0) {
                         // Find a living creature that is on the same side as the caster.
                         FOR_MAP_PREPARE(m, nx, ny, tmp) {
                             // If the entity is living and aligned with the caster, then cast the spell at them.
