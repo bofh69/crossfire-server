@@ -1985,7 +1985,20 @@ void monster_check_apply_all(object *monster) {
  * @param op monster calling for help.
  */
 void monster_npc_call_help(object *op) {
-    const int help_radius = 3;
+    const char *value;
+    int help_radius = 3;
+
+    value = object_get_value(op, "help_radius");
+    if ( value ) {
+        int override_help_radius;
+
+        override_help_radius = strtol(value, NULL, 10);
+        if (override_help_radius >= 0 && override_help_radius < 30)
+            help_radius = override_help_radius;
+        else
+            LOG(llevDebug, "monster_npc_call_help: invalid help_radius %d\n", override_help_radius);
+    }
+
     for (int x = -help_radius; x <= help_radius; x++)
         for (int y = -help_radius; y <= help_radius; y++) {
             mapstruct *m = op->map;
