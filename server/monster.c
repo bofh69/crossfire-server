@@ -1499,7 +1499,7 @@ static int monster_use_range(object *head, object *part, object *pl, int dir) {
             return 1;
         }
 
-        if (wand->type == ROD) {
+        if (wand->type == ROD && wand->inv) {
             /* Found rod/horn, let's use it if possible */
             at_least_one = 1;
             if (wand->stats.hp < MAX(wand->inv->stats.sp, wand->inv->stats.grace))
