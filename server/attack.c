@@ -797,7 +797,7 @@ static int attack_ob_simple(object *op, object *hitter, int base_dam, int base_w
         anim_suffix = "attack";
     }
     apply_anim_suffix(hitter, anim_suffix);
-    
+
 
     op_tag = op->count;
     hitter_tag = hitter->count;
@@ -2449,7 +2449,7 @@ static void deathstrike_living(object *op, object *hitter, int *dam) {
     /*
      * Redo this calculation -- you could essentially only kill creatures less than half your level,
      * making death extremely weak at high levels.
-     * Refactoring to use a d20 roll with a fairly high DC (still dependent on level)
+     * Refactoring to use a d50 roll with a fairly high DC (still dependent on level)
      * Also, toss in a resistance-based hit modifier.
      * Higher resistance requires higher levels in order to kill with a death attack.
      *
@@ -2458,8 +2458,8 @@ static void deathstrike_living(object *op, object *hitter, int *dam) {
     atk_lev = (hitter->chosen_skill ? hitter->chosen_skill->level : hitter->level);
     /* LOG(llevDebug, "Deathstrike - attack level %d, defender level %d\n", atk_lev, def_lev); */
 
-    roll = random_roll(1, 20, hitter, PREFER_HIGH);
-    kill_lev = roll - 18 + atk_lev; // Use 19+ as a kill for same level and no resistance;
+    roll = random_roll(1, 50, hitter, PREFER_HIGH);
+    kill_lev = roll - 48 + atk_lev; // Use 49+ as a kill for same level and no resistance; that's 4% + 2%/level
     kill_lev = kill_lev * (100 - op->resist[ATNR_DEATH]) / 100; // Do not compress to *= for roundoff reasons.
 
     // If we hit, then kill them. Otherwise, damage is 0.
