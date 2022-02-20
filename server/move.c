@@ -480,6 +480,7 @@ int push_ob(object *who, int dir, object *pusher) {
                                  who->name);
             CLEAR_FLAG(who, FLAG_UNAGGRESSIVE); /* the sucker don't like you anymore */
             object_set_enemy(who, pusher);
+            monster_npc_call_help(who);
             return 1;
         } else {
             draw_ext_info_format(NDI_UNIQUE, 0, pusher,
