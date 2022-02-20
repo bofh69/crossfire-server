@@ -74,7 +74,12 @@ void play_sound_player_only(player *pl, int8_t sound_type, object *emitter, int 
 
     pl->socket.sounds_this_tick = 0;
 
-    name = emitter->type == PLAYER ? emitter->race : emitter->name;
+    name = emitter->name;
+    if (emitter->type == PLAYER) {
+        name = emitter->race;
+    } else if (emitter->type == EXIT) {
+        name = emitter->arch->clone.name;   /* The name may be custom, so use generic exit name */
+    }
     if (name == NULL) {
         return;
     }
