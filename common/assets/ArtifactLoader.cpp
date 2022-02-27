@@ -101,7 +101,7 @@ void ArtifactLoader::load(BufferReader *reader, const std::string &filename) {
             }
             art = NULL;
         } else
-            LOG(llevError, "Unknown input in artifact file %s:%d: %s\n", filename, bufferreader_current_line(reader), buf);
+            LOG(llevError, "Unknown input in artifact file %s:%d: %s\n", filename.c_str(), bufferreader_current_line(reader), buf);
     }
 
     for (al = first_artifactlist; al != NULL; al = al->next) {
