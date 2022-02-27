@@ -402,32 +402,47 @@ void command_list(object *pl, bool is_dm) {
 /**
  * Find a command by its name.
  * @param name command name.
- * @param is_dm whether the player is DM or not.
- * @param allow_partial if true then the first letters of a command are enough if no ambiguity.
- * @return command, NULL if no match found.
+ * @param pl player to get the command for.
+ * @return matching command, nullptr if no match or multiple matches, in which case
+ * the player was warned.
  */
-static registered_command *command_find(const char *name, bool is_dm, bool allow_partial) {
+static registered_command *command_find(const char *name, object *pl) {
     auto existing = registered_commands.find(name);
-    if (existing == registered_commands.end()) {
-        if (allow_partial) {
-            size_t len = strlen(name);
-            registered_command *candidate = nullptr;
-            for (auto command : registered_commands) {
-                if ((command.second.back()->type != COMMAND_TYPE_WIZARD || is_dm) && command.first.length() >= len && command.first.compare(0, len, name) == 0) {
-                    if (candidate) {
-                        return nullptr;
-                    }
+    if (existing != registered_commands.end()) {
+        if (QUERY_FLAG(pl, FLAG_WIZ) && existing->second.back()->type == COMMAND_TYPE_WIZARD) {
+            return nullptr;
+        }
+        return existing->second.back();
+    }
+
+    if (pl->contr->partial_commands) {
+        size_t len = strlen(name);
+        registered_command *candidate = nullptr;
+        std::string matches;
+        bool multiple = false;
+        for (auto command : registered_commands) {
+            if ((command.second.back()->type != COMMAND_TYPE_WIZARD || QUERY_FLAG(pl, FLAG_WIZ)) && command.first.length() >= len && command.first.compare(0, len, name) == 0) {
+                if (candidate) {
+                    matches += ", " + command.first;
+                    multiple = true;
+                } else {
                     candidate = command.second.back();
+                    matches = command.first;
                 }
             }
+        }
+        if (multiple) {
+            draw_ext_info_format(NDI_UNIQUE, 0, pl, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
+                    "'%s' is ambiguous and may be %s.", name, matches.c_str());
+            return nullptr;
+        }
+        if (candidate) {
             return candidate;
         }
-        return NULL;
     }
-    if (!is_dm && existing->second.back()->type == COMMAND_TYPE_WIZARD) {
-        return NULL;
-    }
-    return existing->second.back();
+    draw_ext_info_format(NDI_UNIQUE, 0, pl, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
+                         "'%s' is not a valid command.", name);
+    return nullptr;
 }
 
 /**
@@ -461,16 +476,16 @@ void command_execute(object *pl, char *command) {
         cp = strchr(command, '\0');
     }
 
+    if (strlen(command) == 0) {
+        return;
+    }
+
     for (low = command; *low; low++)
         *low = tolower(*low);
 
-    csp = command_find(command, QUERY_FLAG(pl, FLAG_WIZ), pl->contr->partial_commands);
+    csp = command_find(command, pl);
 
-    if (csp == NULL) {
-        draw_ext_info_format(NDI_UNIQUE, 0, pl,
-                             MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
-                             "'%s' is not a valid command%s.",
-                             command, pl->contr->partial_commands ? " or is ambiguous" : "");
+    if (csp == nullptr) {
         return;
     }
 
