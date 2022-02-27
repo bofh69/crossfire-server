@@ -1510,8 +1510,9 @@ static void do_specials(void) {
     }
 
 #ifdef CS_LOGSTATS
-    if ((time(NULL)-cst_lst.time_start) >= CS_LOGTIME)
+    if ((time(NULL)-cst_lst.time_start) >= CS_LOGTIME) {
         write_cs_stats();
+    }
 #endif
 
     if (!(pticks%10))

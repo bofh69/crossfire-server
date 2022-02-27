@@ -468,6 +468,7 @@ void write_cs_stats(void) {
     if (cst_lst.ibytes == 0 && cst_lst.obytes == 0)
         return;
 
+    LOG(llevInfo, "STAT: players: %d active, %d total\n", count_players(), count_all_players());
     /* CSSTAT is put in so scripts can easily find the line */
     LOG(llevInfo, "CSSTAT: %.16s tot %d %d %d %ld inc %d %d %d %ld\n",
         ctime(&now), cst_tot.ibytes, cst_tot.obytes, cst_tot.max_conn,

@@ -69,6 +69,13 @@ int count_players() {
     return num_players;
 }
 
+int count_all_players() {
+    int players = 0;
+    player *pl;
+    for (pl = first_player, players = 0; pl != NULL; pl = pl->next, players++);
+    return players;
+}
+
 /**
  * Updates our info in the metaserver
  * Note that this is used for both metaserver1 and metaserver2 -

@@ -67,6 +67,7 @@ void Send_With_Handling(socket_struct *ns, SockList *sl);
 void write_cs_stats(void);
 /* metaserver.c */
 int count_players(void);
+int count_all_players(void);
 void metaserver_init(void);
 void metaserver_update(void);
 int metaserver2_init(void);
