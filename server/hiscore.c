@@ -82,8 +82,6 @@ static void hiscore_save(const score_table *table) {
     size_t i;
     char buf[MAX_BUF];
 
-    LOG(llevDebug, "Writing highscore files %s\n", table->fname);
-
     fp = of_open(&of, table->fname);
     if (fp == NULL)
         return;
@@ -368,6 +366,7 @@ void hiscore_check(object *op, int quiet) {
         return;
     }
 
+    PROFILE_BEGIN();
     strncpy(new_score.name, op->name, BIG_NAME);
     new_score.name[BIG_NAME-1] = '\0';
     player_get_title(op->contr, new_score.title, sizeof(new_score.title));
@@ -404,6 +403,7 @@ void hiscore_check(object *op, int quiet) {
     } FOR_INV_FINISH();
     new_score.exp = op->stats.exp;
     add_score(&hiscore_tables[0], &new_score, &old_score); // overall
+    PROFILE_END(diff, LOG(llevDebug, "Wrote highscore files for %s (%d ms)\n", op->name, diff/1000));
 
     /* Everything below here is just related to print messages
      * to the player.  If quiet is set, we can just return
