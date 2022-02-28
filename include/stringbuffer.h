@@ -89,6 +89,25 @@ void stringbuffer_append_string(StringBuffer *sb, const char *str);
 void stringbuffer_append_printf(StringBuffer *sb, const char *format, ...);
 
 /**
+ * Append a character to a string buffer instance.
+ *
+ * @param sb The string buffer to modify.
+ *
+ * @param c The string to append.
+ */
+void stringbuffer_append_char(StringBuffer *sb, const char c);
+
+/**
+ * Append a signed integer to a string buffer instance. This is intended to be
+ * faster than using stringbuffer_append_printf().
+ *
+ * @param sb The string buffer to modify.
+ *
+ * @param x The signed integer to append.
+ */
+void stringbuffer_append_int64(StringBuffer *sb, int64_t x);
+
+/**
  * Append the contents of a string buffer instance to another string buffer
  * instance.
  *

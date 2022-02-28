@@ -4948,7 +4948,9 @@ static inline void ADD_STRINGLINE_ENTRY(StringBuffer *sb, const char *name, cons
 
 /** Adds a long to the buffer.  name must have a space at the end. */
 static inline void FAST_SAVE_LONG(StringBuffer *sb, const char *name, const long value) {
-    stringbuffer_append_printf(sb, "%s%ld\n", name, (long int)value);
+    stringbuffer_append_string(sb, name);
+    stringbuffer_append_int64(sb, value);
+    stringbuffer_append_char(sb, '\n');
 }
 
 /** Adds a double to the buffer. name must have a space at the end. */

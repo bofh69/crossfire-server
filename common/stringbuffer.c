@@ -101,6 +101,40 @@ void stringbuffer_append_string(StringBuffer *sb, const char *str) {
     sb->pos += len;
 }
 
+void stringbuffer_append_char(StringBuffer *sb, const char c) {
+    stringbuffer_ensure(sb, 2); // character and NUL
+    sb->buf[sb->pos] = c;
+    sb->buf[sb->pos + 1] = '\0';
+    sb->pos += 1;
+}
+
+void stringbuffer_append_int64(StringBuffer *sb, int64_t x) {
+    if (x < 0) {
+        stringbuffer_append_char(sb, '-');
+        if (x == INT64_MIN) {
+            x = INT64_MAX;
+        } else {
+            x = -x;
+        }
+    }
+
+    const int MAX_DIGITS = 20; // handle at most 20 digits, since an int64_t has at most 19 digits
+    char buf[MAX_DIGITS];
+    int i;
+    for (i = 0; i < MAX_DIGITS; i++) {
+        buf[i] = x % 10 + '0';
+        if ((x /= 10) == 0) {
+            i++;
+            break;
+        }
+    }
+
+    // copy into sb in reverse
+    for (int j = i - 1; j >= 0; j--) {
+        stringbuffer_append_char(sb, buf[j]);
+    }
+}
+
 void stringbuffer_append_printf(StringBuffer *sb, const char *format, ...) {
     size_t size;
 
