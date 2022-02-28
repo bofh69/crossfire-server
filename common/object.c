@@ -5290,9 +5290,21 @@ void get_ob_diff(StringBuffer *sb, const object *op, const object *op2) {
  * Store a string representation of op in sb. Suitable for saving an object
  * to a file.
  */
-void save_object_in_sb(StringBuffer *sb, const object *op, const int flag) {
+void save_object_in_sb(StringBuffer *sb, object *op, const int flag) {
     /* If the object has no_save set, just return */
     if (QUERY_FLAG(op, FLAG_NO_SAVE)) {
+        return;
+    }
+
+    /* Even if the object does have an owner, it would seem that we should
+     * still save it.
+     */
+    if (object_get_owner(op) != NULL) {
+        return;
+    }
+
+    /* If it is unpaid and we don't want to save those, just return. */
+    if (!(flag&SAVE_FLAG_SAVE_UNPAID) && (QUERY_FLAG(op, FLAG_UNPAID))) {
         return;
     }
 
@@ -5365,17 +5377,6 @@ void save_object_in_sb(StringBuffer *sb, const object *op, const int flag) {
  * one of @ref SAVE_ERROR_xxx "SAVE_ERROR_xxx" values.
  */
 int save_object(FILE *fp, object *op, int flag) {
-    /* Even if the object does have an owner, it would seem that we should
-     * still save it.
-     */
-    if (object_get_owner(op) != NULL || fp == NULL)
-        return SAVE_ERROR_OK;
-
-    /* If it is unpaid and we don't want to save those, just return. */
-    if (!(flag&SAVE_FLAG_SAVE_UNPAID) && (QUERY_FLAG(op, FLAG_UNPAID))) {
-        return SAVE_ERROR_OK;
-    }
-
     StringBuffer *sb = stringbuffer_new();
     save_object_in_sb(sb, op, flag);
     char *cp = stringbuffer_finish(sb);

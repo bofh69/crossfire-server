@@ -328,6 +328,7 @@ extern void object_insert_to_free_spot_or_free(object *op, mapstruct *map, int x
 extern void object_set_msg(object *op, const char *msg);
 extern void get_ob_diff(StringBuffer *sb, const object *op, const object *op2);
 extern int save_object(FILE *fp, object *op, int flag);
+extern void save_object_in_sb(StringBuffer *sb, object *op, const int flag);
 extern void object_handle_death_animation(object *op);
 extern int object_matches_pickup_mode(const object *item, int mode);
 /* path.c */

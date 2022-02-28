@@ -726,9 +726,14 @@ static int save_objects(mapstruct *m, FILE *fp, FILE *fp2, int flag) {
     int i, j = 0, unique = 0, res = 0;
     unsigned int count = 0;
 
+    StringBuffer *sb = stringbuffer_new();
+    StringBuffer *sb2 = stringbuffer_new();
+
+    long serialize_time, write_time;
+
     PROFILE_BEGIN();
     /* first pass - save one-part objects */
-    for (i = 0; i < MAP_WIDTH(m); i++)
+    for (i = 0; i < MAP_WIDTH(m); i++) {
         for (j = 0; j < MAP_HEIGHT(m); j++) {
             unique = 0;
             FOR_MAP_PREPARE(m, i, j, op) {
@@ -744,11 +749,11 @@ static int save_objects(mapstruct *m, FILE *fp, FILE *fp2, int flag) {
                     continue;
 
                 if (unique || QUERY_FLAG(op, FLAG_UNIQUE)) {
-                    res = save_object(fp2, op, SAVE_FLAG_SAVE_UNPAID|SAVE_FLAG_NO_REMOVE);
+                    save_object_in_sb(sb2, op, SAVE_FLAG_SAVE_UNPAID|SAVE_FLAG_NO_REMOVE);
                     count++ ;
                 } else if (flag == 0
                     || (flag == SAVE_FLAG_NO_REMOVE && (!QUERY_FLAG(op, FLAG_OBJ_ORIGINAL) && !QUERY_FLAG(op, FLAG_UNPAID)))) {
-                        res = save_object(fp, op, SAVE_FLAG_SAVE_UNPAID|SAVE_FLAG_NO_REMOVE);
+                        save_object_in_sb(sb, op, SAVE_FLAG_SAVE_UNPAID|SAVE_FLAG_NO_REMOVE);
                         count++;
                 }
 
@@ -756,9 +761,19 @@ static int save_objects(mapstruct *m, FILE *fp, FILE *fp2, int flag) {
                     return res;
             } FOR_MAP_FINISH(); /* for this space */
         } /* for this j */
+    }
+    PROFILE_END(diff, serialize_time = diff);
 
-    PROFILE_END(diff,
-            LOG(llevDebug, "save_objects on %s took %ld us (%u objects = %f us each)\n", m->path, diff, count, (double)diff/count));
+    PROFILE_BEGIN();
+    char *cp = stringbuffer_finish(sb);
+    char *cp2 = stringbuffer_finish(sb2);
+    fputs(cp, fp);
+    fputs(cp2, fp2);
+    free(cp);
+    free(cp2);
+    PROFILE_END(diff, write_time = diff);
+
+    LOG(llevDebug, "saved %d objects on %s (%d us serializing, %d us writing)\n", count, m->path, serialize_time, write_time);
     return 0;
 }
 
