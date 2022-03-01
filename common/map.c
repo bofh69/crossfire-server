@@ -609,7 +609,7 @@ static void link_multipart_objects(mapstruct *m) {
  * @param mapflags
  * the same as we get with mapfile_load()
  */
-static void load_objects(mapstruct *m, FILE *fp, int mapflags) {
+void load_objects(mapstruct *m, FILE *fp, int mapflags) {
     int i, j, bufstate = LO_NEWFILE;
     int unique;
     object *op, *prev = NULL, *last_more = NULL;
@@ -722,7 +722,7 @@ static void load_objects(mapstruct *m, FILE *fp, int mapflags) {
  * @return
  * one of @ref SAVE_ERROR_xxx "SAVE_ERROR_xxx" value.
  */
-static int save_objects(mapstruct *m, FILE *fp, FILE *fp2, int flag) {
+int save_objects(mapstruct *m, FILE *fp, FILE *fp2, int flag) {
     int i, j = 0, unique = 0, res = 0;
     unsigned int count = 0;
 
@@ -839,7 +839,7 @@ uint32_t map_size(mapstruct *m) {
  * @note
  * will never fail, since it calls fatal() if memory allocation failure.
  */
-static void allocate_map(mapstruct *m) {
+void allocate_map(mapstruct *m) {
     m->in_memory = MAP_IN_MEMORY;
     /* Log this condition and free the storage.  We could I suppose
      * realloc, but if the caller is presuming the data will be intact,
