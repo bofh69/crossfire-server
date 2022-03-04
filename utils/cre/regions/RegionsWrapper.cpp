@@ -5,6 +5,7 @@ RegionsWrapper::RegionsWrapper(AssetWrapper *parent, ResourcesManager *resources
     for (region* reg = first_region; reg; reg = reg->next) {
         myRegions.push_front(resources->wrap(reg, this));
     }
+    qSort(myRegions.begin(), myRegions.end(), compareByDisplayName);
     setProperty(tipProperty, tr("Display all maps and regions."));
 }
 

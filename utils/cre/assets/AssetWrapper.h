@@ -44,6 +44,10 @@ public:
     virtual void drop(const QMimeData *, int) { }
     virtual void fillMenu(QMenu *) { }
 
+    static bool compareByDisplayName(const AssetWrapper *left, const AssetWrapper *right) {
+        return left->displayName().compare(right->displayName(), Qt::CaseInsensitive) < 0;
+    }
+
 public slots:
     virtual void removeChild(AssetWrapper *) { }
 

@@ -13,6 +13,7 @@ public:
         collection->each([&] (T *asset) {
             myAssets.append(resources->wrap(asset, this));
         });
+        qSort(myAssets.begin(), myAssets.end(), compareByDisplayName);
         setProperty(tipProperty, tip);
     }
 

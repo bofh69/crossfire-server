@@ -11,5 +11,6 @@ ArchetypesWrapper::ArchetypesWrapper(AssetWrapper *parent, ResourcesManager *res
             myArch.append(myResourcesManager->wrap(arch, this));
         }
     });
+    qSort(myArch.begin(), myArch.end(), compareByDisplayName);
     setProperty(tipProperty, tr("Display all archetypes."));
 }
