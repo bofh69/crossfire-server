@@ -409,7 +409,9 @@ void command_list(object *pl, bool is_dm) {
 static registered_command *command_find(const char *name, object *pl) {
     auto existing = registered_commands.find(name);
     if (existing != registered_commands.end()) {
-        if (QUERY_FLAG(pl, FLAG_WIZ) && existing->second.back()->type == COMMAND_TYPE_WIZARD) {
+        if (!QUERY_FLAG(pl, FLAG_WIZ) && existing->second.back()->type == COMMAND_TYPE_WIZARD) {
+            draw_ext_info_format(NDI_UNIQUE, 0, pl, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
+                                 "'%s' is not a valid command.", name);
             return nullptr;
         }
         return existing->second.back();
