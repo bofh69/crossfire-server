@@ -268,6 +268,7 @@
 /test/unit/common/check_recipe
 /test/unit/common/check_region
 /test/unit/common/check_shstr
+/test/unit/common/check_stringbuffer
 /test/unit/common/check_time
 /test/unit/common/check_treasure
 /test/unit/common/check_utils
