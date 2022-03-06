@@ -55,7 +55,7 @@ QString ObjectWrapper::materialName() const
 }
 
 float ObjectWrapper::dps() const {
-    return damage() * speed() / MOVE_PER_SECOND;
+    return damage() * abs(speed()) / MOVE_PER_SECOND;
 }
 
 float ObjectWrapper::regen() const {
