@@ -5,7 +5,7 @@
 #include "archetypes/ObjectWrapper.h"
 #include "ResourcesManager.h"
 
-#define PROPERTY_COUNT  11
+#define PROPERTY_COUNT  12
 const char *properties[PROPERTY_COUNT] = {
     "hp",
     "con",
@@ -15,6 +15,7 @@ const char *properties[PROPERTY_COUNT] = {
     "weight",
     "experience",
     "level",
+    "suggested_level",
     "damage",
     "speed",
     "dps"

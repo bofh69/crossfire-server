@@ -23,6 +23,7 @@ class ObjectWrapper : public AssetTWrapper<object> {
     Q_PROPERTY(int type READ type)
     Q_PROPERTY(int subType READ subType)
     Q_PROPERTY(int level READ level WRITE setLevel)
+    Q_PROPERTY(int suggested_level READ suggested_level);
     Q_PROPERTY(bool isMonster READ isMonster)
     Q_PROPERTY(bool isAlive READ isAlive)
     Q_PROPERTY(bool isGenerator READ isGenerator)
@@ -58,6 +59,7 @@ class ObjectWrapper : public AssetTWrapper<object> {
         int type() const;
         int subType() const { return myWrappedItem->subtype; }
         int level() const;
+        int suggested_level() const;
         void setLevel(int level) { myWrappedItem->level = level; }
         bool isMonster() const;
         bool isAlive() const;
