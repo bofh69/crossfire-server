@@ -52,6 +52,43 @@ extern int artifact_init;
 static bool seen_object = false;
 
 /**
+ * Destructively reverse the object's inventory. Used to preserve object
+ * order as they appear in the file, since linked list insertion is at the
+ * beginning.
+ * @param op Object to reverse.
+ */
+static void reverse_ob_inv(object *op) {
+    object *prev = NULL;
+    object *curr = op->inv;
+    object *next;
+    while (curr != NULL) {
+        next = curr->below;
+        curr->below = prev;
+        curr->above = next;
+        prev = curr;
+        curr = next;
+    }
+    op->inv = prev;
+}
+
+/**
+ * Destructively reverse the object's key value pairs.
+ * @param op Object to reverse.
+ */
+static void reverse_ob_key_values(object *op) {
+    key_value *prev = NULL;
+    key_value *curr = op->key_values;
+    key_value *next;
+    while (curr != NULL) {
+        next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+    op->key_values = prev;
+}
+
+/**
  * Fills in the body information for one slot.
  *
  * @param op
@@ -515,6 +552,8 @@ A       .+
 ^end{WS}$           {
                         seen_object = false;
                         check_loaded_object(op);
+                        reverse_ob_inv(op);
+                        reverse_ob_key_values(op);
                         if (linemode) {
                             /* Linemode is only set for artifact loading. */
                             if ((*depth) > 0) {
