@@ -324,6 +324,10 @@ void send_race_list(socket_struct *ns) {
  * race name to send.
  */
 void send_race_info(socket_struct *ns, char *params) {
+    if (params == NULL) {
+        LOG(llevError, "send_race_info: IP '%s' sent bogus race_info command.\n", ns->host);
+        return;
+    }
     archetype *race = try_find_archetype(params);
     SockList sl;
 
@@ -390,6 +394,10 @@ void send_class_list(socket_struct *ns) {
  * class name to send.
  */
 void send_class_info(socket_struct *ns, char *params) {
+    if (params == NULL) {
+        LOG(llevError, "send_class_info: IP '%s' sent bogus class_info request.\n", ns->host);
+        return;
+    }
     archetype *class = try_find_archetype(params);
     SockList sl;
 
