@@ -145,6 +145,14 @@ void send_image_sums(socket_struct *ns, char *params) {
     char *cp;
     SockList sl;
 
+    // Sanity check:
+    // If no params, bail out with an error.
+    // Otherwise, a rogue client could produce a segfault by supplying "requestinfo image_sums" without parameters.
+    if (params == NULL) {
+        LOG(llevError, "send_image_sums: bogus \"requestinfo image_sums\": no range provided.\n");
+        return;
+    }
+
     SockList_Init(&sl);
 
     start = atoi(params);
