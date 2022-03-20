@@ -333,6 +333,12 @@ static void remove_force(object *op) {
             object *pl = object_get_player_container(op);
 
             object_remove(inv);
+
+            // FIXME: For whatever reason, leaving an item transformed this way somewhere that it gets saved
+            // propagates the NO_PICK flag from the force down to the item. Clearing that here
+            // fixes the symptom, but not the underlying logic that causes the problem to occur.
+            CLEAR_FLAG(inv, FLAG_NO_PICK);
+
             inv->weight = (inv->nrof ? (int32_t)(op->env->weight/inv->nrof) : op->env->weight);
             if (op->env->env) {
                 object_insert_in_ob(inv, op->env->env);
