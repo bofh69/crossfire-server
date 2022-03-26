@@ -827,6 +827,7 @@ Client Type	Notes
 159		arrow (13)	Group ammo with firing type
 161		crossbow
 165		bolts
+170		bombs
 
 250-399		Armor, shields, helms, etc.  Give each subtype a group
 		of 10 entries to further subdivide into.  This is basically all
@@ -891,7 +892,8 @@ Client Type	Notes
 627		flesh item - misc - ichors, scales, hearts, livers, skin (72)
 628		flesh items - dusts
 641		inorganic - raw (73)
-642		inoranic - refined (true lead, mercury, etc)
+642		inorganic - refined (true lead, mercury, etc)
+645		smithing intermediate products
 
 650-699		Single use spell casting items (scrolls, potions, balms)
 651		potion (5)
