@@ -636,6 +636,8 @@ object *races_get_random_monster(const char *race, int level);
 #ifdef __cplusplus
 }
 #endif
+/* item.c */
+bool player_can_find(object *op, object *ob);
 
 
 /**

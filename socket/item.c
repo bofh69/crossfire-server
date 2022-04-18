@@ -576,6 +576,25 @@ void esrv_del_item(player *pl, object *ob) {
  */
 
 /**
+ * Return true if player 'op' can see object 'op' for purpose of locating items
+ * for partial item matching or searching by tag.
+ */
+bool player_can_find(object *op, object *ob) {
+    return !ob->invisible;
+}
+
+/**
+ * Return object 'ob' if player 'op' can find it, otherwise return NULL.
+ */
+static object *ob_if_can_find(object *op, object *ob) {
+    if (player_can_find(op, ob)) {
+        return ob;
+    } else {
+        return NULL;
+    }
+}
+
+/**
  * Takes a player and object count (tag) and returns the actual object
  * pointer, or null if it can't be found.
  */
@@ -586,22 +605,22 @@ static object *esrv_get_ob_from_count(object *pl, tag_t count) {
 
     FOR_INV_PREPARE(pl, op)
         if (op->count == count)
-            return op;
+            return ob_if_can_find(pl, op);
         else if (op->type == CONTAINER && pl->container == op) {
             FOR_INV_PREPARE(op, tmp)
                 if (tmp->count == count)
-                    return tmp;
+                    return ob_if_can_find(pl, tmp);
             FOR_INV_FINISH();
         }
     FOR_INV_FINISH();
 
     FOR_MAP_PREPARE(pl->map, pl->x, pl->y, op)
         if (HEAD(op)->count == count)
-            return op;
+            return ob_if_can_find(pl, op);
         else if (op->type == CONTAINER && pl->container == op) {
             FOR_INV_PREPARE(op, tmp)
                 if (tmp->count == count)
-                    return tmp;
+                    return ob_if_can_find(pl, tmp);
             FOR_INV_FINISH();
         }
     FOR_MAP_FINISH();
@@ -609,7 +628,7 @@ static object *esrv_get_ob_from_count(object *pl, tag_t count) {
     if (pl->contr->transport) {
         FOR_INV_PREPARE(pl->contr->transport, tmp)
             if (tmp->count == count)
-                return tmp;
+                return ob_if_can_find(pl, tmp);
         FOR_INV_FINISH();
     }
     return NULL;

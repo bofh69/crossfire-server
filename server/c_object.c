@@ -104,7 +104,7 @@ static object *find_best_apply_object_match(object *start, object *pl, const cha
 
     tmp = start;
     FOR_OB_AND_BELOW_PREPARE(tmp) {
-        if (tmp->invisible)
+        if (!player_can_find(pl, tmp))
             continue;
         if (aflag == AP_APPLY && QUERY_FLAG(tmp, FLAG_APPLIED))
             continue;
