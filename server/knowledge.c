@@ -300,6 +300,9 @@ static StringBuffer* knowledge_alchemy_can_use_item(sstring code, const char *it
     const archetype *arch;
     const char *name;
 
+    if (!item)
+        return NULL;
+
     if (!rec)
         /* warn? */
         return buf;
