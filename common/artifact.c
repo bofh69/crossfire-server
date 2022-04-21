@@ -275,7 +275,7 @@ int legal_artifact_combination(const object *op, const artifact *art) {
         }
 
         /* If we match name, then return the opposite of 'neg' */
-        if (!strcmp(name, op->name) || (op->arch && !strcmp(name, op->arch->name)))
+        if (op->name && (!strcmp(name, op->name) || (op->arch && !strcmp(name, op->arch->name))))
             return !neg;
 
         /* Set success as true, since if the match was an inverse, it means
