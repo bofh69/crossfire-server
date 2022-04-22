@@ -6,8 +6,10 @@ Example:
 
 sets your RANGE weapon to 'spell: burning hands'
 
-If you don't know the spell, shows which spells you do know.
+If you don't know the spell, the command output will show which spells you do know.
 
-It is helpful to bind strings like 'cast burning hands' to keys. see 'help bind'
+It is helpful to bind strings like 'cast burning hands' to keys. 
 
-'help range for more information on range weapons.
+See Also: bind
+See Also: range
+See Also: invoke 
