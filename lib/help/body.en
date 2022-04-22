@@ -1,0 +1,26 @@
+Syntax:
+
+    body
+
+Displays three columns of information about the character's body and notable slots where equipment may be applied.
+
+The first column is the name of the body location.
+The second column is how many of those locations your body has.
+The third column is how many slots in that location are available.
+
+For example:
+
+on your arm                        2     0
+on your body                       1     0
+on your head                       1     0
+around your neck                   1     0
+in your skill slot                 1     0
+on your finger                     2     0
+around your shoulders              1     0
+on your feet                       2     2
+on your hands                      2     0
+around your wrists                 2     0
+around your waist                  1     0
+around your legs                   2     2
+
+From the example above, this character is NOT wearing anything on their feet (i.e., no boots) and not wearing anything on their legs (i.e, no pants).
