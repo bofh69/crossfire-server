@@ -1,3 +1,9 @@
 Usage: chat <something>
 
 Sends a message to all players on the server.
+
+NOTE: Dialog with NPCs, they will only use and respond to the say command, so make sure to reference that when interacting with them.
+
+See Also: say
+See Also: tell
+See Also: shout
