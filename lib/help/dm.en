@@ -1,0 +1,14 @@
+Usage:
+'dm <password>
+
+The command allows a player character to become a dungeon master. The server must be configured to allow the player to become a dungeon master or else the message "Sorry Pal, I don't think so." is displayed.
+
+Upon success, the server responds:
+The Dungeon Master has arrived!
+Ok, you are the Dungeon Master!
+
+All players in the game see a "The Dungeon Master has arrived!" message.
+
+See also: nodm
+See also: dmhide
+See also: dm_commands
