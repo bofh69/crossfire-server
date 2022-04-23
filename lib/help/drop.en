@@ -1,4 +1,4 @@
-The "drop" removes objets from the player's inventory and puts them on the floor or in an opened container.
+The "drop" removes objects from the player's inventory and puts them on the floor or in an opened container.
 
 Multiple formats are possible.
 
@@ -10,17 +10,17 @@ There are a few special name values:
 
     [color=#ff5500]all[/color]: matches any item.
     [color=#ff5500]unpaid[/color]: matches unpaid items
-    [color=#ff5500]cursed[/color]: drops items known to be cursed or damned.
+    [color=#ff5500]cursed[/color]: drops items known to be cursed or damned
     [color=#ff5500]unlocked[/color]: drops items not locked in your inventory
 
-[color=#aa007f]number[/color] is optional. This acts as the number of the object to drop. The objects number must be at least the number for it to be dropped. For example, if you do 'drop 10 scroll', only groupings of 10 or more scrolls will be dropped. A collection of 5 scrolls will not be dropped.
+[color=#aa007f]number[/color] is optional. This acts as the number of the object to drop. The object's number must be at least the number for it to be dropped. For example, if you do 'drop 10 scroll', only groupings of 10 or more scrolls will be dropped. A collection of 5 scrolls will not be dropped.
 
-[color=blue]drop *<item type>[/color]
+[color=blue]drop * <item type>[/color]
 
 Drop all items of the specified type. Types are the same as the "pickup" command.
 
-[color=blue]drop #<item index>[/color]
+[color=blue]drop # <item index>[/color]
 
 Drop the item at the specified index. Index 1 is the last item taken, and so on.
 
-See also 'dropall' and mouse button control within client for dropping objects.
+See also 'dropall' and mouse button control within the client for dropping objects.
