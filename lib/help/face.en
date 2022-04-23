@@ -1,1 +1,5 @@
-face <direction> changes the direction you are facing without taking any other action.
+Usage:
+
+  face <direction>
+
+The command face <direction> changes the direction you are facing without taking any other action
