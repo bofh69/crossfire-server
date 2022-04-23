@@ -1,7 +1,7 @@
-Empty will put all contents of specified container either on the ground or in your opened container.
+Empty will put all contents of the specified container either on the ground or in your opened container.
 
-Syntax: empty item
+  Syntax: empty <item>
 
-item should be a container.
+<item> should be a container.
 
-If "all" is specified, all containers are emptied.
+If "all" is specified (i.e., empty all), all containers are emptied.
