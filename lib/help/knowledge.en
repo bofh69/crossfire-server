@@ -2,7 +2,7 @@ Displays known relevant information.
 
 Without any parameter, displays this help text.
 
-With "knowledge list", you can see all you know. Additionnal parameter can restrict to a specific knowledge type, available types are:
+When using  "knowledge list", you can see all you know. An additional parameter can restrict the output to a specific knowledge type. The available types are:
 - alchemy
 - god
 - message
