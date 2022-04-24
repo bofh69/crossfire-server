@@ -257,12 +257,15 @@ void esrv_draw_look(object *pl) {
             break;
         }
 
-        if (QUERY_FLAG(tmp, FLAG_IS_FLOOR) && !last) {
-            last = tmp->below;  /* assumes double floor mode */
-            if (last && QUERY_FLAG(last, FLAG_IS_FLOOR))
-                last = last->below;
+        if (!QUERY_FLAG(pl, FLAG_WIZ)) {
+            // Unless DM, stop at the first floor or two consecutive floor objects.
+            if (QUERY_FLAG(tmp, FLAG_IS_FLOOR) && !last) {
+                last = tmp->below;  /* assumes double floor mode */
+                if (last && QUERY_FLAG(last, FLAG_IS_FLOOR))
+                    last = last->below;
+            }
         }
-        if (LOOK_OBJ(tmp)) {
+        if (QUERY_FLAG(pl, FLAG_WIZ) || LOOK_OBJ(tmp)) {
             if (start_look++ < pl->contr->socket.look_position)
                 continue;
             end_look++;
@@ -580,7 +583,7 @@ void esrv_del_item(player *pl, object *ob) {
  * for partial item matching or searching by tag.
  */
 bool player_can_find(object *op, object *ob) {
-    return !ob->invisible;
+    return QUERY_FLAG(op, FLAG_WIZ) || !ob->invisible;
 }
 
 /**
