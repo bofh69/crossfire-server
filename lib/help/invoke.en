@@ -12,4 +12,6 @@ It is very helpful to bind healing spells to keys like this:
 'bind invoke medium healing
 c
 
-the c key now casts medium healing instantly
+The c key now casts medium healing instantly
+
+See Also: cast
