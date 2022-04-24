@@ -1,7 +1,26 @@
-lock will lock an item in your inventory (it has to be unlocked to be dropped). If the item is already locked, it will unlock it instead.
+Toggle the lock status of an item inventory. Locked items cannot be accidentally dropped.
 
 Usage:
 	lock <item name>
 
 <item name> can be either all or part of an item's name. If multiple items could meet the partial name's criteria, the first one encountered will be selected.
 It should be noted that the first item encountered in inventory may not correspond to the first item listed in the inventory window.
+
+Locked items need to be unlocked in order to be dropped. Using the locked command a second time on the same item name will unlock the item.
+
+Locked items appear with an asterisk (*) next to the item in your inventory view.
+
+  shield *
+
+Specify the name of the item to lock or unlock as a parameter.
+
+lock
+  Lock what item?
+
+lock rucksack
+  Locked rucksack
+
+lock rucksack
+  Unlocked rucksack
+
+It is also possible to lock or unlock items by holding down the shift key and left-clicking with your mouse on the item or items in your inventory.
