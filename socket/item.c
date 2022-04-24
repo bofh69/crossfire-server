@@ -654,6 +654,9 @@ void examine_cmd(char *buf, int len, player *pl) {
         return;
     }
     examine(pl->ob, op);
+    if (QUERY_FLAG(pl->ob, FLAG_WIZ)) {
+        do_dump(pl->ob, op);
+    }
 }
 
 /** Client wants to apply some object.  Lets do so. */

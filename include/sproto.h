@@ -285,6 +285,7 @@ void command_purge_quest_definitions(object *op, const char *param);
 void command_dumpabove(object *op, const char *params);
 void command_dumpbelow(object *op, const char *params);
 void command_settings(object *op, const char *ignored);
+void do_dump(object *who, object *what);
 /* commands.c */
 void commands_init(void);
 void command_list(object *pl, bool is_dm);

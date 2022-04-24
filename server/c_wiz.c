@@ -2836,7 +2836,7 @@ void command_purge_quest_definitions(object *op, const char * param) {
     draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_ADMIN, MSG_TYPE_ADMIN_DM, "Purged quests definitions.");
 }
 
-static void do_dump(object *who, object *what) {
+void do_dump(object *who, object *what) {
     StringBuffer *sb;
     char *diff;
 
