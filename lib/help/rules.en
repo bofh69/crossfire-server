@@ -1,1 +1,4 @@
-rules displays the rules in effect on this server.
+The rules command will display the server rules file.
+
+See Also: news
+See Also: motd
