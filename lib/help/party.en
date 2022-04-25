@@ -1,32 +1,34 @@
-The 'party' command enables creation of adventurers groups.
+==== party ====
+
+The 'party' command enables the creation of adventurers groups.
 A group of adventurers shares gained experience between members and has a private communication channel. You can't be a member of multiple parties. Note that a party is not a guild.
 
-Party membership is not saved between sessions be default, but this behaviour may be changed through the 'party_rejoin' command.
+Party membership is not saved between sessions by default, but this behavior may be changed through the 'party_rejoin' command.
 
-party join partyname
+  party join <partyname>
 
-Puts you in a party, prompts you for a password if there is one.
+Puts you in a party, and prompts you for a password if there is one.
 
-party form partyname
+  party form <partyname>
 
-Forms a party and puts you as leader, 32 character max. At the moment, being party leader does nothing. May be used in the future.
+Forms a party and puts you as the leader, partyname has a maximum of 32 characters. At the moment, being a party leader does nothing. May be used in the future.
 
-party list
+  party list
 
 Lists currently formed parties and their 'leader'.
 
-party passwd <password>
+  party passwd <password>
 
-Changes the password for the party you are in, 8 character max.
+Changes the password for the party you are a member of, 8 character max.
 
-party who
+  party who
 
-Lists the members of the party you are in.
+List the members of the party you are in.
 
-party say <message>
+  party say <message>
 
-Sends message to party members.
+Sends a message to party members.
 
-party leave
+  party leave
 
-Takes you out of current party.
+Takes you out of the current party.
