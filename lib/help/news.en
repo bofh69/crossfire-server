@@ -1,1 +1,4 @@
-rules displays the server news.
+The news command will display the server news file.
+
+See Also: motd
+See Also: rules
