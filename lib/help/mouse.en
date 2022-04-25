@@ -1,7 +1,18 @@
-The mouse isn't a great way to move your character. It'll work, but you'll be handicapped unless you use the keyboard for this. However, the mouse has the following inventory uses:
 
-Middle button on item: apply or equip
+The mouse is one possible way to move your character. But is primarily used to interface with objects and items in the game.
 
-Right button: drop or pickup item on ground
+In the map view:
+  Left-click: shows what the distant object is by name  (i.e., sign or monster name)
+  Middle-click: use an active range attack such as fire arrows or cast a spell in the direction you click relative to your character
+  Right click on the map view and a yellow square will appear on the map, your character will attempt to move to that location by taking the shortest possible path.
+  Right click on a monster and your character will attack that monster
 
-Left button: info on item
+Also, the mouse has the following inventory uses:
+  Left button: identify or examine the item
+  Middle button on item: apply or equip or consume the item
+  Right button: drop the item(s) from your inventory to the ground or places the item(s) in an open or active container (i.e., pouch or chest or sack)
+
+The mouse has the following uses of items in the You see window:
+  Left button: identify or examine the item
+  Middle button: apply item (i.e., lever) if possible or applicable
+  Right button: picks up the item(s) and adds it to your inventory
