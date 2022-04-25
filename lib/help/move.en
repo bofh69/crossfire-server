@@ -4,12 +4,36 @@ These are the basic movement keys:
     h l
     bjn
 
-Running is done by holding control and move. Running is recommended.
+It is also possible to use the arrows keys to move, but that does not conveniently allow you to move diagonally (i.e., northwest, northeast, southwest, southeast)
 
-Firing the range weapon (help range) is done by holding shift and move.
+Numeric keypad:
 
-'help mouse  for help on what the mouse buttons do.
+  7 - northwest
+  8 - north
+  9 - northeast
+  4 - west
+  5 - not used
+  6 - east
+  1 - southwest
+  2 - south
+  3 - southeast
+
+Important Note: certain clients in combination with certain operating systems may require you to enable or disable NumLock in order to actively use the numeric keypad for movement.
+
+Generally, one direction key press is one step in that direction. This is good for slow and careful movement. But this does NOT work well for combat and for that you should use the run key.
+
+Running is done by holding the control (ctrl) key down, keeping it held down, and tapping a direction key once. Release the control key to stop running. Running is recommended - especially when attacking.
+
+Firing a ranged attack ('help range) such as a bow, crossbow, wand, staff, rod, throwing weapon, or spellcasting ('help cast) is done by holding down the shift key, keeping it held down, and tapping a direction key once to fire in that direction.
+
+'help mouse for help on what the mouse buttons do
 
 'help melee for advice on how to fight
 
 'help traps for help with finding and disarming traps
+
+See Also: range
+See Also: mouse
+See Also: melee
+See Also: traps
+See Also: cast
