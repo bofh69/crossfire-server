@@ -101,8 +101,21 @@ int move_ob(object *op, int dir, object *originator) {
         }
     }
 
+    // It is possible for op to be inanimate and not have a move type, e.g.
+    // when this function is called by check_spell_knockback(). In this case
+    // we need to give it a temporary move type so that object_remove() and
+    // object_insert_in_map_at() correctly trigger move_on events for this
+    // object.
+    MoveType old_move_type = op->move_type;
+    if (old_move_type == 0) {
+        op->move_type = MOVE_WALK; // triggers buttons and such
+    }
+
     object_remove(op);
     object_insert_in_map_at(op, op->map, originator, 0, op->x+freearr_x[dir], op->y+freearr_y[dir]);
+
+    // Restore original move type.
+    op->move_type = old_move_type;
 
     /* Hmmm.  Should be possible for multispace players now */
     if (op->type == PLAYER) {
