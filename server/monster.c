@@ -191,7 +191,7 @@ object *monster_find_nearest_living_creature(object *npc, object *exclude) {
             if (!creature) {
                 LOG(llevDebug, "monster_find_nearest_living_creature: map %s (%d,%d) has is_alive set but did not find a monster?\n", m->path, nx, ny);
             } else {
-                if (can_see_monsterP(m, nx, ny, i))
+                if (can_see_monsterP(m, npc->x, npc->y, i))
                     return creature;
             }
         } /* is something living on this space */
