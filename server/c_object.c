@@ -1667,7 +1667,7 @@ void examine_monster(object *op, object *tmp, int level) {
 
     if (level < 10)
         return;
-    knowledge_show_monster_detail(op, mon->arch->name);
+    knowledge_add_probe_monster(op, mon);
 
     if (level < 15)
         return;

@@ -1518,11 +1518,11 @@ void knowledge_process_incremental(void) {
 }
 
 /**
- * Display the details of a monster if the player knows them.
+ * Display monster details, then add to a player's knowledge if not already.
  * @param op player asking for details.
- * @param name monster's archetype name.
+ * @param mon monster
  */
-void knowledge_show_monster_detail(object *op, const char *name) {
+void knowledge_add_probe_monster(object *op, object *mon) {
     knowledge_player *kp;
     StringBuffer *buf = NULL;
     char *result;
@@ -1532,12 +1532,18 @@ void knowledge_show_monster_detail(object *op, const char *name) {
 
     kp = knowledge_get_or_create(op->contr);
 
-    if (!knowledge_known(kp, name, &knowledges[1]))
-        return;
-
     buf = stringbuffer_new();
-    knowledge_monster_detail(name, buf);
+    stringbuffer_append_printf(buf, " *** %s ***\n", mon->name);
+    describe_item(mon, NULL, 1, buf);
     result = stringbuffer_finish(buf);
     draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE, result);
     free(result);
+
+    /*
+     * TODO: Add to player's knowledge. This is disabled for now because the
+     * monster being probed could be custom, but when the player goes to query
+     * their knowledge they will only get information about the monster's
+     * archetype.
+    knowledge_add(kp, mon->name, &knowledges[1]);
+    */
 }
