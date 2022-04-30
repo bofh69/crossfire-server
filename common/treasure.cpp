@@ -811,25 +811,6 @@ static void set_ring_bonus(object *op, int bonus) {
 }
 
 /**
- * get_magic(diff) will return a random number between 0 and 4.
- * diff can be any value above 2.  The higher the diff-variable, the
- * higher is the chance of returning a low number.
- * It is only used in fix_generated_treasure() to set bonuses on
- * rings and amulets.
- * Another scheme is used to calculate the magic of weapons and armours.
- */
-static int get_magic(int diff) {
-    int i;
-
-    if (diff < 3)
-        diff = 3;
-    for (i = 0; i < 4; i++)
-        if (RANDOM()%diff)
-            return i;
-    return 4;
-}
-
-/**
  * Adjust trap difficulty to the map.
  * The default traps are too strong for wimpy level 1 players, and
  * unthreatening to anyone of high level
@@ -877,7 +858,20 @@ static void trap_adjust(object *trap, int difficulty) {
     }
 }
 
-#define DICE2 (get_magic(2) == 2 ? 2 : 1)
+#define DICE2 (dice2())
+
+/**
+ * Return true with a probability of a/b.
+ */
+bool chance(int a, int b) {
+    // Example: chance(2, 3). RANDOM%3 is 0, 1, or 2. 2/3 chance is the result < 2.
+    return RANDOM()%b < a;
+}
+
+static int dice2() {
+    return chance(2, 27) ? 2 : 1;
+}
+
 #define DICESPELL (RANDOM()%3+RANDOM()%3+RANDOM()%3+RANDOM()%3+RANDOM()%3)
 
 /**
