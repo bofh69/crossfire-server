@@ -100,7 +100,7 @@ object *pets_get_enemy(object *pet, rv_vector *rv) {
     get_search_arr(search_arr);
 
     if (owner->type == PLAYER && owner->contr->petmode == pet_sad) {
-        tmp = monster_find_nearest_living_creature(pet, owner);
+        tmp = monster_find_nearest_enemy(pet, owner);
         if (tmp != NULL && get_rangevector(pet, tmp, rv, 0))
             return tmp;
         /* if we got here we still have no enemy */

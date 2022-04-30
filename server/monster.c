@@ -131,28 +131,48 @@ object *monster_check_enemy(object *npc, rv_vector *rv) {
 }
 
 /**
- * Returns the nearest living creature (monster or generator).
- * Modified to deal with tiled maps properly.
- * Also fixed logic so that monsters in the lower directions were more
- * likely to be skipped - instead of just skipping the 'start' number
- * of direction, revisit them after looking at all the other spaces.
- *
- * Note that being this may skip some number of spaces, it will
- * not necessarily find the nearest living creature - it basically
- * chooses one from within a 3 space radius, and since it skips
- * the first few directions, it could very well choose something
- * 3 spaces away even though something directly north is closer.
- *
+ * Determine if an object can be considered an enemy.
+ * @param who
+ * who to consider, must not be NULL.
+ * @param owner
+ * potential owner of the object we're searching an enemy for.
+ * @return
+ * 1 if enemy, 0 else.
+ */
+static int is_enemy(object *who, object *owner) {
+    if (who == owner) {
+        return 0;
+    }
+    if (!QUERY_FLAG(who, FLAG_MONSTER) && !QUERY_FLAG(who, FLAG_GENERATOR) && who->type != PLAYER) {
+        return 0;
+    }
+    if (QUERY_FLAG(who, FLAG_MONSTER) && owner && object_get_owner(who) == owner) {
+        return 0;
+    }
+    if (who->type == PLAYER && owner && owner->type == PLAYER) {
+        if (owner->contr->peaceful && who->contr->peaceful) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+/**
+ * Returns the nearest enemy (monster or generator) which is visible to npc.
+ * Directions are randomized so if multiple monsters are at the same distance,
+ * the same won't always be selected.
  * This function is map tile aware.
  *
  * @param npc
  * monster to consider
- * @param exclude
- * don't attack this object, for instance the npc's owner
+ * @param owner
+ * if not NULL, then search will:
+ * - ignore peaceful players if owner is peaceful
+ * - ignore other monsters with the same owner
  * @return
- * living creature, or NULL if none found.
+ * enemy, or NULL if none found.
  */
-object *monster_find_nearest_living_creature(object *npc, object *exclude) {
+object *monster_find_nearest_enemy(object *npc, object *owner) {
     int i, mflags;
     int16_t nx, ny;
     mapstruct *m;
@@ -180,10 +200,7 @@ object *monster_find_nearest_living_creature(object *npc, object *exclude) {
 
             creature = NULL;
             FOR_MAP_PREPARE(m, nx, ny, tmp)
-                if ((tmp != exclude) &&
-                    (QUERY_FLAG(tmp, FLAG_MONSTER)
-                || QUERY_FLAG(tmp, FLAG_GENERATOR)
-                || tmp->type == PLAYER)) {
+                if (is_enemy(tmp, owner)) {
                     creature = tmp;
                     break;
                 }
@@ -222,7 +239,7 @@ static object *monster_find_enemy(object *npc, rv_vector *rv) {
 
     /* if we berserk, we don't care about others - we attack all we can find */
     if (QUERY_FLAG(npc, FLAG_BERSERK)) {
-        tmp = monster_find_nearest_living_creature(npc, NULL);
+        tmp = monster_find_nearest_enemy(npc, NULL);
         if (tmp == NULL)
             return NULL;
         if (!get_rangevector(npc, tmp, rv, 0))

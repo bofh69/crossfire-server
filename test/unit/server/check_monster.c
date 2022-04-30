@@ -33,16 +33,87 @@
 #include <stdlib.h>
 #include <check.h>
 
+#include <global.h>
+#include <sproto.h>
+#include <toolkit_common.h>
+
 void setup(void) {
-    /* put any initialisation steps here, they will be run before each testcase */
 }
 
 void teardown(void) {
-    /* put any cleanup steps here, they will be run after each testcase */
 }
 
-START_TEST(test_empty) {
-    /*TESTME test not yet developped*/
+START_TEST(test_monster_find_nearest_enemy) {
+    object *first, *second, *third, *owner, *found;
+    player pl;
+
+    // The function randomizes directions, so check 200 times to be safe.
+
+    memset(&pl, 0, sizeof(pl));
+
+    mapstruct *map = get_empty_map(3, 3);
+
+    first = create_archetype("kobold");
+    fail_unless(QUERY_FLAG(first, FLAG_MONSTER));
+    object_insert_in_map_at(first, map, NULL, 0, 1, 1);
+
+    for (uint8_t i = 0; i < 200; i++) {
+        fail_unless(monster_find_nearest_enemy(first, NULL) == NULL, "Found something when nothing?");
+    }
+
+    second = create_archetype("kobold");
+    object_insert_in_map_at(second, map, NULL, 0, 0, 1);
+    for (uint8_t i = 0; i < 200; i++) {
+        fail_unless(monster_find_nearest_enemy(first, NULL) == second, "Didn't find second monster?");
+    }
+
+    owner = create_archetype("dwarf_player");
+    owner->contr = &pl;
+    object_insert_in_map_at(owner, map, NULL, 0, 0, 0);
+    first->owner = owner;
+    first->ownercount = owner->count;
+    for (uint8_t i = 0; i < 200; i++) {
+        found = monster_find_nearest_enemy(first, owner);
+        fail_if(found == owner, "Found owner?");
+        fail_unless(found == second, "Should find second!");
+    }
+
+    second->owner = owner;
+    second->ownercount = owner->count;
+    for (uint8_t i = 0; i < 200; i++) {
+        found = monster_find_nearest_enemy(first, owner);
+        fail_if(found == owner, "Found owner?");
+        fail_unless(found == NULL, "Shouldn't find anything since both are pets");
+    }
+
+    pl.petmode = pet_sad;
+    for (uint8_t i = 0; i < 200; i++) {
+        found = monster_find_nearest_enemy(first, owner);
+        fail_unless(found == NULL, "Pets shouldn't attack other pets");
+    }
+
+    third = create_archetype("kobold");
+    object_insert_in_map_at(third, map, NULL, 0, 1, 0);
+    for (uint8_t i = 0; i < 200; i++) {
+        found = monster_find_nearest_enemy(first, owner);
+        fail_unless(found == third, "Should find third monster");
+    }
+
+    uint8_t co = 0, cs = 0, ct = 0;
+    for (uint16_t i = 0; i < 2000; i++) {
+        found = monster_find_nearest_enemy(first, NULL);
+        fail_unless(found, "Should find a target!");
+        if (found == owner) {
+            co++;
+        } else if (found == second) {
+            cs++;
+        } else {
+            ct++;
+        }
+    }
+    fail_unless(co != 0, "Should have found the owner");
+    fail_unless(cs != 0, "Should have found second");
+    fail_unless(ct != 0, "Should have found third");
 }
 END_TEST
 
@@ -54,15 +125,22 @@ Suite *monster_suite(void) {
     tcase_add_checked_fixture(tc_core, setup, teardown);
 
     suite_add_tcase(s, tc_core);
-    tcase_add_test(tc_core, test_empty);
+    tcase_add_test(tc_core, test_monster_find_nearest_enemy);
 
     return s;
 }
 
 int main(void) {
     int nf;
+
+    cctk_setdatadir(SOURCE_ROOT "lib");
+    init(0, NULL);
+
     Suite *s = monster_suite();
     SRunner *sr = srunner_create(s);
+
+    // Uncomment to debug
+    // srunner_set_fork_status(sr, CK_NOFORK);
 
     srunner_set_xml(sr, LOGDIR "/unit/server/monster.xml");
     srunner_set_log(sr, LOGDIR "/unit/server/monster.out");
