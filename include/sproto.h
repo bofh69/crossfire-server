@@ -9,18 +9,18 @@ int account_new(const char *account_name, const char *account_password);
 int account_link(const char *account_name, const char *player_name);
 int account_remove_player(const char *account_name, const char *player_name);
 char **account_get_players_for_account(const char *account_name);
-linked_char *account_get_additional_chars(const char *account_name, const Account_Char *chars, int *count);
+linked_char *account_get_additional_chars(const char *account_name, const Account_Chars *chars, int *count);
 const char *account_get_account_for_char(const char *charname);
 player *account_get_logged_in_player(const char *name);
 socket_struct *account_get_logged_in_init_socket(const char *name);
 int account_is_logged_in(const char *name);
 int account_change_password(const char *account_name, const char *current_password, const char *new_password);
 /* account_char.c */
-Account_Char *account_char_load(const char *account_name);
-void account_char_save(const char *account, Account_Char *chars);
-Account_Char *account_char_add(Account_Char *chars, player *pl);
-Account_Char *account_char_remove(Account_Char *chars, const char *pl_name);
-void account_char_free(Account_Char *chars);
+Account_Chars *account_char_load(const char *account_name);
+void account_char_save(Account_Chars *chars);
+void account_char_add(Account_Chars *chars, player *pl);
+void account_char_remove(Account_Chars *chars, const char *pl_name);
+void account_char_free(Account_Chars *chars);
 /* alchemy.c */
 int use_alchemy(object *op);
 /* apply.c */

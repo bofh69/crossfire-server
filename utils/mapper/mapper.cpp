@@ -3437,14 +3437,14 @@ player *find_player_partial_name(const char *) {
     return NULL;
 }
 
-Account_Char *account_char_load(const char *) {
+Account_Chars *account_char_load(const char *) {
     return NULL;
 }
 
-void account_char_save(const char *, Account_Char *) {
+void account_char_save(Account_Chars *) {
 }
 
-void account_char_free(Account_Char *) {
+void account_char_free(Account_Chars *) {
 }
 
 void command_help(object *, const char *) {

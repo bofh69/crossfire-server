@@ -7,7 +7,7 @@
 #define ACCOUNT_CHAR_H
 
 /**
- * One character account.
+ * One character in an account.
  */
 typedef struct account_char_struct {
     sstring name;             /** < Name of this character/player */
@@ -21,7 +21,17 @@ typedef struct account_char_struct {
     struct account_char_struct  *next;
 } Account_Char;
 
-Account_Char *account_char_remove(Account_Char *chars, const char *pl_name);
+/**
+ * Structure handling character information for an account.
+ * Its fields should never be modified directly.
+ */
+typedef struct account_chars_struct {
+    sstring account_name;   /**< Account the information is for. */
+    uint8_t ref_count;      /**< Number of pointers on this structure. */
+    Account_Char *chars;    /**< Characters of the account, in a linked list. */
+} Account_Chars;
+
+void account_char_remove(Account_Chars *chars, const char *pl_name);
 int make_perma_dead(object *op);
 int unmake_perma_dead(char *account, char *player);
 

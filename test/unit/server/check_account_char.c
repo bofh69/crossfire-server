@@ -28,10 +28,11 @@ static void teardown(void) {
  */
 START_TEST(test_account_char_add) {
     player *pl;
-    Account_Char *chars;
+    Account_Chars *chars;
     char path[MAX_BUF];
 
     pl =  calloc(1, sizeof(player));
+    chars = account_char_load("testaccount");
 
     /* The account_character code takes a player structure to
      * fill in the values, so we create a fake one here -
@@ -43,26 +44,26 @@ START_TEST(test_account_char_add) {
     pl->ob->contr = pl;
     strcpy(pl->maplevel, "test map");
 
-    chars = account_char_add(NULL, pl);
-    fail_unless(chars != NULL, "account_char_add returned NULL on initial character");
+    account_char_add(chars, pl);
+    fail_unless(chars->chars != NULL, "account_char_add returned NULL on initial character");
 
     pl->ob->level = 2;
-    chars = account_char_add(chars, pl);
-    fail_unless(chars != NULL, "account_char_add returned NULL on update character");
-    fail_unless(chars->next == NULL, "account_char_add added to list, not updated existing entry");
+    account_char_add(chars, pl);
+    fail_unless(chars->chars != NULL, "account_char_add returned NULL on update character");
+    fail_unless(chars->chars->next == NULL, "account_char_add added to list, not updated existing entry");
 
-    chars = account_char_remove(chars, pl->ob->name);
-    fail_unless(chars == NULL, "account_char_remove returned non NULL on final character removal");
+    account_char_remove(chars, pl->ob->name);
+    fail_unless(chars->chars == NULL, "account_char_remove returned non NULL on final character removal");
 
-    chars = account_char_add(NULL, pl);
-    fail_unless(chars != NULL, "account_char_add returned NULL on initial character");
+    account_char_add(chars, pl);
+    fail_unless(chars->chars != NULL, "account_char_add returned NULL on initial character");
 
     pl->ob->name = add_string("char 2");
     pl->party = party_form(pl->ob, "rockon");
 
-    chars = account_char_add(chars, pl);
-    fail_unless(chars != NULL, "account_char_add returned NULL on initial character");
-    fail_unless(chars->next != NULL, "account_char_add did not set next pointer!");
+    account_char_add(chars, pl);
+    fail_unless(chars->chars != NULL, "account_char_add returned NULL on initial character");
+    fail_unless(chars->chars->next != NULL, "account_char_add did not set next pointer!");
 
     sprintf(path,"%s/account", settings.localdir);
     mkdir(path, S_IRWXU);
@@ -70,7 +71,7 @@ START_TEST(test_account_char_add) {
     /* This does not return anything, but this at least checks for
      * core dumps, etc
      */
-    account_char_save("testaccount", chars);
+    account_char_save(chars);
 
     /* Like above, this returns nothing but does check for core dumps */
     account_char_free(chars);
@@ -81,47 +82,61 @@ END_TEST
  * we use that knowledge to check for proper existence accounts, etc.
  */
 START_TEST(test_account_char_load) {
-    Account_Char *chars;
+    Account_Chars *chars;
     object *ob = create_archetype("human_player");
 
     chars = account_char_load("testaccount");
     fail_unless(chars != NULL, "account_char_load returned NULL");
+    fail_unless(chars->chars != NULL, "account_char_load didn't load the file");
 
     /* As of now, the account order is in FIFO order */
 
-    fail_unless(!strcmp(chars->name, "test character"),
+    fail_unless(!strcmp(chars->chars->name, "test character"),
                 "Name for first character is not test char");
 
-    fail_unless(!strcmp(chars->race, ob->race),
+    fail_unless(!strcmp(chars->chars->race, ob->race),
                 "Race for first character does not match");
 
-    fail_unless(chars->level == 2,
+    fail_unless(chars->chars->level == 2,
                 "Level for first character is not 2");
 
-    fail_unless(!strcmp(chars->face, ob->face->name),
+    fail_unless(!strcmp(chars->chars->face, ob->face->name),
                 "Face for first character does not match");
 
-    fail_unless(chars->party[0] == 0,
+    fail_unless(chars->chars->party[0] == 0,
                 "Party for first character is not blank");
 
-    fail_unless(!strcmp(chars->map, "test map"),
+    fail_unless(!strcmp(chars->chars->map, "test map"),
                 "Map for first character does not match");
 
-    fail_unless(chars->next != NULL, "account_char_load only loaded one character");
+    fail_unless(chars->chars->next != NULL, "account_char_load only loaded one character");
 
     /* The presumption here is that if it loaded the first entry
      * successfully, so it should the second, but we do check for the fields
      * which are different.
      */
-    chars = chars->next;
 
-    fail_unless(!strcmp(chars->name, "char 2"),
+    fail_unless(!strcmp(chars->chars->next->name, "char 2"),
                 "Name for second character does not match");
 
-    fail_unless(!strcmp(chars->party, "rockon"),
+    fail_unless(!strcmp(chars->chars->next->party, "rockon"),
                 "Party for second character does not match");
+
+    account_char_free(chars);
 }
 
+END_TEST
+
+START_TEST(test_account_char_load_duplicate) {
+    Account_Chars *first, *second;
+
+    first = account_char_load("dummy");
+    second = account_char_load("dummy");
+    fail_unless(first == second, "account_char_load should return the same structure for the same name");
+
+    account_char_free(first);
+    account_char_free(second);
+}
 END_TEST
 
 static Suite *account_suite(void) {
@@ -134,6 +149,7 @@ static Suite *account_suite(void) {
     suite_add_tcase(s, tc_core);
     tcase_add_test(tc_core, test_account_char_add);
     tcase_add_test(tc_core, test_account_char_load);
+    tcase_add_test(tc_core, test_account_char_load_duplicate);
 
     return s;
 }

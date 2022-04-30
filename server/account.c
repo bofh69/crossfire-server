@@ -556,14 +556,14 @@ static int char_in_list(const char *name, const Account_Char *chars) {
  * @param[out] count will be incremented by the number of items returned. Not initialized before use.
  * @return list of character names not in chars, the caller should free it after use.
  */
-linked_char *account_get_additional_chars(const char *account_name, const Account_Char *chars, int *count) {
+linked_char *account_get_additional_chars(const char *account_name, const Account_Chars *chars, int *count) {
     account_struct *ac;
     linked_char *ret = NULL;
 
     for (ac = accounts; ac; ac = ac->next) {
         if (!strcasecmp(ac->name, account_name)) {
             for (int i = 0; i < ac->num_characters; i++) {
-                if (!char_in_list(ac->character_names[i], chars)) {
+                if (!char_in_list(ac->character_names[i], chars->chars)) {
                     linked_char *lc = (linked_char *)calloc(1, sizeof(linked_char));
                     lc->next = ret;
                     lc->name = ac->character_names[i];

@@ -48,6 +48,8 @@ START_TEST(test_skills) {
 	object *ob_inv;
 	socket_struct ns;
 
+        ns.account_chars = NULL;
+
 	race_arch = find_archetype("halfling_player");
 	fail_unless(race_arch != NULL, "Cannot find halfing arch to test on.");
 

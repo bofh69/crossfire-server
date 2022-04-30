@@ -124,7 +124,7 @@ typedef struct socket_struct {
                                              Can be set through "num_look_objects" setup option;
                                              defaults to DEFAULT_NUM_LOOK_OBJECTS. */
     char    *account_name;              /**< Name of the account logged in on this socket */
-    Account_Char    *account_chars;     /**< Detailed information on characters on this account */
+    Account_Chars   *account_chars;     /**< Detailed information on characters on this account */
     uint8_t login_method;   /**< Login method this client is using */
     uint16_t notifications; /**< Notifications this client wants to get. */
     uint32_t last_tick;     /**< Number of ticks since last communication. */

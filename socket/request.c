@@ -1985,6 +1985,9 @@ void send_account_players(socket_struct *ns)
     int num_chars;
     linked_char *extra;
 
+    if (ns->account_chars) {
+        account_char_free(ns->account_chars);
+    }
     ns->account_chars = account_char_load(ns->account_name);
 
     num_chars = 0;
@@ -1993,14 +1996,14 @@ void send_account_players(socket_struct *ns)
     SockList_Init(&sl);
     SockList_AddString(&sl, "accountplayers ");
 
-    for (acn = ns->account_chars; acn; acn = acn->next) {
+    for (acn = ns->account_chars->chars; acn; acn = acn->next) {
         num_chars++;
     }
 
     SockList_AddChar(&sl, num_chars);
 
     /* Now add real character data */
-    for (acn = ns->account_chars; acn; acn = acn->next) {
+    for (acn = ns->account_chars->chars; acn; acn = acn->next) {
         uint16_t faceno = 0;
 
         /* Ignore a dead character. They don't need to show up. */
@@ -2143,34 +2146,6 @@ void account_login_cmd(char *buf, int len, socket_struct *ns) {
 
     if (account_login(name, password)) {
         LOG(llevInfo, "Account login for '%s' from %s\n", name, ns->host);
-        player *pl;
-        socket_struct *tns;
-
-        /* Checking against init_sockets must be done before
-         * we set ns->account - otherwise we will match
-         * that.  What we are doing here is limiting the account
-         * to only one login.
-         */
-        tns = account_get_logged_in_init_socket(name);
-        /* Other code will clean this up.  We could try to
-         * set the same state this other socket is in, but we
-         * really don't know what that state is, and then
-         * we would have to try to communicate that to the client
-         * so it can activate the right dialogs.  Simpler to
-         * just go to a known state.
-         */
-        if (tns && tns != ns)
-            tns->status = Ns_Dead;
-
-        /* Same note as above applies - it can be simpler in
-         * this case - we could check against the ST_PLAYING
-         * value, but right now we don't have a method to
-         * tell the client to go directly from login to playing.
-         */
-        pl = account_get_logged_in_player(name);
-        if (pl)
-            pl->socket.status = Ns_Dead;
-
 
         if (ns->account_name) free(ns->account_name);
         /* We want to store away official name so we do not
@@ -2458,19 +2433,19 @@ void account_add_player_cmd(char *buf, int len, socket_struct *ns) {
      * account.  Remove it now.
      */
     if (cp) {
-        Account_Char *chars;
+        Account_Chars *chars;
 
         account_remove_player(cp, name);
         chars = account_char_load(cp);
-        chars=account_char_remove(chars, name);
-        account_char_save(cp, chars);
+        account_char_remove(chars, name);
+        account_char_save(chars);
         account_char_free(chars);
     }
 
     send_account_players(ns);
 
     /* store data so nothing is lost in case of crash */
-    account_char_save(ns->account_name, ns->account_chars);
+    account_char_save(ns->account_chars);
 }
 
 /**
@@ -2526,6 +2501,17 @@ void account_play_cmd(char *buf, int len, socket_struct *ns)
         Send_With_Handling(ns, &sl);
         SockList_Term(&sl);
         return;
+    }
+
+    for (pl = first_player; pl; pl = pl->next) {
+        if (pl->ob && strcmp(buf, pl->ob->name) == 0) {
+            SockList_AddPrintf(&sl,
+                               "failure accountplay Character %s is already playing",
+                               buf);
+            Send_With_Handling(ns, &sl);
+            SockList_Term(&sl);
+            return;
+        }
     }
 
     /* from a protocol standpoint, accountplay can be used
