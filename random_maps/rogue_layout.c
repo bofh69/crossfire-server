@@ -125,7 +125,7 @@ static int roguelike_place_room(Room *Rooms, int xsize, int ysize) {
  * where to write to.
  */
 static void roguelike_make_rooms(Room *Rooms, char **maze) {
-    int making_circle = 0;
+    int making_circle = RANDOM() % 2;
     int i, j;
     int R;
     Room *walk;
