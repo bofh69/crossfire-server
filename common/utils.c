@@ -316,23 +316,6 @@ void set_materialname(object *op) {
     }
 }
 
-/**
- * Finds a string in a string.
- *
- * @todo
- * isn't there another function (porting.c?) for that?
- */
-const char *strrstr(const char *haystack, const char *needle) {
-    const char *lastneedle;
-
-    lastneedle = NULL;
-    while ((haystack = strstr(haystack, needle)) != NULL) {
-        lastneedle = haystack;
-        haystack++;
-    }
-    return lastneedle;
-}
-
 #define EOL_SIZE (sizeof("\n")-1)
 
 /**

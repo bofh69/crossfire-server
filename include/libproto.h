@@ -451,7 +451,6 @@ extern void decay_objects(mapstruct *m);
 extern materialtype_t *name_to_material(const char *name);
 extern void transmute_materialname(object *op, const object *change);
 extern void set_materialname(object *op);
-extern const char *strrstr(const char *haystack, const char *needle);
 extern void strip_endline(char *buf);
 extern void replace(const char *src, const char *key, const char *replacement, char *result, size_t resultsize);
 extern void make_list_like(char *input);
