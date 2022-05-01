@@ -292,7 +292,6 @@ extern int object_find_multi_free_spot_within_radius(const object *ob, const obj
 extern int object_find_free_spot(const object *ob, mapstruct *m, int x, int y, int start, int stop);
 extern int object_find_first_free_spot(const object *ob, mapstruct *m, int x, int y);
 extern void get_search_arr(int *search_arr);
-extern int map_find_dir(mapstruct *m, int x, int y, object *exclude);
 extern int object_distance(const object *ob1, const object *ob2);
 extern int find_dir_2(int x, int y);
 extern int absdir(int d);

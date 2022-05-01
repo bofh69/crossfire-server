@@ -3603,64 +3603,6 @@ void get_search_arr(int *search_arr) {
 }
 
 /**
- * Search some close squares in the given map at the given coordinates for live objects.
- *
- * @param m
- * @param x
- * @param y
- * origin from which to search.
- * @param exclude
- * an object that will be ignored. Can be NULL.
- * @return
- * direction toward the first/closest live object if it finds any, otherwise 0.
- *
- * @note
- * Perhaps incorrectly, but I'm making the assumption that exclude
- * is actually want is going to try and move there.  We need this info
- * because we have to know what movement the thing looking to move
- * there is capable of.
- */
-int map_find_dir(mapstruct *m, int x, int y, object *exclude) {
-    int i, max = SIZEOFFREE, mflags;
-    int16_t nx, ny;
-    mapstruct *mp;
-    MoveType blocked, move_type;
-
-    if (exclude && exclude->head) {
-        exclude = exclude->head;
-        move_type = exclude->move_type;
-    } else {
-        /* If we don't have anything, presume it can use all movement types. */
-        move_type = MOVE_ALL;
-    }
-
-    for (i = 1; i < max; i++) {
-        mp = m;
-        nx = x+freearr_x[i];
-        ny = y+freearr_y[i];
-
-        mflags = get_map_flags(m, &mp, nx, ny, &nx, &ny);
-        if (mflags&P_OUT_OF_MAP) {
-            max = maxfree[i];
-        } else {
-            blocked = GET_MAP_MOVE_BLOCK(mp, nx, ny);
-
-            if ((move_type&blocked) == move_type) {
-                max = maxfree[i];
-            } else if (mflags&P_IS_ALIVE) {
-                FOR_MAP_PREPARE(mp, nx, ny, tmp) {
-                    if ((QUERY_FLAG(tmp, FLAG_MONSTER) || tmp->type == PLAYER)
-                    && (tmp != exclude || (tmp->head && tmp->head != exclude))) {
-                        return freedir[i];
-                    }
-                } FOR_MAP_FINISH();
-            }
-        }
-    }
-    return 0;
-}
-
-/**
  * Return the square of the distance between the two given objects.
  *
  * @param ob1

@@ -81,7 +81,6 @@ static void teardown(void) {
  * object_find_free_spot
  * object_find_first_free_spot
  * get_search_arr
- * map_find_dir
  * object_distance
  * find_dir_2
  * absdir
@@ -1040,14 +1039,6 @@ START_TEST(test_get_search_arr) {
 END_TEST
 
 /** This is the test to check the behaviour of the method
- *  int map_find_dir(mapstruct *m, int x, int y, object *exclude);
- */
-START_TEST(test_map_find_dir) {
-    /*TESTME*/
-}
-END_TEST
-
-/** This is the test to check the behaviour of the method
  *  int object_distance(const object *ob1, const object *ob2);
  */
 START_TEST(test_object_distance) {
@@ -1238,7 +1229,6 @@ static Suite *object_suite(void) {
     tcase_add_test(tc_core, test_object_find_free_spot);
     tcase_add_test(tc_core, test_object_find_first_free_spot);
     tcase_add_test(tc_core, test_get_search_arr);
-    tcase_add_test(tc_core, test_map_find_dir);
     tcase_add_test(tc_core, test_object_distance);
     tcase_add_test(tc_core, test_find_dir_2);
     tcase_add_test(tc_core, test_absdir);
