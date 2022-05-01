@@ -1276,10 +1276,10 @@ static void init_beforeplay(void) {
  * @todo describe forbid_play() and such restrictions.
  */
 static void init_startup(void) {
+#ifdef SHUTDOWN_FILE
     char buf[MAX_BUF];
     FILE *fp;
 
-#ifdef SHUTDOWN_FILE
     snprintf(buf, sizeof(buf), "%s/%s", settings.confdir, SHUTDOWN_FILE);
     if ((fp = fopen(buf, "r")) != NULL) {
         while (fgets(buf, MAX_BUF-1, fp) != NULL)
