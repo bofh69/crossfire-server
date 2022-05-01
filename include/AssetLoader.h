@@ -19,7 +19,7 @@
 
 /**
  * Abstract buffer handler, processing a BufferReader.
- * Inherited classes must implement load().
+ * Inherited classes must implement load() and willLoad().
  */
 class AssetLoader {
 public:
@@ -35,7 +35,7 @@ public:
     virtual bool willLoad(const std::string &filename) = 0;
 
     /**
-     * Load assets from the specified reader. Must be implemented.
+     * Load assets from the specified reader.
      * @param reader reader.
      * @param filename full filename.
      */
