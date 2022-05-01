@@ -193,7 +193,6 @@ static void create_one_treasure(treasurelist *tl, object *op, int flag, int diff
     if (!t || value >= 0) {
         LOG(llevError, "create_one_treasure: got null object or not able to find treasure\n");
         abort();
-        return;
     }
     if (t->name) {
         if (!strcmp(t->name, "NONE"))
