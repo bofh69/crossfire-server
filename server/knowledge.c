@@ -1523,14 +1523,11 @@ void knowledge_process_incremental(void) {
  * @param mon monster
  */
 void knowledge_add_probe_monster(object *op, object *mon) {
-    knowledge_player *kp;
     StringBuffer *buf = NULL;
     char *result;
 
     if (op->contr == NULL)
         return;
-
-    kp = knowledge_get_or_create(op->contr);
 
     buf = stringbuffer_new();
     stringbuffer_append_printf(buf, " *** %s ***\n", mon->name);
@@ -1544,6 +1541,8 @@ void knowledge_add_probe_monster(object *op, object *mon) {
      * monster being probed could be custom, but when the player goes to query
      * their knowledge they will only get information about the monster's
      * archetype.
+    knowledge_player *kp;
+    kp = knowledge_get_or_create(op->contr);
     knowledge_add(kp, mon->name, &knowledges[1]);
     */
 }
