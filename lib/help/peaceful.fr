@@ -5,3 +5,5 @@ En mode pacifique, votre personnage n'attaquera pas automatiquement les autres j
 Le mode hostile active la possibilité de combattre les autres joueurs au corps-à-corps (foncez dessus comme pour un monstre) et infligera des dégats normaux aux autres joueurs.
 
 Notez que les dégats infligés par des sorts affectant une zone entière ou à retardement comme les cônes, les boules de feu, les runes ou les maladies ne voient pas leurs effets modifiés par le mode pacifique/hostile.
+
+Vos familiers en mode SAD n'attaqueront pas un autre joueur si vous êtes tous deux pacifiques.

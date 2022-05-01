@@ -10,7 +10,7 @@ The options are:
 
   Normal: As you would expect.
 
-  SAD (Search and Destroy): Pets will roam and seek out things to attack.
+  SAD (Search and Destroy): Pets will roam and seek out things to attack. They will not attack another player unless you or this other player is not peaceful.
 
   Defend:  Pets will try to stay close and defend you.
 
