@@ -733,6 +733,9 @@ void enter_exit(object *op, object *exit_ob) {
     if (op->type != PLAYER)
         return;
 
+    assert(exit_ob != NULL);
+    assert(EXIT_PATH(exit_ob) != NULL);
+
     /* Don't word-of-recall out of a shop */
     if ( exit_ob->subtype == SP_WORD_OF_RECALL ) {
         /* Scan inventory for unpaid objects */
@@ -752,9 +755,6 @@ void enter_exit(object *op, object *exit_ob) {
     /* Need to remove player from transport */
     if (op->contr->transport)
         ob_apply(op->contr->transport, op, AP_UNAPPLY);
-
-    assert(exit_ob != NULL);
-    assert(EXIT_PATH(exit_ob) != NULL);
 
     /* check to see if we make a template map
      * Template maps have an EXIT_PATH in the form:
