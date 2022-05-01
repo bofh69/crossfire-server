@@ -286,7 +286,7 @@ void init_server(void) {
 #  ifdef HAVE_GETDTABLESIZE
     socket_info.max_filedescriptor = getdtablesize();
 #  else
-    "Unable to find usable function to get max filedescriptors";
+#error "Unable to find usable function to get max filedescriptors"
 #  endif
 #endif
 #endif /* win32 */
