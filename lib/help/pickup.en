@@ -1,4 +1,6 @@
-'pickup' changes how you pick up items when you step on them. To pickup an item manually, use the ',' key.
+The pickup command changes how you pick up items when you step on them.
+
+To pickup items manually, use the ',' (comma) key, or see the player commands get or take.
 
 [color=#ff5500]Mode 0[/color]: Don't pick up items.
 [color=#ff5500]Mode 1[/color]: Pick up one item
@@ -51,3 +53,6 @@ Valid types are:
 - [color=#ff5500]cursed[/color]
 
 Three options are possible for the first character: [color=#ff5500]+[/color] will make you pick the item type, [color=#ff5500]-[/color] will make you stop picking the item type and [color=#ff5500]![/color] will toggle the pick mode.
+
+See Also: get
+See Also: take
