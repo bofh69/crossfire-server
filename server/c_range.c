@@ -52,19 +52,6 @@ void command_cast(object *op, const char *params) {
 }
 
 /**
- * Equivalent to command_cast().
- *
- * @param op
- * player.
- * @param params
- * spell.
- * @todo remove.
- */
-void command_prepare(object *op, const char *params) {
-    command_cast_spell(op, params, 'p');
-}
-
-/**
  * Shows all spells that op knows.
  *
  * Given there is more than one skill, we can't supply break
