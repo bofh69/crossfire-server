@@ -727,7 +727,9 @@ int book_overflow(const char *buf1, const char *buf2, size_t booksize) {
  */
 static void init_book_archive(void) {
     FILE *fp;
+#ifdef BOOK_MSG_DEBUG
     int nroftitle = 0;
+#endif
     char buf[MAX_BUF], fname[MAX_BUF], *cp;
     static int did_init_barch = 0;
 
@@ -778,7 +780,9 @@ static void init_book_archive(void) {
                     book = get_empty_book();   /* init new book entry */
                     book->name = add_string(cp);
                     type = -1;
+#ifdef BOOK_MSG_DEBUG
                     nroftitle++;
+#endif
                 }
             } else if (book == NULL) {
                 if (!skipping) {
