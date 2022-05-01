@@ -41,7 +41,6 @@
 
 static int compare_ob_value_lists_one(const object *, const object *);
 static int compare_ob_value_lists(const object *, const object *);
-static void expand_objects(void);
 static void permute(int *, int, int);
 static int object_set_value_s(object *, const char *, const char *, int);
 static void object_increase_nrof(object *op, uint32_t i);
@@ -1191,6 +1190,7 @@ void object_copy_with_inv(const object *src_ob, object *dest_ob) {
     } FOR_INV_FINISH();
 }
 
+#ifndef MEMORY_DEBUG
 /**
  * Allocates more objects for the list of unused objects.
  *
@@ -1226,6 +1226,7 @@ static void expand_objects(void) {
     nrofallocobjects += OBJ_EXPAND;
     nroffreeobjects += OBJ_EXPAND;
 }
+#endif
 
 /**
  * Grabs an object from the list of unused objects, makes
