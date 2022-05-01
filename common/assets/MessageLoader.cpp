@@ -86,7 +86,7 @@ void MessageLoader::load(BufferReader *reader, const std::string &filename) {
             tmp->face = NULL;
             if (buf[3] == ' ') {
                 int i = 4;
-                while (buf[i] == ' ' && buf[i] != '\0')
+                while (buf[i] == ' ')
                     i++;
                 if (buf[i] != '\0') {
                     tmp->identifier = add_string(buf + i);
