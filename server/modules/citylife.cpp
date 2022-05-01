@@ -50,6 +50,7 @@
 #include <string>
 
 extern "C" {
+#include <assert.h>
 #include "global.h"
 #include "object.h"
 #include "sproto.h"
@@ -264,6 +265,9 @@ static int eventListener(int *type, ...) {
     va_arg(args, talk_info *);
     va_end(args);
 
+    assert(who);
+    assert(event);
+
     if (event->subtype == EVENT_ATTACKED) {
         LOG(llevInfo, "citylife: %s attacked, reverting to default behaviour\n", who->name);
         object *th = object_find_by_type_subtype(who, EVENT_CONNECTOR, EVENT_TIME);
@@ -283,10 +287,8 @@ static int eventListener(int *type, ...) {
          * since we do set the key each time.
          * So play it safe and totally remove the event.
          */
-        if (event) {
-            LOG(llevInfo, "citylife: removing event from object %s which we didn't generate\n", who->name);
-            object_remove(event);
-        }
+        LOG(llevInfo, "citylife: removing event from object %s which we didn't generate\n", who->name);
+        object_remove(event);
         return 1;
     }
     // Set the flag regardless of whether we tried to move through an exit
