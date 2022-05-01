@@ -836,28 +836,3 @@ void check_inv(object *op, object *trig) {
     } else if (!match && !trig->last_sp)
         use_trigger(trig);
 }
-
-/**
- * This does a minimal check of the button link consistency for object
- * map.  All it really does it much sure the object id link that is set
- * matches what the object has.
- *
- * Will log to error level.
- *
- * @param map
- * map to check.
- */
-void verify_button_links(const mapstruct *map) {
-    oblinkpt *obp;
-    objectlink *ol;
-
-    if (!map)
-        return;
-
-    for (obp = map->buttons; obp; obp = obp->next) {
-        for (ol = obp->link; ol; ol = ol->next) {
-            if (ol->id != ol->ob->count)
-                LOG(llevError, "verify_button_links: object %s on list is corrupt (%u!=%u)\n", ol->ob->name, ol->id, ol->ob->count);
-        }
-    }
-}

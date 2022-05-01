@@ -60,7 +60,6 @@ extern void remove_button_link(object *op);
 extern int get_button_value(const object *button);
 extern object *check_inv_recursive(object *op, const object *trig);
 extern void check_inv(object *op, object *trig);
-extern void verify_button_links(const mapstruct *map);
 /* dialog.c */
 extern void free_dialog_information(object *op);
 extern int get_dialog_message(object *op, const char *text, struct_dialog_message **message, struct_dialog_reply **reply);
