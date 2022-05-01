@@ -66,6 +66,7 @@ artifact *get_empty_artifact(void) {
     return t;
 }
 
+#ifdef MEMORY_DEBUG
 /**
  * Totally frees an artifact, its next items, and such.
  *
@@ -124,6 +125,7 @@ void free_all_artifacts(void) {
     free_artifactlist(first_artifactlist);
     first_artifactlist = NULL;
 }
+#endif
 
 /** Give 1 re-roll attempt per artifact */
 #define ARTIFACT_TRIES 2
