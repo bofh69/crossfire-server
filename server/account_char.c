@@ -159,6 +159,10 @@ Account_Chars *account_char_load(const char *account_name) {
     if (chars_loaded_count == chars_loaded_allocated) {
         chars_loaded_allocated += 10;
         chars_loaded = realloc(chars_loaded, chars_loaded_allocated * sizeof(chars_loaded[0]));
+        if (!chars_loaded) {
+            LOG(llevError, "Out of memory allocating %d account chars\n", chars_loaded_allocated);
+            fatal(OUT_OF_MEMORY);
+        }
     }
     chars_loaded[chars_loaded_count] = ac;
     chars_loaded_count++;
