@@ -1,6 +1,7 @@
 ==== party ====
 
-The 'party' command enables the creation of adventurers groups.
+The 'party' command enables the creation of adventurer groups.
+
 A group of adventurers shares gained experience between members and has a private communication channel. You can't be a member of multiple parties. Note that a party is not a guild.
 
 Party membership is not saved between sessions by default, but this behavior may be changed through the 'party_rejoin' command.
@@ -27,7 +28,7 @@ List the members of the party you are in.
 
   party say <message>
 
-Sends a message to party members.
+Sends the message to party members.
 
   party leave
 
