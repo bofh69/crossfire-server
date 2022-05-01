@@ -723,7 +723,7 @@ void load_objects(mapstruct *m, FILE *fp, int mapflags) {
  * one of @ref SAVE_ERROR_xxx "SAVE_ERROR_xxx" value.
  */
 int save_objects(mapstruct *m, FILE *fp, FILE *fp2, int flag) {
-    int i, j = 0, unique = 0, res = 0;
+    int i, j = 0, unique = 0;
     unsigned int count = 0;
 
     StringBuffer *sb = stringbuffer_new();
@@ -756,9 +756,6 @@ int save_objects(mapstruct *m, FILE *fp, FILE *fp2, int flag) {
                         save_object_in_sb(sb, op, SAVE_FLAG_SAVE_UNPAID|SAVE_FLAG_NO_REMOVE);
                         count++;
                 }
-
-                if (res != 0)
-                    return res;
             } FOR_MAP_FINISH(); /* for this space */
         } /* for this j */
     }
