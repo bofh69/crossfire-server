@@ -1,11 +1,17 @@
 Petmode controls how your pets (charmed monsters) will behave.
 
+Usage
+  petmode normal
+  petmode sad
+  petmode defend
+  petmode arena
+
 The options are:
 
-Normal: As you would expect.
+  Normal: As you would expect.
 
-SAD (Search and Destroy): Pets will roam and seek out things to attack.
+  SAD (Search and Destroy): Pets will roam and seek out things to attack.
 
-Defend:  Pets will try to stay close and defend you.
+  Defend:  Pets will try to stay close and defend you.
 
-Arena: As normal, except that pets will attack other players in the arena.
+  Arena: As normal, except that pets will attack other players in the arena.
