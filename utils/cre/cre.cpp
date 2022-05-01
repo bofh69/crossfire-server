@@ -20,10 +20,16 @@ extern "C" {
 #endif
 
 int main(int argc, char **argv) {
+
     QCoreApplication::setOrganizationName("The Legendary Team of Ailesse");
     QCoreApplication::setApplicationName("CRE");
     QApplication app(argc, argv);
     app.setWindowIcon(QIcon(":resources/app_icon.png"));
+
+    QSplashScreen *splash = new QSplashScreen(QPixmap(":/resources/crossfirebanner.png"));
+    splash->showMessage("Initializing CRE...", Qt::AlignCenter);
+    splash->show();
+    app.processEvents();
 
     qRegisterMetaTypeStreamOperators<CREFilterDefinition>("CREFilterDefinition");
     qRegisterMetaTypeStreamOperators<CREFilterDefinitionManager>("CREFilterDefinitionManager");
@@ -65,7 +71,10 @@ int main(int argc, char **argv) {
 
     CREPixmap::init();
 
+    splash->finish(&win);
     win.show();
+
+    delete splash;
 
     return app.exec();
 }
