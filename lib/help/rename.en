@@ -1,12 +1,29 @@
-Changes the custom name of an item.
+The rename command gives a custom name to the specified item in your inventory.
+
 Syntax:
 
     rename <item name> to <new name>
 
 (Note: <> are mandatory)
 
-If '<item name>' is omitted, defaults to marked item.
+Example:
+  rename <shield> to <defense2>
+  Your shield will now be called defense2
 
-If 'to <new name>' is omitted, clears the custom name.
+If '<item name>' is omitted, the rename command defaults to the marked item.
 
-Note: maximum allowed name length is 127 characters.
+Example:
+  (mark the recently renamed shield called defense2 in your inventory)
+  rename to <defense3>
+  Your shield will now be called defense3
+
+If 'to <new name>' is omitted, the rename command clears the custom name.
+
+Example:
+  rename <defense3>
+  You stop calling your shield with weird names.
+  (The item is now shown as shield in your inventory again)
+
+Note: maximum allowed name length is for the new name is 127 characters.
+
+See Also: mark
