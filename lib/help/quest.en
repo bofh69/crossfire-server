@@ -1,4 +1,9 @@
-Quest displays quest-related information.
+The quest command displays quest-related information.
+
+Usage:
+ quest list
+ quest list all
+ quest info
 
 Available sub-commands:
 
