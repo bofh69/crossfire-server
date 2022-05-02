@@ -1,6 +1,49 @@
-rotateshoottype switches your active attack mode (skill, ranged weapon, or spell).
+The command allows your character to cycle through all ranged attacks that are readied.
 
 Usage:
+  rotateshoottype
+  rotateshoottype -
+  rotateshoottype +
+  rotateshoottype [number]
+
+
+For instance, if a spell has been prepared (cast), a bow equipped, a rod readied, etc., then rotateshoottype cycles through them to select which one will will be used when the player fires an attack.
+
+  apply bow
+    Readied skill: missile weapons.
+    You ready bow (readied).
+    You feel one with the powers of magic!
+    You will now fire arrows with bow (readied).
+  apply rod
+    You can no longer use the skill: missile weapons.
+    Readied skill: use magic item.
+    You ready rod of sunspear (lvl 57) * (readied).
+  cast magic missile
+    You can no longer use the skill: use magic item.
+    You ready talisman of sorcery *.
+    You can now use the skill: sorcery.
+    You ready the spell magic missile
+  rotateshoottype
+    Switched to rod of sunspear (lvl 57).
+  rotateshoottype
+    Switched to skill: talisman
+  rotateshoottype
+    No ranged attack chosen.
+  rotateshoottype
+    Switched to bow +1 (readied) and arrows.
+  rotateshoottype -
+    No ranged attack chosen.
+
+An optional parameter may be specified, such as - (minus) or + (plus).
+
+For example, rotateshoottype - swaps the direction of the rotation.
+
+rotateshoottype with no parameters is similar to rotateshoottype +.
+
+Example:
 	rotateshoottype [number]
 
-[number] will rotate through the shoot-types for the designated number of iterations. [number] can be positive or negative to affect the direction of rotation. If [number] is greater than the number of shoot-types available, it will rotate as if [number] was -1. If no [number] is provided, 1 is used as a default.
+[number] will rotate through the shoot-types for the designated number of iterations.
+[number] can be positive or negative to affect the direction of rotation.
+If [number] is greater than the number of shoot-types available, it will rotate as if [number] was -1.
+If no [number] is provided, 1 is used as a default.
