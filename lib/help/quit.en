@@ -1,1 +1,19 @@
-If you want to quit without deleting your character, you must use a 'Bed to Reality'. Find a bed (probably in a building close to where you entered the game), get on top of it, and Apply it using shift-A (capital A).
+CRITICAL: If using a game client and/or server compiled or released before 2019-Dec-27, the quit command will permanently delete your game character!!
+
+The quit command will exit or close out your game client session.
+
+Usage:
+ quit
+
+GTKv2 CLient Usage:
+  File -> Quit
+
+When the quit command is used when logging back in you can find your character back at their last used save bed (aka Bed to Reality) or in the game map where you left the game at. This depends on how long you logged out of the game.
+
+WARNING: The map can reset while you were away and you may find yourself behind locked/closed doors, and/or surrounded by monsters.
+
+To safely leave and log out of the game, you must use a 'Bed to Reality'.
+
+Find a bed (probably in a building close to where you entered the game), place your character so they are "standing" on top of it, and apply the bed using the apply command or hitting the 'a" (for apply) key.
+
+See Also: apply
