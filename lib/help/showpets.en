@@ -1,3 +1,39 @@
-Usage: showpets <number>
-Shows a numbered list of the pets owned by the player.
-If a number is specified, instead shows a detailed printout about that pet
+The showpets command displays a numbered list of charmed or summoned pets that are under the character's control.
+
+If no pets are in use, the player will see the message: You have no pets.
+
+Usage:
+ showpets
+
+Example output:
+
+  Pets:
+  1  greater dwarven guard - level 20
+  2  greater dwarven guard - level 20
+  3  greater dwarven guard - level 20
+  4  dwarf priest - level 15
+  5  dwarf priest - level 15
+  6  dwarf priest - level 15
+  7  dwarf priest - level 15
+  8  dwarf priest - level 15
+
+When a number is specified with the command, it instead shows a detailed printout about that pet
+
+Usage:
+ showpets <number>
+
+Example:
+ showpets 3
+
+Example Output:
+
+  level 20 greater dwarven guard
+  600/600 HP, 9/9 SP
+  Str 30
+  Dex 14
+  Con 0
+  Int 9
+  Wis 0
+  Cha 0
+  Pow 43
+  wc 2  damage 35 ac -11
