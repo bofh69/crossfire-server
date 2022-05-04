@@ -1,0 +1,11 @@
+Issuing the search-items command causes the character to examine the contents of every tile they enter and pick up any objects which match a specified item name or partial name.
+
+Usage:
+  search-items <list-of-item-names> 
+
+Example:
+  search-items ring
+
+The character will now pick up any rings and ringmail armor they walk over.
+
+Using this is a fast way to grab specific wanted items from large piles of junk, but it reduces movement speed significantly when active.
