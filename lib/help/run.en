@@ -1,5 +1,27 @@
-run causes you to run in a direction until instructed otherwise. If a direction number is provided, you will run starting in the direction indicated. If no direction is given, you will start to run in a direction starting with your next direction command.
+The run command causes your character to run in a direction until instructed otherwise.
+
+Run functions in two ways
+
+  - When the "run" command without any parameters is entered, the play enters run mode. The player will continually run in any direction pressed.
+  - When the "run" command is entered with a parameter of 1 through 8 (e.g. "run 1") the player will begin running in the corresponding direction. See below.
+
+  8 1 2
+   \|/
+  7- -3
+   /|\
+  6 5 4
+
+"run 1" for example will begin running north.
 
 Alternatively, "<direction command> r" also can be used like the run command. For example, "northeast r" will cause you to run northeast until another direction is supplied.
 
-Running can be stopped with the run_stop command.
+If no direction is given, you will start to run in a direction starting with your next direction command.
+
+Hitting a wall will not end run mode. To stop this run behavior use run_stop.
+
+Additionally, depending on client implementation, you may stop running if you release the run key (default "control" key). See bind.
+
+At the time of writing the JX Client seems to stop running when the run key is released but the GTK client does not.
+
+See Also: bind
+See Also: run_stop
