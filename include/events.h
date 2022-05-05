@@ -44,7 +44,8 @@ extern "C" {
 #define EVENT_LOGOUT    20 /**< Player logout.                                 */
 #define EVENT_MAPENTER  21 /**< A player entered a map.                        */
 #define EVENT_MAPLEAVE  22 /**< A player left a map.                           */
-#define EVENT_MAPLOAD   30 /**< A map is loaded                                */
+#define EVENT_MAPLOAD   30 /**< A map is loaded (pristine state)               */
+#define EVENT_MAPREADY  35 /**< A map is ready, either first load or after reload */
 #define EVENT_MAPRESET  23 /**< A map is resetting.                            */
 #define EVENT_MAPUNLOAD 29 /**< A map is freed (includes swapping out)         */
 #define EVENT_MUZZLE    27 /**< A player was Muzzled (no_shout set).           */
@@ -54,7 +55,7 @@ extern "C" {
 #define EVENT_TELL      26 /**< A player 'tell' something.                     */
 /*@}*/
 
-#define NR_EVENTS 35  /**< Number of events, maximum code + 1. */
+#define NR_EVENTS 36  /**< Number of events, maximum code + 1. */
 
 /** Function to call to handle global or object-related events. */
 typedef int (*f_plug_event)(int *type, ...);

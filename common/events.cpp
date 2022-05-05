@@ -182,6 +182,14 @@ void events_execute_global_event(int eventcode, ...) {
             (*(*gh).second)(&rt, eventcode, map);
         }
         break;
+
+    case EVENT_MAPREADY:
+        /*MAPREADY: map*/
+        map = va_arg(args, mapstruct *);
+        for (auto gh = global_handlers[eventcode].begin(); gh != global_handlers[eventcode].end(); gh++) {
+            (*(*gh).second)(&rt, eventcode, map);
+        }
+        break;
     }
     va_end(args);
 }

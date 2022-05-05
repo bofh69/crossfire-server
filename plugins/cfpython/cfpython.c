@@ -1334,6 +1334,7 @@ const CFConstant cstEventType[] = {
     { "MAPENTER", EVENT_MAPENTER },
     { "MAPLEAVE", EVENT_MAPLEAVE },
     { "MAPLOAD", EVENT_MAPLOAD },
+    { "MAPREADY", EVENT_MAPREADY },
     { "MAPRESET", EVENT_MAPRESET },
     { "MAPUNLOAD", EVENT_MAPUNLOAD },
     { "MUZZLE", EVENT_MUZZLE },
@@ -1553,6 +1554,7 @@ static int GECodes[] = {
     EVENT_KICK,
     EVENT_MAPUNLOAD,
     EVENT_MAPLOAD,
+    EVENT_MAPREADY,
     0  
 };
 
@@ -1573,6 +1575,7 @@ static const char* GEPaths[] = {
     "kick",
     "mapunload",
     "mapload",
+    "mapready",
     NULL  
 };
 

@@ -1882,6 +1882,9 @@ mapstruct *ready_map_name(const char *name, int flags) {
             m->last_reset_time = seconds();
         }
     }
+
+    events_execute_global_event(EVENT_MAPREADY, m);
+
     return m;
 }
 
