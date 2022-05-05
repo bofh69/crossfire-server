@@ -46,6 +46,7 @@
 #include "global.h"
 
 #include <assert.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -86,7 +87,7 @@ static void account_char_load_from_file(Account_Chars *chars) {
         /* This may not in fact be a critical error - for a new account, there
          * may not be any data associated with it.
          */
-        LOG(llevInfo, "Warning: Unable to open %s\n", fname);
+        LOG(llevInfo, "Warning: Unable to open %s: %s\n", fname, strerror(errno));
         return;
     }
     while (fgets(buf, VERY_BIG_BUF, fp)) {
