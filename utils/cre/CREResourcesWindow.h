@@ -59,7 +59,7 @@ class CREResourcesWindow : public QWidget
         void setFilter(const QString &filter, const QString &name);
 
     protected slots:
-        void currentRowChanged(const QModelIndex& previous, const QModelIndex& current);
+        void currentRowChanged(const QModelIndex &current, const QModelIndex &previous);
         void onFilter();
         void onFilterChange(QObject* object);
         void onQuickFilter();
