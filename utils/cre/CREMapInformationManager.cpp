@@ -49,6 +49,7 @@ const char* eventNames[NR_EVENTS] = {
   "EVENT_USER",
   "EVENT_SELLING",
   "EVENT_ATTACKS",
+  "EVENT_BOUGHT",
 };
 
 CREMapInformationManager::CREMapInformationManager(QObject* parent, MessageManager* messageManager, ScriptFileManager* scriptManager) : QObject(parent)
