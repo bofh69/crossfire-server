@@ -417,6 +417,10 @@ void set_first_map(object *op) {
  * the socket structure to copy.
  */
 static void set_player_socket(player *p, socket_struct *ns) {
+    if (p->socket.account_chars) {
+        account_char_free(p->socket.account_chars);
+    }
+
     memcpy(&p->socket, ns, sizeof(socket_struct));
 
     /* The memcpy above copies the reference to faces sent.  So we need to clear
@@ -425,10 +429,7 @@ static void set_player_socket(player *p, socket_struct *ns) {
     ns->faces_sent = NULL;
     ns->host = strdup_local("");
     ns->account_name = strdup_local("");
-    if (ns->account_chars) {
-        account_char_free(ns->account_chars);
-    }
-    ns->account_chars = NULL;
+    ns->account_chars = NULL;   // If not NULL, the reference is now kept by p
 
     if (p->socket.faces_sent == NULL)
         fatal(OUT_OF_MEMORY);
