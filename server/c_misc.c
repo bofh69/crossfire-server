@@ -1882,7 +1882,7 @@ void command_quit(object* op, const char* params) {
  */
 void command_delete(object *op, const char *params) {
     (void)params;
-    if (QUERY_FLAG(op, FLAG_WAS_WIZ)) {
+    if (QUERY_FLAG(op, FLAG_WIZ)) {
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_ADMIN_DM, "Can't quit when in DM mode.");
         return;
     }
