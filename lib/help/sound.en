@@ -1,1 +1,8 @@
 Toggles sound on/off.
+
+Usage
+ sound
+
+ Example output:
+  The sounds are enabled.
+  Sounds are turned off.
