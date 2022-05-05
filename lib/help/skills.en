@@ -1,16 +1,53 @@
-Use the skills command to learn your experience and level of your skills.
+Skills
+
+Use the skills command to display your character's available skills and what level you are in each skill.
+
+Usage
+  skills
 
 The values shown are:
+ The name of the skill. You use this name for commands like use_skill or ready_skill.
+ The skill level.
+ The current experience.
+ The experience needed to level up.
+ The permanent experience ratio is relative to current experience. You'll never fall below permanent experience even if you die over and over.
 
-The name of the skill. You use this name for commands like use_skill or ready_skill.
-The skill level.
-The current experience.
-The experience needed to level up.
-The permanent experience ratio relative to current experience. You'll never fall below permanent experience even if you die over and over.
+Example output:
+
+ Player skills:
+ disarm traps        lvl: 15 (xp:3300556/4100000/50%)
+ find traps          lvl: 15 (xp:3300934/4100000/50%)
+ one handed weapons  lvl: 56 (xp:103300018/109100000/50%)
+ oratory             lvl:  1 (xp:0/2000/0%)
+ praying             lvl: 57 (xp:113301000/115200000/50%)
+ two handed weapons  lvl: 57 (xp:113350025/115200000/50%)
+
 
 You can optionally add a parameter of '-l' for a longer display with more details on permanent experience.
 
-You can optionally add a search string to only show skills that include the match text.
+Usage
+  skills -l
+
+Example output:
+
+ Player skills (long format):
+ disarm traps        lvl: 15 (xp:3300556/4100000)     perm lvl: 12 (xp:1650278/2000000)
+ find traps          lvl: 15 (xp:3300934/4100000)     perm lvl: 12 (xp:1650467/2000000)
+ one handed weapons  lvl: 56 (xp:103300018/109100000) perm lvl: 43 (xp:51650009/52000000)
+ oratory             lvl:  1 (xp:0/2000)              perm lvl:  1 (xp:0/2000)
+ praying             lvl: 57 (xp:113301000/115200000) perm lvl: 45 (xp:56650500/58600000)
+ two handed weapons  lvl: 57 (xp:113350025/115200000) perm lvl: 45 (xp:56675012/58600000)
+
+You can optionally add a search string to only show skills that include the matched text.
+
+Usage
+ skills -l <string>
 
 Example:
   skills -l traps
+
+Example output:
+
+ Player skills (long format): (matching 'traps')
+ disarm traps        lvl: 15 (xp:3300556/4100000)     perm lvl: 12 (xp:1650278/2000000)
+ find traps          lvl: 15 (xp:3300934/4100000)     perm lvl: 12 (xp:1650467/2000000)
