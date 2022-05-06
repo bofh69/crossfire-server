@@ -1588,7 +1588,7 @@ void key_confirm_quit(object *op, char key) {
     mapstruct *mp, *next;
 
     // this was tested when 'quit' command was issued, but better safe than sorry.
-    if (QUERY_FLAG(op, FLAG_WAS_WIZ)) {
+    if (QUERY_FLAG(op, FLAG_WIZ)) {
         player_set_state(op->contr, ST_PLAYING);
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_ADMIN, MSG_TYPE_ADMIN_LOGIN, "Can't quit when in DM mode.");
         return;
