@@ -1,3 +1,5 @@
+The bind command is used to associate a skill or skills, action, command, alias, or shortcut to a keyboard key or key sequence (i.e., shift + F3).
+
 Syntax:
 
     bind [-nfregc] <command>
