@@ -1,9 +1,8 @@
-Syntax:
+The use command will try and apply the two specified items.
 
-    use <item1> with <item2>
+Usage:
+  use <item1> with <item2>
 
-Will try to use both items together.
-
-Result depends on the items themselves.
+The result depends on the items themselves.
 
 The order is important.
