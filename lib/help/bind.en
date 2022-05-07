@@ -10,7 +10,7 @@ Flags (default -nrf):
     -f: used in fire-mode
     -r: used in run-mode
     -e: leave command in line edit
-    -g: global key (not recommended)
+    -g: global key and applies to all characters in your account
     -c: Java client only: bind for this character only, this can be convenient if you play multiple characters
 
 Multiple commands can be bound to the same key by separating them with semicolons.
