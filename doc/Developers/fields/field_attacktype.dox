@@ -16,7 +16,7 @@
 		<td>
 @ref page_type_88
 		</td><td>            This attribute specifies the attack types that this floor uses to
-            damage it's victims. Attack types are: physical, fire, cold.. etc.
+            damage it's victims. Attack types are: physical, fire, cold, etc.
             If you want a real tough hazard floor, add more than just one attack
             type.</td>
 	</tr>
@@ -25,7 +25,7 @@
 @ref page_type_215, @ref page_type_28
 		</td><td>                This number is a bitmask, specifying the monster's attack types
                 for melee damage. Attack types are: physical, magical, fire,
-                cold.. etc. Strong monsters often have more than just physical
+                cold, etc. Strong monsters often have more than just physical
                 attack type.
 
                 When a monster with multiple attack types hits an opponent, it
@@ -54,7 +54,7 @@
 		<td>
 @ref page_type_13
 		</td><td>            This number is a bitmask, specifying the projectile's attack types.
-            Attack types are: physical, magical, fire, cold.. etc. This works
+            Attack types are: physical, magical, fire, cold, etc. This works
             identical to melee weapons. Note that shooting weapons cannot have
             attack types.</td>
 	</tr>
@@ -75,7 +75,7 @@
 		<td>
 @ref page_type_15
 		</td><td>            This number is a bitmask, specifying the weapon's attack types.
-            Attack types are: physical, magical, fire, cold.. etc. Most artifact
+            Attack types are: physical, magical, fire, cold, etc. Most artifact
             weapons have no more than one or two attack types. Keep in mind that
             all weapons can be blessed by the player's deity, thus adding an
             additional attack type.

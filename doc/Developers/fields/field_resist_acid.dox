@@ -33,7 +33,7 @@
 		</td><td>                The player's resistance to acid will rise by this value in
                 percent (range -100 till +100). The effect is only temporary,
                 and it does NOT add on the values from the player's equipment.
-                Cursed potions will make negative resistance.. very nasty in
+                Cursed potions will make negative resistance, very nasty in
                 combat!</td>
 	</tr>
 	<tr>

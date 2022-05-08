@@ -77,7 +77,7 @@ Type defined by:
 	<tr>
 		<td>connection</td>
 		<td>@ref page_connected "connection value"</td>
-		<td>            An activator (lever, altar, button, etc) with matching connection
+		<td>            An activator (lever, altar, button, etc.) with matching connection
             value is able to trigger this duplicator. Be very careful that
             players cannot abuse it to create endless amounts of money or other
             valuable stuff!
@@ -303,7 +303,7 @@ Type defined by:
 		<td>            This value defines the object's weight in grams (1000g is 1kg).
             Objects with zero weight are not pickable for players. Still, set
             the "non-pickable"-flag for explicitly non-pickable objects (hey,
-            this is open source.. you never know ;) ).
+            this is open source... you never know ;) ).
 		</td>
 	</tr>
 </table>

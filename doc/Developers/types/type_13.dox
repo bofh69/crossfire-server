@@ -56,7 +56,7 @@ Type defined by:
 		<td>attack type</td>
 		<td>@ref obj::attacktype</td>
 		<td>            This number is a bitmask, specifying the projectile's attack types.
-            Attack types are: physical, magical, fire, cold.. etc. This works
+            Attack types are: physical, magical, fire, cold, etc. This works
             identical to melee weapons. Note that shooting weapons cannot have
             attack types.
 		</td>
@@ -364,7 +364,7 @@ Type defined by:
 		<td>            This value defines the object's weight in grams (1000g is 1kg).
             Objects with zero weight are not pickable for players. Still, set
             the "non-pickable"-flag for explicitly non-pickable objects (hey,
-            this is open source.. you never know ;) ).
+            this is open source... you never know ;) ).
 		</td>
 	</tr>
 </table>

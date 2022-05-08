@@ -303,7 +303,7 @@ Type defined by:
 		<td>luck bonus</td>
 		<td>@ref liv::luck</td>
 		<td>                With positive luck bonus, the player is more likely to succeed
-                in all sorts of things (spell-casting, praying,...). Unless the
+                in all sorts of things (spell-casting, praying, ...). Unless the
                 &lt;luck bonus&gt; is very high, the effect will be barely
                 visible in-game. Luck bonus on one piece of equipment should
                 never exceed 3, and such bonus should not be too frequently
@@ -706,7 +706,7 @@ Type defined by:
 		<td>            This value defines the object's weight in grams (1000g is 1kg).
             Objects with zero weight are not pickable for players. Still, set
             the "non-pickable"-flag for explicitly non-pickable objects (hey,
-            this is open source.. you never know ;) ).
+            this is open source... you never know ;) ).
 		</td>
 	</tr>
 	<tr>

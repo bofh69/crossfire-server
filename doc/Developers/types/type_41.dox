@@ -41,7 +41,7 @@ Type defined by:
             in the teleporter arch is &lt;activation speed&gt; 0.1.
 
             VERY IMPORTANT: If you want to have your teleporter activated via
-            button/handle/magic_ear/etc, you must set &lt;activation speed&gt;
+            button/handle/magic_ear/etc., you must set &lt;activation speed&gt;
             to zero!
 		</td>
 	</tr>
@@ -346,7 +346,7 @@ Type defined by:
 		<td>            This value defines the object's weight in grams (1000g is 1kg).
             Objects with zero weight are not pickable for players. Still, set
             the "non-pickable"-flag for explicitly non-pickable objects (hey,
-            this is open source.. you never know ;) ).
+            this is open source... you never know ;) ).
 		</td>
 	</tr>
 </table>

@@ -12,7 +12,7 @@
                 objects the creature should try to pick up.
 
                 Note also that if &lt;can use armor&gt;, &lt;can use weapon&gt;,
-                &lt;can use ring&gt;... etc are set, then the creature will pick
+                &lt;can use ring&gt;, etc. are set, then the creature will pick
                 up the matching items even if this is not set here.</td>
 	</tr>
 

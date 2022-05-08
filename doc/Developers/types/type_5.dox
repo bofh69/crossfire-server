@@ -301,7 +301,7 @@ Type defined by:
 		<td>                The player's resistance to acid will rise by this value in
                 percent (range -100 till +100). The effect is only temporary,
                 and it does NOT add on the values from the player's equipment.
-                Cursed potions will make negative resistance.. very nasty in
+                Cursed potions will make negative resistance, very nasty in
                 combat!
 		</td>
 	</tr>
@@ -311,7 +311,7 @@ Type defined by:
 		<td>                The player's resistance to cold will rise by this value in
                 percent (range -100 till +100). The effect is only temporary,
                 and it does NOT add on the values from the player's equipment.
-                Cursed potions will make negative resistance.. very nasty in
+                Cursed potions will make negative resistance, very nasty in
                 combat!
 		</td>
 	</tr>
@@ -321,7 +321,7 @@ Type defined by:
 		<td>                The player's resistance to confusion will rise by this value in
                 percent (range -100 till +100). The effect is only temporary,
                 and it does NOT add on the values from the player's equipment.
-                Cursed potions will make negative resistance.. very nasty in
+                Cursed potions will make negative resistance, very nasty in
                 combat!
 		</td>
 	</tr>
@@ -331,7 +331,7 @@ Type defined by:
 		<td>                The player's resistance to depletion will rise by this value in
                 percent (range -100 till +100). The effect is only temporary,
                 and it does NOT add on the values from the player's equipment.
-                Cursed potions will make negative resistance.. very nasty in
+                Cursed potions will make negative resistance, very nasty in
                 combat!
 		</td>
 	</tr>
@@ -341,7 +341,7 @@ Type defined by:
 		<td>                The player's resistance to draining will rise by this value in
                 percent (range -100 till +100). The effect is only temporary,
                 and it does NOT add on the values from the player's equipment.
-                Cursed potions will make negative resistance.. very nasty in
+                Cursed potions will make negative resistance, very nasty in
                 combat!
 		</td>
 	</tr>
@@ -351,7 +351,7 @@ Type defined by:
 		<td>                The player's resistance to electricity will rise by this value
                 in percent (range -100 till +100). The effect is only temporary,
                 and it does NOT add on the values from the player's equipment.
-                Cursed potions will make negative resistance.. very nasty in
+                Cursed potions will make negative resistance, very nasty in
                 combat!
 		</td>
 	</tr>
@@ -361,7 +361,7 @@ Type defined by:
 		<td>                The player's resistance to fire will rise by this value in
                 percent (range -100 till +100). The effect is only temporary,
                 and it does NOT add on the values from the player's equipment.
-                Cursed potions will make negative resistance.. very nasty in
+                Cursed potions will make negative resistance, very nasty in
                 combat!
 		</td>
 	</tr>
@@ -371,7 +371,7 @@ Type defined by:
 		<td>                The player's resistance to magic will rise by this value in
                 percent (range -100 till +100). The effect is only temporary,
                 and it does NOT add on the values from the player's equipment.
-                Cursed potions will make negative resistance.. very nasty in
+                Cursed potions will make negative resistance, very nasty in
                 combat!
 		</td>
 	</tr>
@@ -381,7 +381,7 @@ Type defined by:
 		<td>                The player's resistance to paralyze will rise by this value in
                 percent (range -100 till +100). The effect is only temporary,
                 and it does NOT add on the values from the player's equipment.
-                Cursed potions will make negative resistance.. very nasty in
+                Cursed potions will make negative resistance, very nasty in
                 combat!
 		</td>
 	</tr>
@@ -391,7 +391,7 @@ Type defined by:
 		<td>                The player's resistance to physical will rise by this value in
                 percent (range -100 till +100). The effect is only temporary,
                 and it does NOT add on the values from the player's equipment.
-                Cursed potions will make negative resistance.. very nasty in
+                Cursed potions will make negative resistance, very nasty in
                 combat!
 		</td>
 	</tr>
@@ -401,7 +401,7 @@ Type defined by:
 		<td>                The player's resistance to poison will rise by this value in
                 percent (range -100 till +100). The effect is only temporary,
                 and it does NOT add on the values from the player's equipment.
-                Cursed potions will make negative resistance.. very nasty in
+                Cursed potions will make negative resistance, very nasty in
                 combat!
 		</td>
 	</tr>
@@ -411,7 +411,7 @@ Type defined by:
 		<td>                The player's resistance to weaponmagic will rise by this value
                 in percent (range -100 till +100). The effect is only temporary,
                 and it does NOT add on the values from the player's equipment.
-                Cursed potions will make negative resistance.. very nasty in
+                Cursed potions will make negative resistance, very nasty in
                 combat!
 		</td>
 	</tr>
@@ -485,7 +485,7 @@ Type defined by:
 		<td>            This value defines the object's weight in grams (1000g is 1kg).
             Objects with zero weight are not pickable for players. Still, set
             the "non-pickable"-flag for explicitly non-pickable objects (hey,
-            this is open source.. you never know ;) ).
+            this is open source... you never know ;) ).
 		</td>
 	</tr>
 	<tr>

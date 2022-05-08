@@ -12,7 +12,7 @@ See @ref page_type_98
             to the player. There are three ways to have the player get this
             message: The player walking onto it (-&gt; magic_mouth), the player
             pressing &lt;a&gt;pply (-&gt; sign) or the player triggering a
-            button/handle/etc (-&gt; magic_mouth). 
+            button/handle/etc. (-&gt; magic_mouth). 
 
 
 
@@ -314,7 +314,7 @@ Type defined by:
 		<td>            This value defines the object's weight in grams (1000g is 1kg).
             Objects with zero weight are not pickable for players. Still, set
             the "non-pickable"-flag for explicitly non-pickable objects (hey,
-            this is open source.. you never know ;) ).
+            this is open source... you never know ;) ).
 		</td>
 	</tr>
 </table>

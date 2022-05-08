@@ -32,7 +32,7 @@
 	<tr>
 		<td>
 @ref page_type_83
-		</td><td>            An activator (lever, altar, button, etc) with matching connection
+		</td><td>            An activator (lever, altar, button, etc.) with matching connection
             value is able to trigger this duplicator. Be very careful that
             players cannot abuse it to create endless amounts of money or other
             valuable stuff!</td>

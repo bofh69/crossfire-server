@@ -36,7 +36,7 @@ Type defined by:
 	<tr>
 		<td>affected movement</td>
 		<td>@ref obj::move_on</td>
-		<td>                Move creatures using these movement types..
+		<td>                Move creatures using these movement types.
 		</td>
 	</tr>
 	<tr>
@@ -352,7 +352,7 @@ Type defined by:
 		<td>            This value defines the object's weight in grams (1000g is 1kg).
             Objects with zero weight are not pickable for players. Still, set
             the "non-pickable"-flag for explicitly non-pickable objects (hey,
-            this is open source.. you never know ;) ).
+            this is open source... you never know ;) ).
 		</td>
 	</tr>
 </table>

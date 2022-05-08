@@ -94,7 +94,7 @@ Type defined by:
 		<td>@ref obj::attacktype</td>
 		<td>                This number is a bitmask, specifying the monster's attack types
                 for melee damage. Attack types are: physical, magical, fire,
-                cold.. etc. Strong monsters often have more than just physical
+                cold, etc. Strong monsters often have more than just physical
                 attack type.
 
                 When a monster with multiple attack types hits an opponent, it
@@ -141,7 +141,7 @@ Type defined by:
 		<td>can cast spell</td>
 		<td>@ref FLAG_CAST_SPELL</td>
 		<td>                If &lt;can cast spell&gt; is disabled, the monster cannot cast
-                any spell. Only wands/rods/etc can be used, given the
+                any spell. Only wands/rods/etc. can be used, given the
                 appropriate abilities.
 		</td>
 	</tr>
@@ -543,7 +543,7 @@ Type defined by:
                 objects the creature should try to pick up.
 
                 Note also that if &lt;can use armor&gt;, &lt;can use weapon&gt;,
-                &lt;can use ring&gt;... etc are set, then the creature will pick
+                &lt;can use ring&gt;, etc. are set, then the creature will pick
                 up the matching items even if this is not set here.
 		</td>
 	</tr>
@@ -898,7 +898,7 @@ Type defined by:
 		<td>            This value defines the object's weight in grams (1000g is 1kg).
             Objects with zero weight are not pickable for players. Still, set
             the "non-pickable"-flag for explicitly non-pickable objects (hey,
-            this is open source.. you never know ;) ).
+            this is open source... you never know ;) ).
 		</td>
 	</tr>
 </table>

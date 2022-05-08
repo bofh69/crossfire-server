@@ -24,7 +24,7 @@
 		</td><td>            The &lt;casting speed&gt; defines the spell-casting speed of the
             wall. You can fine-tune how long the duration between two casts
             shall be. If you want to create a wall that can be activated (cast
-            per trigger) via connected lever/button/etc, you must set "speed 0".</td>
+            per trigger) via connected lever/button/etc., you must set "speed 0".</td>
 	</tr>
 	<tr>
 		<td>
@@ -64,7 +64,7 @@
             in the teleporter arch is &lt;activation speed&gt; 0.1.
 
             VERY IMPORTANT: If you want to have your teleporter activated via
-            button/handle/magic_ear/etc, you must set &lt;activation speed&gt;
+            button/handle/magic_ear/etc., you must set &lt;activation speed&gt;
             to zero!</td>
 	</tr>
 	<tr>
