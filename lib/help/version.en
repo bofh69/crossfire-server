@@ -1,2 +1,17 @@
-version displays the current version of the Crossfire server in use. This consists of the name and the version number of the server.
-If the server is built from the Git repository, it will include a revision number in the version.
+
+The version command displays the current version of the Crossfire server in use.
+
+Usage:
+  version
+
+This consists of the name and the version number of the server.
+
+Example:
+
+  Crossfire v1.75.0
+
+If the server is built from the Git repository, it will include a revision number in the version output.
+
+Example:
+
+  Crossfire v1.75.0-ga725943
