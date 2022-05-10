@@ -9,10 +9,21 @@ In the map view:
 
 Also, the mouse has the following inventory uses:
   Left button: identify or examine the item
-  Middle button on item: apply or equip or consume the item
+  Middle button on item: apply or equip or consume the item (i.e., eat food item, read a scroll or book or spellbook)
   Right button: drop the item(s) from your inventory to the ground or places the item(s) in an open or active container (i.e., pouch or chest or sack)
+
+The mouse command can use use keyboard commands for special applications in the Inventory window:
+  Left button + shift key: lock or unlock a clicked inventory item, see lock
+   Middle button + shift key: mark a clicked item (i.e., mark a torch & then apply flint and steel to light the torch), see mark
 
 The mouse has the following uses of items in the You see window:
   Left button: identify or examine the item
   Middle button: apply item (i.e., lever) if possible or applicable
   Right button: picks up the item(s) and adds it to your inventory
+
+See Also: lock
+See Also: mark
+See Also: apply
+See Also: drop
+See Also: get
+See Also: take
