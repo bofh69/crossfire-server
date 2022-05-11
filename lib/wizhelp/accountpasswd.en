@@ -1,3 +1,9 @@
-Syntax: accountpasswd <account> <password>
+The accountpasswd command allows a DM to reset the password of an account name (which may be different than the player character name!), to the specified <password> text in the command.
 
-This allows a DM to reset the password of an account name (which is different than the player character name!), to the specified <password> text in the command.
+  Syntax: accountpasswd <account> <password>
+
+Example:
+
+  accountpasswd oliver secret123
+
+The account name of oliver now has the password of secret123 for logging in to the game.
