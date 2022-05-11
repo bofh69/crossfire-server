@@ -1,7 +1,13 @@
-Syntax: addexp player quantity [skill]
+The command addexp can either add or subtract a specified amount of experience to a player in the game, to any skill they have access to (i.e., praying because they have a holy symbol) or have learned (i.e., skill scroll of punching) or started with as part of their race (i.e., wraith feed for a wraith) or class (i.e., flame touch for a fireborn.)
 
-Adds experience to player. Quantity can be negative to subtract.
+Syntax: addexp <name> <amount> <skill>
 
-Permanent experience is updated too, but will never fall below (player's experience * permanent experience ratio).
+Example:
+  addexp Betty 500 literacy
 
-If skill is specified, update that skill's experience too.
+Betty now has an additional 500 experience in her literacy skill.
+
+Example:
+  addexp Judy -600 punching
+
+Judy has now lost 600 experience in her punching skill.
