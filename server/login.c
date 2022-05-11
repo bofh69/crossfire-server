@@ -269,8 +269,8 @@ int save_player(object *op, int flag) {
     /* Update information on this character.  Only do it if it is eligible for
      * for saving.
      */
-    account_char_add(pl->socket.account_chars, pl);
     if (pl->socket.account_name) {
+        account_char_add(pl->socket.account_chars, pl);
         account_char_save(pl->socket.account_chars);
         /* Add this character to the account.  This really only comes up
          * for new characters, at which time we want to wait until save -

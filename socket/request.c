@@ -2537,6 +2537,7 @@ void account_play_cmd(char *buf, int len, socket_struct *ns)
         ns->status = Ns_Avail;
         memcpy(&pl->socket, ns, sizeof(socket_struct));
         ns->faces_sent = NULL;
+        ns->account_chars = NULL;
         SockList_ResetRead(&pl->socket.inbuf);
     } else {
         pl->state = ST_PLAYING;
