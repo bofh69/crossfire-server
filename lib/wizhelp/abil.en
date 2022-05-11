@@ -1,3 +1,15 @@
-Syntax: abil <player> <attribute> <value>
+The abil command will permanently change the specified ability score of a specified player.
 
-abil will permanently change the ability scores of players. Attribute is one of str, dex, con, int, wis, pow, cha. Value may not exceed 30.
+  Syntax: abil <player> <attribute> <value>
+
+<player> is the specified player name that must be logged in.
+
+<attribute> is one of str, dex, con, int, wis, pow, cha.
+
+<value> is a number that ranges between 1 and 30 and may not exceed 30.
+
+Example:
+
+  abil Mario dex 25
+
+The player Mario now has a Dex score of 25.
