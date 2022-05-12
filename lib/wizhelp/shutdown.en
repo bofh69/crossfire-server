@@ -1,4 +1,4 @@
-syntax: shutdown <now|time|idle|cancel>
+Usage: shutdown <now|time|idle|cancel>
 
 Shut down 'now', in 'time' minutes, when there are no active players ('idle'), or 'cancel' a pending shutdown.
 

@@ -1,4 +1,4 @@
-Syntax: banish <player>
+Usage: banish <player>
 
 'Kicks' the named player and adds their current IP address to the banish file. This will prevent the named player from logging into the server (from their current IP).
 This is an in-game version of the ban function meant for short term relief of persistent goons and for DMs who do not have shell access.

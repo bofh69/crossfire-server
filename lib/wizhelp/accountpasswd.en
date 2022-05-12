@@ -1,6 +1,6 @@
 The accountpasswd command allows a DM to reset the password of an account name (which may be different than the player character name!), to the specified <password> text in the command.
 
-  Syntax: accountpasswd <account> <password>
+  Usage: accountpasswd <account> <password>
 
 Example:
 

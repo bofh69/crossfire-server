@@ -1,4 +1,4 @@
-Syntax: create [<number>] [<bonus>] <archetype> [<variable1> <value1>] [<variable2> <value2>] ... [of <artifact>]
+Usage: create [<number>] [<bonus>] <archetype> [<variable1> <value1>] [<variable2> <value2>] ... [of <artifact>]
 
 Creating items is rather dangerous and tends to crash the server when creating some items.
 

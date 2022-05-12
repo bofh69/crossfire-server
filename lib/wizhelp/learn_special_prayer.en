@@ -1,4 +1,4 @@
-Syntax: learn_special_prayer <prayer name>
+Usage: learn_special_prayer <prayer name>
 
 This will allow you to permanently learn a spell as a special prayer of your god.
 

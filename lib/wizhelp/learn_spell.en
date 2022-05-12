@@ -1,4 +1,4 @@
-Syntax: learn_spell <spell name>
+Usage: learn_spell <spell name>
 
 This will allow you to permanently learn a spell. <spell name> may be a partial spell name.
 
