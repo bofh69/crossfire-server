@@ -1,5 +1,5 @@
 2022-05-12  Daniel Hawkins
-    * plugins/cfpython/cfpython.h,
+    * plugins/cfpython/include/cfpython.h,
       plugins/cfpython/cfpython.c,
       configure.ac: Add support for Python 3.10.
 
