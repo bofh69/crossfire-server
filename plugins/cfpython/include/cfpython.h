@@ -53,6 +53,9 @@
 #    if PY_MINOR_VERSION >= 8
 #        define IS_PY3K8
 #    endif
+#    if PY_MINOR_VERSION >= 10
+#        define IS_PY3K10
+#    endif
 #endif
 
 /* Handle Bytes vs. String */

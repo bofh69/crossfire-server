@@ -116,9 +116,9 @@ dnl Plugin configuration
 dnl############################################
 AS_IF([test "$cf_have_libdl" = "yes"], [
     AC_SUBST([LIBDL_LDFLAGS], ["-export-dynamic"])])
-PKG_CHECK_MODULES([PYTHON], [python3-embed < 3.10],
+PKG_CHECK_MODULES([PYTHON], [python3-embed],
                   [PLUGIN_PYTHON="cfpython.la"] [cf_will_build_python="yes"],
-                  [PKG_CHECK_MODULES([PYTHON], [python3 < 3.10],
+                  [PKG_CHECK_MODULES([PYTHON], [python3],
                                      [PLUGIN_PYTHON="cfpython.la"] [cf_will_build_python="yes"],
                                      [cf_will_build_python="no"]
                                      [AC_MSG_NOTICE([Could not find Python 3 (below 3.10). Python plugin will not be built.])])])

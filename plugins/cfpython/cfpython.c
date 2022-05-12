@@ -60,7 +60,10 @@
 #include <cfpython.h>
 #include <fcntl.h>
 #include <stdarg.h>
+// node.h is deprecated in python 3.9, and removed in 3.10 due to a new parser for Python.
+#ifndef IS_PY3K10
 #include <node.h>
+#endif
 #include <svnversion.h>
 
 CF_PLUGIN char SvnRevPlugin[] = SVN_REV;
@@ -878,6 +881,14 @@ static FILE* cfpython_pyfile_asfile(PyObject* obj) {
  */
 static PyObject *catcher = NULL;
 
+#ifdef IS_PY3K10
+/**
+ * A Python object so that we only need to import the io module once.
+ * The recommended way to load a file to compile in 3.10 and later involves importing the io module, so we really just do that once.
+ */
+static PyObject *io_module = NULL;
+#endif
+
 /**
  * Trace a Python error to the Crossfire log.
  * This uses code from:
@@ -957,7 +968,37 @@ static PyCodeObject *compilePython(char *filename) {
             }
             replace->file = cf_add_string(sh_path);
         }
-
+#ifdef IS_PY3K10
+        /* With the new parser in 3.10, we need to read the file contents into a buffer, and then pass that string to compile it.
+         * The new parser removes the PyNode functions as well as PyParser_SimpleParseFile,
+         * so the code needed to be completely rewritten to work.
+         *
+         * Python's solution to these changes is to import the io module and use Python's read method to read in the file,
+         * and then convert the bytes object into a c-string for Py_CompileString
+         *
+         * Though, if it is more performant than the previous code, Py_CompileString is
+         * available for all Python 3, so it is possible to simplify all of them to this if we need to.
+         */
+        if (!io_module)
+            io_module = PyImport_ImportModule("io");
+        scriptfile = PyObject_CallMethod(io_module, "open", "ss", filename, "rb");
+        if (!scriptfile) {
+            cf_log(llevDebug, "cfpython - The Script file %s can't be opened\n", filename);
+            cf_free_string(sh_path);
+            return NULL;
+        }
+        PyObject *source_bytes = PyObject_CallMethod(scriptfile, "read", "");
+        (void)PyObject_CallMethod(scriptfile, "close", "");
+        PyObject *code = Py_CompileString(PyBytes_AsString(source_bytes), filename, Py_file_input);
+        if (code) {
+            replace->code = (PyCodeObject *)code;
+        }
+        if (PyErr_Occurred())
+            log_python_error();
+        else
+            replace->cached_time = stat_buf.st_mtime;
+        run = replace;
+#else
         /* Load, parse and compile. Note: because Pyhon may have been built with a
          * different library than Crossfire, the FILE* it uses may be incompatible.
          * Therefore we use PyFile to open the file, then convert to FILE* and get
@@ -973,13 +1014,13 @@ static PyCodeObject *compilePython(char *filename) {
                 replace->code = PyNode_Compile(n, filename);
                 PyNode_Free(n);
             }
-
             if (PyErr_Occurred())
                 log_python_error();
             else
                 replace->cached_time = stat_buf.st_mtime;
             run = replace;
         }
+#endif
     }
 
     cf_free_string(sh_path);
@@ -1555,7 +1596,7 @@ static int GECodes[] = {
     EVENT_MAPUNLOAD,
     EVENT_MAPLOAD,
     EVENT_MAPREADY,
-    0  
+    0
 };
 
 static const char* GEPaths[] = {
@@ -1576,7 +1617,7 @@ static const char* GEPaths[] = {
     "mapunload",
     "mapload",
     "mapready",
-    NULL  
+    NULL
 };
 
 CF_PLUGIN int postInitPlugin(void) {
