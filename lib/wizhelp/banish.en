@@ -1,5 +1,14 @@
 Usage: banish <player>
 
-'Kicks' the named player and adds their current IP address to the banish file. This will prevent the named player from logging into the server (from their current IP).
-This is an in-game version of the ban function meant for short term relief of persistent goons and for DMs who do not have shell access.
-It is probably a good idea to clear out the banish file (var/crossfire/banish_file) on a regular basis and delete or move any entries to the ban_file if desired.
+The banish command will forcefully drop the specified player's connection to the server and the named player will also have their current IP address added to the server's banish file.
+
+Example:
+  banish Fred
+
+This will prevent the named player from logging into the server from their current IP address.
+
+This is an in-game version of the ban function meant for short-term relief of persistent problematic players and for DMs who do not have shell access.
+
+ It is probably a good idea to clear out the banish file (var/crossfire/banish_file) regularly and delete or move any entries to the etc/crossfire/ban_file if desired.
+
+See Also: kick
