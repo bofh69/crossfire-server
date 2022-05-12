@@ -9,6 +9,6 @@ This will prevent the named player from logging into the server from their curre
 
 This is an in-game version of the ban function meant for short-term relief of persistent problematic players and for DMs who do not have shell access.
 
- It is probably a good idea to clear out the banish file (var/crossfire/banish_file) regularly and delete or move any entries to the etc/crossfire/ban_file if desired.
+It is probably a good idea to clear out the banish file (var/crossfire/banish_file) regularly and delete or move any entries to the etc/crossfire/ban_file if desired.
 
 See Also: kick
