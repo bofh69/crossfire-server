@@ -464,7 +464,7 @@ void init_attackmess(BufferReader *reader, const char *filename) {
 
     level = 0;
     while ((buf = bufferreader_next_line(reader)) != NULL) {
-        if (*buf == '#')
+        if (*buf == '#' || *buf == '\0')
             continue;
         /*
          * Skip blanks -- strspn is slightly faster than a loop w/ optimization on
