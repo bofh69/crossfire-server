@@ -444,6 +444,147 @@ int hit_map(object *op, int dir, uint32_t type, int full_hit) {
 }
 
 /**
+ * Figure the @ref Attacktypes ATM_xxx type for an attack.
+ * @param type
+ * base attack type.
+ * @param op
+ * victim of the attack.
+ * @param hitter
+ * who is hitting.
+ * @return
+ * attack message type.
+ */
+static uint8_t get_attack_message_type(int type, const object *op, const object *hitter) {
+    if ((hitter->type == DISEASE
+        || hitter->type == SYMPTOM
+        || hitter->type == POISONING
+        || (type&AT_POISON && IS_LIVE(op)))) {
+        return ATM_SUFFER;
+    }
+
+    if (op->type == DOOR) {
+        return ATM_DOOR;
+    }
+
+    if (hitter->type == PLAYER && IS_LIVE(op)) {
+        if (USING_SKILL(hitter, SK_KARATE)) {
+            return ATM_KARATE;
+        }
+        if (USING_SKILL(hitter, SK_CLAWING)) {
+            return ATM_CLAW;
+        }
+        if (USING_SKILL(hitter, SK_PUNCHING)) {
+            return ATM_PUNCH;
+        }
+        if (USING_SKILL(hitter, SK_WRAITH_FEED)) {
+            return ATM_WRAITH_FEED;
+        }
+    }
+
+    if (IS_ARROW(hitter) && (type == AT_PHYSICAL || type == AT_MAGIC)) {
+        return ATM_ARROW;
+    }
+
+    if (type&AT_DRAIN && IS_LIVE(op)) {
+        return ATM_DRAIN;
+    }
+    if (type&AT_ELECTRICITY && IS_LIVE(op)) {
+        return ATM_ELEC;
+    }
+    if (type&AT_COLD && IS_LIVE(op)) {
+        return ATM_COLD;
+    }
+    if (type&AT_FIRE) {
+        return ATM_FIRE;
+    }
+
+    if (hitter->current_weapon != NULL) {
+        switch (hitter->current_weapon->weapontype) {
+        case WEAP_HIT: return ATM_BASIC;
+        case WEAP_SLASH: return ATM_SLASH;
+        case WEAP_PIERCE: return ATM_PIERCE;
+        case WEAP_CLEAVE: return ATM_CLEAVE;
+        case WEAP_SLICE: return ATM_SLICE;
+        case WEAP_STAB: return ATM_STAB;
+        case WEAP_WHIP: return ATM_WHIP;
+        case WEAP_CRUSH: return ATM_CRUSH;
+        case WEAP_BLUD: return ATM_BLUD;
+        default: return ATM_BASIC;
+        }
+    }
+
+    return ATM_BASIC;
+}
+
+/**
+ * Get the attack message for a damage and a type.
+ * @param dam
+ * damage done.
+ * @param atm_type
+ * one @ref Attacktypes of type ATM_xxx.
+ * @param victim
+ * victim of the attack.
+ * @param[out] buf1
+ * where to write the message for the one doing the attack, must be at least MAX_BUF long.
+ * @param[out] buf2
+ * where to write the message for the victim of the attack, must be at least MAX_BUF long.
+ */
+void get_attack_message_for_attack_type(int dam, uint8_t atm_type, const object *victim, char *buf1, char *buf2) {
+    snprintf(buf1, MAX_BUF, "hit");
+    snprintf(buf2, MAX_BUF, "hits");
+
+    for (int i = 0; i < MAXATTACKMESS && attack_mess[atm_type][i].level != -1; i++) {
+        if (dam < attack_mess[atm_type][i].level
+        || attack_mess[atm_type][i+1].level == -1) {
+            snprintf(buf1, MAX_BUF, "%s %s%s", attack_mess[atm_type][i].buf1, victim->name, attack_mess[atm_type][i].buf2);
+            snprintf(buf2, MAX_BUF, "%s", attack_mess[atm_type][i].buf3);
+            return;
+        }
+    }
+}
+
+/**
+ * Compute attack messages. Two versions are done, one for the living doing the action,
+ * the other for the victim of the attack.
+ *
+ * @param dam
+ * amount of damage done.
+ * @param type
+ * attack type.
+ * @param op
+ * victim of the attack.
+ * @param hitter
+ * who is hitting.
+ * @param[out] buf1
+ * where to write the message for the one doing the attack, must be at least MAX_BUF long.
+ * @param[out] buf2
+ * where to write the message for the victim of the attack, must be at least MAX_BUF long.
+ */
+static void get_attack_message(int dam, int type, const object *op, const object *hitter, char *buf1, char *buf2) {
+    if (dam == 9998 && op->type == DOOR) {
+        snprintf(buf1, MAX_BUF, "unlock %s", op->name);
+        snprintf(buf2, MAX_BUF, " unlocks");
+        return;
+    }
+    if (dam < 0) {
+        snprintf(buf1, MAX_BUF, "hit %s", op->name);
+        snprintf(buf2, MAX_BUF, " hits");
+        return;
+    }
+    if (dam == 0) {
+        snprintf(buf1, MAX_BUF, "missed %s", op->name);
+        snprintf(buf2, MAX_BUF, " misses");
+        return;
+    }
+
+    snprintf(buf1, MAX_BUF, "hit");
+    snprintf(buf2, MAX_BUF, "hits");
+
+    uint8_t atm_type = get_attack_message_type(type, op, hitter);
+    get_attack_message_for_attack_type(dam, atm_type, op, buf1, buf2);
+}
+
+/**
  * Send an attack message to someone.
  *
  * @param dam
@@ -460,173 +601,7 @@ int hit_map(object *op, int dir, uint32_t type, int full_hit) {
  */
 static void attack_message(int dam, int type, object *op, object *hitter) {
     char buf[MAX_BUF], buf1[MAX_BUF], buf2[MAX_BUF];
-    int i, found = 0;
-    mapstruct *map;
     object *owner;
-
-    /* put in a few special messages for some of the common attacktypes
-     *  a player might have.  For example, fire, electric, cold, etc
-     *  [garbled 20010919]
-     */
-
-    if (dam == 9998 && op->type == DOOR) {
-        snprintf(buf1, sizeof(buf1), "unlock %s", op->name);
-        snprintf(buf2, sizeof(buf2), " unlocks");
-        found++;
-    }
-    if (dam < 0) {
-        snprintf(buf1, sizeof(buf1), "hit %s", op->name);
-        snprintf(buf2, sizeof(buf2), " hits");
-        found++;
-    } else if (dam == 0) {
-        snprintf(buf1, sizeof(buf1), "missed %s", op->name);
-        snprintf(buf2, sizeof(buf2), " misses");
-        found++;
-    } else if ((hitter->type == DISEASE
-        || hitter->type == SYMPTOM
-        || hitter->type == POISONING
-        || (type&AT_POISON && IS_LIVE(op))) && !found) {
-        for (i = 0; i < MAXATTACKMESS && attack_mess[ATM_SUFFER][i].level != -1; i++)
-            if (dam < attack_mess[ATM_SUFFER][i].level
-            || attack_mess[ATM_SUFFER][i+1].level == -1) {
-                snprintf(buf1, sizeof(buf1), "%s %s%s", attack_mess[ATM_SUFFER][i].buf1, op->name, attack_mess[ATM_SUFFER][i].buf2);
-                snprintf(buf2, sizeof(buf2), "%s", attack_mess[ATM_SUFFER][i].buf3);
-                found++;
-                break;
-            }
-    } else if (op->type == DOOR && !found) {
-        for (i = 0; i < MAXATTACKMESS && attack_mess[ATM_DOOR][i].level != -1; i++)
-            if (dam < attack_mess[ATM_DOOR][i].level
-            || attack_mess[ATM_DOOR][i+1].level == -1) {
-                snprintf(buf1, sizeof(buf1), "%s %s%s", attack_mess[ATM_DOOR][i].buf1, op->name, attack_mess[ATM_DOOR][i].buf2);
-                snprintf(buf2, sizeof(buf2), "%s", attack_mess[ATM_DOOR][i].buf3);
-                found++;
-                break;
-            }
-    } else if (hitter->type == PLAYER && IS_LIVE(op)) {
-        if (USING_SKILL(hitter, SK_KARATE)) {
-            for (i = 0; i < MAXATTACKMESS && attack_mess[ATM_KARATE][i].level != -1; i++)
-                if (dam < attack_mess[ATM_KARATE][i].level
-                || attack_mess[ATM_KARATE][i+1].level == -1) {
-                    snprintf(buf1, sizeof(buf1), "%s %s%s", attack_mess[ATM_KARATE][i].buf1, op->name, attack_mess[ATM_KARATE][i].buf2);
-                    snprintf(buf2, sizeof(buf2), "%s", attack_mess[ATM_KARATE][i].buf3);
-                    found++;
-                    break;
-                }
-        } else if (USING_SKILL(hitter, SK_CLAWING)) {
-            for (i = 0; i < MAXATTACKMESS && attack_mess[ATM_CLAW][i].level != -1; i++)
-                if (dam < attack_mess[ATM_CLAW][i].level
-                || attack_mess[ATM_CLAW][i+1].level == -1) {
-                    snprintf(buf1, sizeof(buf1), "%s %s%s", attack_mess[ATM_CLAW][i].buf1, op->name, attack_mess[ATM_CLAW][i].buf2);
-                    snprintf(buf2, sizeof(buf2), "%s", attack_mess[ATM_CLAW][i].buf3);
-                    found++;
-                    break;
-                }
-        } else if (USING_SKILL(hitter, SK_PUNCHING)) {
-            for (i = 0; i < MAXATTACKMESS && attack_mess[ATM_PUNCH][i].level != -1; i++)
-                if (dam < attack_mess[ATM_PUNCH][i].level
-                || attack_mess[ATM_PUNCH][i+1].level == -1) {
-                    snprintf(buf1, sizeof(buf1), "%s %s%s", attack_mess[ATM_PUNCH][i].buf1, op->name, attack_mess[ATM_PUNCH][i].buf2);
-                    snprintf(buf2, sizeof(buf2), "%s", attack_mess[ATM_PUNCH][i].buf3);
-                    found++;
-                    break;
-                }
-        } else if (USING_SKILL(hitter, SK_WRAITH_FEED)) {
-            for (i = 0; i < MAXATTACKMESS && attack_mess[ATM_WRAITH_FEED][i].level != -1; i++)
-                if (dam < attack_mess[ATM_WRAITH_FEED][i].level) {
-                    snprintf(buf1, sizeof(buf1), "%s %s%s", attack_mess[ATM_WRAITH_FEED][i].buf1, op->name, attack_mess[ATM_WRAITH_FEED][i].buf2);
-                    snprintf(buf2, sizeof(buf2), "%s", attack_mess[ATM_WRAITH_FEED][i].buf3);
-                    found++;
-                    break;
-                }
-        }
-    }
-    if (found) {
-        /* done */
-    } else if (IS_ARROW(hitter) && (type == AT_PHYSICAL || type == AT_MAGIC)) {
-        snprintf(buf1, sizeof(buf1), "hit"); /* just in case */
-        for (i = 0; i < MAXATTACKMESS; i++)
-            if (dam < attack_mess[ATM_ARROW][i].level
-            || attack_mess[ATM_ARROW][i+1].level == -1) {
-                snprintf(buf2, sizeof(buf2), "%s", attack_mess[ATM_ARROW][i].buf3);
-                found++;
-                break;
-            }
-    } else if (type&AT_DRAIN && IS_LIVE(op)) {
-        /* drain is first, because some items have multiple attypes */
-        for (i = 0; i < MAXATTACKMESS && attack_mess[ATM_DRAIN][i].level != -1; i++)
-            if (dam < attack_mess[ATM_DRAIN][i].level
-            || attack_mess[ATM_DRAIN][i+1].level == -1) {
-                snprintf(buf1, sizeof(buf1), "%s %s%s", attack_mess[ATM_DRAIN][i].buf1, op->name, attack_mess[ATM_DRAIN][i].buf2);
-                snprintf(buf2, sizeof(buf2), "%s", attack_mess[ATM_DRAIN][i].buf3);
-                found++;
-                break;
-            }
-    } else if (type&AT_ELECTRICITY && IS_LIVE(op)) {
-        for (i = 0; i < MAXATTACKMESS && attack_mess[ATM_ELEC][i].level != -1; i++)
-            if (dam < attack_mess[ATM_ELEC][i].level
-            || attack_mess[ATM_ELEC][i+1].level == -1) {
-                snprintf(buf1, sizeof(buf1), "%s %s%s", attack_mess[ATM_ELEC][i].buf1, op->name, attack_mess[ATM_ELEC][i].buf2);
-                snprintf(buf2, sizeof(buf2), "%s", attack_mess[ATM_ELEC][i].buf3);
-                found++;
-                break;
-            }
-    } else if (type&AT_COLD && IS_LIVE(op)) {
-        for (i = 0; i < MAXATTACKMESS && attack_mess[ATM_COLD][i].level != -1; i++)
-            if (dam < attack_mess[ATM_COLD][i].level
-            || attack_mess[ATM_COLD][i+1].level == -1) {
-                snprintf(buf1, sizeof(buf1), "%s %s%s", attack_mess[ATM_COLD][i].buf1, op->name, attack_mess[ATM_COLD][i].buf2);
-                snprintf(buf2, sizeof(buf2), "%s", attack_mess[ATM_COLD][i].buf3);
-                found++;
-                break;
-            }
-    } else if (type&AT_FIRE) {
-        for (i = 0; i < MAXATTACKMESS && attack_mess[ATM_FIRE][i].level != -1; i++)
-            if (dam < attack_mess[ATM_FIRE][i].level
-            || attack_mess[ATM_FIRE][i+1].level == -1) {
-                snprintf(buf1, sizeof(buf1), "%s %s%s", attack_mess[ATM_FIRE][i].buf1, op->name, attack_mess[ATM_FIRE][i].buf2);
-                snprintf(buf2, sizeof(buf2), "%s", attack_mess[ATM_FIRE][i].buf3);
-                found++;
-                break;
-            }
-    } else if (hitter->current_weapon != NULL) {
-        int mtype;
-
-        switch (hitter->current_weapon->weapontype) {
-        case WEAP_HIT: mtype = ATM_BASIC; break;
-        case WEAP_SLASH: mtype = ATM_SLASH; break;
-        case WEAP_PIERCE: mtype = ATM_PIERCE; break;
-        case WEAP_CLEAVE: mtype = ATM_CLEAVE; break;
-        case WEAP_SLICE: mtype = ATM_SLICE; break;
-        case WEAP_STAB: mtype = ATM_STAB; break;
-        case WEAP_WHIP: mtype = ATM_WHIP; break;
-        case WEAP_CRUSH: mtype = ATM_CRUSH; break;
-        case WEAP_BLUD: mtype = ATM_BLUD; break;
-        default: mtype = ATM_BASIC; break;
-        }
-        for (i = 0; i < MAXATTACKMESS && attack_mess[mtype][i].level != -1; i++)
-            if (dam < attack_mess[mtype][i].level
-            || attack_mess[mtype][i+1].level == -1) {
-                snprintf(buf1, sizeof(buf1), "%s %s%s", attack_mess[mtype][i].buf1, op->name, attack_mess[mtype][i].buf2);
-                snprintf(buf2, sizeof(buf2), "%s", attack_mess[mtype][i].buf3);
-                found++;
-                break;
-            }
-    } else {
-        for (i = 0; i < MAXATTACKMESS && attack_mess[ATM_BASIC][i].level != -1; i++)
-            if (dam < attack_mess[ATM_BASIC][i].level
-            || attack_mess[ATM_BASIC][i+1].level == -1) {
-                snprintf(buf1, sizeof(buf1), "%s %s%s", attack_mess[ATM_BASIC][i].buf1, op->name, attack_mess[ATM_BASIC][i].buf2);
-                snprintf(buf2, sizeof(buf2), "%s", attack_mess[ATM_BASIC][i].buf3);
-                found++;
-                break;
-            }
-    }
-
-    if (!found) {
-        snprintf(buf1, sizeof(buf1), "hit");
-        snprintf(buf2, sizeof(buf2), "hits");
-    }
 
     if (dam > 0) {
         if (hitter->chosen_skill)
@@ -641,6 +616,8 @@ static void attack_message(int dam, int type, object *op, object *hitter) {
     /* scale down magic considerably. */
     if (type&AT_MAGIC && rndm(0, 5))
         return;
+
+    get_attack_message(dam, type, op, hitter, buf1, buf2);
 
     /* Did a player hurt another player?  Inform both! */
     /* only show half the player->player combat messages */
@@ -665,8 +642,8 @@ static void attack_message(int dam, int type, object *op, object *hitter) {
         /* look for stacked spells and start reducing the message chances */
         if (hitter->type == SPELL_EFFECT
         && (hitter->subtype == SP_EXPLOSION || hitter->subtype == SP_BULLET || hitter->subtype == SP_CONE)) {
-            i = 4;
-            map = hitter->map;
+            int i = 4;
+            mapstruct *map = hitter->map;
             if (OUT_OF_REAL_MAP(map, hitter->x, hitter->y))
                 return;
             FOR_MAP_PREPARE(map, hitter->x, hitter->y, next)
