@@ -1,3 +1,7 @@
+# 2022-05-13
+
+**Display of attack messages**, by attack type. When selecting an item, the message for the hitter and the victim as presented in-game is displayed.
+
 # 2022-02-18
 
 **Graphical overview of monster resistances** to fire, cold, electricity, poison, in *Tools* menu.

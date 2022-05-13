@@ -30,6 +30,7 @@
 #include "scripts/ScriptFilePanel.h"
 #include "general_messages/GeneralMessagePanel.h"
 #include "faces/FacesetsPanel.h"
+#include "attack_messages/AttackMessagePanel.h"
 
 #include "artifacts/ArtifactWrapper.h"
 
@@ -141,6 +142,7 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     addPanel("Script", new CREScriptPanel(this));
     addPanel("Message", new CREMessagePanel(myMessages, this));
     addPanel("RandomMap", new CRERandomMapPanel(this));
+    addPanel("AttackMessage", new AttackMessagePanel(this));
 
     splitter->setSizes({5000, 5000});
 

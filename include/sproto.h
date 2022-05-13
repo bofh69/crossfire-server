@@ -45,7 +45,7 @@ void apply_changes_to_player(object *pl, object *change, int limit_stats);
 void save_throw_object(object *op, uint32_t type, object *originator);
 int slow_living_by(object *op, const int speed_penalty);
 int hit_map(object *op, int dir, uint32_t type, int full_hit);
-void get_attack_message_for_attack_type(int dam, uint8_t atm_type, const object *victim, char *buf1, char *buf2);
+void get_attack_message_for_attack_type(int dam, uint8_t atm_type, const char *victim_name, char *buf1, char *buf2);
 int attack_ob(object *op, object *hitter);
 object *hit_with_arrow(object *op, object *victim);
 int friendly_fire(object *op, object *hitter);

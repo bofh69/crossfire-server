@@ -33,7 +33,7 @@ void AssetWrapperPanel::itemChanged() {
 }
 
 QLabel *AssetWrapperPanel::addLabel(const QString &label, const char *property) {
-    return addWidget(label, new QLabel(this), true, property, "text");
+    return addWidget(label, new QLabel(this), !label.isEmpty(), property, "text");
 }
 
 QLineEdit *AssetWrapperPanel::addLineEdit(const QString &label, const char *property, bool readOnly) {

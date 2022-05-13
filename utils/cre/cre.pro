@@ -66,6 +66,8 @@ CREPixmap.cpp \
  artifacts/ArtifactsWrapper.cpp \
  assets/AssetModel.cpp \
  assets/AssetWrapperPanel.cpp \
+ attack_messages/AttackMessagePanel.cpp \
+ attack_messages/AttackMessagesWrapper.cpp \
  faces/FacePanel.cpp \
  faces/FaceWrapper.cpp \
  faces/FacesetsPanel.cpp \
@@ -158,6 +160,8 @@ CREPixmap.h \
  assets/AssetModel.h \
  assets/AssetWrapper.h \
  assets/AssetWrapperPanel.h \
+ attack_messages/AttackMessagePanel.h \
+ attack_messages/AttackMessagesWrapper.h \
  faces/FacePanel.h \
  faces/FaceWrapper.h \
  faces/FacesWrapper.h \

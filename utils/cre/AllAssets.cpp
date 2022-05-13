@@ -19,6 +19,7 @@
 #include "animations/AnimationsWrapper.h"
 #include "quests/QuestsWrapper.h"
 #include "general_messages/GeneralMessagesWrapper.h"
+#include "attack_messages/AttackMessagesWrapper.h"
 
 AllAssets::AllAssets(ResourcesManager *resources, ScriptFileManager *scripts, MessageManager *messages) : AssetWrapper(nullptr, QString()) {
 
@@ -35,4 +36,5 @@ AllAssets::AllAssets(ResourcesManager *resources, ScriptFileManager *scripts, Me
     myAssets.append(scripts);
     myAssets.append(messages);
     myAssets.append(myRandomMaps = new RandomMaps(this, resources->getMapInformationManager()));
+    myAssets.append(new AttackMessagesWrapper(this));
 }

@@ -522,21 +522,21 @@ static uint8_t get_attack_message_type(int type, const object *op, const object 
  * damage done.
  * @param atm_type
  * one @ref Attacktypes of type ATM_xxx.
- * @param victim
- * victim of the attack.
+ * @param victim_name
+ * name of the victim of the attack.
  * @param[out] buf1
  * where to write the message for the one doing the attack, must be at least MAX_BUF long.
  * @param[out] buf2
  * where to write the message for the victim of the attack, must be at least MAX_BUF long.
  */
-void get_attack_message_for_attack_type(int dam, uint8_t atm_type, const object *victim, char *buf1, char *buf2) {
+void get_attack_message_for_attack_type(int dam, uint8_t atm_type, const char *victim_name, char *buf1, char *buf2) {
     snprintf(buf1, MAX_BUF, "hit");
     snprintf(buf2, MAX_BUF, "hits");
 
     for (int i = 0; i < MAXATTACKMESS && attack_mess[atm_type][i].level != -1; i++) {
         if (dam < attack_mess[atm_type][i].level
         || attack_mess[atm_type][i+1].level == -1) {
-            snprintf(buf1, MAX_BUF, "%s %s%s", attack_mess[atm_type][i].buf1, victim->name, attack_mess[atm_type][i].buf2);
+            snprintf(buf1, MAX_BUF, "%s %s%s", attack_mess[atm_type][i].buf1, victim_name, attack_mess[atm_type][i].buf2);
             snprintf(buf2, MAX_BUF, "%s", attack_mess[atm_type][i].buf3);
             return;
         }
@@ -581,7 +581,7 @@ static void get_attack_message(int dam, int type, const object *op, const object
     snprintf(buf2, MAX_BUF, "hits");
 
     uint8_t atm_type = get_attack_message_type(type, op, hitter);
-    get_attack_message_for_attack_type(dam, atm_type, op, buf1, buf2);
+    get_attack_message_for_attack_type(dam, atm_type, op->name, buf1, buf2);
 }
 
 /**
