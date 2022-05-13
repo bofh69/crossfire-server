@@ -21,7 +21,13 @@
 	<tr>
 		<td>
 @ref page_type_40
-		</td><td>                Move creatures using these movement types.</td>
+		</td><td>                When a monster steps onto the mover, it must use one of these
+                movement types for it to be "frozen" for a period of time. By
+                default, this is &lt;walk,fly_low&gt;. You should set this to be
+                the same as the movement type, otherwise monsters might get
+                "frozen", but not actually moved. Be careful if you set it to
+                &lt;all&gt;, since thrown or fired objects (like arrows) can
+                also be frozen (but can't be moved). This is probably a bug.</td>
 	</tr>
 	<tr>
 		<td>

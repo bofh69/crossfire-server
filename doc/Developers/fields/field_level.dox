@@ -98,7 +98,8 @@
                 activates creators, creating (per default: monster-only) movers
                 under the NPC's feet. The NPC starts "walking" on a predefined
                 route! Note that it's useful to set this NPC immune to
-                everything, preventing the player to push the NPC off his trace.</td>
+                everything, preventing the player from pushing the NPC off the
+                route.</td>
 	</tr>
 	<tr>
 		<td>

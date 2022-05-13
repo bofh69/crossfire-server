@@ -44,7 +44,13 @@
 		<td>
 @ref page_type_40
 		</td><td>            The movement speed value determines how fast a chain of these movers
-            will push a player along (default is -0.2).</td>
+            will push a player along (default is -0.2). Note that a negative
+            value gets converted to positive when the item is loaded, and
+            randomizes the initial speed value. A value of 1 will move the item
+            once every tick, and 0.1 will move the item every 10 ticks, although
+            it might be shorter if the mover is partway through its speed
+            cycle. So, the default of 0.2 will move you in about half a second
+            most of the time, assuming your tickrate is 8 ticks per second.</td>
 	</tr>
 	<tr>
 		<td>

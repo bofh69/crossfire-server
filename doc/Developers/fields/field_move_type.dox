@@ -21,8 +21,11 @@
 	<tr>
 		<td>
 @ref page_type_40
-		</td><td>                Determines which movement types this mover affects. This should
-                always include "walk".</td>
+		</td><td>                When a monster steps onto the mover, it must use one of these
+                movement types for it to be moved. By default, this is "walk",
+                so flying monsters (and players!) won't be affected. It's
+                probably best to change this to &lt;walk,fly_low&gt; if you want
+                things to not bypass it just by flying.</td>
 	</tr>
 	<tr>
 		<td>

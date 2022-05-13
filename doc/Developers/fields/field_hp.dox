@@ -82,7 +82,7 @@
 		<td>
 @ref page_type_40
 		</td><td>            This value has only a meaning if &lt;gets used up&gt; is set: &lt;number
-            of uses&gt; is the number of times minus one, that it will move a
+            of uses&gt; is the number of times, minus one, that it will move a
             creature before disappearing. (It will move someone &lt;number of
             uses&gt;+1 times, then vanish).</td>
 	</tr>

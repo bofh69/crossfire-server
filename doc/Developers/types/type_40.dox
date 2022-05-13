@@ -36,7 +36,13 @@ Type defined by:
 	<tr>
 		<td>affected movement</td>
 		<td>@ref obj::move_on</td>
-		<td>                Move creatures using these movement types.
+		<td>                When a monster steps onto the mover, it must use one of these
+                movement types for it to be "frozen" for a period of time. By
+                default, this is &lt;walk,fly_low&gt;. You should set this to be
+                the same as the movement type, otherwise monsters might get
+                "frozen", but not actually moved. Be careful if you set it to
+                &lt;all&gt;, since thrown or fired objects (like arrows) can
+                also be frozen (but can't be moved). This is probably a bug.
 		</td>
 	</tr>
 	<tr>
@@ -104,9 +110,9 @@ Type defined by:
 		<td>forced movement</td>
 		<td>@ref obj::attacktype</td>
 		<td>            If forced movement is enabled, the mover "freezes" anyone it moves
-            (so they are forced to move along a chain). For players there is no
-            way to escape this forced movement, except being pushed by a second
-            player.
+            (so they can't step off the mover before it activates). For players
+            there is no way to escape this forced movement, except being pushed
+            by a second player.
 		</td>
 	</tr>
 	<tr>
@@ -225,21 +231,31 @@ Type defined by:
                 activates creators, creating (per default: monster-only) movers
                 under the NPC's feet. The NPC starts "walking" on a predefined
                 route! Note that it's useful to set this NPC immune to
-                everything, preventing the player to push the NPC off his trace.
+                everything, preventing the player from pushing the NPC off the
+                route.
 		</td>
 	</tr>
 	<tr>
 		<td>movement speed</td>
 		<td>@ref obj::speed</td>
 		<td>            The movement speed value determines how fast a chain of these movers
-            will push a player along (default is -0.2).
+            will push a player along (default is -0.2). Note that a negative
+            value gets converted to positive when the item is loaded, and
+            randomizes the initial speed value. A value of 1 will move the item
+            once every tick, and 0.1 will move the item every 10 ticks, although
+            it might be shorter if the mover is partway through its speed
+            cycle. So, the default of 0.2 will move you in about half a second
+            most of the time, assuming your tickrate is 8 ticks per second.
 		</td>
 	</tr>
 	<tr>
 		<td>movement type</td>
 		<td>@ref obj::move_type</td>
-		<td>                Determines which movement types this mover affects. This should
-                always include "walk".
+		<td>                When a monster steps onto the mover, it must use one of these
+                movement types for it to be moved. By default, this is "walk",
+                so flying monsters (and players!) won't be affected. It's
+                probably best to change this to &lt;walk,fly_low&gt; if you want
+                things to not bypass it just by flying.
 		</td>
 	</tr>
 	<tr>
@@ -268,7 +284,7 @@ Type defined by:
 		<td>number of uses</td>
 		<td>@ref liv::hp</td>
 		<td>            This value has only a meaning if &lt;gets used up&gt; is set: &lt;number
-            of uses&gt; is the number of times minus one, that it will move a
+            of uses&gt; is the number of times, minus one, that it will move a
             creature before disappearing. (It will move someone &lt;number of
             uses&gt;+1 times, then vanish).
 		</td>

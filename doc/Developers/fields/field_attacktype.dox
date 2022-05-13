@@ -37,9 +37,9 @@
 		<td>
 @ref page_type_40
 		</td><td>            If forced movement is enabled, the mover "freezes" anyone it moves
-            (so they are forced to move along a chain). For players there is no
-            way to escape this forced movement, except being pushed by a second
-            player.</td>
+            (so they can't step off the mover before it activates). For players
+            there is no way to escape this forced movement, except being pushed
+            by a second player.</td>
 	</tr>
 	<tr>
 		<td>
