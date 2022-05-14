@@ -12,14 +12,14 @@ int main(int argc, char *argv[]) {
 
     settings.debug = llevDebug;
     init_library();
+    int flags = 0;
+    if (argv[1][0] == '~') {
+        flags |= MAP_PLAYER_UNIQUE;
+    }
 #ifdef HAVE_GPERFTOOLS_PROFILER_H
     ProfilerStart("mapload.prof");
 #endif
     for (int i = 0; i < (int)strtol(argv[2], NULL, 10); i++) {
-        int flags = 0;
-        if (argv[1][0] == '~') {
-            flags |= MAP_PLAYER_UNIQUE;
-        }
         mapstruct *m = mapfile_load(argv[1], flags);
         if (m == NULL) {
             break;
