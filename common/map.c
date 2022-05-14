@@ -1648,7 +1648,7 @@ static void free_all_objects(mapstruct *m) {
                 if (m->in_memory == MAP_IN_MEMORY)
                     clean_object(op);
                 object_remove(op);
-                object_free_drop_inventory(op);
+                object_free(op, FREE_OBJ_NO_DESTROY_CALLBACK);
             }
         }
 #ifdef MANY_CORES
