@@ -251,6 +251,8 @@ enum object_type {
     OBJECT_TYPE_MAX = 164, /**< Update if you add new types */
 };
 
+typedef uint32_t ob_flags[4];
+
 /**
  * Main Crossfire structure, one ingame object.
  *
@@ -416,7 +418,7 @@ typedef struct obj {
     struct archt *arch;         /**< Pointer to archetype */
     struct archt *other_arch;   /**< Pointer used for various things - mostly used for what
                                  * this objects turns into or what this object creates */
-    uint32_t      flags[4];       /**< Various flags */
+    ob_flags    flags;             /**< Various flags */
     const Animations *animation;   /**< Animation of this item, NULL if not animated. */
     uint8_t       anim_speed;     /**< Ticks between animation-frames */
     uint8_t       last_anim;      /**< Last sequence used to draw face */
@@ -481,12 +483,10 @@ extern object *active_objects;
 extern int nrofallocobjects;
 extern int nroffreeobjects;
 
-static inline uint32_t * compare_flags(const object *p, const object *q) {
-    static uint32_t ret[4];
+static inline void compare_flags(ob_flags *ret, const object *p, const object *q) {
     for (int i = 0; i < 4; i++) {
-        ret[i] = p->flags[i] ^ q->flags[i];
+        (*ret)[i] = p->flags[i] ^ q->flags[i];
     }
-    return ret;
 }
 
 static inline int query_flag(const object *op, int flag) {

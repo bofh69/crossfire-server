@@ -4902,6 +4902,25 @@ static inline void FAST_SAVE_DOUBLE(StringBuffer *sb, const char *name, const do
 }
 
 /**
+ * Return the index of the first difference in the given object flag
+ * difference set (computed by compare_flags) or -1 if there is no difference.
+ * Then modify the difference set so that the subsequent call on the same set
+ * returns the next difference.
+ */
+int flags_differ(ob_flags *diff) {
+    for (int i = 0; i < 4; i++) {
+        int idx = ffs((*diff)[i]);
+        if (idx != 0) {
+            int bit = idx - 1;
+            // Clear difference bit.
+            (*diff)[i] &= ~(1 << bit);
+            return 32*i + bit;
+        }
+    }
+    return -1;
+}
+
+/**
  * Returns a pointer to a static string which contains all variables
  * which are different in the two given objects.
  *
@@ -5213,10 +5232,11 @@ void get_ob_diff(StringBuffer *sb, const object *op, const object *op2) {
         FAST_SAVE_DOUBLE(sb, "move_slow_penalty ", op->move_slow_penalty);
     }
 
-    uint32_t *diff_flags = compare_flags(op, op2);
-    for (int flag = 0; flag <= NUM_FLAGS; flag++) {
-        bool flag_different = diff_flags[flag / 32] & (1U << (flag % 32));
-        if (flag_names[flag] && flag_different) {
+    ob_flags diff_flags;
+    compare_flags(&diff_flags, op, op2);
+    int flag;
+    while ((flag = flags_differ(&diff_flags)) != -1) {
+        if (flag_names[flag]) {
             ADD_STRINGLINE_ENTRY(sb, flag_names[flag], QUERY_FLAG(op, flag) ? " 1" : " 0");
         }
     }
@@ -5228,7 +5248,6 @@ void get_ob_diff(StringBuffer *sb, const object *op, const object *op2) {
             FAST_SAVE_LONG(sb, " ", op->body_info[i]);
         }
     }
-
 }
 
 /**
