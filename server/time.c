@@ -797,6 +797,9 @@ void move_player_mover(object *op) {
  * @todo remove unused return value?
  */
 int process_object(object *op) {
+    if (getenv("CF_DEBUG_PROCESS")) {
+        LOG(llevDebug, "processing %s (%d), speed %.3f\n", op->name, op->count, op->speed);
+    }
     if (QUERY_FLAG(op, FLAG_IS_A_TEMPLATE))
         return 0;
 
