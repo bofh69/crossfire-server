@@ -315,6 +315,7 @@ player *get_player(player *p) {
          * it, and no spell data is sent.
          */
         p->socket.monitor_spells = 0;
+        p->socket.account_chars = 0;
     } else {
         /* Only needed when reusing existing player. */
         clear_player(p);
