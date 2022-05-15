@@ -17,6 +17,7 @@
  */
 
 #include "global.h"
+#include "active.h"
 
 #include <assert.h>
 #include <ctype.h>
@@ -1055,6 +1056,11 @@ static void process_players2(void) {
 
     /* Then check if any players should use weapon-speed instead of speed */
     for (pl = first_player; pl != NULL; pl = pl->next) {
+        // Give players speed.
+        if (pl->ob->speed_left < 0) {
+            pl->ob->speed_left += FABS(pl->ob->speed);
+        }
+
         /* The code that did weapon_sp handling here was out of place -
          * this isn't called until after the player has finished there
          * actions, and is thus out of place.  All we do here is bounds
@@ -1073,47 +1079,15 @@ static void process_players2(void) {
 
 #define SPEED_DEBUG
 
-static bool object_in_icecube(object *op) {
-    return op->env != NULL && strcmp(op->env->arch->name, "icecube") == 0;
-}
-
 /**
  * Process all active objects.
  */
 void process_events(void) {
-    object *op;
-    object marker;
-    tag_t tag;
-
     process_players1();
 
-    memset(&marker, 0, sizeof(object));
-    /* Put marker object at beginning of active list */
-    marker.active_next = active_objects;
-
-    if (marker.active_next)
-        marker.active_next->active_prev = &marker;
-    marker.active_prev = NULL;
-    active_objects = &marker;
-
-    while (marker.active_next) {
-        op = marker.active_next;
-        tag = op->count;
-
-        /* Move marker forward - swap op and marker */
-        op->active_prev = marker.active_prev;
-
-        if (op->active_prev)
-            op->active_prev->active_next = op;
-        else
-            active_objects = op;
-
-        marker.active_next = op->active_next;
-
-        if (marker.active_next)
-            marker.active_next->active_prev = &marker;
-        marker.active_prev = op;
-        op->active_next = &marker;
+    while (active_has_next()) {
+        object *op = active_next();
+        tag_t tag = op->count;
 
         /* Now process op */
         if (QUERY_FLAG(op, FLAG_FREED)) {
@@ -1192,34 +1166,17 @@ void process_events(void) {
             op->last_anim++;
         }
 
-        if (op->speed_left > 0) {
-            // Players are special because their speed_left has already been
-            // reduced in do_server(). Players effectively process every tick
-            // so long they have non-zero speed left.
-            if (op->type != PLAYER) {
-                // Objects in icecubes decay at a slower rate
-                if (object_in_icecube(op)) {
-                    op->speed_left -= 10;
-                } else {
-                    op->speed_left -= 1;
-                }
-            }
-            process_object(op);
-            if (object_was_destroyed(op, tag))
-                continue;
-        } else {
-            // Custom-made creatures for random maps can still have negative speeds, so catch that with FABS().
-            op->speed_left += FABS(op->speed);
+        process_object(op);
+        if (object_was_destroyed(op, tag))
+            continue;
+
+        // Put back on active list.
+        if (FABS(op->speed) > MIN_ACTIVE_SPEED) {
+            active_add(op);
         }
         if (settings.casting_time == TRUE && op->casting_time > 0)
             op->casting_time--;
     }
-
-    /* Remove marker object from active list */
-    if (marker.active_prev != NULL)
-        marker.active_prev->active_next = NULL;
-    else
-        active_objects = NULL;
 
     process_players2();
 }

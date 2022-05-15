@@ -21,6 +21,7 @@
    variable. */
 
 #include "global.h"
+#include "active.h"
 
 #include <assert.h>
 #include <stddef.h>
@@ -293,7 +294,6 @@ int nrofallocobjects = STARTMAX; /**< How many OBs allocated (free + used) */
 
 object *objects;           /**< Pointer to the list of used objects */
 static object *free_objects;      /**< Pointer to the list of unused objects */
-object *active_objects;    /**< List of active objects that need to be processed */
 
 /** X offset when searching around a spot. */
 short freearr_x[SIZEOFFREE] = {
@@ -327,7 +327,6 @@ int freedir[SIZEOFFREE] = {
 void init_objects(void) {
     /* Initialize all objects: */
     objects = NULL;
-    active_objects = NULL;
 
 #ifdef MEMORY_DEBUG
     free_objects = NULL;
@@ -1037,8 +1036,6 @@ void object_clear(object *op) {
     op->more = NULL;
     op->head = NULL;
     op->map = NULL;
-    op->active_next = NULL;
-    op->active_prev = NULL;
     /* What is not cleared is next, prev, and count */
 
     op->expmul = 1.0;
@@ -1291,8 +1288,6 @@ object *object_new(void) {
     op->materialname = NULL;
     op->next = objects;
     op->prev = NULL;
-    op->active_next = NULL;
-    op->active_prev = NULL;
     op->spell_tags = NULL;
     if (objects != NULL)
         objects->prev = op;
@@ -1347,50 +1342,10 @@ void object_update_speed(object *op) {
         return;
     }
     if (FABS(op->speed) > MIN_ACTIVE_SPEED) {
-        /* If already on active list, don't do anything */
-        /* TODO this check can probably be simplified a lot */
-        if (op->active_next || op->active_prev || op == active_objects)
-            return;
-
-        /* process_events() expects us to insert the object at the beginning
-         * of the list. */
-        op->active_next = active_objects;
-        if (op->active_next != NULL)
-            op->active_next->active_prev = op;
-        active_objects = op;
+        active_add(op);
     } else {
-        object_remove_from_active_list(op);
+        active_remove(op);
     }
-}
-
-/**
- * This function removes object 'op' from the list of active
- * objects.
- * This should only be used for style maps or other such
- * reference maps where you don't want an object that isn't
- * in play chewing up cpu time getting processed.
- * The reverse of this is to call object_update_speed(), which
- * will do the right thing based on the speed of the object.
- *
- * @param op
- * object to remove.
- */
-void object_remove_from_active_list(object *op) {
-    /* If not on the active list, nothing needs to be done */
-    if (!op->active_next && !op->active_prev && op != active_objects)
-        return;
-
-    if (op->active_prev == NULL) {
-        active_objects = op->active_next;
-        if (op->active_next != NULL)
-            op->active_next->active_prev = NULL;
-    } else {
-        op->active_prev->active_next = op->active_next;
-        if (op->active_next)
-            op->active_next->active_prev = op->active_prev;
-    }
-    op->active_next = NULL;
-    op->active_prev = NULL;
 }
 
 /**
@@ -1767,13 +1722,7 @@ int object_count_used(void) {
  * number of objects on the list of active objects.
  */
 int object_count_active(void) {
-    int i = 0;
-    object *tmp = active_objects;
-
-    while (tmp != NULL)
-        tmp = tmp->active_next,
-        i++;
-    return i;
+    return active_count();
 }
 
 /**

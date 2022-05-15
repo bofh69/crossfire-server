@@ -423,8 +423,6 @@ START_TEST(test_object_new) {
     fail_unless(ob->msg == NULL, "Field msg has not been nullified by object_new()");
     fail_unless(ob->materialname == NULL, "Field materialname has not been nullified by object_new()");
     fail_unless(ob->prev == NULL, "Field prev has not been nullified by object_new()");
-    fail_unless(ob->active_next == NULL, "Field active_next has not been nullified by object_new()");
-    fail_unless(ob->active_prev == NULL, "Field active_prev has not been nullified by object_new()");
     /* did you really thing i'll go with only one object? */
     /* let's go for about 2M allocations in a row, let's test roughness */
     for (i = 0; i < 1L<<17; i++) {
@@ -455,7 +453,8 @@ START_TEST(test_object_update_turn_face) {
 }
 END_TEST
 
-#define IS_OBJECT_ACTIVE(op) (op->active_next || op->active_prev || op == active_objects)
+#include "active.h"
+#define IS_OBJECT_ACTIVE(op) object_is_active(op)
 /** This is the test to check the behaviour of the method
  *  void object_update_speed(object *op);
  */
@@ -511,8 +510,8 @@ START_TEST(test_object_remove_from_active_list) {
     ob1->speed = MIN_ACTIVE_SPEED*2;
     object_update_speed(ob1);
     fail_unless(IS_OBJECT_ACTIVE(ob1), "Object with absolute speed >MIN_ACTIVE_SPEED(%f) should be made active (speed=%f)", MIN_ACTIVE_SPEED, ob1->speed);
-    object_remove_from_active_list(ob1);
-    fail_unless(!IS_OBJECT_ACTIVE(ob1), "After call to object_remove_from_active_list, object should be made inactive");
+    active_remove(ob1);
+    fail_unless(!IS_OBJECT_ACTIVE(ob1), "After call to active_remove, object should be made inactive");
 }
 END_TEST
 #undef IS_OBJECT_ACTIVE

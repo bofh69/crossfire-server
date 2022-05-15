@@ -1527,13 +1527,13 @@ static void cfapi_object_get_property(int *type, ...) {
 
     case CFAPI_OBJECT_PROP_NEXT_ACTIVE_OB:
         robject = va_arg(args, object **);
-        *robject = op->active_next;
+        *robject = NULL;
         *type = CFAPI_POBJECT;
         break;
 
     case CFAPI_OBJECT_PROP_PREV_ACTIVE_OB:
         robject = va_arg(args, object **);
-        *robject = op->active_prev;
+        *robject = NULL;
         *type = CFAPI_POBJECT;
         break;
 
