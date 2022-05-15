@@ -1,4 +1,3 @@
-freeze
 The freeze command will prevent a player from taking any action for some amount of time, the default time is 100 ticks.
 
 Usage:
