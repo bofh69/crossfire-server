@@ -39,6 +39,18 @@
 #include "sproto.h"
 #include "stringbuffer.h"
 
+#ifdef CF_MXE_CROSS_COMPILE
+#   define ffs(word) (__builtin_constant_p (word)                             \
+                      ? __builtin_ffs (word)                                  \
+                      : ({ int __cnt, __tmp;                                  \
+                           __asm__ __volatile__                               \
+                             ("bsfl %2,%0\n\t"                                \
+                              "cmovel %1,%0"                                  \
+                              : "=&r" (__cnt), "=r" (__tmp)                   \
+                              : "rm" (word), "1" (-1));                       \
+                           __cnt + 1; }))
+#endif
+
 static int compare_ob_value_lists_one(const object *, const object *);
 static int compare_ob_value_lists(const object *, const object *);
 static void permute(int *, int, int);
