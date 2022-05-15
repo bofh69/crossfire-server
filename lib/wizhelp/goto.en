@@ -1,3 +1,9 @@
-Usage: goto <mapname>
+The goto command will instantly teleport you to the specified map and use that map's entrance coordinate to place you on the map.
 
-Using this command will instantly move you to the start point of the map specified.
+Usage:
+  goto <map_path>
+
+Example:
+  goto /HallOfDMs
+
+The map path must include the full directory tree (i.e., /scorn/port/ticket_office) and is case sensitive.
