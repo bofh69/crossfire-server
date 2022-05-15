@@ -56,17 +56,15 @@ Section "Crossfire Server (required)" cf
   File "Release_notes.txt"
   File /oname=Changelog.rtf "..\changelog"
   SetOutPath $INSTDIR\share
-  File "..\lib\archetypes"
+  File "..\lib\crossfire.arc"
   File "..\lib\artifacts"
   File "..\lib\attackmess"
   File "..\lib\ban_file"
-  File "..\lib\bmaps.paths"
-  File "..\lib\crossfire.0"
-  File "..\lib\crossfire.1"
+  File "..\lib\crossfire.face"
+  File "..\lib\crossfire.tar"
   File "..\lib\def_help"
   File "..\lib\dm_file"
   File "..\lib\exp_table"
-  File "..\lib\faces"
   File "..\lib\forbid"
   File "..\lib\formulae"
   File "..\lib\image_info"
@@ -77,9 +75,7 @@ Section "Crossfire Server (required)" cf
   File "..\lib\races"
   File "..\lib\rules"
   File "..\lib\settings"
-  File "..\lib\smooth"
-  File "..\lib\animations"
-  File /oname=treasures "..\lib\treasures.bld"
+  File "..\lib\treasures.trs"
   File "..\lib\stat_bonus"
   SetOutPath $INSTDIR\share\help
   File "..\lib\help\*.*"
@@ -109,7 +105,7 @@ Section "Crossfire Server (required)" cf
         DetailPrint "Registering service..."
         ExecWait '"$INSTDIR\Crossfire32.exe" -regsrv'
         WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Crossfire Server" "ServiceInstalled" "1"
-        
+
   dont_install:
 SectionEnd
 
@@ -165,14 +161,13 @@ Section "un.Crossfire Server" un_cf
   Delete "$INSTDIR\Changelog.rtf"
   Delete "$INSTDIR\Share\plugins\python21.dll"
   Delete "$INSTDIR\Release_notes.txt"
-  Delete "$INSTDIR\Share\treasures"
-  Delete "$INSTDIR\Share\archetypes"
+  Delete "$INSTDIR\Share\crossfire.trs"
+  Delete "$INSTDIR\Share\crossfire.arc"
+  Delete "$INSTDIR\Share\crossfire.face"
+  Delete "$INSTDIR\Share\crossfire.tar"
   Delete "$INSTDIR\Share\artifacts"
   Delete "$INSTDIR\Share\attackmess"
   Delete "$INSTDIR\Share\ban_file"
-  Delete "$INSTDIR\Share\bmaps.paths"
-  Delete "$INSTDIR\Share\crossfire.0"
-  Delete "$INSTDIR\Share\crossfire.1"
   Delete "$INSTDIR\Share\def_help"
   Delete "$INSTDIR\Share\dm_file"
   Delete "$INSTDIR\Share\exp_table"
@@ -187,20 +182,18 @@ Section "un.Crossfire Server" un_cf
   Delete "$INSTDIR\Share\races"
   Delete "$INSTDIR\Share\rules"
   Delete "$INSTDIR\Share\settings"
-  Delete "$INSTDIR\Share\smooth"
-  Delete "$INSTDIR\Share\animations"
-  
+
   ;Delete help files
   RmDir /r "$INSTDIR\Share\Help"
   RmDir /r "$INSTDIR\Share\WizHelp"
   RmDir /r "$INSTDIR\Share\i18n"
-  
+
   ;Delete plugins
   RmDir /r "$INSTDIR\Share\Plugins"
-  
+
   ;Remove 'temp' directory
   rmdir /r "$INSTDIR\tmp"
-  
+
   ;Remove some data files
   Delete "$INSTDIR\Var\bookarch"
   Delete "$INSTDIR\Var\clockdata"
@@ -240,7 +233,7 @@ Section -un.final_clean
 
 maps:
     MessageBox MB_YESNO|MB_ICONQUESTION "Do you want to also remove the maps?" IDNO no_maps
-    
+
     Banner::Show /NOUNLOAD /set 76 "Please wait" "Uninstalling maps..."
 
     ;Remove maps, let's call the uninstaller in silent mode, and no copying itself somewhere else
@@ -277,4 +270,3 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${un_cf} "Remove Crossfire Server."
   !insertmacro MUI_DESCRIPTION_TEXT ${un_pl} "Remove ALL player data, as well as unique maps information."
 !insertmacro MUI_UNFUNCTION_DESCRIPTION_END
-

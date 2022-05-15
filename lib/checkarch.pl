@@ -3,7 +3,7 @@
 require "util.pl";
 
 $root = $ARGV[0];
-$archetypes = "archetypes";
+$archetypes = "crossfire.arc";
 
 ### main
 &info ("examining $archetypes ...");

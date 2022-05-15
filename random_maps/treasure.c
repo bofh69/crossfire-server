@@ -74,14 +74,14 @@ int wall_blocked(mapstruct *m, int x, int y)
  * Place treasures in the map.
  * map,         (required)
  * layout,      (required)
- * treasure style    (may be empty or NULL, or "none" to cause no treasure.)
+ * treasure style    (may be NULL or "none" to cause no treasure.)
  * treasureoptions   (may be 0 for random choices or positive)
  * @param map
  * where to insert to.
  * @param layout
  * layout the map was generated from.
  * @param treasure_style
- * treasure style. May be empty or NULL for random style, or "none" for no treasures.
+ * treasure style. May be NULL or "none" for no treasures, any other value to put treasures.
  * @param treasureoptions
  * treasure options.
  * @param RP
@@ -200,10 +200,7 @@ void place_treasure(mapstruct *map, char **layout, char *treasure_style, int tre
 }
 
 /**
- * Put a chest into the map.
- * near x and y, with the treasure style
- * determined (may be null, or may be a treasure list from lib/treasures,
- * if the global variable "treasurestyle" is set to that treasure list's name
+ * Put a chest into the map, near x and y, with a chest from the styles/cheststyles map.
  * @param treasureoptions
  * options.
  * @param x

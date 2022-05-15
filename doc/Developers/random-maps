@@ -81,14 +81,8 @@ you may use Gridarta to modify the style maps, or create new ones.
 			archetype.A style of "none" causes no monsters to be
                         generated.
 
-  treasurestyle <style> (Special) If the style name chosen is contained in
-			the lib/treasures file, it will use that for making
-			treasures.  If it is NOT in the lib/treasures file,
-			it will look up /styles/treasurestyle/<style>, and
-			pick random treasures from there.  If <style> matches
-			neither of these, it will generate treasures
-			using the "chest" treasurelist.  A style of "none"
-			causes no treasures to be placed.
+  treasurestyle <style> A style of "none" causes no treasures to be placed.
+     Any other value causes treasures to be placed.
 
 
 

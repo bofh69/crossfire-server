@@ -33,7 +33,7 @@ dump_switches:
 check_ok: dump_switches
 	@$(RM) dump_switches
 
-.bmaps: ../../lib/archetypes
+.bmaps: ../../lib/archetypes.arc
 	$(RM) *.ps
 	touch .bmaps
 

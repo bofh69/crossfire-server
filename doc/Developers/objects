@@ -2322,7 +2322,7 @@ is_buildable <1>        set if items can be built on top of this O.
 6. TREASURES (and Abilities)
 *******************************************************************************
 
-The treasures are kept in LIBDIR/treasures.  Their format is:
+The treasures are kept in LIBDIR/crossfire.trs.  Their format is:
 
 treasure <name>
   <item>
@@ -2659,4 +2659,3 @@ available:
 Because shared strings will return a pointer to a string if it exists, one can
 see if the strings are equal by comparing the shared string address they point
 to (ie str == str2 directly).
-
