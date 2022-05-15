@@ -1,3 +1,16 @@
-Usage: kick <player>
+The kick command will cause the specified player (or all players) to be disconnected from the server. They can reconnect to the server again if desired.
 
-This command will kick a player off the server. If used without an argument, it will kick all players off the server with the exception of you.
+This is useful for forcing a player to disconnect if they encounter a dropped link and are unable to log back in because the server still shows them as logged in.
+
+Usage:
+  kick <player>
+
+Example:
+  kick Leroy
+
+If used without an argument, it will kick all players off the server except for you, the DM.
+
+Usage:
+ kick
+
+See Also: banish
