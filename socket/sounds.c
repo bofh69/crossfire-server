@@ -72,7 +72,7 @@ void play_sound_player_only(player *pl, int8_t sound_type, object *emitter, int 
     // Downscale the volume by distance
     volume = distance ? volume / distance : volume;
 
-    pl->socket.sounds_this_tick = 0;
+    pl->socket.sounds_this_tick++;
 
     name = emitter->name;
     if (emitter->type == PLAYER) {
