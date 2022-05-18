@@ -2866,9 +2866,17 @@ object *object_insert_in_ob(object *op, object *where) {
     }
     CLEAR_FLAG(op, FLAG_OBJ_ORIGINAL);
     CLEAR_FLAG(op, FLAG_REMOVED);
-    if (op->nrof) {
+    if (op->nrof || op->type == SKILL) {
         FOR_INV_PREPARE(where, tmp)
-            if (object_can_merge(tmp, op)) {
+            if (op->type == SKILL && tmp->type == SKILL && op->subtype == tmp->subtype) {
+                // Duplicate skill. Sum exp and total_exp.
+                LOG(llevDebug, "Merged duplicate skill %s for %s\n", op->arch->name, where->name);
+                tmp->stats.exp += op->stats.exp;
+                tmp->total_exp += op->total_exp;
+                SET_FLAG(op, FLAG_REMOVED);
+                object_free(op, FREE_OBJ_FREE_INVENTORY | FREE_OBJ_NO_DESTROY_CALLBACK); /* free the inserted object */
+                return tmp;
+            } else if (object_can_merge(tmp, op)) {
                 /* return the original object and remove inserted object
                  * (client needs the original object) */
                 object_increase_nrof(tmp, op->nrof);
