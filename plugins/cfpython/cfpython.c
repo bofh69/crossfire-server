@@ -1550,7 +1550,6 @@ sys.stderr = catchOutErr\n\
     m = PyImport_AddModule("__main__");
     PyRun_SimpleString(stdOutErr);
     catcher = PyObject_GetAttrString(m, "catchOutErr");
-
     return 0;
 }
 
@@ -1621,6 +1620,68 @@ static const char* GEPaths[] = {
     NULL
 };
 
+/**
+ * Clear the list of event files.
+ * @param eventFiles list as returned by getEventFiles(), will be invalid
+ * after this function call.
+ */
+static void freeEventFiles(char **eventFiles) {
+    assert(eventFiles);
+    for (int e = 0; eventFiles[e] != NULL; e++) {
+        free(eventFiles[e]);
+    }
+    free(eventFiles);
+}
+
+/**
+ * Get the list of script files to run for the specified global event context.
+ * @param context event context, must have its options field correctly filled.
+ * @return list of event files that must be deleted by calling freeEventFiles().
+ */
+static char **getEventFiles(CFPContext *context) {
+    char **eventFiles = NULL;
+    char name[NAME_MAX+1], path[NAME_MAX + 1];
+
+    int allocated = 0, current = 0;
+    DIR *dp;
+    struct dirent *d;
+    struct stat sb;
+
+    snprintf(name, sizeof(name), "python/events/%s/", context->options);
+    cf_get_maps_directory(name, path, sizeof(path));
+
+    dp = opendir(path);
+    if (dp == NULL) {
+        cf_log(llevInfo, "CFPython: global event directory %s not found\n", context->options);
+        eventFiles = calloc(1, sizeof(eventFiles[0]));
+        eventFiles[0] = NULL;
+        return eventFiles;
+    }
+
+    while ((d = readdir(dp)) != NULL) {
+        snprintf(name, sizeof(name), "%s%s", path, d->d_name);
+        stat(name, &sb);
+        if (S_ISDIR(sb.st_mode)) {
+            continue;
+        }
+        if (strcmp(d->d_name + strlen(d->d_name) - 3, ".py")) {
+            continue;
+        }
+
+        if (allocated == current) {
+            allocated += 10;
+            eventFiles = realloc(eventFiles, sizeof(char *) * (allocated + 1));
+            for (int i = current; i < allocated + 1; i++) {
+                eventFiles[i] = NULL;
+            }
+        }
+        eventFiles[current] = strdup(name);
+        current++;
+    }
+    (void)closedir(dp);
+    return eventFiles;
+}
+
 CF_PLUGIN int postInitPlugin(void) {
     PyObject *scriptfile;
     char path[1024];
@@ -1664,6 +1725,7 @@ CF_PLUGIN int cfpython_globalEventListener(int *type, ...) {
     player *pl;
     object *op;
     context = malloc(sizeof(CFPContext));
+    char **files;
 
     va_start(args, type);
     context->event_code = va_arg(args, int);
@@ -1676,8 +1738,6 @@ CF_PLUGIN int cfpython_globalEventListener(int *type, ...) {
     context->event       = NULL;
     context->talk        = NULL;
     rv = context->returnvalue = 0;
-    cf_get_maps_directory("python/events/python_event.py", context->script, sizeof(context->script));
-    snprintf(context->options, sizeof(context->options), "%s", getGlobalEventPath(context->event_code));
     switch (context->event_code) {
     case EVENT_CRASH:
         cf_log(llevDebug, "CFPython: event_crash unimplemented for now\n");
@@ -1794,19 +1854,36 @@ CF_PLUGIN int cfpython_globalEventListener(int *type, ...) {
         return rv;
     }
 
-    if (!do_script(context)) {
-        freeContext(context);
-        return rv;
-    }
+    snprintf(context->options, sizeof(context->options), "%s", getGlobalEventPath(context->event_code));
+    files = getEventFiles(context);
+    for (int file = 0; files[file] != NULL; file++)
+    {
+        CFPContext *copy = malloc(sizeof(CFPContext));
+        (*copy) = (*context);
+        Py_XINCREF(copy->activator);
+        Py_XINCREF(copy->event);
+        Py_XINCREF(copy->third);
+        Py_XINCREF(copy->who);
+        strncpy(copy->script, files[file], sizeof(copy->script));
 
-    context = popContext();
-    rv = context->returnvalue;
+        if (!do_script(copy)) {
+            freeContext(copy);
+            freeEventFiles(files);
+            return rv;
+        }
+
+        copy = popContext();
+        rv = copy->returnvalue;
+
+        freeContext(copy);
+    }
+    freeEventFiles(files);
 
     /* Invalidate freed map wrapper. */
     if (context->event_code == EVENT_MAPUNLOAD)
         Handle_Map_Unload_Hook((Crossfire_Map *)context->who);
 
-    freeContext(context);
+    free(context);
 
     return rv;
 }
