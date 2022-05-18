@@ -845,13 +845,6 @@ int cast_invisible(object *op, object *caster, object *spell_ob) {
                       "You feel more transparent!");
 
     object_update(op, UP_OBJ_FACE);
-
-    /* Only search the active objects - only these should actually do
-     * harm to the player.
-     */
-    for (tmp = active_objects; tmp != NULL; tmp = tmp->active_next)
-        if (tmp->enemy == op)
-            object_set_enemy(tmp, NULL);
     return 1;
 }
 
