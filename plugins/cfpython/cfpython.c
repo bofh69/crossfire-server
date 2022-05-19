@@ -743,7 +743,7 @@ static PyObject *npcSay(PyObject *self, PyObject *args) {
     }
 
     if (strlen(message) >= sizeof(buf) - 1)
-        cf_log(llevError, "warning, too long message in npcSay, will be truncated");
+        cf_log(llevError, "CFPython: warning, too long message in npcSay, will be truncated");
     /** @todo fix by wrapping monster_format_say() (or the whole talk structure methods) */
     snprintf(buf, sizeof(buf), "%s says: %s", npc->obj->name, message);
 
@@ -924,7 +924,7 @@ static PyCodeObject *compilePython(char *filename) {
     pycode_cache_entry *replace = NULL, *run = NULL;
 
     if (stat(filename, &stat_buf)) {
-        cf_log(llevDebug, "cfpython - The Script file %s can't be stat:ed\n", filename);
+        cf_log(llevError, "CFPython: script file %s can't be stat'ed\n", filename);
         return NULL;
     }
 
@@ -983,7 +983,7 @@ static PyCodeObject *compilePython(char *filename) {
             io_module = PyImport_ImportModule("io");
         scriptfile = PyObject_CallMethod(io_module, "open", "ss", filename, "rb");
         if (!scriptfile) {
-            cf_log(llevDebug, "cfpython - The Script file %s can't be opened\n", filename);
+            cf_log(llevDebug, "CFPython: script file %s can't be opened\n", filename);
             cf_free_string(sh_path);
             return NULL;
         }
@@ -1004,7 +1004,7 @@ static PyCodeObject *compilePython(char *filename) {
          * Therefore we use PyFile to open the file, then convert to FILE* and get
          * Python's own structure. Messy, but can't be helped...  */
         if (!(scriptfile = cfpython_openpyfile(filename))) {
-            cf_log(llevDebug, "cfpython - The Script file %s can't be opened\n", filename);
+            cf_log(llevDebug, "CFPython: script file %s can't be opened\n", filename);
             cf_free_string(sh_path);
             return NULL;
         } else {
@@ -1042,6 +1042,8 @@ static int do_script(CFPContext *context) {
     PyObject *list;
     int item;
 #endif
+
+    cf_log(llevDebug, "CFPython: running script %s\n", context->script);
 
     pycode = compilePython(context->script);
     if (pycode) {
@@ -1679,7 +1681,7 @@ CF_PLUGIN int cfpython_globalEventListener(int *type, ...) {
     snprintf(context->options, sizeof(context->options), "%s", getGlobalEventPath(context->event_code));
     switch (context->event_code) {
     case EVENT_CRASH:
-        cf_log(llevDebug, "Unimplemented for now\n");
+        cf_log(llevDebug, "CFPython: event_crash unimplemented for now\n");
         break;
 
     case EVENT_BORN:
