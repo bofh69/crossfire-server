@@ -48,9 +48,10 @@ class ActiveObject {
         ob = o;
         assert(FABS(ob->speed) > MIN_ACTIVE_SPEED); // otherwise it wouldn't be active_add()'ed
         // The earliest that the event can fire is the tick after the next (2)
-        uint32_t nticks = MAX(2, ceil(-ob->speed_left * numerator(ob) / FABS(ob->speed)));
+        uint32_t nticks = MAX(2, ceil(.5 + -ob->speed_left * numerator(ob) / FABS(ob->speed)));
         next_tick = pticks + nticks;
         incr = nticks * FABS(ob->speed) / numerator(ob);
+        assert(really_ready());
     }
 
     bool operator < (const ActiveObject& rhs) const {
