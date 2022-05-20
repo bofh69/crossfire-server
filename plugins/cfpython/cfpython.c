@@ -483,7 +483,6 @@ static void python_command_function(object *op, const char *params, const char *
     context->who         = Crossfire_Object_wrap(op);
     context->activator   = NULL;
     context->third       = NULL;
-    context->fix         = 0;
     /* We are not running from an event, so set it to NULL to avoid segfaults. */
     context->event       = NULL;
     snprintf(context->script, sizeof(context->script), "%s", buf);
@@ -1831,7 +1830,7 @@ CF_PLUGIN int eventListener(int *type, ...) {
     buf = va_arg(args, char *);
     if (buf != NULL)
         snprintf(context->message, sizeof(context->message), "%s", buf);
-    context->fix         = va_arg(args, int);
+    /* fix = */va_arg(args, int);
     event = va_arg(args, object *);
     context->talk = va_arg(args, talk_info *);
     context->event_code  = event->subtype;
