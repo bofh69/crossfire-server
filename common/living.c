@@ -1960,7 +1960,7 @@ object* find_applied_skill_by_name(const object* op, const char* name) {
 static void add_player_exp(object *op, int64_t exp, const char *skill_name, int flag) {
     object *skill_obj = NULL;
     int64_t limit, exp_to_add;
-    int64_t added_skill_exp, added_skill_total_exp;
+    int64_t added_skill_exp = 0, added_skill_total_exp = 0;
 
     /* prevents some forms of abuse. */
     if (op->contr->braced)

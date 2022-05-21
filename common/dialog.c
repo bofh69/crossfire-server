@@ -77,7 +77,7 @@ void free_dialog_information(object *op) {
  * @todo better * handling (incorrect now, will match even if trailing chars)
  */
 static int matches(const char *exp, const char *text) {
-    char *pipe, *save, *msg;
+    char *pipe, *save = NULL, *msg;
     int match = 0;
 
     if (exp[0] == '*')
@@ -107,7 +107,7 @@ static int matches(const char *exp, const char *text) {
 static void parse_dialog_information(object *op) {
     struct_dialog_message *message = NULL, *last = NULL;
     struct_dialog_reply *reply = NULL;
-    char *current, *save, *msg, *cp;
+    char *current, *save = NULL, *msg, *cp;
     int len;
     /* Used for constructing message with */
     char *tmp = NULL;

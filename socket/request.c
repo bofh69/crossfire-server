@@ -582,7 +582,7 @@ void reply_cmd(char *buf, int len, player *pl) {
  * problem.
  */
 void version_cmd(char *buf, int len, socket_struct *ns) {
-    char *rest;
+    char *rest = NULL;
     char *cs_str = strtok_r(buf, " ", &rest);
     char *sc_str = strtok_r(NULL, " ", &rest);
     (void)len;
