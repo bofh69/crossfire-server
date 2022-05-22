@@ -331,6 +331,31 @@ int describe_god(const object *god, int what, StringBuffer *buf, size_t maxlen) 
 }
 
 /**
+ * Returns a god(s object from its name.
+ *
+ * @note
+ * returned object shouldn't be modified.
+ *
+ * @param name
+ * god's name.
+ * @return
+ * pointer to god's object, NULL if doesn't match any god.
+ */
+const object *find_god(const char *name) {
+    godlink *gl;
+
+    if (!name)
+        return NULL;
+
+    for (gl = first_god; gl; gl = gl->next) {
+        if (!strcmp(name, gl->name))
+            return &gl->arch->clone;
+    }
+
+    return NULL;
+}
+
+/**
  * Frees all god information.
  */
 void free_all_god(void) {

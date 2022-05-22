@@ -42,31 +42,6 @@ static const char *get_god_for_race(const char *race);
 static void remove_special_prayers(object *op, const object *god);
 
 /**
- * Returns pointer to specified god's object through pntr_to_god_obj().
- *
- * @note
- * returned object shouldn't be modified.
- *
- * @param name
- * god's name.
- * @return
- * pointer to god's object, NULL if doesn't match any god.
- */
-const object *find_god(const char *name) {
-    godlink *gl;
-
-    if (!name)
-        return NULL;
-
-    for (gl = first_god; gl; gl = gl->next) {
-        if (!strcmp(name, gl->name))
-            return pntr_to_god_obj(gl);
-    }
-
-    return NULL;
-}
-
-/**
  * Determines if op worships a god.
  * Returns the godname if they do or "none" if they have no god.
  * In the case of an NPC, if they have no god, we try and guess

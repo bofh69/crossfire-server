@@ -84,6 +84,7 @@ extern const object *pntr_to_god_obj(godlink *godlnk);
 extern int describe_god(const object *god, int what, StringBuffer *buf, size_t maxlen);
 extern void free_all_god(void);
 extern void dump_gods(void);
+extern const object *find_god(const char *name);
 /* info.c */
 extern void dump_abilities(void);
 extern void print_monsters(void);

@@ -306,7 +306,6 @@ void hiscore_init(void);
 void hiscore_check(object *op, int quiet);
 void hiscore_display(object *op, int max, const char *match);
 /* gods.c */
-const object *find_god(const char *name);
 const char *determine_god(object *op);
 void pray_at_altar(object *pl, object *altar, object *skill);
 int become_follower(object *op, const object *new_god);
