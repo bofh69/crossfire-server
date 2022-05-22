@@ -150,20 +150,6 @@ const char *get_god_for_race(const char *race) {
 }
 
 /**
- * Returns a pointer to the object
- * We need to be VERY careful about using this, as we
- * are returning a pointer to the CLONE object. -b.t.
- *
- * @param godlnk
- * god to get object.
- */
-const object *pntr_to_god_obj(godlink *godlnk) {
-    if (godlnk && godlnk->arch)
-        return &godlnk->arch->clone;
-    return NULL;
-}
-
-/**
  * Describe a god. The reason we return a combination is to know what exactly was written for knowledge management.
  * @param god which god to describe.
  * @param what information to describe, combination of @ref GOD_xxx "GOD_xxx" flags.
@@ -450,7 +436,7 @@ void dump_gods(void) {
 
     fprintf(stderr, "\n");
     for (glist = first_god; glist; glist = glist->next) {
-        const object *god = pntr_to_god_obj(glist);
+        const object *god = &glist->arch->clone;
         char tmpbuf[HUGE_BUF], *final;
         int tmpvar, gifts = 0;
 
