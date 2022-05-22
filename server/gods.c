@@ -54,7 +54,6 @@ static void remove_special_prayers(object *op, const object *god);
  * god name, "none" if nothing suitable.
  */
 const char *determine_god(object *op) {
-    int godnr = -1;
     const char *godname;
 
     /* spells */
@@ -77,21 +76,9 @@ const char *determine_god(object *op) {
 
         /* find a random god */
         if (!op->title) {
-            godlink *gl = first_god;
-
-            godnr = rndm(1, gl->id);
-            while (gl) {
-                if (gl->id == godnr)
-                {
-                    // This used to be after the loop, but if we do not find a god,
-                    // it would have made a null pointer dereference. Moved here
-                    // for better clarity and (hopefully) fewer bugs.
-                    // SilverNexus 2018-01-17
-                    op->title = add_string(gl->name);
-
-                    break;
-                }
-                gl = gl->next;
+            godlink *god = get_rand_god();
+            if (god) {
+                op->title = add_string(god->name);
             }
         }
 
