@@ -12,12 +12,13 @@
  */
 
 /**
- * @file region.c
+ * @file
  * Region management.
  *
  * A region is a group of maps. It includes a "parent" region.
  */
 
+extern "C" {
 #include "global.h"
 
 #include <ctype.h>
@@ -27,8 +28,10 @@
 #ifndef WIN32 /* ---win32 exclude header */
 #include <unistd.h>
 #endif /* win32 */
+}
 
-static void assign_region_parents(void);
+#include <map>
+#include <string>
 
 /**
  * Gets a region by name.
@@ -120,7 +123,6 @@ const char *get_name_of_region_for_map(const mapstruct  *m) {
 region *get_region_from_string(const char *name) {
     region *reg;
     char *substr;
-    char *p;
 
     if (first_region == NULL) {
         return NULL;
@@ -131,9 +133,7 @@ region *get_region_from_string(const char *name) {
             ;
         return reg;
     }
-    p = strchr(name, '\n');
-    if (p)
-        *p = '\0';
+
     for (reg = first_region; reg != NULL; reg = reg->next)
         if (!strcasecmp(reg->name, name))
             return reg;
@@ -298,11 +298,11 @@ object *get_jail_exit(object *op) {
  * free those pointers someday? :)
  */
 region *get_region_struct(void) {
-    region *new = (region *)calloc(1, sizeof(region));
-    if (new == NULL)
+    region *add = (region *)calloc(1, sizeof(region));
+    if (add == NULL)
         fatal(OUT_OF_MEMORY);
 
-    return new;
+    return add;
 }
 
 /**
@@ -315,7 +315,7 @@ region *get_region_struct(void) {
  * file being read.
  */
 void init_regions(BufferReader *reader, const char *filename) {
-    region *new;
+    region *add;
     region *reg;
     char *buf;
 
@@ -326,7 +326,9 @@ void init_regions(BufferReader *reader, const char *filename) {
     if (first_region != NULL) /* Only do this once */
         return;
 
-    new = NULL;
+    std::map<region *, std::string> parents;
+
+    add = NULL;
     while ((buf = bufferreader_next_line(reader)) != NULL) {
         while (isspace(*buf))
             buf++;
@@ -354,8 +356,8 @@ void init_regions(BufferReader *reader, const char *filename) {
          * through.
          */
         if (!strcmp(buf, "region")) {
-            new = get_region_struct();
-            new->name = strdup_local(value);
+            add = get_region_struct();
+            add->name = strdup_local(value);
         } else if (!strcmp(buf, "parent")) {
             /*
              * Note that this is in the initialisation code, so we don't actually
@@ -363,7 +365,7 @@ void init_regions(BufferReader *reader, const char *filename) {
              * parsed.
              */
 
-            if (!new) {
+            if (!add) {
                 LOG(llevError, "region.c: malformated regions file: \"parent\" before \"region\".\n");
                 fatal(SEE_LAST_ERROR);
             }
@@ -371,9 +373,9 @@ void init_regions(BufferReader *reader, const char *filename) {
                 LOG(llevError, "region.c: malformated regions file: No value given for \"parent\" key.\n");
                 fatal(SEE_LAST_ERROR);
             }
-            new->parent_name = strdup_local(value);
+            parents[add] = value;
         } else if (!strcmp(buf, "longname")) {
-            if (!new) {
+            if (!add) {
                 LOG(llevError, "region.c: malformated regions file: \"longname\" before \"region\".\n");
                 fatal(SEE_LAST_ERROR);
             }
@@ -381,13 +383,13 @@ void init_regions(BufferReader *reader, const char *filename) {
                 LOG(llevError, "region.c: malformated regions file: No value given for \"longname\" key.\n");
                 fatal(SEE_LAST_ERROR);
             }
-            new->longname = strdup_local(value);
+            add->longname = strdup_local(value);
         } else if (!strcmp(buf, "jail")) {
             /* jail entries are of the form: /path/to/map x y */
             char path[MAX_BUF];
             int x, y;
 
-            if (!new) {
+            if (!add) {
                 LOG(llevError, "region.c: malformated regions file: \"jail\" before \"region\".\n");
                 fatal(SEE_LAST_ERROR);
             }
@@ -400,11 +402,11 @@ void init_regions(BufferReader *reader, const char *filename) {
                 LOG(llevError, "region.c: malformated regions entry: jail %s\n", value);
                 continue;
             }
-            new->jailmap = strdup_local(path);
-            new->jailx = x;
-            new->jaily = y;
+            add->jailmap = strdup_local(path);
+            add->jailx = x;
+            add->jaily = y;
         } else if (!strcmp(buf, "msg")) {
-            if (!new) {
+            if (!add) {
                 LOG(llevError, "region.c: malformated regions file: \"msg\" before \"region\".\n");
                 fatal(SEE_LAST_ERROR);
             }
@@ -427,12 +429,12 @@ void init_regions(BufferReader *reader, const char *filename) {
              * so better do it here too...
              */
             if (msgpos != 0)
-                new->msg = strdup_local(msgbuf);
+                add->msg = strdup_local(msgbuf);
 
             /* we have to reset msgpos, or the next region will store both msg blocks.*/
             msgpos = 0;
         } else if (!strcmp(buf, "fallback")) {
-            if (!new) {
+            if (!add) {
                 LOG(llevError, "region.c: malformated regions file %s: \"fallback\" before \"region\".\n", filename);
                 fatal(SEE_LAST_ERROR);
             }
@@ -440,25 +442,25 @@ void init_regions(BufferReader *reader, const char *filename) {
                 LOG(llevError, "region.c: malformated regions file %s: No value given for \"fallback\" key.\n", filename);
                 fatal(SEE_LAST_ERROR);
             }
-            new->fallback = atoi(value);
+            add->fallback = atoi(value);
         } else if (!strcmp(buf, "end")) {
-            if (!new) {
+            if (!add) {
                 LOG(llevError, "region.c: Ignoring spurious \"end\" between regions.\n");
                 continue;
             }
-            /* Place this new region last on the list, if the list is empty put it first */
+            /* Place this add region last on the list, if the list is empty put it first */
             for (reg = first_region; reg != NULL && reg->next != NULL; reg = reg->next)
                 ;
 
             if (reg == NULL)
-                first_region = new;
+                first_region = add;
             else
-                reg->next = new;
-            new = NULL;
+                reg->next = add;
+            add = NULL;
         } else if (!strcmp(buf, "nomore")) {
-            if (new) {
+            if (add) {
                 LOG(llevError, "region.c: Last region not properly closed.\n");
-                free(new);
+                free(add);
             }
             /* we have reached the end of the region specs....*/
             break;
@@ -469,30 +471,13 @@ void init_regions(BufferReader *reader, const char *filename) {
     }
     if (!buf || strcmp(buf, "nomore")) {
         LOG(llevError, "Got premature eof on regions file %s!\n", filename);
-        free(new);
+        free(add);
     }
 
-    assign_region_parents();
-}
-
-/**
- * Links child with their parent from the parent_name field.
- */
-static void assign_region_parents(void) {
-    region *reg;
-    uint32_t parent_count = 0;
-    uint32_t region_count = 0;
-
-    for (reg = first_region; reg != NULL; reg = reg->next) {
-        if (reg->parent_name != NULL) {
-            reg->parent = get_region_by_name(reg->parent_name);
-            if (reg->parent == NULL) {
-                LOG(llevError, "Couldn't find parent %s for region %s\n", reg->name, reg->parent_name);
-            }
-            parent_count++;
+    for (auto p : parents) {
+        p.first->parent = get_region_by_name(p.second.c_str());
+        if (!p.first->parent) {
+            LOG(llevError, "Couldn't find parent %s for region %s\n", p.second.c_str(), p.first->name);
         }
-        region_count++;
     }
-    LOG(llevDebug, "regions: loaded %u with %u parents\n",
-            region_count, parent_count);
 }

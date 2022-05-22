@@ -329,7 +329,6 @@ void free_globals(void) {
     while (first_region) {
         reg = first_region->next;
         FREE_AND_CLEAR(first_region->name);
-        FREE_AND_CLEAR(first_region->parent_name);
         FREE_AND_CLEAR(first_region->jailmap);
         FREE_AND_CLEAR(first_region->msg);
         FREE_AND_CLEAR(first_region->longname);

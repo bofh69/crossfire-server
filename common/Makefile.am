@@ -66,7 +66,7 @@ libcross_a_SOURCES = \
 	re-cmp.c\
 	readable.c\
 	recipe.c\
-	region.c\
+	region.cpp \
 	shstr.c\
 	stringbuffer.c\
 	time.c\

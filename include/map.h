@@ -275,13 +275,6 @@ typedef struct MapSpace {
 typedef struct regiondef {
     struct regiondef *next;      /**< Pointer to next region, NULL for the last one */
     char  *name;                 /**< Shortend name of the region as maps refer to it */
-    char  *parent_name;          /**<
-                                  * So that parent and child regions can be defined in
-                                  * any order, we keep hold of the parent_name during
-                                  * initialisation, and the children get assigned to their
-                                  * parents later. (before runtime on the server though)
-                                  * nothing outside the init code should ever use this value.
-                                  */
     struct regiondef *parent;   /**<
                                   * Pointer to the region that is a parent of the current
                                   * region, if a value isn't defined in the current region
