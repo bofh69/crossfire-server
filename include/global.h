@@ -117,7 +117,6 @@ EXTERN mapstruct *first_map;                /**< First map. */
 EXTERN region *first_region;                /**< First region. */
 EXTERN artifactlist *first_artifactlist;    /**< First artifact. */
 EXTERN objectlink *first_friendly_object;   /**< Objects monsters will go after. */
-EXTERN godlink *first_god;                  /**< God list. */
 /*@}*/
 
 /*

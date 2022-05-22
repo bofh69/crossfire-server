@@ -75,7 +75,7 @@ const char *determine_god(object *op) {
 
         /* find a random god */
         if (!op->title) {
-            godlink *god = get_rand_god();
+            const object *god = get_rand_god();
             if (god) {
                 op->title = add_string(god->name);
             }

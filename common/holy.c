@@ -29,6 +29,18 @@
 #include "assets.h"
 
 /**
+ * Used to link together the gods.
+ */
+typedef struct glnk {
+    const char *name;     /**< Name of this god. */
+    struct archt *arch;   /**< Pointer to the archetype of this god. */
+    int id;               /**< Id of the god. */
+    struct glnk *next;    /**< Next god. */
+} godlink;
+
+static godlink *first_god = NULL;   /**< God list. */
+
+/**
  * Initializes a god structure.
  *
  * @note
@@ -97,7 +109,7 @@ void init_gods(void) {
  * @return
  * a random god, or NULL if no god was found.
  */
-godlink *get_rand_god(void) {
+const object *get_rand_god(void) {
     godlink *god = first_god;
     int i;
 
@@ -108,7 +120,7 @@ godlink *get_rand_god(void) {
 
     if (!god)
         LOG(llevError, "get_rand_god(): can't find a random god!\n");
-    return god;
+    return &god->arch->clone;
 }
 
 /**

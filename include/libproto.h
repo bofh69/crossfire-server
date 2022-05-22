@@ -79,8 +79,7 @@ extern int is_friendly(const object *op);
 extern void fatal(enum fatal_error err) __attribute__ ((noreturn));
 /* holy.c */
 extern void init_gods(void);
-extern godlink *get_rand_god(void);
-extern const object *pntr_to_god_obj(godlink *godlnk);
+extern const object *get_rand_god(void);
 extern int describe_god(const object *god, int what, StringBuffer *buf, size_t maxlen);
 extern void free_all_god(void);
 extern void dump_gods(void);

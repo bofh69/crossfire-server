@@ -1857,7 +1857,7 @@ static StringBuffer *msgfile_msg(object *book, size_t booksize) {
  */
 static StringBuffer *god_info_msg(int level, size_t booksize, object *book) {
     int what = 0;
-    const object *god = pntr_to_god_obj(get_rand_god());
+    const object *god = get_rand_god();
     StringBuffer *desc = NULL;
 
     if (!god)
