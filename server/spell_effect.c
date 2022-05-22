@@ -809,8 +809,6 @@ int makes_invisible_to(object *pl, object *mon) {
  * op is now invisible.
  */
 int cast_invisible(object *op, object *caster, object *spell_ob) {
-    object *tmp;
-
     if (op->invisible > 1000) {
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_SPELL, MSG_TYPE_SPELL_FAILURE,
                       "You can not extend the duration of your invisibility any further");
