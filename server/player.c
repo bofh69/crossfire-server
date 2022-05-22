@@ -536,6 +536,9 @@ object *get_nearest_player(object *mon) {
     rv_vector rv;
 
     list = get_friends_of(NULL);
+    if (!list) {
+        return NULL;
+    }
 
     for (ol = list, lastdist = 1000; ol != NULL; ol = ol->next) {
         if (QUERY_FLAG(ol->ob, FLAG_FREED) || !QUERY_FLAG(ol->ob, FLAG_FRIENDLY)) {
