@@ -42,31 +42,6 @@ static const char *get_god_for_race(const char *race);
 static void remove_special_prayers(object *op, const object *god);
 
 /**
- * Returns the id of specified god.
- *
- * @param name
- * god to search for, must not be NULL.
- * @return
- * identifier of god, -1 if not found.
- * @todo
- * couldn't == be used for comparison, if name is a shared string?
- */
-static int lookup_god_by_name(const char *name) {
-    int godnr = -1;
-    size_t nmlen = strlen(name);
-
-    if (strcmp(name, "none")) {
-        godlink *gl;
-        for (gl = first_god; gl; gl = gl->next)
-            if (!strncmp(name, gl->name, MIN(strlen(gl->name), nmlen)))
-                break;
-        if (gl)
-            godnr = gl->id;
-    }
-    return godnr;
-}
-
-/**
  * Returns pointer to specified god's object through pntr_to_god_obj().
  *
  * @note
@@ -110,7 +85,7 @@ const char *determine_god(object *op) {
     /* spells */
     if ((op->type == SPELL || op->type == SPELL_EFFECT)
     && op->title) {
-        if (lookup_god_by_name(op->title) >= 0)
+        if (find_god(op->title) != NULL)
             return op->title;
     }
 
