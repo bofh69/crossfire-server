@@ -85,6 +85,7 @@ extern int describe_god(const object *god, int what, StringBuffer *buf, size_t m
 extern void free_all_god(void);
 extern void dump_gods(void);
 extern const object *find_god(const char *name);
+extern const char *get_god_for_race(const char *race);
 /* info.c */
 extern void dump_abilities(void);
 extern void print_monsters(void);

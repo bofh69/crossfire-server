@@ -112,6 +112,32 @@ godlink *get_rand_god(void) {
 }
 
 /**
+ * Returns a string that is the name of the god that should be natively worshipped by a
+ * creature of who has race *race
+ * if we can't find a god that is appropriate, we return NULL
+ *
+ * @param race
+ * race we're getting the god of.
+ * @return
+ * NULL if no matching race, else god's name.
+ */
+const char *get_god_for_race(const char *race) {
+    godlink *gl = first_god;
+    const char *godname = NULL;
+
+    if (race == NULL)
+        return NULL;
+    while (gl) {
+        if (gl->arch->clone.race && !strcasecmp(gl->arch->clone.race, race)) {
+            godname = gl->name;
+            break;
+        }
+        gl = gl->next;
+    }
+    return godname;
+}
+
+/**
  * Returns a pointer to the object
  * We need to be VERY careful about using this, as we
  * are returning a pointer to the CLONE object. -b.t.

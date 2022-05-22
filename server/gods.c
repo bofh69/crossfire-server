@@ -38,7 +38,6 @@ static void update_priest_flag(const object *god, object *exp_ob, uint32_t flag)
 static void god_intervention(object *op, const object *god, object *skill, object *altar);
 static int god_examines_priest(object *op, const object *god);
 static int god_examines_item(const object *god, object *item);
-static const char *get_god_for_race(const char *race);
 static void remove_special_prayers(object *op, const object *god);
 
 /**
@@ -1207,32 +1206,6 @@ static int god_examines_item(const object *god, object *item) {
         }
     }
     return 0; /* item is sacred to a non-enemy god/or is otherwise magical */
-}
-
-/**
- * Returns a string that is the name of the god that should be natively worshipped by a
- * creature of who has race *race
- * if we can't find a god that is appropriate, we return NULL
- *
- * @param race
- * race we're getting the god of.
- * @return
- * NULL if no matching race, else god's name.
- */
-static const char *get_god_for_race(const char *race) {
-    godlink *gl = first_god;
-    const char *godname = NULL;
-
-    if (race == NULL)
-        return NULL;
-    while (gl) {
-        if (gl->arch->clone.race && !strcasecmp(gl->arch->clone.race, race)) {
-            godname = gl->name;
-            break;
-        }
-        gl = gl->next;
-    }
-    return godname;
 }
 
 /**
