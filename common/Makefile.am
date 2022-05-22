@@ -42,7 +42,7 @@ libcross_a_SOURCES = \
 	dialog.c \
 	events.cpp \
 	exp.c\
-	friend.c\
+	friend.cpp \
 	holy.c\
 	info.c\
 	image.c \

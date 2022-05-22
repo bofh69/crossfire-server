@@ -15,12 +15,12 @@ $(top_builddir)/test/toolkit/libtoolkit_common.a:
 	( cd $(top_builddir)/test/toolkit/; make libtoolkit_common.a)
 
 # disabled tests, enable them when they have some real content
-# check_anim check_button check_exp check_friend check_glue check_holy check_info check_init
+# check_anim check_button check_exp  check_glue check_holy check_info check_init
 # check_links check_logger check_los check_map
 # check_player check_porting check_recipe check_re-cmp check_region
 
 check_asset_load_write_SOURCES = check_asset_load_write.cpp
-TESTS= check_arch check_artifact check_image check_item check_living check_loader check_mapsave check_minheap check_object check_path check_readable check_shstr check_stringbuffer check_time check_treasure check_utils
+TESTS= check_arch check_artifact check_friend check_image check_item check_living check_loader check_mapsave check_minheap check_object check_path check_readable check_shstr check_stringbuffer check_time check_treasure check_utils
 TESTS+= check_asset_load_write
 
 DISTCLEANFILES=	.autorun.xml

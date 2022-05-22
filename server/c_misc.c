@@ -1476,61 +1476,64 @@ void command_petmode(object *op, const char *params) {
  * unused.
  */
 void command_showpets(object *op, const char *params) {
-    objectlink *obl, *next;
+    objectlink *obl, *list;
     int counter = 0, target = 0;
     int have_shown_pet = 0;
     if (*params != '\0')
         target = atoi(params);
 
-    for (obl = first_friendly_object; obl != NULL; obl = next) {
+    list = get_friends_of(op);
+
+    for (obl = list; obl != NULL; obl = obl->next) {
         object *ob = obl->ob;
 
-        next = obl->next;
-        if (object_get_owner(ob) == op) {
-            if (target == 0) {
-                if (counter == 0)
-                    draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
-                                  "Pets:");
-                draw_ext_info_format(NDI_UNIQUE, 0, op,  MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
-                                     "%d  %s - level %d",
-                                     ++counter, ob->name, ob->level);
-            } else if (!have_shown_pet && ++counter == target) {
-                draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
-                                     "[fixed]level %d %s",
-                                     ob->level, ob->name);
-                draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
-                                     "[fixed]%d/%d HP, %d/%d SP",
-                                     ob->stats.hp, ob->stats.maxhp, ob->stats.sp, ob->stats.maxsp);
+        if (target == 0) {
+            if (counter == 0)
+                draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
+                              "Pets:");
+            draw_ext_info_format(NDI_UNIQUE, 0, op,  MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
+                                 "%d  %s - level %d",
+                                 ++counter, ob->name, ob->level);
+        } else if (!have_shown_pet && ++counter == target) {
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
+                                 "[fixed]level %d %s",
+                                 ob->level, ob->name);
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
+                                 "[fixed]%d/%d HP, %d/%d SP",
+                                 ob->stats.hp, ob->stats.maxhp, ob->stats.sp, ob->stats.maxsp);
 
-                /* this is not a nice way to do this, it should be made to be more like the statistics command */
-                draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
-                                     "[fixed]Str %d",
-                                     ob->stats.Str);
-                draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
-                                     "[fixed]Dex %d",
-                                     ob->stats.Dex);
-                draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
-                                     "[fixed]Con %d",
-                                     ob->stats.Con);
-                draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
-                                     "[fixed]Int %d",
-                                     ob->stats.Int);
-                draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
-                                     "[fixed]Wis %d",
-                                     ob->stats.Wis);
-                draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
-                                     "[fixed]Cha %d",
-                                     ob->stats.Cha);
-                draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
-                                     "[fixed]Pow %d",
-                                     ob->stats.Pow);
-                draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
-                                     "[fixed]wc %d  damage %d ac %d",
-                                     ob->stats.wc, ob->stats.dam, ob->stats.ac);
-                have_shown_pet = 1;
-            }
+            /* this is not a nice way to do this, it should be made to be more like the statistics command */
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
+                                 "[fixed]Str %d",
+                                 ob->stats.Str);
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
+                                 "[fixed]Dex %d",
+                                 ob->stats.Dex);
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
+                                 "[fixed]Con %d",
+                                 ob->stats.Con);
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
+                                 "[fixed]Int %d",
+                                 ob->stats.Int);
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
+                                 "[fixed]Wis %d",
+                                 ob->stats.Wis);
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
+                                 "[fixed]Cha %d",
+                                 ob->stats.Cha);
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
+                                 "[fixed]Pow %d",
+                                 ob->stats.Pow);
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
+                                 "[fixed]wc %d  damage %d ac %d",
+                                 ob->stats.wc, ob->stats.dam, ob->stats.ac);
+            have_shown_pet = 1;
         }
     }
+    if (list) {
+        free_objectlink(list);
+    }
+
     if (counter == 0)
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
                       "You have no pets.");
@@ -2189,26 +2192,29 @@ void command_brace(object *op, const char *params) {
  * unused.
  */
 void command_kill_pets(object *op, const char *params) {
-    objectlink *obl, *next;
-    int counter = 0, removecount = 0;
-
-    if (*params == '\0') {
+     if (*params == '\0') {
         pets_terminate_all(op);
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
-                      "Your pets have been killed.");
-    } else {
+                       "Your pets have been killed.");
+     } else {
+        objectlink *obl, *list = get_friends_of(op);
+        int counter = 0, removecount = 0;
         int target = atoi(params);
-        for (obl = first_friendly_object; obl != NULL; obl = next) {
+
+        for (obl = list; obl != NULL; obl = obl->next) {
             object *ob = obl->ob;
-            next = obl->next;
-            if (object_get_owner(ob) == op)
-                if (++counter == target || (target == 0 && !strcasecmp(ob->name, params)))  {
+            if (object_get_owner(ob) == op) {
+                if (++counter == target || (target == 0 && !strcasecmp(ob->name, params))) {
                     if (!QUERY_FLAG(ob, FLAG_REMOVED))
                         object_remove(ob);
                     remove_friendly_object(ob);
                     object_free_drop_inventory(ob);
                     removecount++;
                 }
+            }
+        }
+        if (list) {
+            free_objectlink(list);
         }
         if (removecount != 0)
             draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,

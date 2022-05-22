@@ -531,27 +531,15 @@ static archetype *get_player_archetype(archetype *at) {
 object *get_nearest_player(object *mon) {
     object *op = NULL;
     player *pl = NULL;
-    objectlink *ol;
+    objectlink *list, *ol;
     unsigned lastdist;
     rv_vector rv;
 
-    for (ol = first_friendly_object, lastdist = 1000; ol != NULL; ol = ol->next) {
-        /* We should not find free objects on this friendly list, but it
-         * does periodically happen.  Given that, lets deal with it.
-         * While unlikely, it is possible the next object on the friendly
-         * list is also free, so encapsulate this in a while loop.
-         */
-        while (QUERY_FLAG(ol->ob, FLAG_FREED) || !QUERY_FLAG(ol->ob, FLAG_FRIENDLY)) {
-            object *tmp = ol->ob;
+    list = get_friends_of(NULL);
 
-            /* Can't do much more other than log the fact, because the object
-             * itself will have been cleared.
-             */
-            LOG(llevDebug, "get_nearest_player: Found free/non friendly object on friendly list\n");
-            ol = ol->next;
-            remove_friendly_object(tmp);
-            if (!ol)
-                return op;
+    for (ol = list, lastdist = 1000; ol != NULL; ol = ol->next) {
+        if (QUERY_FLAG(ol->ob, FLAG_FREED) || !QUERY_FLAG(ol->ob, FLAG_FRIENDLY)) {
+            continue;
         }
 
         /* Remove special check for player from this.  First, it looks to cause
@@ -569,6 +557,7 @@ object *get_nearest_player(object *mon) {
             lastdist = rv.distance;
         }
     }
+    free_objectlink(list);
     for (pl = first_player; pl != NULL; pl = pl->next) {
         if (monster_can_detect_enemy(mon, pl->ob, &rv)) {
             if (lastdist > rv.distance) {

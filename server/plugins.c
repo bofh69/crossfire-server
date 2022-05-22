@@ -4313,7 +4313,6 @@ static void cfapi_region_get_property(int *type, ...) {
 static void cfapi_friendlylist_get_next(int *type, ...) {
     object *ob;
     va_list args;
-    objectlink *link;
     object **robject;
 
     va_start(args, type);
@@ -4322,24 +4321,7 @@ static void cfapi_friendlylist_get_next(int *type, ...) {
     va_end(args);
 
     *type = CFAPI_POBJECT;
-    *robject = NULL;
-
-    if (ob) {
-        for (link = first_friendly_object; link; link = link->next) {
-            if (ob == link->ob) {
-                if (link->next) {
-                    *robject = link->next->ob;
-                    return;
-                } else {
-                    return;
-                }
-            }
-        }
-        return;
-    }
-
-    if (first_friendly_object)
-        *robject = first_friendly_object->ob;
+    *robject = get_next_friend(ob);
 }
 
 /*

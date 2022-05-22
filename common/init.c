@@ -291,7 +291,6 @@ void init_globals(void) {
 
     exiting = 0;
     first_player = NULL;
-    first_friendly_object = NULL;
     first_map = NULL;
     first_artifactlist = NULL;
     *first_map_ext_path = 0;
@@ -317,7 +316,6 @@ void init_globals(void) {
  */
 void free_globals(void) {
     int msg, attack;
-    objectlink *friend;
     region *reg;
 
     FREE_AND_CLEAR_STR(undead_name);
@@ -331,12 +329,7 @@ void free_globals(void) {
 
     free(settings.emergency_mapname);
 
-    while (first_friendly_object) {
-        friend = first_friendly_object->next;
-        FREE_AND_CLEAR(first_friendly_object);
-        first_friendly_object = friend;
-    }
-
+    clear_friendly_list();
     free_experience();
 
     while (first_region) {

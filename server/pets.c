@@ -223,18 +223,19 @@ object *pets_get_enemy(object *pet, rv_vector *rv) {
  * player we wish to remove all pets of.
  */
 void pets_terminate_all(object *owner) {
-    objectlink *obl, *next;
-
-    for (obl = first_friendly_object; obl != NULL; obl = next) {
-        object *ob = obl->ob;
-        next = obl->next;
-        if (object_get_owner(ob) == owner) {
-            if (!QUERY_FLAG(ob, FLAG_REMOVED))
-                object_remove(ob);
-            remove_friendly_object(ob);
-            object_free_drop_inventory(ob);
-        }
+    objectlink *link = get_friends_of(owner), *cur;
+    if (!link) {
+        return;
     }
+    for (cur = link; cur != NULL; cur = cur->next) {
+        object *ob = cur->ob;
+        if (!QUERY_FLAG(ob, FLAG_REMOVED))
+            object_remove(ob);
+        remove_friendly_object(ob);
+        object_free_drop_inventory(ob);
+    }
+
+    free_objectlink(link);
 }
 
 /**
@@ -246,29 +247,30 @@ void pets_terminate_all(object *owner) {
  * computed by on_same_map(), as their owner.
  */
 void pets_attempt_follow(object *for_owner, int force) {
-    objectlink *obl, *next;
+    objectlink *list = get_friends_of(for_owner), *cur;
     object *owner;
+    if (!list) {
+        return;
+    }
 
-    for (obl = first_friendly_object; obl != NULL; obl = next) {
-        next = obl->next;
-        if (obl->ob->type != PLAYER
-        && QUERY_FLAG(obl->ob, FLAG_FRIENDLY)
-        && (owner = object_get_owner(obl->ob)) != NULL
+    for (cur = list; cur != NULL; cur = cur->next) {
+        if (cur->ob->type != PLAYER
+        && QUERY_FLAG(cur->ob, FLAG_FRIENDLY)
+        && (owner = object_get_owner(cur->ob)) != NULL
         && (for_owner == NULL || for_owner == owner)
-        && (force || !on_same_map(owner, obl->ob))) {
+        && (force || !on_same_map(owner, cur->ob))) {
             /* follow owner checks map status for us.  Note that pet can
              * die in pets_follow_owner(), so check for obl->ob existence
              */
-            pets_follow_owner(obl->ob, owner);
-            if (obl->ob && QUERY_FLAG(obl->ob, FLAG_REMOVED) && FABS(obl->ob->speed) > MIN_ACTIVE_SPEED) {
-                object *ob = obl->ob;
-
+            pets_follow_owner(cur->ob, owner);
+            if (cur->ob && QUERY_FLAG(cur->ob, FLAG_REMOVED) && FABS(cur->ob->speed) > MIN_ACTIVE_SPEED) {
                 LOG(llevMonster, "(pet failed to follow)\n");
-                remove_friendly_object(ob);
-                object_free_drop_inventory(ob);
+                remove_friendly_object(cur->ob);
+                object_free_drop_inventory(cur->ob);
             }
         }
     }
+    free_objectlink(list);
 }
 
 /**

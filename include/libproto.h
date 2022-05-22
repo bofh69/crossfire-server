@@ -75,6 +75,9 @@ extern void remove_friendly_object(object *op);
 extern void dump_friendly_objects(void);
 extern void clean_friendly_list(void);
 extern int is_friendly(const object *op);
+extern objectlink *get_friends_of(const object *owner);
+extern void clear_friendly_list(void);
+extern object *get_next_friend(object *current);
 /* glue.c */
 extern void fatal(enum fatal_error err) __attribute__ ((noreturn));
 /* holy.c */

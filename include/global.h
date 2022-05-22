@@ -116,7 +116,6 @@ EXTERN player *first_player;                /**< First player. */
 EXTERN mapstruct *first_map;                /**< First map. */
 EXTERN region *first_region;                /**< First region. */
 EXTERN artifactlist *first_artifactlist;    /**< First artifact. */
-EXTERN objectlink *first_friendly_object;   /**< Objects monsters will go after. */
 /*@}*/
 
 /*
