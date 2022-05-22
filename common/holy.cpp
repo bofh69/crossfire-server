@@ -12,10 +12,11 @@
  */
 
 /**
- * @file holy.c
+ * @file
  * God-related common functions.
  */
 
+extern "C" {
 #include "global.h"
 
 #include <assert.h>
@@ -25,38 +26,13 @@
 #include "libproto.h"
 #include "living.h"
 #include "spells.h"
+}
 
 #include "assets.h"
+#include <vector>
+#include <algorithm>
 
-/**
- * Used to link together the gods.
- */
-typedef struct glnk {
-    const char *name;     /**< Name of this god. */
-    struct archt *arch;   /**< Pointer to the archetype of this god. */
-    int id;               /**< Id of the god. */
-    struct glnk *next;    /**< Next god. */
-} godlink;
-
-static godlink *first_god = NULL;   /**< God list. */
-
-/**
- * Initializes a god structure.
- *
- * @note
- * Will never return NULL.
- */
-static godlink *init_godslist(void) {
-    godlink *gl = (godlink *)malloc(sizeof(godlink));
-    if (gl == NULL)
-        fatal(OUT_OF_MEMORY);
-    gl->name = NULL;    /* how to describe the god to the player */
-    gl->arch = NULL;    /* pointer to the archetype of this god */
-    gl->id = 0;         /* id of the god */
-    gl->next = NULL;    /* next god in this linked list */
-
-    return gl;
-}
+static std::vector<object *> gods;
 
 /**
  * Adds specified god to linked list if god, gives it an id.
@@ -65,7 +41,6 @@ static godlink *init_godslist(void) {
  * God to add. If NULL, will log an error.
  */
 static void add_god_to_list(archetype *god_arch) {
-    godlink *god;
 
     if (!god_arch) {
         LOG(llevError, "ERROR: Tried to add null god to list!\n");
@@ -75,20 +50,10 @@ static void add_god_to_list(archetype *god_arch) {
         return;
     }
 
-    god = init_godslist();
-
-    god->arch = god_arch;
-    god->name = add_string(god_arch->clone.name);
-    if (!first_god)
-        god->id = 1;
-    else {
-        god->id = first_god->id+1;
-        god->next = first_god;
-    }
-    first_god = god;
+    gods.push_back(&god_arch->clone);
 
 #ifdef DEBUG_GODS
-    LOG(llevDebug, "Adding god %s (%d) to list\n", god->name, god->id);
+    LOG(llevDebug, "Adding god %s to list\n", god_arch->clone.name, god->id);
 #endif
 }
 /**
@@ -110,17 +75,10 @@ void init_gods(void) {
  * a random god, or NULL if no god was found.
  */
 const object *get_rand_god(void) {
-    godlink *god = first_god;
-    int i;
-
-    if (god)
-        for (i = RANDOM()%(god->id)+1; god; god = god->next)
-            if (god->id == i)
-                break;
-
-    if (!god)
-        LOG(llevError, "get_rand_god(): can't find a random god!\n");
-    return &god->arch->clone;
+    if (gods.empty()) {
+        return nullptr;
+    }
+    return gods[RANDOM() % gods.size()];
 }
 
 /**
@@ -134,19 +92,14 @@ const object *get_rand_god(void) {
  * NULL if no matching race, else god's name.
  */
 const char *get_god_for_race(const char *race) {
-    godlink *gl = first_god;
-    const char *godname = NULL;
 
     if (race == NULL)
         return NULL;
-    while (gl) {
-        if (gl->arch->clone.race && !strcasecmp(gl->arch->clone.race, race)) {
-            godname = gl->name;
-            break;
-        }
-        gl = gl->next;
-    }
-    return godname;
+
+    auto god = std::find_if(gods.begin(), gods.end(), [&] (const object *god) {
+        return god->race && !strcasecmp(god->race, race);
+    });
+    return god == gods.end() ? nullptr : (*god)->name;
 }
 
 /**
@@ -366,33 +319,17 @@ int describe_god(const object *god, int what, StringBuffer *buf, size_t maxlen) 
  * pointer to god's object, NULL if doesn't match any god.
  */
 const object *find_god(const char *name) {
-    godlink *gl;
-
-    if (!name)
-        return NULL;
-
-    for (gl = first_god; gl; gl = gl->next) {
-        if (!strcmp(name, gl->name))
-            return &gl->arch->clone;
-    }
-
-    return NULL;
+    auto found = std::find_if(gods.begin(), gods.end(), [&] (const object *god) {
+        return !strcmp(name, god->name);
+    });
+    return found == gods.end() ? nullptr : *found;
 }
 
 /**
  * Frees all god information.
  */
 void free_all_god(void) {
-    godlink *god, *godnext;
-
-    LOG(llevDebug, "Freeing god information\n");
-    for (god = first_god; god; god = godnext) {
-        godnext = god->next;
-        if (god->name)
-            free_string(god->name);
-        free(god);
-    }
-    first_god = NULL;
+    gods.clear();
 }
 
 #define DESCRIBE_ABILITY(retbuf, variable, name)                   \
@@ -432,6 +369,7 @@ void free_all_god(void) {
  * use LOG instead of fprintf().
  */
 void dump_gods(void) {
+#if 0
     godlink *glist;
 
     fprintf(stderr, "\n");
@@ -500,4 +438,5 @@ void dump_gods(void) {
         if (!gifts) fprintf(stderr, "NONE");
         fprintf(stderr, "\n\n");
     }
+#endif
 }

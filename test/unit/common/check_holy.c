@@ -1,13 +1,7 @@
 /*
- * static char *rcsid_check_holy_c =
- *   "$Id$";
- */
-
-/*
  * CrossFire, A Multiplayer game for X-windows
  *
- * Copyright (C) 2002 Mark Wedel & Crossfire Development Team
- * Copyright (C) 1992 Frank Tore Johansen
+ * Copyright (C) 2022 the Crossfire Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,17 +26,49 @@
 
 #include <stdlib.h>
 #include <check.h>
+#include <global.h>
+#include <assert.h>
+#include <toolkit_common.h>
 
 void setup(void) {
-    /* put any initialisation steps here, they will be run before each testcase */
+    cctk_setdatadir(SOURCE_ROOT "lib");
+    cctk_setlog(LOGDIR "/unit/common/holy.out");
+    cctk_init_std_archetypes();
+    init_gods();
 }
 
 void teardown(void) {
     /* put any cleanup steps here, they will be run after each testcase */
 }
 
-START_TEST(test_empty) {
-    /*TESTME test not yet developped*/
+START_TEST(test_get_random_god) {
+    const object *ob = get_rand_god();
+    fail_unless(ob != NULL, "There must be at least one god!");
+}
+END_TEST
+
+START_TEST(test_find_god) {
+    const object *ob = find_god("Valriel");
+    fail_unless(ob != NULL, "Valriel must exist");
+}
+END_TEST
+
+START_TEST(test_find_god_invalid) {
+    const object *ob = find_god("FlyingSpaghettiMonster");
+    fail_unless(ob == NULL, "FSM must not be found");
+}
+END_TEST
+
+START_TEST(test_get_god_for_race) {
+    const char *god = get_god_for_race("undead");
+    fail_unless(god != NULL, "Undead must have a race");
+    ck_assert_str_eq(god, "Devourers");
+}
+END_TEST
+
+START_TEST(test_get_god_for_race_invalid) {
+    const char *god = get_god_for_race("unicorns!!");
+    fail_unless(god == NULL, "Must not find a god");
 }
 END_TEST
 
@@ -54,7 +80,11 @@ Suite *holy_suite(void) {
     tcase_add_checked_fixture(tc_core, setup, teardown);
 
     suite_add_tcase(s, tc_core);
-    tcase_add_test(tc_core, test_empty);
+    tcase_add_test(tc_core, test_get_random_god);
+    tcase_add_test(tc_core, test_find_god);
+    tcase_add_test(tc_core, test_find_god_invalid);
+    tcase_add_test(tc_core, test_get_god_for_race);
+    tcase_add_test(tc_core, test_get_god_for_race_invalid);
 
     return s;
 }

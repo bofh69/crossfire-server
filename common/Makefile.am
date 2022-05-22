@@ -43,7 +43,7 @@ libcross_a_SOURCES = \
 	events.cpp \
 	exp.c\
 	friend.cpp \
-	holy.c\
+	holy.cpp \
 	info.c\
 	image.c \
 	init.c\
