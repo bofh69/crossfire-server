@@ -32,6 +32,7 @@ extern "C" {
 #define ASSETS_FORMULAE                   0x0100
 #define ASSETS_ATTACK_MESSAGES            0x0200
 #define ASSETS_QUESTS                     0x0400
+#define ASSETS_REGIONS                    0x0800
 #define ASSETS_ALL                        0xFFFF
 /*@}*/
 

@@ -143,6 +143,8 @@ void assets_collect(const char* datadir, int what) {
         collector.addLoader(new WrapperLoader("/attackmess", init_attackmess));
     if (what & ASSETS_QUESTS)
         collector.addLoader(new QuestLoader(manager->quests(), manager->faces(), tracker));
+    if (what & ASSETS_REGIONS)
+        collector.addLoader(new WrapperLoader("regions.reg", init_regions));
     for (uint8_t hook = 0; hook < settings.hooks_count; hook++) {
         collector.addLoader(new WrapperLoader(settings.hooks_filename[hook], settings.hooks[hook]));
     }

@@ -222,12 +222,6 @@ void init_library(void) {
         fatal(SEE_LAST_ERROR);
     }
 
-    /* init_dynamic() loads a map, so needs a region */
-    if (init_regions() != 0) {
-        LOG(llevError, "Please check that your maps are correctly installed.\n");
-        fatal(SEE_LAST_ERROR);
-    }
-
     init_dynamic();
 }
 

@@ -33,7 +33,7 @@
 void setup(void) {
     cctk_setdatadir(SOURCE_ROOT "lib");
     cctk_setlog(LOGDIR "/unit/common/region.out");
-    init_regions();
+    cctk_init_std_archetypes();
 }
 
 void teardown(void) {
@@ -144,6 +144,7 @@ int main(void) {
     srunner_set_xml(sr, LOGDIR "/unit/common/region.xml");
     srunner_set_log(sr, LOGDIR "/unit/common/region.out");
     srunner_run_all(sr, CK_ENV); /*verbosity from env variable*/
+    srunner_set_fork_status(sr, CK_NOFORK);
     nf = srunner_ntests_failed(sr);
     srunner_free(sr);
     return (nf == 0) ? EXIT_SUCCESS : EXIT_FAILURE;

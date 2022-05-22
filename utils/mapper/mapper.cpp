@@ -3057,7 +3057,6 @@ int main(int argc, char **argv) {
     init_globals();
     init_library();
     init_readable();
-    init_regions();
 
     init_gods();
 

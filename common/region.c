@@ -28,7 +28,6 @@
 #include <unistd.h>
 #endif /* win32 */
 
-static void parse_regions(FILE *fp);
 static void assign_region_parents(void);
 
 /**
@@ -285,31 +284,6 @@ object *get_jail_exit(object *op) {
 }
 
 /**
- * Initialises regions from the regions file.
- *
- * @return
- * @li Returns '0' on success, anything else if failed.
- */
-int init_regions(void) {
-    FILE *fp;
-    char filename[MAX_BUF];
-
-    if (first_region != NULL) /* Only do this once */
-        return 0;
-
-    snprintf(filename, sizeof(filename), "%s/%s/%s", settings.datadir, settings.mapdir, settings.regions);
-    if ((fp = fopen(filename, "r")) == NULL) {
-        LOG(llevError, "Couldn't read regions file from \"%s\".\n", filename);
-        return 1;
-    }
-    parse_regions(fp);
-    assign_region_parents();
-
-    fclose(fp);
-    return 0;
-}
-
-/**
  * Allocates and zeros a region struct, this isn't free()'d anywhere, so might
  * be a memory leak, but it shouldn't matter too much since it isn't called that
  * often....
@@ -335,37 +309,35 @@ region *get_region_struct(void) {
  * Reads/parses the region file, and copies into a linked list
  * of region structs.
  *
- * @param fp
- * opened file to read from.
+ * @param reader
+ * buffer to read from.
+ * @param filename
+ * file being read.
  */
-static void parse_regions(FILE *fp) {
+void init_regions(BufferReader *reader, const char *filename) {
     region *new;
     region *reg;
+    char *buf;
 
-    char buf[HUGE_BUF], msgbuf[HUGE_BUF], *key = NULL, *value, *end;
+    char msgbuf[HUGE_BUF], *value;
     int msgpos = 0;
 
+    /** @todo support multiple region files */
+    if (first_region != NULL) /* Only do this once */
+        return;
+
     new = NULL;
-    while (fgets(buf, HUGE_BUF-1, fp) != NULL) {
-        buf[HUGE_BUF-1] = 0;
-        key = buf;
-        while (isspace(*key))
-            key++;
-        if (*key == 0)
+    while ((buf = bufferreader_next_line(reader)) != NULL) {
+        while (isspace(*buf))
+            buf++;
+        if (*buf == 0)
             continue;    /* empty line */
-        value = strchr(key, ' ');
-        if (!value) {
-            end = strchr(key, '\n');
-            *end = 0;
-        } else {
+        value = strchr(buf, ' ');
+        if (value) {
             *value = 0;
             value++;
-            /* isspace() includes newline. To avoid crash on empty line further
-             * down we must check for it here.
-             */
-            while (isspace(*value) && *value != '\n')
+            while (isspace(*value))
                 value++;
-            end = strchr(value, '\n');
         }
 
         /*
@@ -381,17 +353,15 @@ static void parse_regions(FILE *fp) {
          * this to "" to prevent cores, but that would let more errors slide
          * through.
          */
-        if (!strcmp(key, "region")) {
-            *end = 0;
+        if (!strcmp(buf, "region")) {
             new = get_region_struct();
             new->name = strdup_local(value);
-        } else if (!strcmp(key, "parent")) {
+        } else if (!strcmp(buf, "parent")) {
             /*
              * Note that this is in the initialisation code, so we don't actually
              * assign the pointer to the parent yet, because it might not have been
              * parsed.
              */
-            *end = 0;
 
             if (!new) {
                 LOG(llevError, "region.c: malformated regions file: \"parent\" before \"region\".\n");
@@ -402,8 +372,7 @@ static void parse_regions(FILE *fp) {
                 fatal(SEE_LAST_ERROR);
             }
             new->parent_name = strdup_local(value);
-        } else if (!strcmp(key, "longname")) {
-            *end = 0;
+        } else if (!strcmp(buf, "longname")) {
             if (!new) {
                 LOG(llevError, "region.c: malformated regions file: \"longname\" before \"region\".\n");
                 fatal(SEE_LAST_ERROR);
@@ -413,7 +382,7 @@ static void parse_regions(FILE *fp) {
                 fatal(SEE_LAST_ERROR);
             }
             new->longname = strdup_local(value);
-        } else if (!strcmp(key, "jail")) {
+        } else if (!strcmp(buf, "jail")) {
             /* jail entries are of the form: /path/to/map x y */
             char path[MAX_BUF];
             int x, y;
@@ -434,20 +403,22 @@ static void parse_regions(FILE *fp) {
             new->jailmap = strdup_local(path);
             new->jailx = x;
             new->jaily = y;
-        } else if (!strcmp(key, "msg")) {
+        } else if (!strcmp(buf, "msg")) {
             if (!new) {
                 LOG(llevError, "region.c: malformated regions file: \"msg\" before \"region\".\n");
                 fatal(SEE_LAST_ERROR);
             }
-            while (fgets(buf, HUGE_BUF-1, fp) != NULL) {
-                key = buf;
-                while (isspace(*key))
-                    key++;
-                if (strcmp(key, "endmsg\n") == 0)
+            char *other;
+            while ((other = bufferreader_next_line(reader)) != NULL) {
+                while (isspace(*other))
+                    other++;
+                if (strcmp(other, "endmsg") == 0)
                     break;
                 else {
-                    strcpy(msgbuf+msgpos, key);
-                    msgpos += strlen(key);
+                    strcpy(msgbuf+msgpos, other);
+                    msgpos += strlen(other);
+                    strcpy(msgbuf+msgpos, "\n");
+                    ++msgpos;
                 }
             }
             /*
@@ -460,18 +431,17 @@ static void parse_regions(FILE *fp) {
 
             /* we have to reset msgpos, or the next region will store both msg blocks.*/
             msgpos = 0;
-        } else if (!strcmp(key, "fallback")) {
-            *end = 0;
+        } else if (!strcmp(buf, "fallback")) {
             if (!new) {
-                LOG(llevError, "region.c: malformated regions file: \"fallback\" before \"region\".\n");
+                LOG(llevError, "region.c: malformated regions file %s: \"fallback\" before \"region\".\n", filename);
                 fatal(SEE_LAST_ERROR);
             }
             if (!value) {
-                LOG(llevError, "region.c: malformated regions file: No value given for \"fallback\" key.\n");
+                LOG(llevError, "region.c: malformated regions file %s: No value given for \"fallback\" key.\n", filename);
                 fatal(SEE_LAST_ERROR);
             }
             new->fallback = atoi(value);
-        } else if (!strcmp(key, "end")) {
+        } else if (!strcmp(buf, "end")) {
             if (!new) {
                 LOG(llevError, "region.c: Ignoring spurious \"end\" between regions.\n");
                 continue;
@@ -485,7 +455,7 @@ static void parse_regions(FILE *fp) {
             else
                 reg->next = new;
             new = NULL;
-        } else if (!strcmp(key, "nomore")) {
+        } else if (!strcmp(buf, "nomore")) {
             if (new) {
                 LOG(llevError, "region.c: Last region not properly closed.\n");
                 free(new);
@@ -494,13 +464,15 @@ static void parse_regions(FILE *fp) {
             break;
         } else {
             /* we should never get here, if we have, then something is wrong */
-            LOG(llevError, "Got unknown value in region file: %s %s\n", key, value);
+            LOG(llevError, "Got unknown value in region file %s: %s %s\n", filename, buf, value);
         }
     }
-    if (!key || strcmp(key, "nomore")) {
-        LOG(llevError, "Got premature eof on regions file!\n");
+    if (!buf || strcmp(buf, "nomore")) {
+        LOG(llevError, "Got premature eof on regions file %s!\n", filename);
         free(new);
     }
+
+    assign_region_parents();
 }
 
 /**
