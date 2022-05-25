@@ -2714,7 +2714,7 @@ static void init_renderer_env() {
         auto field = args.at(1)->get<std::string>();
         bool invert = args.size() > 2 ? args.at(2)->get<bool>() : false;
         bool ignore_case = args.size() > 3 ? args.at(3)->get<bool>() : true;
-        std::sort(ret.begin(), ret.end(), [&field, &invert, &ignore_case] (auto left, auto right) {
+        std::sort(ret.begin(), ret.end(), [&] (auto left, auto right) {
             nlohmann::json l = left[field], r = right[field];
             if (ignore_case && l.is_string() && r.is_string()) {
                 std::string ls(l.get<std::string>()), rs(r.get<std::string>());
