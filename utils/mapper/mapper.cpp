@@ -124,8 +124,9 @@
  *   with 1 real size and 5 the smallest size. Only map keys are allowed for now.
  * - pad(val, digits): pad "val" to a string of "length" characters, adding 0 in front if needed.
  * - path_to_root: return the relative path, without final /, to the output root of generated files.
- * - sort(list, key[, invert[, ignore_case]]): sort the specified list by the value of 'key'. If 'invert'
- *   is true then invert order. Strings are compared in a case-unsensitive manner unless 'ignore_case' is false.
+ * - sort(list, keys[, invert[, ignore_case]]): sort the specified list by the value of 'keys', which
+ *   may include multiple field names separated by a comma. If 'invert' is true then invert order. Strings are
+ *   compared in a case-unsensitive manner unless 'ignore_case' is false.
  * - get_by_field(list, field, value): return the first item in the list having a field 'field' with value 'value'.
  *
  * For maps, 5 pictures are generated, with sizes of 32, 16, 8, 4 and 2 pixels for tiles.
@@ -2651,6 +2652,17 @@ void add_template_to_render(const std::string &template_name, const std::string 
     pages.push_back(r);
 }
 
+static std::vector<std::string> split(const std::string &field, const std::string &by) {
+    std::vector<std::string> result;
+    size_t start = 0, found;
+    while ((found = field.find(by, start)) != std::string::npos) {
+        result.push_back(field.substr(start, found - start));
+        start = found + 1;
+    }
+    result.push_back(field.substr(start));
+    return result;
+}
+
 static std::string templates_root("templates/");    /**< Directory to get templates from, with a leading /. */
 static std::vector<std::string> templates;          /**< List of template files to start processing from. */
 
@@ -2711,18 +2723,27 @@ static void init_renderer_env() {
         for (auto i : *src) {
             ret.push_back(i);
         }
-        auto field = args.at(1)->get<std::string>();
+        auto fields = split(args.at(1)->get<std::string>(), ",");
         bool invert = args.size() > 2 ? args.at(2)->get<bool>() : false;
         bool ignore_case = args.size() > 3 ? args.at(3)->get<bool>() : true;
         std::sort(ret.begin(), ret.end(), [&] (auto left, auto right) {
-            nlohmann::json l = left[field], r = right[field];
-            if (ignore_case && l.is_string() && r.is_string()) {
-                std::string ls(l.get<std::string>()), rs(r.get<std::string>());
-                std::transform(ls.begin(), ls.end(), ls.begin(), [](unsigned char c){ return std::tolower(c); });
-                std::transform(rs.begin(), rs.end(), rs.begin(), [](unsigned char c){ return std::tolower(c); });
-                return invert ? (rs < ls) : (ls < rs);
+            for (auto field : fields) {
+                nlohmann::json l = left[field], r = right[field];
+                if (ignore_case && l.is_string() && r.is_string()) {
+                    std::string ls(l.get<std::string>()), rs(r.get<std::string>());
+                    std::transform(ls.begin(), ls.end(), ls.begin(), [](unsigned char c){ return std::tolower(c); });
+                    std::transform(rs.begin(), rs.end(), rs.begin(), [](unsigned char c){ return std::tolower(c); });
+                    if (ls == rs) {
+                        continue;
+                    }
+                    return invert ? (rs < ls) : (ls < rs);
+                }
+                if (r == l) {
+                    continue;
+                }
+                return invert ? (r < l) : (l < r);
             }
-            return invert ? (r < l) : (l < r);
+            return false;
         });
         return ret;
     });
