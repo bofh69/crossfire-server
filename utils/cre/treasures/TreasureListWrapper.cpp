@@ -5,6 +5,7 @@
 #include "TreasureLoader.h"
 #include "assets.h"
 #include "AssetsManager.h"
+#include "archetypes/ArchetypeWrapper.h"
 
 TreasureListWrapper::TreasureListWrapper(AssetWrapper *parent, treasurelist *list, ResourcesManager *resources)
    : AssetTWrapper(parent, "TreasureList", list), myResources(resources)
@@ -144,4 +145,11 @@ void TreasureListWrapper::removeChild(AssetWrapper *child) {
             return;
         }
     }
+}
+
+AssetWrapper::PossibleUse TreasureListWrapper::uses(const AssetWrapper *asset, std::string &) const {
+    return
+            dynamic_cast<const ArchetypeWrapper *>(asset)
+            || dynamic_cast<const TreasureListWrapper *>(asset)
+            ? ChildrenMayUse : DoesntUse;
 }

@@ -189,6 +189,7 @@ CREPixmap.h \
  treasures/TreasureListWrapper.h \
  treasures/TreasurePanel.h \
  treasures/TreasureWrapper.h \
+ treasures/TreasuresWrapper.h \
  AllAssets.h \
  ChangesDock.h \
  HelpBrowser.h \

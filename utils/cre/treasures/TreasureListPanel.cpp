@@ -12,8 +12,10 @@ extern "C" {
 #include "AssetsManager.h"
 #include "TreasureListWrapper.h"
 #include "TreasureWrapper.h"
+#include "../assets/AssetUseTree.h"
+#include "assets/AssetModel.h"
 
-CRETreasurePanel::CRETreasurePanel(QWidget* parent) : AssetWrapperPanel(parent) {
+CRETreasurePanel::CRETreasurePanel(AssetModel* model, QWidget* parent) : AssetWrapperPanel(parent) {
 
     addCheckBox(tr("Single item"), "isSingleItem", false);
 
@@ -28,50 +30,16 @@ CRETreasurePanel::CRETreasurePanel(QWidget* parent) : AssetWrapperPanel(parent) 
     myGenerated->setHeaderLabel(tr("Generation result"));
     myGenerated->setIconSize(QSize(32, 32));
 
-    myUsing = new QTreeWidget(this);
-    myUsing->setColumnCount(1);
-    myUsing->setHeaderLabel(tr("Used by"));
-    myUsing->setIconSize(QSize(32, 32));
-    myLayout->addWidget(myUsing, 1, 4, 3, 1);
+    myLayout->addWidget(new QLabel(tr("Used by"), this), 1, 4, 1, 1);
+    auto use = addAssetUseTree(QString(), model, "self");
+    myLayout->removeWidget(use);
+    myLayout->addWidget(use, 2, 4, 2, 3);
 }
 
 void CRETreasurePanel::setItem(AssetWrapper *asset) {
     AssetWrapperPanel::setItem(asset);
     myTreasure = dynamic_cast<TreasureListWrapper *>(asset);
     Q_ASSERT(myTreasure);
-
-    myUsing->clear();
-
-    QTreeWidgetItem* root = NULL;
-
-    QString name = myTreasure->displayName();
-
-    getManager()->archetypes()->each([this, &root, &name] (const archetype * arch) {
-        if (arch->clone.randomitems && name == arch->clone.randomitems->name) {
-            if (root == NULL) {
-                root = CREUtils::archetypeNode(NULL);
-                myUsing->addTopLevelItem(root);
-                root->setExpanded(true);
-            }
-            CREUtils::archetypeNode(arch, root);
-        }
-    });
-
-    root = NULL;
-
-    getManager()->treasures()->each([this, &root, &name] (treasurelist * list) {
-        for (const treasure *t = list->items; t; t = t->next) {
-            if (t->name == name) {
-                if (root == NULL) {
-                    root = CREUtils::treasureNode(NULL);
-                    myUsing->addTopLevelItem(root);
-                    root->setExpanded(true);
-                }
-                CREUtils::treasureNode(list, root);
-            }
-        }
-    });
-
     myGenerated->clear();
 }
 

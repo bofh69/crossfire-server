@@ -4,6 +4,7 @@
 #include "assets.h"
 #include "AssetsManager.h"
 #include "MimeUtils.h"
+#include "archetypes/ArchetypeWrapper.h"
 
 extern "C" {
 #include "global.h"
@@ -272,6 +273,18 @@ void TreasureWrapper::swapYesNo() {
         std::swap(myWrappedItem->next_yes, myWrappedItem->next_no);
         markModified(AfterLayoutChange);
     }
+}
+
+AssetWrapper::PossibleUse TreasureWrapper::uses(const AssetWrapper *asset, std::string &) const {
+    auto arch = dynamic_cast<const ArchetypeWrapper *>(asset);
+    if (arch) {
+        return myWrappedItem->item == arch->wrappedItem() ? Uses : DoesntUse;
+    }
+    auto list = dynamic_cast<const TreasureListWrapper *>(asset);
+    if (list) {
+        return myWrappedItem->name == list->wrappedItem()->name ? Uses : DoesntUse;
+    }
+    return DoesntUse;
 }
 
 TreasureYesNo::TreasureYesNo(TreasureWrapper *parent, treasure *tr, ResourcesManager *resources, bool isYes)

@@ -6,12 +6,13 @@
 #include "assets/AssetWrapperPanel.h"
 
 class TreasureListWrapper;
+class AssetModel;
 
 class CRETreasurePanel : public AssetWrapperPanel {
     Q_OBJECT
 
 public:
-    CRETreasurePanel(QWidget* parent);
+    CRETreasurePanel(AssetModel* model, QWidget* parent);
 
     virtual void setItem(AssetWrapper *asset) override;
 
@@ -20,7 +21,6 @@ public slots:
 
 protected:
     TreasureListWrapper *myTreasure;
-    QTreeWidget* myUsing;
     QTreeWidget* myGenerated;
     QSpinBox* myDifficulty;
 

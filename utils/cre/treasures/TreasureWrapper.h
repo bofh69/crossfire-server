@@ -39,6 +39,8 @@ public:
     virtual int childIndex(AssetWrapper *child) override;
     virtual void removeChild(AssetWrapper *child) override;
 
+    virtual PossibleUse uses(const AssetWrapper *, std::string &) const override;
+
     virtual bool canDrop(const QMimeData *data, int row) const override;
     virtual void drop(const QMimeData *data, int row) override;
 

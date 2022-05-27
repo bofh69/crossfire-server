@@ -45,6 +45,8 @@ public:
     void setSingleItem(bool isSingle);
     int itemCount() const;
 
+    virtual PossibleUse uses(const AssetWrapper *, std::string &) const override;
+
 protected:
     ResourcesManager *myResources;
 

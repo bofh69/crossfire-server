@@ -6,6 +6,7 @@
 #include "assets.h"
 #include "AssetsManager.h"
 #include "animations/AnimationWrapper.h"
+#include "treasures/TreasureListWrapper.h"
 #include "MimeUtils.h"
 
 ArchetypeWrapper::ArchetypeWrapper(AssetWrapper *parent, archetype *arch, ResourcesManager *resourcesManager)
@@ -136,6 +137,10 @@ AssetWrapper::PossibleUse ArchetypeWrapper::uses(const AssetWrapper *asset, std:
             return Uses;
         }
         return DoesntUse;
+    }
+    auto tl = dynamic_cast<const TreasureListWrapper *>(asset);
+    if (tl) {
+        return myWrappedItem->clone.randomitems == tl->wrappedItem() ? Uses : DoesntUse;
     }
     return DoesntUse;
 }
