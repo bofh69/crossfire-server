@@ -2152,27 +2152,25 @@ static void cfapi_object_get_property(int *type, ...) {
         break;
 
     case CFAPI_OBJECT_PROP_FACE:
-        rbuffer = va_arg(args, char *);
-        rbufsize = va_arg(args, int);
-        if (rbufsize > 0) {
-            strncpy(rbuffer, op->face->name, rbufsize);
-            rbuffer[rbufsize - 1] = '\0';
+        rsstring = va_arg(args, sstring *);
+        if (op->face != NULL) {
+            (*rsstring) = op->face->name;
         }
-        *type = CFAPI_STRING;
+        else {
+            (*rsstring) = NULL;
+        }
+        *type = CFAPI_SSTRING;
         break;
 
     case CFAPI_OBJECT_PROP_ANIMATION:
-        rbuffer = va_arg(args, char *);
-        rbufsize = va_arg(args, int);
-        if (rbufsize > 0) {
-            if (op->animation != NULL) {
-                strncpy(rbuffer, op->animation->name, rbufsize);
-                rbuffer[rbufsize - 1] = '\0';
-            }
-            else
-                rbuffer[0] = '\0';
+        rsstring = va_arg(args, sstring *);
+        if (op->animation != NULL) {
+            (*rsstring) = op->animation->name;
         }
-        *type = CFAPI_STRING;
+        else {
+            (*rsstring) = NULL;
+        }
+        *type = CFAPI_SSTRING;
         break;
 
     case CFAPI_PLAYER_PROP_IP:
