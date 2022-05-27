@@ -21,13 +21,7 @@ extern "C" {
 AnimationPanel::AnimationPanel(QWidget* parent, AssetModel *assets) : AssetWrapperPanel(parent) {
     myAnimation = nullptr;
 
-    myAssets = new UseFilterAssetModel(this);
-    myAssets->setSourceModel(assets);
-
-    myUsingView = addWidget("", new QTreeView(this), false, nullptr, nullptr);
-    myUsingView->setIconSize(QSize(32, 32));
-    myUsingView->setModel(myAssets);
-    myUsingView->setHeaderHidden(false);
+    addAssetUseTree("Used by", assets, "self");
 
     myFaces = addWidget("", new QTreeWidget(this), false, nullptr, nullptr);
     myFaces->setColumnCount(1);
@@ -38,12 +32,10 @@ AnimationPanel::AnimationPanel(QWidget* parent, AssetModel *assets) : AssetWrapp
 }
 
 void AnimationPanel::setItem(AssetWrapper *asset) {
+    AssetWrapperPanel::setItem(asset);
     auto anim = dynamic_cast<AnimationWrapper *>(asset);
     Q_ASSERT(anim);
     myAnimation = anim->wrappedItem();
-
-    myAssets->setFilter(asset);
-    myUsingView->expandAll();
 
     myDisplay->setAnimation(myAnimation);
 

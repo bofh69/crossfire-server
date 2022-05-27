@@ -26,8 +26,6 @@ public:
 protected:
     const Animations* myAnimation;
 
-    QTreeView* myUsingView;
-    UseFilterAssetModel *myAssets;
     QTreeWidget* myFaces;
     AnimationControl* myDisplay;
 };
