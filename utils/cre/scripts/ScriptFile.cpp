@@ -15,7 +15,7 @@ void ScriptFile::addHook(HookInformation* hook)
     myHooks.append(hook);
 }
 
-bool ScriptFile::forMap(CREMapInformation* map) const
+bool ScriptFile::forMap(const CREMapInformation* map) const
 {
     foreach(HookInformation* hook, myHooks)
     {

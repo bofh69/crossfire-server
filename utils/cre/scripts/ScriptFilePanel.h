@@ -1,19 +1,13 @@
 #ifndef SCRIPT_FILE_PANEL_H
 #define SCRIPT_FILE_PANEL_H
 
-#include <QWidget>
-#include "CREPanel.h"
+#include "assets/AssetWrapperPanel.h"
 
-class ScriptFile;
+class AssetModel;
 
-class CREScriptPanel : public CRETPanel<ScriptFile> {
+class CREScriptPanel : public AssetWrapperPanel {
 public:
-    CREScriptPanel(QWidget *parent);
-
-    virtual void setItem(ScriptFile *script) override;
-
-private:
-    QTreeWidget* myMaps;
+    CREScriptPanel(AssetModel *assets, QWidget *parent);
 };
 
 #endif /* SCRIPT_FILE_PANEL_H */

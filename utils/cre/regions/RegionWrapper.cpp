@@ -1,6 +1,7 @@
 #include "RegionWrapper.h"
 #include "../ResourcesManager.h"
 #include "../CREMapInformationManager.h"
+#include "../scripts/ScriptFile.h"
 
 RegionWrapper::RegionWrapper(AssetWrapper *parent, region *reg, ResourcesManager *resources) : AssetTWrapper(parent, "Region", reg),
         myResourcesManager(resources) {
@@ -28,6 +29,7 @@ AssetWrapper::PossibleUse RegionWrapper::uses(const AssetWrapper *asset, std::st
     return (dynamic_cast<const QuestWrapper *>(asset)
             || dynamic_cast<const FaceWrapper *>(asset)
             || dynamic_cast<const AnimationWrapper *>(asset)
+            || dynamic_cast<const ScriptFile *>(asset)
             ) ? ChildrenMayUse : DoesntUse;
 }
 

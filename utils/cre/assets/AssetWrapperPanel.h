@@ -12,6 +12,8 @@ class QCheckBox;
 class QSpinBox;
 class TreasureListComboBox;
 class ArchetypeComboBox;
+class AssetUseTree;
+class AssetModel;
 
 class AssetWrapperPanel : public CRETPanel<AssetWrapper> {
     Q_OBJECT
@@ -27,6 +29,7 @@ public:
     QSpinBox *addSpinBox(const QString &label, const char *property, int min = 0, int max = 100, bool readOnly = true);
     TreasureListComboBox *addTreasureList(const QString &label, const char *property, bool readOnly = true, bool allowNone = true);
     ArchetypeComboBox *addArchetype(const QString &label, const char *property, bool readOnly = false, bool allowNone = true);
+    AssetUseTree *addAssetUseTree(const QString &label, AssetModel *assets, const char *property);
     void addBottomFiller();
 
 protected slots:

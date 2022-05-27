@@ -3,6 +3,7 @@
 
 #include <QList>
 #include "assets/AssetWrapper.h"
+#include "assets/AssetWrapperPanel.h"
 
 class CREMapInformation;
 
@@ -35,12 +36,12 @@ public:
 
     virtual QString displayName() const override { return myPath; }
     virtual void displayFillPanel(QWidget *panel) override {
-        CRETPanel<ScriptFile> *p = static_cast<CRETPanel<ScriptFile> *>(panel);
+        AssetWrapperPanel *p = static_cast<AssetWrapperPanel *>(panel);
         p->setItem(this);
     }
 
     void addHook(HookInformation* hook);
-    bool forMap(CREMapInformation* map) const;
+    bool forMap(const CREMapInformation* map) const;
     /**
      * Remove hooks linked to a map.
      * @param map map to remove scripts of.

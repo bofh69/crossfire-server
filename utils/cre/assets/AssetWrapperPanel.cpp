@@ -5,6 +5,7 @@
 #include "FaceComboBox.h"
 #include "treasures/TreasureListComboBox.h"
 #include "archetypes/ArchetypeComboBox.h"
+#include "assets/AssetUseTree.h"
 
 AssetWrapperPanel::AssetWrapperPanel(QWidget *parent) : CRETPanel(parent), myAsset(nullptr), myInhibit(false) {
     myLayout = new QGridLayout(this);
@@ -101,6 +102,10 @@ ArchetypeComboBox *AssetWrapperPanel::addArchetype(const QString &label, const c
         connect(widget, SIGNAL(currentIndexChanged(int)), this, SLOT(dataChanged()));
     }
     return widget;
+}
+
+AssetUseTree *AssetWrapperPanel::addAssetUseTree(const QString &label, AssetModel *assets, const char *property) {
+    return addWidget(label, new AssetUseTree(assets, this), false, property, "filter");
 }
 
 void AssetWrapperPanel::addBottomFiller() {

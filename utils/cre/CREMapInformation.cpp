@@ -3,6 +3,7 @@
 #include "quests/QuestWrapper.h"
 #include "faces/FaceWrapper.h"
 #include "animations/AnimationWrapper.h"
+#include "scripts/ScriptFile.h"
 
 CREMapInformation::CREMapInformation() : AssetWrapper(nullptr, "Map")
 {
@@ -263,6 +264,10 @@ AssetWrapper::PossibleUse CREMapInformation::uses(const AssetWrapper *asset, std
     auto anim = dynamic_cast<const AnimationWrapper *>(asset);
     if (anim) {
         return myAnimations.find(anim->wrappedItem()->name) == myAnimations.end() ? DoesntUse : Uses;
+    }
+    auto script = dynamic_cast<const ScriptFile *>(asset);
+    if (script) {
+        return script->forMap(this) ? Uses : DoesntUse;
     }
     return DoesntUse;
 }

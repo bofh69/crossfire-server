@@ -10,6 +10,9 @@ class QMenu;
 
 class AssetWrapper : public QObject {
     Q_OBJECT
+
+    Q_PROPERTY(AssetWrapper *self READ self)
+
 public:
     enum PossibleUse { Uses, ChildrenMayUse, DoesntUse };
     enum ChangeType { AssetUpdated, BeforeChildAdd, AfterChildAdd, BeforeChildRemove, AfterChildRemove, BeforeLayoutChange, AfterLayoutChange };
@@ -19,6 +22,8 @@ public:
         : QObject(parent), myParent(parent), myPanelName(panelName) {
     }
     virtual ~AssetWrapper() override {};
+
+    AssetWrapper *self() { return this; }
 
     virtual QString displayName() const = 0;
     virtual QIcon displayIcon() const { return QIcon(); }

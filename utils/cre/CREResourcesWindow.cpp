@@ -139,7 +139,7 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     addPanel("GeneralMessage", new CREGeneralMessagePanel(this));
     addPanel("Region", new RegionPanel(this));
     addPanel("Map", new CREMapPanel(myScripts, this));
-    addPanel("Script", new CREScriptPanel(this));
+    addPanel("Script", new CREScriptPanel(model, this));
     addPanel("Message", new CREMessagePanel(myMessages, this));
     addPanel("RandomMap", new CRERandomMapPanel(this));
     addPanel("AttackMessage", new AttackMessagePanel(this));

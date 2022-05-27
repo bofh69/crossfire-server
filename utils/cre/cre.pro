@@ -65,6 +65,7 @@ CREPixmap.cpp \
  artifacts/ArtifactWrapper.cpp \
  artifacts/ArtifactsWrapper.cpp \
  assets/AssetModel.cpp \
+ assets/AssetUseTree.cpp \
  assets/AssetWrapperPanel.cpp \
  attack_messages/AttackMessagePanel.cpp \
  attack_messages/AttackMessagesWrapper.cpp \
@@ -158,6 +159,7 @@ CREPixmap.h \
  artifacts/ArtifactWrapper.h \
  artifacts/ArtifactsWrapper.h \
  assets/AssetModel.h \
+ assets/AssetUseTree.h \
  assets/AssetWrapper.h \
  assets/AssetWrapperPanel.h \
  attack_messages/AttackMessagePanel.h \
