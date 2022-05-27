@@ -1,6 +1,7 @@
 #include "RegionsWrapper.h"
 #include "../ResourcesManager.h"
 #include "../scripts/ScriptFile.h"
+#include "../archetypes/ArchetypeWrapper.h"
 
 RegionsWrapper::RegionsWrapper(AssetWrapper *parent, ResourcesManager *resources) : AssetWrapper(parent) {
     for (region* reg = first_region; reg; reg = reg->next) {
@@ -15,5 +16,6 @@ AssetWrapper::PossibleUse RegionsWrapper::uses(const AssetWrapper *asset, std::s
             || dynamic_cast<const FaceWrapper *>(asset)
             || dynamic_cast<const AnimationWrapper *>(asset)
             || dynamic_cast<const ScriptFile *>(asset)
+            || dynamic_cast<const ArchetypeWrapper *>(asset)
             ) ? ChildrenMayUse : DoesntUse;
 }

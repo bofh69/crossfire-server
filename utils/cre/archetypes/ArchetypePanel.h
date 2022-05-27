@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QtWidgets>
-#include "CREPanel.h"
+#include "../assets/AssetWrapperPanel.h"
 
 extern "C" {
 #include "global.h"
@@ -11,13 +11,14 @@ extern "C" {
 
 class CREMapInformationManager;
 class ResourcesManager;
+class AssetModel;
 
-class ArchetypePanel : public CRETPanel<archt> {
+class ArchetypePanel : public AssetWrapperPanel {
     Q_OBJECT
 
 public:
-    ArchetypePanel(CREMapInformationManager* store, ResourcesManager* resources, QWidget* parent);
-    virtual void setItem(archt* archetype) override;
+    ArchetypePanel(CREMapInformationManager* store, ResourcesManager* resources, AssetModel* model, QWidget* parent);
+    virtual void setItem(AssetWrapper* asset) override;
 
     virtual void commitData() override;
 
@@ -26,7 +27,6 @@ protected:
     ResourcesManager *myResources;
     QTextEdit* myDisplay;
     std::string myInitialArch;
-    QTreeWidget* myUsing;
     archt* myArchetype;
 };
 

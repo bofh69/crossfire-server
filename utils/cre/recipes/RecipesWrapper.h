@@ -23,6 +23,8 @@ public:
     virtual AssetWrapper *child(int) override;
     virtual int childIndex(AssetWrapper *) override;
 
+    virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;
+
 protected:
     ResourcesManager *myResourcesManager;
 };

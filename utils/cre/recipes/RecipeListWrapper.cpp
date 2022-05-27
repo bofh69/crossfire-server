@@ -2,6 +2,7 @@
 #include "ResourcesManager.h"
 #include "CREPixmap.h"
 #include "RecipeListWrapper.h"
+#include "../archetypes/ArchetypeWrapper.h"
 
 RecipeListWrapper::RecipeListWrapper(AssetWrapper *parent, const recipelist *list, ResourcesManager *resources)
   : AssetTWrapper(parent, "RecipeList", list), myResourcesManager(resources) {
@@ -37,4 +38,8 @@ int RecipeListWrapper::childIndex(AssetWrapper *child) {
         index++;
     }
     return -1;
+}
+
+AssetWrapper::PossibleUse RecipeListWrapper::uses(const AssetWrapper *asset, std::string &) const {
+    return dynamic_cast<const ArchetypeWrapper *>(asset) ? ChildrenMayUse : DoesntUse;
 }

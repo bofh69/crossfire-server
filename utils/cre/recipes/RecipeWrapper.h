@@ -37,6 +37,8 @@ public:
     virtual QIcon displayIcon() const override;
     virtual void displayFillPanel(QWidget *panel) override;
 
+    virtual PossibleUse uses(const AssetWrapper *asset, std::string &hint) const override;
+
     QString title() const;
     int chance() const;
     int difficulty() const;

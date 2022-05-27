@@ -2,6 +2,7 @@
 #include "../ResourcesManager.h"
 #include "../CREMapInformationManager.h"
 #include "../scripts/ScriptFile.h"
+#include "../archetypes/ArchetypeWrapper.h"
 
 RegionWrapper::RegionWrapper(AssetWrapper *parent, region *reg, ResourcesManager *resources) : AssetTWrapper(parent, "Region", reg),
         myResourcesManager(resources) {
@@ -30,6 +31,7 @@ AssetWrapper::PossibleUse RegionWrapper::uses(const AssetWrapper *asset, std::st
             || dynamic_cast<const FaceWrapper *>(asset)
             || dynamic_cast<const AnimationWrapper *>(asset)
             || dynamic_cast<const ScriptFile *>(asset)
+            || dynamic_cast<const ArchetypeWrapper *>(asset)
             ) ? ChildrenMayUse : DoesntUse;
 }
 

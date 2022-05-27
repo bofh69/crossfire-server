@@ -30,6 +30,8 @@ public:
     virtual AssetWrapper *child(int index) override;
     virtual int childIndex(AssetWrapper *child) override;
 
+    virtual void displayFillPanel(QWidget *panel) override;
+
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;
 
     virtual bool canDrag() const override { return true; }

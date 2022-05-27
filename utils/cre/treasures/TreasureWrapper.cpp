@@ -278,7 +278,10 @@ void TreasureWrapper::swapYesNo() {
 AssetWrapper::PossibleUse TreasureWrapper::uses(const AssetWrapper *asset, std::string &) const {
     auto arch = dynamic_cast<const ArchetypeWrapper *>(asset);
     if (arch) {
-        return myWrappedItem->item == arch->wrappedItem() ? Uses : DoesntUse;
+        if (wrappedItem()->item == arch->wrappedItem()) {
+            return Uses;
+        }
+        return ChildrenMayUse;
     }
     auto list = dynamic_cast<const TreasureListWrapper *>(asset);
     if (list) {

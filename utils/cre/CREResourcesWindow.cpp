@@ -126,7 +126,7 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     connect(&myReportsMapper, SIGNAL(mapped(QObject*)), this, SLOT(onReportChange(QObject*)));
     updateReports();
 
-    addPanel("Archetype", new ArchetypePanel(myStore, myResources, this));
+    addPanel("Archetype", new ArchetypePanel(myStore, myResources, model, this));
     addPanel("Face", new CREFacePanel(this, model, myResources, myStore));
     addPanel("Animation", new AnimationPanel(this, model));
     addPanel("Artifact", new ArtifactPanel(this));

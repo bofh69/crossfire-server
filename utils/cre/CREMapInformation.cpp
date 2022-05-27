@@ -4,6 +4,7 @@
 #include "faces/FaceWrapper.h"
 #include "animations/AnimationWrapper.h"
 #include "scripts/ScriptFile.h"
+#include "archetypes/ArchetypeWrapper.h"
 
 CREMapInformation::CREMapInformation() : AssetWrapper(nullptr, "Map")
 {
@@ -252,7 +253,7 @@ void CREMapInformation::addRandomMap(RandomMap* map)
   myRandomMaps.append(map);
 }
 
-AssetWrapper::PossibleUse CREMapInformation::uses(const AssetWrapper *asset, std::string &) const {
+AssetWrapper::PossibleUse CREMapInformation::uses(const AssetWrapper *asset, std::string &hint) const {
     auto quest = dynamic_cast<const QuestWrapper *>(asset);
     if (quest) {
         return myQuests.indexOf(quest->wrappedItem()->quest_code) == -1 ? DoesntUse : Uses;
@@ -268,6 +269,19 @@ AssetWrapper::PossibleUse CREMapInformation::uses(const AssetWrapper *asset, std
     auto script = dynamic_cast<const ScriptFile *>(asset);
     if (script) {
         return script->forMap(this) ? Uses : DoesntUse;
+    }
+    auto arch = dynamic_cast<const ArchetypeWrapper *>(asset);
+    if (arch) {
+        if (myArchetypes.indexOf(arch->wrappedItem()->name) != -1) {
+            return Uses;
+        };
+        for (auto map : myRandomMaps) {
+            if (strcmp(arch->wrappedItem()->name, map->parameters()->final_exit_archetype) == 0) {
+                hint = "random map final exit";
+                return Uses;
+            }
+        }
+        return DoesntUse;
     }
     return DoesntUse;
 }

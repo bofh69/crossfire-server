@@ -8,6 +8,7 @@
 #include "animations/AnimationWrapper.h"
 #include "treasures/TreasureListWrapper.h"
 #include "MimeUtils.h"
+#include "assets/AssetWrapperPanel.h"
 
 ArchetypeWrapper::ArchetypeWrapper(AssetWrapper *parent, archetype *arch, ResourcesManager *resourcesManager)
  : AssetWithArtifacts<archetype>(parent, "Archetype", arch, resourcesManager) {
@@ -73,6 +74,11 @@ int ArchetypeWrapper::childIndex(AssetWrapper *child) {
         }
     }
     return index + AssetWithArtifacts<archetype>::childIndex(child);
+}
+
+void ArchetypeWrapper::displayFillPanel(QWidget *panel) {
+    AssetWrapperPanel *p = static_cast<AssetWrapperPanel *>(panel);
+    p->setItem(this);
 }
 
 static bool treasureContains(const treasure *t, const archetype *arch) {
@@ -141,6 +147,18 @@ AssetWrapper::PossibleUse ArchetypeWrapper::uses(const AssetWrapper *asset, std:
     auto tl = dynamic_cast<const TreasureListWrapper *>(asset);
     if (tl) {
         return myWrappedItem->clone.randomitems == tl->wrappedItem() ? Uses : DoesntUse;
+    }
+    auto arch = dynamic_cast<const ArchetypeWrapper *>(asset);
+    if (arch) {
+        if (wrappedItem()->clone.other_arch == arch->wrappedItem()) {
+            hint = "other arch";
+            return Uses;
+        }
+        sstring death_anim = NULL;
+        if ((death_anim = object_get_value(&myWrappedItem->clone, "death_animation")) && strcmp(death_anim, arch->wrappedItem()->name) == 0) {
+            hint = "death animation";
+            return Uses;
+        }
     }
     return DoesntUse;
 }

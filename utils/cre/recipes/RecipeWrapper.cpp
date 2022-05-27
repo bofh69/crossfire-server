@@ -1,6 +1,7 @@
 #include "RecipeWrapper.h"
 #include "ResourcesManager.h"
 #include "CREPixmap.h"
+#include "../archetypes/ArchetypeWrapper.h"
 
 RecipeWrapper::RecipeWrapper(AssetWrapper *parent, const recipe *rp, ResourcesManager *)
   : AssetTWrapper(parent, "Recipe", rp) {
@@ -94,4 +95,18 @@ QIcon RecipeWrapper::displayIcon() const {
 void RecipeWrapper::displayFillPanel(QWidget *panel) {
     AssetWrapperPanel *p = static_cast<AssetWrapperPanel *>(panel);
     p->setItem(this);
+}
+
+AssetWrapper::PossibleUse RecipeWrapper::uses(const AssetWrapper *asset, std::string &hint) const {
+    auto arch = dynamic_cast<const ArchetypeWrapper *>(asset);
+    if (arch) {
+        for (size_t i = 0; i < wrappedItem()->arch_names; i++) {
+            if (strcmp(wrappedItem()->arch_name[i], arch->wrappedItem()->name) == 0) {
+                hint = "alchemy product";
+                return Uses;
+            }
+        }
+        return DoesntUse;
+    }
+    return DoesntUse;
 }
