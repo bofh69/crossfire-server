@@ -218,19 +218,19 @@ static int do_execute_event(object *op, int eventcode, object *activator, object
 
             if (tmp->title == NULL) {
                 object *env = object_get_env_recursive(tmp);
-                LOG(llevError, "Event object without title at %d/%d in map %s\n", env->x, env->y, env->map->name);
+                LOG(llevError, "Event object without title at %d/%d in map %s\n", env->x, env->y, env->map ? env->map->name : "(null map)");
                 object_remove(tmp);
                 object_free(tmp, FREE_OBJ_NO_DESTROY_CALLBACK);
             } else if (tmp->slaying == NULL) {
                 object *env = object_get_env_recursive(tmp);
-                LOG(llevError, "Event object without slaying at %d/%d in map %s\n", env->x, env->y, env->map->name);
+                LOG(llevError, "Event object without slaying at %d/%d in map %s\n", env->x, env->y, env->map ? env->map->name : "(null map)");
                 object_remove(tmp);
                 object_free(tmp, FREE_OBJ_NO_DESTROY_CALLBACK);
             } else {
                 auto handler = object_handlers.find(tmp->title);
                 if (handler == object_handlers.end()) {
                     object *env = object_get_env_recursive(tmp);
-                    LOG(llevError, "The requested handler doesn't exist: %s at %d/%d in map %s\n", tmp->title, env->x, env->y, env->map->name);
+                    LOG(llevError, "The requested handler doesn't exist: %s at %d/%d in map %s\n", tmp->title, env->x, env->y, env->map ? env->map->name : "(null map)");
                     object_remove(tmp);
                     object_free(tmp, FREE_OBJ_NO_DESTROY_CALLBACK);
                 } else {
