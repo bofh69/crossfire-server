@@ -1037,10 +1037,6 @@ static int do_script(CFPContext *context) {
     PyCodeObject *pycode;
     PyObject *dict;
     PyObject *ret;
-#if 0
-    PyObject *list;
-    int item;
-#endif
 
     cf_log(llevDebug, "CFPython: running script %s\n", context->script);
 
@@ -1054,17 +1050,6 @@ static int do_script(CFPContext *context) {
             log_python_error();
         }
         Py_XDECREF(ret);
-#if 0
-        printf("cfpython - %d items in heap\n", PyDict_Size(dict));
-        list = PyDict_Values(dict);
-        for (item = PyList_Size(list)-1; item >= 0; item--) {
-            dict = PyList_GET_ITEM(list, item);
-            ret = PyObject_Str(dict);
-            printf(" ref %s = %d\n", PyString_AsString(ret), dict->ob_refcnt);
-            Py_XDECREF(ret);
-        }
-        Py_DECREF(list);
-#endif
         Py_DECREF(dict);
         return 1;
     } else
