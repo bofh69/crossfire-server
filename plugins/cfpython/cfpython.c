@@ -929,7 +929,7 @@ static PyCodeObject *compilePython(char *filename) {
 
     sh_path = cf_add_string(filename);
 
-    /* Search through cache. Three cases:
+    /* Search through cache. Four cases:
      * 1) script in cache, but older than file  -> replace cached
      * 2) script in cache and up to date        -> use cached
      * 3) script not in cache, cache not full   -> add to end of cache
