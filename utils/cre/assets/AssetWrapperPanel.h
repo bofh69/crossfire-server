@@ -1,25 +1,23 @@
 #ifndef ASSETWRAPPERPANEL_H
 #define ASSETWRAPPERPANEL_H
 
-#include "CREPanel.h"
 #include <QtWidgets>
 
-class AssetWrapper;
-class QGridLayout;
-class QLabel;
-class QLineEdit;
-class QCheckBox;
-class QSpinBox;
+#include "AssetWrapper.h"
+
 class TreasureListComboBox;
 class ArchetypeComboBox;
 class AssetUseTree;
 class AssetModel;
 
-class AssetWrapperPanel : public CRETPanel<AssetWrapper> {
+/** Base class for a panel displaying information about an asset. */
+class AssetWrapperPanel : public QWidget {
     Q_OBJECT
 public:
     AssetWrapperPanel(QWidget *parent);
-    virtual void setItem(AssetWrapper *item) override;
+    virtual ~AssetWrapperPanel();
+    virtual void setAsset(AssetWrapper *item);
+    virtual void commitData() {}
 
     QLabel *addLabel(const QString &label, const char *property);
     QLineEdit *addLineEdit(const QString &label, const char *property, bool readOnly = true);
@@ -66,6 +64,47 @@ protected:
         const char *widgetPropertyName;
     };
     QList<PropertyLink> myLinks;
+};
+
+/**
+ * Panel displaying information about a AssetTWrapper.
+ */
+template<typename T>
+class AssetTWrapperPanel : public AssetWrapperPanel {
+public:
+    AssetTWrapperPanel(QWidget* parent) : AssetWrapperPanel(parent), myItem(nullptr) {};
+
+    virtual void setAsset(AssetWrapper *asset) override {
+        AssetWrapperPanel::setAsset(asset);
+        auto aw = dynamic_cast<AssetTWrapper<T> *>(asset);
+        myItem = aw ? aw->wrappedItem() : nullptr;
+        updateItem();
+    }
+    /** Called when myItem is updated. */
+    virtual void updateItem() = 0;
+
+protected:
+    T *myItem;  /**< Item to display. */
+};
+
+/**
+ * Panel displaying information about an AssetWrapper which is its own wrapped item.
+ */
+template<typename T>
+class AssetSWrapperPanel : public AssetWrapperPanel {
+public:
+    AssetSWrapperPanel(QWidget* parent) : AssetWrapperPanel(parent), myItem(nullptr) {};
+
+    virtual void setAsset(AssetWrapper *asset) override {
+        AssetWrapperPanel::setAsset(asset);
+        myItem = dynamic_cast<T *>(asset);
+        updateItem();
+    }
+    /** Called when myItem was updated. */
+    virtual void updateItem() = 0;
+
+protected:
+    T *myItem;  /**< Item to display. */
 };
 
 #endif /* ASSETWRAPPERPANEL_H */

@@ -19,8 +19,3 @@ AssetWrapper::PossibleUse AnimationWrapper::uses(const AssetWrapper *asset, std:
     }
     return DoesntUse;
 }
-
-void AnimationWrapper::displayFillPanel(QWidget *panel) {
-    AssetWrapperPanel *p = static_cast<AssetWrapperPanel *>(panel);
-    p->setItem(this);
-}

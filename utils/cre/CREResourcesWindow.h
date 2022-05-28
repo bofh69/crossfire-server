@@ -14,7 +14,7 @@ class ResourcesManager;
 class ScriptFileManager;
 class AssetModel;
 class ScriptFilterAssetModel;
-class CREPanel;
+class AssetWrapperPanel;
 
 class CREResourcesWindow : public QWidget
 {
@@ -39,8 +39,8 @@ class CREResourcesWindow : public QWidget
         ScriptFilterAssetModel *myModel;
         QTreeView* myTree;
         QModelIndex myTreeRoot;
-        CREPanel* myCurrentPanel;
-        QHash<QString, QPointer<CREPanel> > myPanels;
+        AssetWrapperPanel* myCurrentPanel;
+        QHash<QString, QPointer<AssetWrapperPanel> > myPanels;
         QStackedLayout* myStackedPanels;
         CREMapInformationManager* myStore;
         MessageManager* myMessages;
@@ -55,7 +55,7 @@ class CREResourcesWindow : public QWidget
         CREReportDefinitionManager myReports;
         CREScriptEngine myEngine;
 
-        void addPanel(QString name, CREPanel* panel);
+        void addPanel(QString name, AssetWrapperPanel* panel);
         void setFilter(const QString &filter, const QString &name);
 
     protected slots:

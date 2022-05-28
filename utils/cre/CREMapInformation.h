@@ -9,7 +9,6 @@
 #include <QSet>
 
 #include "assets/AssetWrapper.h"
-#include "CREPanel.h"
 
 class RandomMap;
 
@@ -29,11 +28,6 @@ class CREMapInformation : public AssetWrapper
         virtual ~CREMapInformation();
 
         virtual QString displayName() const override;
-
-        virtual void displayFillPanel(QWidget *panel) override {
-            CRETPanel<CREMapInformation>* p = static_cast<CRETPanel<CREMapInformation>*>(panel);
-            p->setItem(this);
-        }
 
         virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;
 

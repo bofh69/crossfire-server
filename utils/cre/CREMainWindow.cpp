@@ -124,12 +124,15 @@ void CREMainWindow::closeEvent(QCloseEvent* event)
         settings.setMainWindowGeometry(saveGeometry());
     }
 
+    myArea->closeAllSubWindows();
+    delete myArea;
+    QMainWindow::closeEvent(event);
+
     myMapManager->cancel();
     delete myMapManager;
     delete myMessageManager;
     delete myResourcesManager;
     cleanup();
-    QMainWindow::closeEvent(event);
 }
 
 QAction *CREMainWindow::createAction(const QString &title, const QString &statusTip) {
@@ -301,12 +304,14 @@ void CREMainWindow::doResourceWindow(int assets, const QByteArray& position)
     }
 
     QWidget* resources = new CREResourcesWindow(myMapManager, myMessageManager, myResourcesManager, myScriptManager, myModel, root, this);
+    resources->setAttribute(Qt::WA_DeleteOnClose);
     connect(this, SIGNAL(updateFilters()), resources, SLOT(updateFilters()));
     connect(resources, SIGNAL(filtersModified()), this, SLOT(onFiltersModified()));
     connect(this, SIGNAL(updateReports()), resources, SLOT(updateReports()));
     connect(resources, SIGNAL(reportsModified()), this, SLOT(onReportsModified()));
     connect(this, SIGNAL(commitData()), resources, SLOT(commitData()));
     auto widget = myArea->addSubWindow(resources);
+    widget->setAttribute(Qt::WA_DeleteOnClose);
     if (position.isEmpty()) {
         if (myArea->subWindowList().size() == 1) {
             widget->setWindowState(Qt::WindowMaximized);

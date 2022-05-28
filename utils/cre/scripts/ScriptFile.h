@@ -35,10 +35,6 @@ public:
     virtual ~ScriptFile();
 
     virtual QString displayName() const override { return myPath; }
-    virtual void displayFillPanel(QWidget *panel) override {
-        AssetWrapperPanel *p = static_cast<AssetWrapperPanel *>(panel);
-        p->setItem(this);
-    }
 
     void addHook(HookInformation* hook);
     bool forMap(const CREMapInformation* map) const;

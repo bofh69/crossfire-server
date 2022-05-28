@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QtWidgets>
-#include "CREPanel.h"
+#include "assets/AssetWrapperPanel.h"
 
 extern "C" {
 #include "global.h"
@@ -16,16 +16,14 @@ class AnimationControl;
 class AssetModel;
 class UseFilterAssetModel;
 
-class AnimationPanel : public AssetWrapperPanel {
+class AnimationPanel : public AssetTWrapperPanel<Animations> {
     Q_OBJECT
 
 public:
     AnimationPanel(QWidget* parent, AssetModel *assets);
-    virtual void setItem(AssetWrapper *asset) override;
+    virtual void updateItem() override;
 
 protected:
-    const Animations* myAnimation;
-
     QTreeWidget* myFaces;
     AnimationControl* myDisplay;
 };

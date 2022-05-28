@@ -32,7 +32,6 @@ public:
 
     virtual QString displayName() const override;
     virtual QIcon displayIcon() const override;
-    virtual void displayFillPanel(QWidget *panel) override;
 
     virtual int childrenCount() const override;
     virtual AssetWrapper *child(int child) override;

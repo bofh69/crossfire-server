@@ -3,18 +3,18 @@
 
 #include <QObject>
 #include <QtWidgets>
-#include "CREPanel.h"
+#include "assets/AssetWrapperPanel.h"
 
 class CREMapInformation;
 class ScriptFileManager;
 
-class CREMapPanel : public CRETPanel<CREMapInformation>
+class CREMapPanel : public AssetSWrapperPanel<CREMapInformation>
 {
     public:
         CREMapPanel(ScriptFileManager* manager, QWidget* parent);
         virtual ~CREMapPanel();
 
-        virtual void setItem(CREMapInformation* map) override;
+        virtual void updateItem() override;
 
     protected:
         ScriptFileManager* myManager;

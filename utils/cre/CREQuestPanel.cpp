@@ -15,7 +15,7 @@
 #include "assets/AssetModel.h"
 #include "HelpManager.h"
 
-CREQuestPanel::CREQuestPanel(CREMapInformationManager* mapManager, MessageManager* messageManager, ResourcesManager *resources, AssetModel *model, QWidget* parent) : CRETPanel(parent)
+CREQuestPanel::CREQuestPanel(CREMapInformationManager* mapManager, MessageManager* messageManager, ResourcesManager *resources, AssetModel *model, QWidget* parent) : AssetTWrapperPanel(parent)
 {
     Q_ASSERT(mapManager);
     Q_ASSERT(messageManager);
@@ -23,9 +23,8 @@ CREQuestPanel::CREQuestPanel(CREMapInformationManager* mapManager, MessageManage
     myMessageManager = messageManager;
     myResources = resources;
 
-    QVBoxLayout* main = new QVBoxLayout(this);
     QTabWidget* tab = new QTabWidget(this);
-    main->addWidget(tab);
+    myLayout->addWidget(tab);
 
     QWidget* details = new QWidget(this);
     tab->addTab(details, tr("Details"));
@@ -119,7 +118,6 @@ CREQuestPanel::CREQuestPanel(CREMapInformationManager* mapManager, MessageManage
     myUse->setSourceModel(model);
     useView->setModel(myUse);
 
-    myQuest = NULL;
     myCurrentStep = NULL;
 
     HelpManager::setHelpId(this, "quests");
@@ -129,26 +127,25 @@ CREQuestPanel::~CREQuestPanel()
 {
 }
 
-void CREQuestPanel::setItem(quest_definition *quest)
+void CREQuestPanel::updateItem()
 {
-    myQuest = quest;
     myCurrentStep = NULL;
 
-    myCode->setText(quest->quest_code);
-    myTitle->setText(quest->quest_title);
-    myFace->setFace(quest->face);
-    myCanRestart->setChecked(quest->quest_restart);
-    myIsSystem->setChecked(quest->quest_is_system);
-    myDescription->setText(quest->quest_description);
-    myComment->setPlainText(quest->quest_comment);
+    myCode->setText(myItem->quest_code);
+    myTitle->setText(myItem->quest_title);
+    myFace->setFace(myItem->face);
+    myCanRestart->setChecked(myItem->quest_restart);
+    myIsSystem->setChecked(myItem->quest_is_system);
+    myDescription->setText(myItem->quest_description);
+    myComment->setPlainText(myItem->quest_comment);
 
-    auto origin = myResources->originOfQuest(myQuest);
+    auto origin = myResources->originOfQuest(myItem);
     myFile->setEditText(QString::fromStdString(origin));
     myFile->setEnabled(origin.empty());
 
-    if (quest->parent)
+    if (myItem->parent)
     {
-        int idx = myParent->findText(quest->parent->quest_code);
+        int idx = myParent->findText(myItem->parent->quest_code);
         if (idx != -1)
             myParent->setCurrentIndex(idx);
     }
@@ -157,42 +154,42 @@ void CREQuestPanel::setItem(quest_definition *quest)
 
     displaySteps();
 
-    myUse->setFilter(myResources->wrap(quest, nullptr));
+    myUse->setFilter(myResources->wrap(myItem, nullptr));
 }
 
 void CREQuestPanel::commitData()
 {
-    if (!myQuest)
+    if (!myItem)
         return;
 
-    FREE_AND_COPY(myQuest->quest_code, myCode->text().toStdString().data());
-    FREE_AND_COPY(myQuest->quest_title, myTitle->text().toStdString().data());
-    myQuest->face = myFace->face();
-    myQuest->quest_restart = myCanRestart->isChecked();
-    myQuest->quest_is_system = myIsSystem->isChecked();
-    FREE_AND_COPY(myQuest->quest_description, myDescription->toPlainText().toStdString().data());
-    FREE_AND_COPY(myQuest->quest_comment, myComment->toPlainText().trimmed().toStdString().data());
-    if (myResources->originOfQuest(myQuest).empty() && !myFile->currentText().isEmpty()) {
-        myResources->assetDefined(myQuest, myFile->currentText().toStdString());
+    FREE_AND_COPY(myItem->quest_code, myCode->text().toStdString().data());
+    FREE_AND_COPY(myItem->quest_title, myTitle->text().toStdString().data());
+    myItem->face = myFace->face();
+    myItem->quest_restart = myCanRestart->isChecked();
+    myItem->quest_is_system = myIsSystem->isChecked();
+    FREE_AND_COPY(myItem->quest_description, myDescription->toPlainText().toStdString().data());
+    FREE_AND_COPY(myItem->quest_comment, myComment->toPlainText().trimmed().toStdString().data());
+    if (myResources->originOfQuest(myItem).empty() && !myFile->currentText().isEmpty()) {
+        myResources->assetDefined(myItem, myFile->currentText().toStdString());
     }
     if (myParent->currentIndex() == 0)
     {
-        myQuest->parent = NULL;
+        myItem->parent = NULL;
     }
     else
-        myQuest->parent = getManager()->quests()->get(myParent->currentText().toStdString());
+        myItem->parent = getManager()->quests()->get(myParent->currentText().toStdString());
 
-    myResources->questModified(myQuest);
+    myResources->questModified(myItem);
 }
 
 void CREQuestPanel::displaySteps()
 {
-    myStepsModel->setQuest(myQuest);
+    myStepsModel->setQuest(myItem);
 }
 
 void CREQuestPanel::deleteStep(bool)
 {
-    if (myQuest == NULL)
+    if (myItem == NULL)
         return;
 
     if (!mySteps->currentIndex().isValid())
@@ -203,7 +200,7 @@ void CREQuestPanel::deleteStep(bool)
 
 void CREQuestPanel::moveUp(bool)
 {
-    if (myQuest == NULL)
+    if (myItem == NULL)
         return;
 
     if (!mySteps->currentIndex().isValid())
@@ -214,7 +211,7 @@ void CREQuestPanel::moveUp(bool)
 
 void CREQuestPanel::moveDown(bool)
 {
-    if (myQuest == NULL)
+    if (myItem == NULL)
         return;
 
     if (!mySteps->currentIndex().isValid())

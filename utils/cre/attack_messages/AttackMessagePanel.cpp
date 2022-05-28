@@ -7,7 +7,7 @@ extern "C" {
 #include "sproto.h"
 }
 
-AttackMessagePanel::AttackMessagePanel(QWidget* parent) : AssetWrapperPanel(parent), myAttackType(0) {
+AttackMessagePanel::AttackMessagePanel(QWidget* parent) : AssetSWrapperPanel(parent), myAttackType(0) {
     myMessages = addWidget(nullptr, new QTableWidget(0, 4, this), false, nullptr, nullptr);
     myMessages->setHorizontalHeaderLabels({tr("Max damage"), tr("First part"), tr("Second part"), tr("For victim")});
     myMessages->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -26,13 +26,9 @@ static QTableWidgetItem *createItem(const QString &text) {
     return item;
 }
 
-void AttackMessagePanel::setItem(AssetWrapper *asset) {
+void AttackMessagePanel::updateItem() {
     myMessages->setRowCount(0);
-    auto am = dynamic_cast<SingleAttackWrapper *>(asset);
-    if (!am) {
-        return;
-    }
-    myAttackType = am->attackType();
+    myAttackType = myItem->attackType();
 
     for (int message = 0; message < MAXATTACKMESS && attack_mess[myAttackType][message].level != -1; message++) {
         myMessages->setRowCount(message + 1);

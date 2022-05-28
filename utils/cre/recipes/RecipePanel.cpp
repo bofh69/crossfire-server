@@ -8,7 +8,7 @@
 #include "CREUtils.h"
 #include "RecipeWrapper.h"
 
-RecipePanel::RecipePanel(QWidget* parent) : AssetWrapperPanel(parent) {
+RecipePanel::RecipePanel(QWidget* parent) : AssetTWrapperPanel(parent) {
     addLineEdit(tr("Title:"), "title");
     addLineEdit(tr("Skill:"), "skill");
     addLineEdit(tr("Cauldron:"), "cauldron");
@@ -27,18 +27,14 @@ RecipePanel::RecipePanel(QWidget* parent) : AssetWrapperPanel(parent) {
     myLayout->addWidget(myArchetypes, myLayout->rowCount(), 0, 1, 2);
 }
 
-void RecipePanel::setItem(AssetWrapper *asset) {
-    AssetWrapperPanel::setItem(asset);
-
-    auto recipe = dynamic_cast<RecipeWrapper *>(asset);
-    Q_ASSERT(recipe);
-
+void RecipePanel::updateItem() {
     myArchetypes->clear();
-    for (auto name : recipe->archs()) {
+    auto rec = dynamic_cast<RecipeWrapper *>(myAsset);
+    for (auto name : rec->archs()) {
         auto arch = getManager()->archetypes()->find(name.toLocal8Bit().data());
         if (arch) {
             myArchetypes->addTopLevelItem(CREUtils::archetypeNode(arch, NULL));
         }
     }
-    myIngredients->setPlainText(recipe->ingredients().join("\n"));
+    myIngredients->setPlainText(rec->ingredients().join("\n"));
 }

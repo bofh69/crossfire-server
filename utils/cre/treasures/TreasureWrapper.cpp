@@ -74,11 +74,6 @@ QIcon TreasureWrapper::displayIcon() const {
     return tl->total_chance == 0 ? CREPixmap::getTreasureIcon() : CREPixmap::getTreasureOneIcon();
 }
 
-void TreasureWrapper::displayFillPanel(QWidget *panel) {
-    AssetWrapperPanel *p = static_cast<AssetWrapperPanel *>(panel);
-    p->setItem(this);
-}
-
 int TreasureWrapper::childrenCount() const {
     int count = 0;
     if (myWrappedItem->next_yes) {

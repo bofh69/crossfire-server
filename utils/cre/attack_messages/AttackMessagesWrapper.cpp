@@ -38,10 +38,3 @@ int AttackMessagesWrapper::childIndex(AssetWrapper *asset) {
     }
     return -1;
 }
-
-void SingleAttackWrapper::displayFillPanel(QWidget *panel) {
-    auto p = dynamic_cast<AttackMessagePanel *>(panel);
-    if (p) {
-        p->setItem(this);
-    }
-}

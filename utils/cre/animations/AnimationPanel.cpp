@@ -18,9 +18,7 @@ extern "C" {
 #include "assets/AssetModel.h"
 #include "animations/AnimationWrapper.h"
 
-AnimationPanel::AnimationPanel(QWidget* parent, AssetModel *assets) : AssetWrapperPanel(parent) {
-    myAnimation = nullptr;
-
+AnimationPanel::AnimationPanel(QWidget* parent, AssetModel *assets) : AssetTWrapperPanel(parent) {
     addAssetUseTree("Used by", assets, "self");
 
     myFaces = addWidget("", new QTreeWidget(this), false, nullptr, nullptr);
@@ -31,21 +29,16 @@ AnimationPanel::AnimationPanel(QWidget* parent, AssetModel *assets) : AssetWrapp
     myDisplay = addWidget("", new AnimationControl(this), false, nullptr, nullptr);
 }
 
-void AnimationPanel::setItem(AssetWrapper *asset) {
-    AssetWrapperPanel::setItem(asset);
-    auto anim = dynamic_cast<AnimationWrapper *>(asset);
-    Q_ASSERT(anim);
-    myAnimation = anim->wrappedItem();
-
-    myDisplay->setAnimation(myAnimation);
+void AnimationPanel::updateItem() {
+    myDisplay->setAnimation(myItem);
 
     myFaces->clear();
     auto root = CREUtils::faceNode(NULL);
     myFaces->addTopLevelItem(root);
     root->setExpanded(true);
 
-    for (int face = 0; face < anim->wrappedItem()->num_animations; face++)
+    for (int face = 0; face < myItem->num_animations; face++)
     {
-      CREUtils::faceNode(anim->wrappedItem()->faces[face], root);
+      CREUtils::faceNode(myItem->faces[face], root);
     }
 }

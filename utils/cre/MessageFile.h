@@ -66,10 +66,6 @@ public:
     virtual ~MessageFile();
 
     virtual QString displayName() const override { return myPath; }
-    virtual void displayFillPanel(QWidget *panel) override {
-        CRETPanel<MessageFile> *p = static_cast<CRETPanel<MessageFile> *>(panel);
-        p->setItem(this);
-    }
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;
 
     MessageFile* duplicate() const;

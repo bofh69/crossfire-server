@@ -7,19 +7,27 @@
 #include "archetypes/ArchetypeComboBox.h"
 #include "assets/AssetUseTree.h"
 
-AssetWrapperPanel::AssetWrapperPanel(QWidget *parent) : CRETPanel(parent), myAsset(nullptr), myInhibit(false) {
+AssetWrapperPanel::AssetWrapperPanel(QWidget *parent) : QWidget(parent), myAsset(nullptr), myInhibit(false) {
     myLayout = new QGridLayout(this);
 }
 
-void AssetWrapperPanel::setItem(AssetWrapper *item) {
+AssetWrapperPanel::~AssetWrapperPanel() {
+    if (myChanged) {
+        disconnect(myChanged);
+    }
+    if (myDelete) {
+        disconnect(myDelete);
+    }
+}
+void AssetWrapperPanel::setAsset(AssetWrapper *asset) {
     if (myAsset) {
         disconnect(myChanged);
         disconnect(myDelete);
     }
-    myAsset = item;
+    myAsset = asset;
     if (myAsset) {
         myChanged = connect(myAsset, SIGNAL(modified()), this, SLOT(itemChanged()));
-        myDelete = connect(myAsset, &QObject::destroyed, [this] () { setItem(nullptr); });
+        myDelete = connect(myAsset, &QObject::destroyed, [this] () { setAsset(nullptr); });
         itemChanged();
     }
 }

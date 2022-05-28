@@ -28,9 +28,6 @@ public:
     virtual int childrenCount() const override;
     virtual AssetWrapper *child(int index) override;
     virtual int childIndex(AssetWrapper *child) override;
-    virtual void displayFillPanel(QWidget *panel) override {
-        static_cast<AssetWrapperPanel *>(panel)->setItem(this);
-    }
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;
 

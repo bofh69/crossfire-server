@@ -76,11 +76,6 @@ int ArchetypeWrapper::childIndex(AssetWrapper *child) {
     return index + AssetWithArtifacts<archetype>::childIndex(child);
 }
 
-void ArchetypeWrapper::displayFillPanel(QWidget *panel) {
-    AssetWrapperPanel *p = static_cast<AssetWrapperPanel *>(panel);
-    p->setItem(this);
-}
-
 static bool treasureContains(const treasure *t, const archetype *arch) {
     while (t) {
         if (t->item == arch)

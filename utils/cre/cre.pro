@@ -115,7 +115,6 @@ CREPixmap.h \
  CREReportDefinitionManager.h \
  CREScriptEngine.h \
  CREQuestPanel.h \
- CREPanel.h \
  MessageManager.h \
  CREMessagePanel.h \
  MessageFile.h \

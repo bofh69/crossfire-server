@@ -8,10 +8,8 @@
 #include "assets/AssetWrapper.h"
 #include "artifacts/ArtifactWrapper.h"
 
-ArtifactPanel::ArtifactPanel(QWidget* parent) : AssetWrapperPanel(parent)
+ArtifactPanel::ArtifactPanel(QWidget* parent) : AssetTWrapperPanel(parent)
 {
-    myArtifact = NULL;
-
     addLineEdit(tr("Name:"), "name");
     addSpinBox(tr("Chance:"), "chance", 0, 65535, false);
     myType = addLineEdit(tr("Type:"), nullptr, true);
@@ -123,24 +121,17 @@ static void addArchetypes(const artifact* artifact, const char* name, bool check
     });
 }
 
-void ArtifactPanel::setItem(AssetWrapper *item)
+void ArtifactPanel::updateItem()
 {
-    AssetWrapperPanel::setItem(item);
+    myType->setText(QString::number(myItem->item->type));
 
-    auto aw = dynamic_cast<ArtifactWrapper *>(item);
-    auto art = (((AssetTWrapper<artifact> *)aw)->wrappedItem());
-    Q_ASSERT(art);
-    myArtifact = art;
-
-    myType->setText(QString::number(myArtifact->item->type));
-
-    computeMadeViaAlchemy(myArtifact);
+    computeMadeViaAlchemy(myItem);
 
     myArchetypes->clear();
     myInstance->clear();
 
     /* 'allowed' is either the archetype name or the item's name, so check all archetypes for each word */
-    for (const linked_char* allowed = myArtifact->allowed; allowed; allowed = allowed->next) {
+    for (const linked_char* allowed = myItem->allowed; allowed; allowed = allowed->next) {
         auto name = allowed->name;
         bool check = true;
         if (name[0] == '!') {
@@ -148,16 +139,16 @@ void ArtifactPanel::setItem(AssetWrapper *item)
             check = false;
         }
 
-        addArchetypes(myArtifact, name, check, myArchetypes);
+        addArchetypes(myItem, name, check, myArchetypes);
     }
 
     /* all items are allowed, so add them */
-    if (myArtifact->allowed == NULL) {
-        addArchetypes(myArtifact, NULL, true, myArchetypes);
+    if (myItem->allowed == NULL) {
+        addArchetypes(myItem, NULL, true, myArchetypes);
     }
 
     StringBuffer* dump = stringbuffer_new();
-    get_ob_diff(dump, myArtifact->item, &empty_archetype->clone);
+    get_ob_diff(dump, myItem->item, &empty_archetype->clone);
     char* final = stringbuffer_finish(dump);
     myValues->setText(final);
     free(final);
@@ -179,7 +170,7 @@ void ArtifactPanel::artifactChanged(QTreeWidgetItem* current, QTreeWidgetItem*)
     char* desc;
     object* obj = arch_to_object(arch);
     SET_FLAG(obj, FLAG_IDENTIFIED);
-    give_artifact_abilities(obj, myArtifact->item);
+    give_artifact_abilities(obj, myItem->item);
     object_give_identified_properties(obj);
     desc = stringbuffer_finish(describe_item(obj, NULL, 0, NULL));
     myInstance->setText(desc);

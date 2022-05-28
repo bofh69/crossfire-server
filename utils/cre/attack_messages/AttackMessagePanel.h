@@ -3,16 +3,17 @@
 
 #include <QWidget>
 #include "../assets/AssetWrapperPanel.h"
+#include "AttackMessagesWrapper.h"
 
 class QTableWidget;
 class QLabel;
 
-class AttackMessagePanel : public AssetWrapperPanel {
+class AttackMessagePanel : public AssetSWrapperPanel<SingleAttackWrapper> {
     Q_OBJECT
 public:
     AttackMessagePanel(QWidget* parent);
 
-    virtual void setItem(AssetWrapper *asset) override;
+    virtual void updateItem() override;
 
 private slots:
     void currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);

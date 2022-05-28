@@ -18,11 +18,6 @@ public:
 
     virtual QString displayName() const override { return myMap->path(); }
 
-    virtual void displayFillPanel(QWidget *panel) override {
-        CRETPanel<RandomMap>* p = static_cast<CRETPanel<RandomMap>*>(panel);
-        p->setItem(this);
-    }
-
     const CREMapInformation* map() const;
     int x() const;
     int y() const;

@@ -7,7 +7,7 @@
 #include "LicenseManager.h"
 #include "FacesetsWrapper.h"
 
-FacesetsPanel::FacesetsPanel(QWidget* parent, LicenseManager *licenseManager) : AssetWrapperPanel(parent), myLicenseManager(licenseManager) {
+FacesetsPanel::FacesetsPanel(QWidget* parent, LicenseManager *licenseManager) : AssetTWrapperPanel(parent), myLicenseManager(licenseManager) {
     addLabel(tr("Prefix:"), "prefix");
     addLabel(tr("Full name:"), "fullname");
     addLabel(tr("Fallback:"), "fallback");
@@ -18,16 +18,13 @@ FacesetsPanel::FacesetsPanel(QWidget* parent, LicenseManager *licenseManager) : 
     addBottomFiller();
 }
 
-void FacesetsPanel::setItem(AssetWrapper *asset) {
-    AssetWrapperPanel::setItem(asset);
-    auto fs = dynamic_cast<FacesetsWrapper *>(asset)->wrappedItem();
-
+void FacesetsPanel::updateItem() {
     size_t count = 0, total = getManager()->faces()->count(), licenses = 0;
 
     getManager()->faces()->each([&] (const Face * face) {
-        if (face->number < fs->allocated && fs->faces[face->number].datalen > 0) {
+        if (face->number < myItem->allocated && myItem->faces[face->number].datalen > 0) {
             count++;
-            if (myLicenseManager->getForFace(face->name).count(fs->prefix) > 0) {
+            if (myLicenseManager->getForFace(face->name).count(myItem->prefix) > 0) {
                 licenses++;
             }
         }

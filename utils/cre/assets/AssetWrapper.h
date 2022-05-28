@@ -2,7 +2,6 @@
 #define ASSETWRAPPER_H
 
 #include <QObject>
-#include "../CREPanel.h"
 #include <QIcon>
 
 class QMimeData;
@@ -28,7 +27,6 @@ public:
     virtual QString displayName() const = 0;
     virtual QIcon displayIcon() const { return QIcon(); }
     virtual QString displayPanelName() const { return myPanelName; }
-    virtual void displayFillPanel(QWidget *) { }
     AssetWrapper *displayParent() const { return myParent; }
     void setDisplayParent(AssetWrapper *parent) { myParent = parent; }
 
@@ -82,11 +80,6 @@ public:
     };
 
     T *wrappedItem() const { return myWrappedItem; }
-
-    virtual void displayFillPanel(QWidget *panel) override {
-        CRETPanel<T>* p = static_cast<CRETPanel<T>*>(panel);
-        p->setItem(myWrappedItem);
-    }
 
 protected:
     T *myWrappedItem;

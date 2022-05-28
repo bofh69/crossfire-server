@@ -4,23 +4,26 @@
 #include <QObject>
 #include <QtWidgets>
 #include "assets/AssetWrapperPanel.h"
+extern "C" {
+#include "global.h"
+#include "treasure.h"
+}
 
 class TreasureListWrapper;
 class AssetModel;
 
-class CRETreasurePanel : public AssetWrapperPanel {
+class CRETreasurePanel : public AssetTWrapperPanel<treasurelist> {
     Q_OBJECT
 
 public:
     CRETreasurePanel(AssetModel* model, QWidget* parent);
 
-    virtual void setItem(AssetWrapper *asset) override;
+    virtual void updateItem() override;
 
 public slots:
     void onGenerate(bool pressed);
 
 protected:
-    TreasureListWrapper *myTreasure;
     QTreeWidget* myGenerated;
     QSpinBox* myDifficulty;
 

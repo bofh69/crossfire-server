@@ -16,6 +16,7 @@
 #include "CREReportDisplay.h"
 #include "CREReportDefinition.h"
 
+#include "assets/AssetWrapperPanel.h"
 #include "animations/AnimationPanel.h"
 #include "archetypes/ArchetypePanel.h"
 #include "treasures/TreasureListPanel.h"
@@ -114,9 +115,8 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     splitter->addWidget(w);
 
     /* dummy panel to display for empty items */
-    CREPanel* dummy = new CREPanel(this);
-    QVBoxLayout* dl = new QVBoxLayout(dummy);
-    dl->addWidget(new QLabel(tr("No details available."), dummy));
+    AssetWrapperPanel* dummy = new AssetWrapperPanel(this);
+    dummy->addLabel(tr("No details available."), nullptr);
     addPanel("empty", dummy);
     myStackedPanels->setCurrentWidget(dummy);
     myCurrentPanel = dummy;
@@ -177,13 +177,13 @@ void CREResourcesWindow::currentRowChanged(const QModelIndex &current, const QMo
         return;
     }
 
-    CREPanel* newPanel = myPanels[item->displayPanelName()];
+    auto newPanel = myPanels[item->displayPanelName()];
     if (!newPanel) {
 //        printf("no panel for %s\n", qPrintable(item->getPanelName()));
         return;
     }
 
-    item->displayFillPanel(newPanel);
+    newPanel->setAsset(item);
 
     if (myCurrentPanel != newPanel) {
         myStackedPanels->setCurrentWidget(newPanel);
@@ -191,7 +191,7 @@ void CREResourcesWindow::currentRowChanged(const QModelIndex &current, const QMo
     }
 }
 
-void CREResourcesWindow::addPanel(QString name, CREPanel* panel)
+void CREResourcesWindow::addPanel(QString name, AssetWrapperPanel* panel)
 {
     panel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     myPanels[name] = panel;

@@ -3,19 +3,19 @@
 
 #include <QObject>
 #include <QtWidgets>
-#include "CREPanel.h"
+#include "assets/AssetWrapperPanel.h"
 
 extern "C" {
 #include "global.h"
 #include "artifact.h"
 }
 
-class ArtifactListPanel : public CRETPanel<const artifactlist> {
+class ArtifactListPanel : public AssetTWrapperPanel<const artifactlist> {
 Q_OBJECT
 
 public:
     ArtifactListPanel(QWidget* parent);
-    virtual void setItem(const artifactlist* al) override;
+    virtual void updateItem() override;
 };
 
 #endif // ARTIFACT_LIST_PANEL_H

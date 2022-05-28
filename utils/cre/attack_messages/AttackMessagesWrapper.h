@@ -8,7 +8,6 @@ public:
     SingleAttackWrapper(AssetWrapper *parent, uint8_t attackType, const std::string &name)
     : AssetWrapper(parent, "AttackMessage"), myAttackType(attackType), myName(QString::fromStdString(name)) { }
     virtual QString displayName() const { return myName; }
-    virtual void displayFillPanel(QWidget *panel) override;
 
     uint8_t attackType() const { return myAttackType; }
 

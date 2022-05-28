@@ -4,15 +4,20 @@
 #include <QObject>
 #include <QtWidgets>
 
+extern "C" {
+#include "global.h"
+#include "recipe.h"
+}
+
 #include "assets/AssetWrapperPanel.h"
 
-class RecipePanel : public AssetWrapperPanel {
+class RecipePanel : public AssetTWrapperPanel<recipe> {
     Q_OBJECT
 
 public:
     RecipePanel(QWidget *parent);
 
-    virtual void setItem(AssetWrapper *asset) override;
+    virtual void updateItem() override;
 
 protected:
     QTreeWidget* myArchetypes;

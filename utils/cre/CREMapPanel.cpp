@@ -29,32 +29,31 @@ void static fillEvents()
     });
 }
 
-CREMapPanel::CREMapPanel(ScriptFileManager* manager, QWidget* parent) : CRETPanel(parent)
+CREMapPanel::CREMapPanel(ScriptFileManager* manager, QWidget* parent) : AssetSWrapperPanel(parent)
 {
     Q_ASSERT(manager != NULL);
     myManager = manager;
-    QGridLayout* layout = new QGridLayout(this);
 
-    layout->addWidget(new QLabel(tr("Name:"), this), 0, 0);
+    myLayout->addWidget(new QLabel(tr("Name:"), this), 0, 0);
     myName = new QLabel();
-    layout->addWidget(myName, 0, 1);
+    myLayout->addWidget(myName, 0, 1);
 
     myExitsFrom = new QTreeWidget(this);
     myExitsFrom->setHeaderLabel(tr("Exits from this map"));
-    layout->addWidget(myExitsFrom, 1, 0, 1, 2);
+    myLayout->addWidget(myExitsFrom, 1, 0, 1, 2);
 
     myExitsTo = new QTreeWidget(this);
     myExitsTo->setHeaderLabel(tr("Exits leading to this map"));
-    layout->addWidget(myExitsTo, 2, 0, 1, 2);
+    myLayout->addWidget(myExitsTo, 2, 0, 1, 2);
 
     myScripts = new QTreeWidget(this);
     myScripts->setHeaderLabel(tr("Scripts on this map"));
     myScripts->setIconSize(QSize(32, 32));
-    layout->addWidget(myScripts, 3, 0, 1, 2);
+    myLayout->addWidget(myScripts, 3, 0, 1, 2);
 
-    layout->addWidget(new QLabel(tr("Background music:"), this), 4, 0);
+    myLayout->addWidget(new QLabel(tr("Background music:"), this), 4, 0);
     myBackgroundMusic = new QLabel();
-    layout->addWidget(myBackgroundMusic, 4, 1);
+    myLayout->addWidget(myBackgroundMusic, 4, 1);
 
     fillEvents();
 }
@@ -63,24 +62,24 @@ CREMapPanel::~CREMapPanel()
 {
 }
 
-void CREMapPanel::setItem(CREMapInformation* map)
+void CREMapPanel::updateItem()
 {
-    myName->setText(map->name());
+    myName->setText(myItem->name());
 
     myExitsFrom->clear();
-    foreach(QString path, map->accessedFrom())
+    foreach(QString path, myItem->accessedFrom())
         myExitsFrom->addTopLevelItem(new QTreeWidgetItem(QStringList(path)));
 
     myExitsTo->clear();
-    foreach(QString path, map->exitsTo())
+    foreach(QString path, myItem->exitsTo())
         myExitsTo->addTopLevelItem(new QTreeWidgetItem(QStringList(path)));
 
     myScripts->clear();
-    foreach(ScriptFile* script, myManager->scriptsForMap(map))
+    foreach(ScriptFile* script, myManager->scriptsForMap(myItem))
     {
         foreach(HookInformation* hook, script->hooks())
         {
-            if (hook->map() == map)
+            if (hook->map() == myItem)
             {
                 QTreeWidgetItem* child = new QTreeWidgetItem(QStringList(QString("%1 [%2, %3], %4, %5, %6").arg(hook->itemName()).arg(hook->x()).arg(hook->y()).arg(hook->eventName()).arg(hook->pluginName()).arg(script->path())));
 
@@ -95,5 +94,5 @@ void CREMapPanel::setItem(CREMapInformation* map)
         }
     }
 
-    myBackgroundMusic->setText(map->backgroundMusic());
+    myBackgroundMusic->setText(myItem->backgroundMusic());
 }

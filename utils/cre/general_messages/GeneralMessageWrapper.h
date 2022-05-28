@@ -32,7 +32,6 @@ public:
     virtual QIcon displayIcon() const override { return CREPixmap::getIcon(myWrappedItem->face); }
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;
-    virtual void displayFillPanel(QWidget *panel) override;
     virtual void wasModified(AssetWrapper *asset, ChangeType type, int extra) override;
 
     QString title() const { return myWrappedItem->title; }

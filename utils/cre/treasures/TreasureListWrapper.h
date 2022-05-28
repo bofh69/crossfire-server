@@ -27,7 +27,6 @@ public:
 
     virtual QString displayName() const override { return myWrappedItem->name; }
     virtual QIcon displayIcon() const override { return myWrappedItem->total_chance == 0 ? CREPixmap::getTreasureIcon() : CREPixmap::getTreasureOneIcon(); }
-    virtual void displayFillPanel(QWidget *panel) override;
 
     virtual int childrenCount() const override;
     virtual AssetWrapper *child(int child) override;

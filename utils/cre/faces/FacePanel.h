@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QtWidgets>
-#include "CREPanel.h"
+#include "assets/AssetWrapperPanel.h"
 
 extern "C" {
 #include "global.h"
@@ -14,16 +14,15 @@ class AssetModel;
 class UseFilterAssetModel;
 class ResourcesManager;
 
-class CREFacePanel : public CRETPanel<Face> {
+class CREFacePanel : public AssetTWrapperPanel<Face> {
     Q_OBJECT
 
 public:
     CREFacePanel(QWidget* parent, AssetModel *model, ResourcesManager *resources, CREMapInformationManager* maps);
-    virtual void setItem(Face* face) override;
+    virtual void updateItem() override;
 
 protected:
     CREMapInformationManager* myMaps;
-    const Face* myFace;
 
     QTreeView *myUseView;
     UseFilterAssetModel *myUseModel;

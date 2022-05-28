@@ -1,17 +1,17 @@
 #ifndef RANDOM_MAP_PANEL_H
 #define	RANDOM_MAP_PANEL_H
 
-#include "CREPanel.h"
+#include "assets/AssetWrapperPanel.h"
 
 class RandomMap;
 class QTextEdit;
 class QLabel;
 
-class CRERandomMapPanel : public CRETPanel<const RandomMap>
+class CRERandomMapPanel : public AssetSWrapperPanel<const RandomMap>
 {
 public:
   CRERandomMapPanel(QWidget* parent);
-  virtual void setItem(const RandomMap* map) override;
+  virtual void updateItem() override;
 private:
   QLabel* mySource;
   QTextEdit* myInformation;

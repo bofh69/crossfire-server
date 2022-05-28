@@ -13,9 +13,8 @@ extern "C" {
 #include "AssetsManager.h"
 #include "Archetypes.h"
 
-ArtifactListPanel::ArtifactListPanel(QWidget *parent) : CRETPanel(parent) {
+ArtifactListPanel::ArtifactListPanel(QWidget *parent) : AssetTWrapperPanel(parent) {
 }
 
-void ArtifactListPanel::setItem(const artifactlist *list) {
-    (void)list;
+void ArtifactListPanel::updateItem() {
 }

@@ -11,16 +11,15 @@ extern "C" {
 #include "artifact.h"
 }
 
-class ArtifactPanel : public AssetWrapperPanel
+class ArtifactPanel : public AssetTWrapperPanel<artifact>
 {
     Q_OBJECT
 
     public:
         ArtifactPanel(QWidget* parent);
-        virtual void setItem(AssetWrapper *item) override;
+        virtual void updateItem() override;
 
     protected:
-        const artifact* myArtifact;
         QLineEdit* myName;
         QLineEdit* myChance;
         QLineEdit* myType;

@@ -6,7 +6,7 @@
 
 #include "CREFilterDialog.h"
 #include "CREReportDialog.h"
-#include "CREPanel.h"
+#include "assets/AssetWrapperPanel.h"
 
 extern "C" {
 #include "global.h"
@@ -23,7 +23,7 @@ class FaceComboBox;
 class UseFilterAssetModel;
 class AssetModel;
 
-class CREQuestPanel : public CRETPanel<quest_definition>
+class CREQuestPanel : public AssetTWrapperPanel<quest_definition>
 {
     Q_OBJECT
 
@@ -32,13 +32,12 @@ class CREQuestPanel : public CRETPanel<quest_definition>
         virtual ~CREQuestPanel();
 
         virtual void commitData() override;
+        virtual void updateItem() override;
 
-        virtual void setItem(quest_definition *quest) override;
     private:
         CREMapInformationManager *myMapManager;
         MessageManager* myMessageManager;
         ResourcesManager *myResources;
-        quest_definition *myQuest;
         QuestStep* myCurrentStep;
         QLineEdit* myCode;
         QLineEdit* myTitle;

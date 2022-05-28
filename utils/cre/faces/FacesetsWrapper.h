@@ -26,10 +26,6 @@ public:
     FacesetsWrapper(AssetWrapper *parent, face_sets* fs, ResourcesManager *) : AssetTWrapper(parent, "Faceset", fs) { }
 
     virtual QString displayName() const override { return myWrappedItem->prefix; }
-    virtual void displayFillPanel(QWidget *panel) override {
-        AssetWrapperPanel *p = static_cast<AssetWrapperPanel *>(panel);
-        p->setItem(this);
-    }
 
     QString prefix() const { return myWrappedItem->prefix; }
     QString fullname() const { return myWrappedItem->fullname; }

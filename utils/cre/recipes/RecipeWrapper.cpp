@@ -92,11 +92,6 @@ QIcon RecipeWrapper::displayIcon() const {
     return CREPixmap::getIcon(face);
 }
 
-void RecipeWrapper::displayFillPanel(QWidget *panel) {
-    AssetWrapperPanel *p = static_cast<AssetWrapperPanel *>(panel);
-    p->setItem(this);
-}
-
 AssetWrapper::PossibleUse RecipeWrapper::uses(const AssetWrapper *asset, std::string &hint) const {
     auto arch = dynamic_cast<const ArchetypeWrapper *>(asset);
     if (arch) {

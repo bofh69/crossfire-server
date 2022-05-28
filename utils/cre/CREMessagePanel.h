@@ -3,13 +3,12 @@
 
 #include <QObject>
 #include <QBrush>
-#include "CREPanel.h"
+#include "assets/AssetWrapperPanel.h"
+#include "MessageFile.h"
 
 class QLineEdit;
 class QTableView;
 class QTreeWidget;
-class MessageFile;
-class MessageRule;
 class CRERulePanel;
 class MessageManager;
 class CREMessageItemModel;
@@ -17,7 +16,7 @@ class CREMessageItemModel;
 /**
  * Display information about a NPC message file, and allow edition.
  */
-class CREMessagePanel : public CRETPanel<MessageFile>
+class CREMessagePanel : public AssetSWrapperPanel<MessageFile>
 {
     Q_OBJECT
 
@@ -25,14 +24,11 @@ class CREMessagePanel : public CRETPanel<MessageFile>
         CREMessagePanel(const MessageManager* manager, QWidget* parent);
         virtual ~CREMessagePanel();
 
-        virtual void setItem(MessageFile* message) override;
+        virtual void updateItem() override;
         virtual void commitData() override;
-
-    protected:
 
     private:
         const MessageManager* myMessageManager;
-        MessageFile* myMessage;
         MessageFile* myOriginal;
         QLineEdit* myPath;
         QLineEdit* myLocation;

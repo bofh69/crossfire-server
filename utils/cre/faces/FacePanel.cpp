@@ -29,12 +29,9 @@ static const char *const colorname[] = {
 };
 
 
-CREFacePanel::CREFacePanel(QWidget* parent, AssetModel *model, ResourcesManager *resources, CREMapInformationManager* maps) : CRETPanel(parent) {
+CREFacePanel::CREFacePanel(QWidget* parent, AssetModel *model, ResourcesManager *resources, CREMapInformationManager* maps) : AssetTWrapperPanel(parent) {
     myMaps = maps;
-    myFace = 0;
     myResources = resources;
-
-    QGridLayout* layout = new QGridLayout(this);
 
     myUseModel = new UseFilterAssetModel(this);
     myUseModel->setSourceModel(model);
@@ -42,49 +39,46 @@ CREFacePanel::CREFacePanel(QWidget* parent, AssetModel *model, ResourcesManager 
     myUseView = new QTreeView(this);
     myUseView->setIconSize(QSize(32, 32));
     myUseView->setModel(myUseModel);
-    layout->addWidget(myUseView, 1, 1, 3, 2);
+    myLayout->addWidget(myUseView, 1, 1, 3, 2);
 
     myLicenses = new QTreeWidget(this);
     myLicenses->setColumnCount(2);
     myLicenses->setHeaderLabels(QStringList(tr("License field")) << "Value");
     myLicenses->setIconSize(QSize(32, 32));
     myLicenses->setRootIsDecorated(false);
-    layout->addWidget(myLicenses, 1, 3, 3, 2);
+    myLayout->addWidget(myLicenses, 1, 3, 3, 2);
 
     myColor = new QComboBox(this);
-    layout->addWidget(new QLabel("Magicmap color: "), 4, 1);
-    layout->addWidget(myColor, 4, 2, 1, 3);
+    myLayout->addWidget(new QLabel("Magicmap color: "), 4, 1);
+    myLayout->addWidget(myColor, 4, 2, 1, 3);
 
     for(uint color = 0; color < sizeof(colorname) / sizeof(*colorname); color++)
         myColor->addItem(colorname[color], color);
 
     myFile = new QLineEdit(this);
     myFile->setReadOnly(true);
-    layout->addWidget(new QLabel("Original file: "), 5, 1);
-    layout->addWidget(myFile, 5, 2, 1, 3);
+    myLayout->addWidget(new QLabel("Original file: "), 5, 1);
+    myLayout->addWidget(myFile, 5, 2, 1, 3);
 
     mySave = new QPushButton(tr("Save face"));
-    layout->addWidget(mySave, 6, 1);
+    myLayout->addWidget(mySave, 6, 1);
     connect(mySave, SIGNAL(clicked(bool)), this, SLOT(saveClicked(bool)));
 
     QPushButton* smooth = new QPushButton(tr("Make smooth base"), this);
-    layout->addWidget(smooth, 6, 2, 1, 3);
+    myLayout->addWidget(smooth, 6, 2, 1, 3);
     connect(smooth, SIGNAL(clicked(bool)), this, SLOT(makeSmooth(bool)));
 }
 
-void CREFacePanel::setItem(Face* face)
+void CREFacePanel::updateItem()
 {
-    Q_ASSERT(face);
-    myFace = face;
-
-    myUseModel->setFilter(myResources->wrap(face, nullptr));
+    myUseModel->setFilter(myAsset);
     myUseView->expandAll();
 
-    myColor->setCurrentIndex(myFace->magicmap);
+    myColor->setCurrentIndex(myItem->magicmap);
 
     myLicenses->clear();
 
-    auto licenses = myResources->licenseManager()->getForFace(myFace->name);
+    auto licenses = myResources->licenseManager()->getForFace(myItem->name);
     for (auto l : licenses) {
         QTreeWidgetItem *wi = new QTreeWidgetItem(QStringList(QString(l.first.c_str())));
         for (auto p : l.second) {
@@ -103,7 +97,7 @@ void CREFacePanel::saveClicked(bool)
 void CREFacePanel::makeSmooth(bool)
 {
     CRESmoothFaceMaker maker;
-    maker.setSelectedFace(myFace);
+    maker.setSelectedFace(myItem);
     maker.setAutoClose();
     maker.exec();
 }

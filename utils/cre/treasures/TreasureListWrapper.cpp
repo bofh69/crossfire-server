@@ -48,11 +48,6 @@ int TreasureListWrapper::childIndex(AssetWrapper *child) {
     return -1;
 }
 
-void TreasureListWrapper::displayFillPanel(QWidget *panel) {
-    AssetWrapperPanel *p = static_cast<AssetWrapperPanel *>(panel);
-    p->setItem(this);
-}
-
 void TreasureListWrapper::setSingleItem(bool isSingle) {
     if (isSingle == isSingleItem()) {
         return;

@@ -15,11 +15,6 @@ AssetWrapper::PossibleUse GeneralMessageWrapper::uses(const AssetWrapper *asset,
     return DoesntUse;
 }
 
-void GeneralMessageWrapper::displayFillPanel(QWidget *panel) {
-    AssetWrapperPanel *p = static_cast<AssetWrapperPanel *> (panel);
-    p->setItem(this);
-}
-
 void GeneralMessageWrapper::wasModified(AssetWrapper *asset, ChangeType type, int extra) {
     myResources->generalMessageModified(myWrappedItem);
     AssetWrapper::wasModified(asset, type, extra);

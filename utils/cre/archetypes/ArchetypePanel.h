@@ -13,12 +13,12 @@ class CREMapInformationManager;
 class ResourcesManager;
 class AssetModel;
 
-class ArchetypePanel : public AssetWrapperPanel {
+class ArchetypePanel : public AssetTWrapperPanel<archetype> {
     Q_OBJECT
 
 public:
     ArchetypePanel(CREMapInformationManager* store, ResourcesManager* resources, AssetModel* model, QWidget* parent);
-    virtual void setItem(AssetWrapper* asset) override;
+    virtual void updateItem() override;
 
     virtual void commitData() override;
 
@@ -27,7 +27,6 @@ protected:
     ResourcesManager *myResources;
     QTextEdit* myDisplay;
     std::string myInitialArch;
-    archt* myArchetype;
 };
 
 #endif // ARCHETYPE_PANEL_H

@@ -15,7 +15,7 @@ extern "C" {
 #include "../assets/AssetUseTree.h"
 #include "assets/AssetModel.h"
 
-CRETreasurePanel::CRETreasurePanel(AssetModel* model, QWidget* parent) : AssetWrapperPanel(parent) {
+CRETreasurePanel::CRETreasurePanel(AssetModel* model, QWidget* parent) : AssetTWrapperPanel(parent) {
 
     addCheckBox(tr("Single item"), "isSingleItem", false);
 
@@ -36,10 +36,7 @@ CRETreasurePanel::CRETreasurePanel(AssetModel* model, QWidget* parent) : AssetWr
     myLayout->addWidget(use, 2, 4, 2, 3);
 }
 
-void CRETreasurePanel::setItem(AssetWrapper *asset) {
-    AssetWrapperPanel::setItem(asset);
-    myTreasure = dynamic_cast<TreasureListWrapper *>(asset);
-    Q_ASSERT(myTreasure);
+void CRETreasurePanel::updateItem() {
     myGenerated->clear();
 }
 
@@ -47,7 +44,7 @@ void CRETreasurePanel::onGenerate(bool) {
     const int difficulty = myDifficulty->value();
     myGenerated->clear();
     object* result = object_new(), *item;
-    create_treasure(const_cast<treasurelist *>(myTreasure->wrappedItem()), result, 0, difficulty, 0);
+    create_treasure(const_cast<treasurelist *>(myItem), result, 0, difficulty, 0);
     while ((item = result->inv)) {
         identify(result->inv);
         myGenerated->addTopLevelItem(CREUtils::objectNode(item, NULL));

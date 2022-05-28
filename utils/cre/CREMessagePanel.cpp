@@ -10,14 +10,13 @@
 #include "CREPlayerRepliesDelegate.h"
 #include "CREStringListDelegate.h"
 
-CREMessagePanel::CREMessagePanel(const MessageManager* manager, QWidget* parent) : CRETPanel(parent)
+CREMessagePanel::CREMessagePanel(const MessageManager* manager, QWidget* parent) : AssetSWrapperPanel(parent)
 {
     Q_ASSERT(manager != NULL);
     myMessageManager = manager;
 
-    QVBoxLayout* main = new QVBoxLayout(this);
     QTabWidget* tab = new QTabWidget(this);
-    main->addWidget(tab);
+    myLayout->addWidget(tab);
 
     QWidget* details = new QWidget(this);
     tab->addTab(details, tr("Details"));
@@ -86,7 +85,6 @@ CREMessagePanel::CREMessagePanel(const MessageManager* manager, QWidget* parent)
     tab->addTab(myUse, tr("Use"));
     myUse->setHeaderLabel(tr("Referenced by..."));
 
-    myMessage = nullptr;
     myOriginal = nullptr;
 }
 
@@ -95,26 +93,30 @@ CREMessagePanel::~CREMessagePanel()
     delete myOriginal;
 }
 
-void CREMessagePanel::setItem(MessageFile* message)
+void CREMessagePanel::updateItem()
 {
-    myPath->setText(message->path());
+    if (!myItem) {
+        return;
+    }
+    myPath->setText(myItem->path());
     /* can only change path when new file is created */
-    myPath->setReadOnly(message->path() != "<new file>");
-    myLocation->setText(message->location());
+    myPath->setReadOnly(myItem->path() != "<new file>");
+    myLocation->setText(myItem->location());
 
     /* so the change handler won't do anything */
-    myMessage = NULL;
-    myModel->setMessage(message);
-    myMessage = message;
+    auto save = myItem;
+    myItem = NULL;
+    myModel->setMessage(save);
+    myItem = save;
 
     myUse->clear();
 
     QTreeWidgetItem* root = NULL;
-    if (myMessage->maps().length() > 0)
+    if (myItem->maps().length() > 0)
     {
         root = new QTreeWidgetItem(myUse, QStringList(tr("Maps")));
         root->setExpanded(true);
-        foreach(CREMapInformation* map, myMessage->maps())
+        foreach(CREMapInformation* map, myItem->maps())
         {
             new QTreeWidgetItem(root, QStringList(map->path()));
         }
@@ -140,7 +142,7 @@ void CREMessagePanel::setItem(MessageFile* message)
                     include = file->path().left(last + 1) + include;
                 }
 
-                if (include == message->path())
+                if (include == myItem->path())
                 {
                     if (root == NULL)
                     {
@@ -164,7 +166,7 @@ void CREMessagePanel::setItem(MessageFile* message)
     }
 
     delete myOriginal;
-    myOriginal = myMessage->duplicate();
+    myOriginal = myItem->duplicate();
 }
 
 void CREMessagePanel::currentRowChanged(const QModelIndex& current, const QModelIndex& /*previous*/)
@@ -186,14 +188,14 @@ void CREMessagePanel::onDeleteRule(bool)
 
 void CREMessagePanel::commitData()
 {
-    myMessage->setPath(myPath->text());
-    myMessage->setLocation(myLocation->text());
+    myItem->setPath(myPath->text());
+    myItem->setLocation(myLocation->text());
 }
 
 void CREMessagePanel::onMoveUp(bool)
 {
     int index = myRules->currentIndex().row();
-    if (index <= 0 || index >= myMessage->rules().size())
+    if (index <= 0 || index >= myItem->rules().size())
         return;
 
     myModel->moveUpDown(index, true);
@@ -203,7 +205,7 @@ void CREMessagePanel::onMoveUp(bool)
 void CREMessagePanel::onMoveDown(bool)
 {
     int index = myRules->currentIndex().row();
-    if (index < 0 || index >= myMessage->rules().size() - 1)
+    if (index < 0 || index >= myItem->rules().size() - 1)
         return;
 
     myModel->moveUpDown(index, false);
@@ -213,7 +215,7 @@ void CREMessagePanel::onMoveDown(bool)
 void CREMessagePanel::onDuplicate(bool)
 {
     int index = myRules->currentIndex().row();
-    if (index < 0 || index >= myMessage->rules().size())
+    if (index < 0 || index >= myItem->rules().size())
         return;
 
     myModel->duplicateRow(index);
@@ -222,11 +224,11 @@ void CREMessagePanel::onDuplicate(bool)
 
 void CREMessagePanel::onReset(bool)
 {
-    if (!myMessage)
+    if (!myItem)
         return;
     if (QMessageBox::question(this, "Confirm reset", "Reset message to its initial values?") != QMessageBox::StandardButton::Yes)
         return;
 
-    myMessage->copy(myOriginal);
-    setItem(myMessage);
+    myItem->copy(myOriginal);
+    updateItem();
 }

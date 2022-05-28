@@ -17,26 +17,20 @@ extern "C" {
 #include "ResourcesManager.h"
 #include "../assets/AssetModel.h"
 
-ArchetypePanel::ArchetypePanel(CREMapInformationManager* store, ResourcesManager* resources, AssetModel *model, QWidget* parent) : AssetWrapperPanel(parent)
+ArchetypePanel::ArchetypePanel(CREMapInformationManager* store, ResourcesManager* resources, AssetModel *model, QWidget* parent) : AssetTWrapperPanel(parent)
 {
     Q_ASSERT(store);
     myStore = store;
     myResources = resources;
-    myArchetype = nullptr;
 
     myDisplay = addTextEdit(QString(), nullptr, false);
     addAssetUseTree(tr("Used by"), model, "self");
 }
 
-void ArchetypePanel::setItem(AssetWrapper *asset)
+void ArchetypePanel::updateItem()
 {
-    AssetWrapperPanel::setItem(asset);
-
-    auto arch = dynamic_cast<ArchetypeWrapper *>(asset);
-    myArchetype = arch->wrappedItem();
-
     StringBuffer* dump = stringbuffer_new();
-    object_dump(&myArchetype->clone, dump);
+    object_dump(&myItem->clone, dump);
     char* final = stringbuffer_finish(dump);
     myInitialArch = final;
     free(final);
@@ -58,10 +52,10 @@ void ArchetypePanel::commitData() {
 
     BufferReader *br = bufferreader_init_from_memory(nullptr, text.data(), text.length());
 
-    auto origin = myResources->originOf(myArchetype);
+    auto origin = myResources->originOf(myItem);
     ArchetypeLoader loader(getManager()->archetypes(), nullptr);
     loader.load(br, origin);
     bufferreader_destroy(br);
 
-    myResources->archetypeModified(myArchetype);
+    myResources->archetypeModified(myItem);
 }
