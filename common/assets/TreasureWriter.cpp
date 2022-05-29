@@ -10,36 +10,40 @@
  * The authors can be reached via e-mail at <crossfire@metalforge.org>.
  */
 
+#include <string>
 #include "TreasureWriter.h"
 
-#define W(x, n) { if (item->x) { stringbuffer_append_printf(buf, n "\n", item->x); } }
+#define W(x, n) { if (item->x) { stringbuffer_append_printf(buf, "%s" n "\n", indentItems.c_str(), item->x); } }
 
-static void writeItem(const treasure *item, StringBuffer *buf) {
+static void writeItem(const treasure *item, const std::string &indent, StringBuffer *buf) {
+    std::string indentItems(indent);
+    indentItems += "\t";
     if (item->item) {
-        stringbuffer_append_printf(buf, "arch %s\n", item->item->name);
+        stringbuffer_append_printf(buf, "%sarch %s\n", indentItems.c_str(), item->item->name);
     }
     W(name, "list %s");
+    indentItems += "\t";
     W(change_arch.name, "change_name %s");
     W(change_arch.title, "change_title %s");
     W(change_arch.slaying, "change_slaying %s");
     if (item->chance != 100) {
-        stringbuffer_append_printf(buf, "chance %d\n", item->chance);
+        stringbuffer_append_printf(buf, "%schance %d\n", indentItems.c_str(), item->chance);
     }
     W(nrof, "nrof %d");
     W(magic, "magic %d");
     if (item->next_yes) {
-        stringbuffer_append_string(buf, "yes\n");
-        writeItem(item->next_yes, buf);
+        stringbuffer_append_printf(buf, "%syes\n", indentItems.c_str());
+        writeItem(item->next_yes, indentItems + "\t", buf);
     }
     if (item->next_no) {
-        stringbuffer_append_string(buf, "no\n");
-        writeItem(item->next_no, buf);
+        stringbuffer_append_printf(buf, "%sno\n", indentItems.c_str());
+        writeItem(item->next_no, indentItems + "\t", buf);
     }
     if (item->next) {
         stringbuffer_append_string(buf, "more\n");
-        writeItem(item->next, buf);
+        writeItem(item->next, indent, buf);
     } else {
-        stringbuffer_append_string(buf, "end\n");
+        stringbuffer_append_printf(buf, "%send\n", indent.c_str());
     }
 }
 
@@ -51,5 +55,5 @@ void TreasureWriter::write(const treasurelist *list, StringBuffer *buf) {
     }
     stringbuffer_append_string(buf, list->name);
     stringbuffer_append_string(buf, "\n");
-    writeItem(list->items, buf);
+    writeItem(list->items, std::string(), buf);
 }
