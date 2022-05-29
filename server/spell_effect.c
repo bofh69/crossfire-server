@@ -158,9 +158,9 @@ int recharge(object *op, object *caster, object *spell_ob) {
  */
 static void polymorph_living(object *op, int level) {
     archetype *at;
-    int x = op->x, y = op->y, numat = 0, choice, friendly;
+    int x = op->x, y = op->y, numat = 0, choice, friendly, pos;
     mapstruct *map = op->map;
-    object *owner;
+    object *owner, *replacing;
 
     op = HEAD(op);
 
@@ -176,8 +176,8 @@ static void polymorph_living(object *op, int level) {
 
     /* First, count up the number of legal matches */
     for (at = get_next_archetype(NULL); at != NULL; at = get_next_archetype(at))
-        if ((QUERY_FLAG((&at->clone), FLAG_MONSTER) == QUERY_FLAG(op, FLAG_MONSTER))
-        && (object_find_free_spot(&at->clone, map, x, y, 0, SIZEOFFREE) != -1)) {
+        if ((!at->head) && (QUERY_FLAG((&at->clone), FLAG_MONSTER) == QUERY_FLAG(op, FLAG_MONSTER))
+        && (object_find_first_free_spot(&at->clone, map, x, y) != -1)) {
             numat++;
         }
 
@@ -189,7 +189,7 @@ static void polymorph_living(object *op, int level) {
     /* Next make a choice, and loop through until we get to it */
     choice = rndm(0, numat-1);
     for (at = get_next_archetype(NULL); at != NULL; at = get_next_archetype(at))
-        if ((QUERY_FLAG((&at->clone), FLAG_MONSTER) == QUERY_FLAG(op, FLAG_MONSTER)) && (object_find_free_spot(&at->clone, map, x, y, 0, SIZEOFFREE) != -1)) {
+        if ((!at->head) && (QUERY_FLAG((&at->clone), FLAG_MONSTER) == QUERY_FLAG(op, FLAG_MONSTER)) && ((pos = object_find_first_free_spot(&at->clone, map, x, y)) != -1)) {
             if (!choice)
                 break;
             else
@@ -215,25 +215,26 @@ static void polymorph_living(object *op, int level) {
     if (friendly)
         remove_friendly_object(op);
 
-    object_copy(&(at->clone), op);
+    replacing = object_create_arch(at);
     if (owner != NULL)
-        object_set_owner(op, owner);
+        object_set_owner(replacing, owner);
     if (friendly) {
-        SET_FLAG(op, FLAG_FRIENDLY);
-        op->attack_movement = PETMOVE;
-        add_friendly_object(op);
+        SET_FLAG(replacing, FLAG_FRIENDLY);
+        replacing->attack_movement = PETMOVE;
+        add_friendly_object(replacing);
     } else
-        CLEAR_FLAG(op, FLAG_FRIENDLY);
+        CLEAR_FLAG(replacing, FLAG_FRIENDLY);
+    object_free(op, FREE_OBJ_NO_DESTROY_CALLBACK | FREE_OBJ_FREE_INVENTORY);
 
     /* Put the new creature on the map */
-    if ((op = object_insert_in_map_at(op, map, owner, 0, x, y)) == NULL)
+    if ((replacing = object_insert_in_map_at(replacing, map, owner, 0, x + freearr_x[pos], y + freearr_y[pos])) == NULL)
         return;
 
-    if (HAS_RANDOM_ITEMS(op))
-        create_treasure(op->randomitems, op, GT_INVISIBLE, map->difficulty, 0);
+    if (HAS_RANDOM_ITEMS(replacing))
+        create_treasure(replacing->randomitems, replacing, GT_INVISIBLE, map->difficulty, 0);
 
     /* Apply any objects. */
-    monster_check_apply_all(op);
+    monster_check_apply_all(replacing);
 }
 
 
