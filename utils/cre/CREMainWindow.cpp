@@ -644,7 +644,7 @@ void CREMainWindow::onReportSpellDamage()
     show.exec();
 }
 
-static QString alchemyTable(const QString& skill, QStringList& noChance, QStringList& allIngredients)
+static QString alchemyTable(const QString& skill, QStringList& noChance, std::vector<std::pair<QString, int>> &allIngredients)
 {
     int count = 0;
 
@@ -693,8 +693,11 @@ static QString alchemyTable(const QString& skill, QStringList& noChance, QString
                     if (isdigit(ingred->name[0])) {
                         name = strchr(ingred->name, ' ') + 1;
                     }
-                    if (!allIngredients.contains(name)) {
-                        allIngredients.append(name);
+                    auto ing = std::find_if(allIngredients.begin(), allIngredients.end(), [&] (auto i) { return i.first == name; } );
+                    if (ing != allIngredients.end()) {
+                        (*ing).second++;
+                    } else {
+                        allIngredients.push_back(std::make_pair(name, 1));;
                     }
                 }
 
@@ -728,6 +731,15 @@ static QString alchemyTable(const QString& skill, QStringList& noChance, QString
     return report;
 }
 
+static void doIngredients(const std::vector<std::pair<QString, int>> &allIngredients, const QString &criteria, QString &report) {
+    report += QString("<h1>All items used as ingredients (%1)</h1>").arg(criteria);
+    report += "<ul>";
+    for (auto ing : allIngredients) {
+        report += QString("<li>%1 (%2 recipes)</li>").arg(ing.first).arg(ing.second);
+    }
+    report += "</ul>";
+}
+
 void CREMainWindow::onReportAlchemy()
 {
     QStringList skills;
@@ -740,7 +752,8 @@ void CREMainWindow::onReportAlchemy()
     skills.sort();
 
     QString report("<h1>Alchemy formulae</h1>");
-    QStringList noChance, allIngredients;
+    QStringList noChance;
+    std::vector<std::pair<QString, int>> allIngredients;
 
     foreach(const QString skill, skills)
     {
@@ -755,15 +768,18 @@ void CREMainWindow::onReportAlchemy()
     }
     report += "</th></table>";
 
-    qSort(allIngredients.begin(), allIngredients.end(), [] (const QString &s1, const QString &s2) {
-        return s1.toLower() < s2.toLower();
+    std::sort(allIngredients.begin(), allIngredients.end(), [] (auto i1, auto i2) {
+        return i1.first.toLower() < i2.first.toLower();
     });
-    report += tr("<h1>All items used as ingredients</h1>");
-    report += "<ul>";
-    foreach(const QString& name, allIngredients) {
-        report += "<li>" + name + "</li>";
-    }
-    report += "</ul>";
+    doIngredients(allIngredients, "alphabetical order", report);
+
+    std::sort(allIngredients.begin(), allIngredients.end(), [] (auto i1, auto i2) {
+        if (i1.second == i2.second) {
+            return i1.first.toLower() < i2.first.toLower();
+        }
+        return i1.second > i2.second;
+    });
+    doIngredients(allIngredients, "count of uses", report);
 
     CREReportDisplay show(report, "Alchemy formulae");
     show.exec();
