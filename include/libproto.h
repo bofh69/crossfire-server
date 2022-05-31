@@ -263,6 +263,7 @@ extern void object_copy_with_inv(const object *src_ob, object *dest_ob);
 extern object *object_new(void);
 extern void object_update_turn_face(object *op);
 extern void object_update_speed(object *op);
+extern void object_remove_from_active_list(object *op);
 extern void object_update(object *op, int action);
 extern void object_free_drop_inventory(object *ob);
 extern void object_free_inventory(object *ob);

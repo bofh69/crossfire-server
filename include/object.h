@@ -279,6 +279,14 @@ typedef struct obj {
     struct pl   *contr;         /**< Pointer to the player which control this object */
     struct obj  *next;          /**< Pointer to the next object in the free/used list */
     struct obj  *prev;          /**< Pointer to the previous object in the free/used list*/
+    struct obj  *active_next;   /**< Next object in the 'active' list
+                                 * This is used in process_events
+                                 * so that the entire object list does not
+                                 * need to be gone through.*/
+    struct obj  *active_prev;   /**< Previous object in the 'active list
+                                 * This is used in process_events
+                                 * so that the entire object list does not
+                                 * need to be gone through. */
     struct obj  *below;         /**< Pointer to the object stacked below this one */
     struct obj  *above;         /**< Pointer to the object stacked above this one */
                                 /* Note: stacked in the *same *environment*/
@@ -469,6 +477,7 @@ typedef struct archt {
 } archetype;
 
 extern object *objects;
+extern object *active_objects;
 
 extern int nrofallocobjects;
 extern int nroffreeobjects;

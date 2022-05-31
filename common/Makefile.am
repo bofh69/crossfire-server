@@ -1,7 +1,6 @@
 noinst_LIBRARIES = libcross.a
 
 libcross_a_SOURCES = \
-	active.cpp \
 	anim.c \
 	arch.cpp\
 	arch_types_valid.c \

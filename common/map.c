@@ -17,7 +17,6 @@
  */
 
 #include "global.h"
-#include "active.h"
 
 #include <ctype.h>
 #include <errno.h>
@@ -683,7 +682,7 @@ void load_objects(mapstruct *m, FILE *fp, int mapflags) {
             break;
         }
         if (mapflags&MAP_STYLE) {
-            active_remove(op);
+            object_remove_from_active_list(op);
         }
         op = object_new();
         op->map = m;
