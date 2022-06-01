@@ -29,7 +29,7 @@ public:
      * @param mode list mode to use.
      * @param manager messages manager.
      */
-    CREPrePostSingleConditionDelegate(QObject* parent, CREPrePostList::Mode mode, const MessageManager* manager);
+    CREPrePostSingleConditionDelegate(QObject* parent, PrePostWidget::Mode mode, const MessageManager* manager);
 
     virtual QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
     virtual void setEditorData(QWidget* editor, const QModelIndex& index) const override;
@@ -37,7 +37,7 @@ public:
     virtual void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
 private:
-    CREPrePostList::Mode myMode;
+    PrePostWidget::Mode myMode;
     const MessageManager* myMessages;
 };
 
@@ -53,7 +53,7 @@ public:
      * @param mode list mode to use.
      * @param manager messages manager.
      */
-    CREPrePostConditionDelegate(QObject* parent, CREPrePostList::Mode mode, const MessageManager* manager);
+    CREPrePostConditionDelegate(QObject* parent, PrePostWidget::Mode mode, const MessageManager* manager);
     virtual ~CREPrePostConditionDelegate();
 
     virtual QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const;
@@ -62,7 +62,7 @@ public:
     virtual void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
 private:
-    CREPrePostList::Mode myMode;  /**< List mode we're working in. */
+    PrePostWidget::Mode myMode;  /**< List mode we're working in. */
     const MessageManager* myMessages; /**< Available message scripts. */
 };
 

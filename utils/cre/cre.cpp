@@ -25,11 +25,10 @@
 #include "CREReportDefinition.h"
 #include "CREReportDefinitionManager.h"
 
-#ifdef WIN32
 extern "C" {
 #include "global.h"
+#include "quest.h"
 }
-#endif
 
 int main(int argc, char **argv) {
 
@@ -49,8 +48,9 @@ int main(int argc, char **argv) {
     qRegisterMetaTypeStreamOperators<CREReportDefinitionManager>("CREReportDefinitionManager");
 
     qRegisterMetaType<const Face *>("const Face*");
-    qRegisterMetaType<const Face *>("const treasurelist*");
-    qRegisterMetaType<const Face *>("const archetype*");
+    qRegisterMetaType<const treasurelist *>("const treasurelist*");
+    qRegisterMetaType<const archetype *>("const archetype*");
+    qRegisterMetaType<const quest_definition *>("const quest_definition*");
 
     // QHelpEngine apparently needs write access to files, so move'em to a writable location
     QTemporaryDir forHelp;

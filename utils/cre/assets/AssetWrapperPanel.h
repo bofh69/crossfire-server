@@ -28,6 +28,9 @@ class AssetWrapperPanel : public QWidget {
 public:
     AssetWrapperPanel(QWidget *parent);
     virtual ~AssetWrapperPanel();
+
+    void addTab(const QString &title);
+
     virtual void setAsset(AssetWrapper *item);
     virtual void commitData() {}
 
@@ -36,6 +39,7 @@ public:
     QTextEdit *addTextEdit(const QString &label, const char *property, bool readOnly = true);
     QCheckBox *addCheckBox(const QString &label, const char *property, bool readOnly = true);
     void addFaceChoice(const QString &label, const char *property, bool readOnly = true, bool allowNone = true);
+    void addQuestChoice(const QString &label, const char *property, bool readOnly = true, bool allowNone = true);
     QSpinBox *addSpinBox(const QString &label, const char *property, int min = 0, int max = 100, bool readOnly = true);
     TreasureListComboBox *addTreasureList(const QString &label, const char *property, bool readOnly = true, bool allowNone = true);
     ArchetypeComboBox *addArchetype(const QString &label, const char *property, bool readOnly = false, bool allowNone = true);
@@ -48,6 +52,7 @@ protected slots:
 
 protected:
     QGridLayout *myLayout;
+    QTabWidget *myTab;
     AssetWrapper *myAsset;
     bool myInhibit;
     QMetaObject::Connection myChanged;

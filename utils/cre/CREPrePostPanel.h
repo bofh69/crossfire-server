@@ -71,12 +71,12 @@ class CRESubItemQuest : public CRESubItemWidget
     Q_OBJECT
 
     public:
-        CRESubItemQuest(CREPrePostList::Mode mode, QWidget* parent);
+        CRESubItemQuest(PrePostWidget::Mode mode, QWidget* parent);
 
         virtual void setData(const QStringList& data);
 
     private:
-        CREPrePostList::Mode myMode;
+        PrePostWidget::Mode myMode;
         /** List of quests. */
         QComboBox* myQuestList;
         /** Steps of the current quest for new step (post-) or at/frop step (pre-). */
@@ -160,7 +160,7 @@ class CREPrePostPanel : public QDialog
          * @param scripts available script types for the conditions.
          * @param parent ancestor of this panel.
          */
-        CREPrePostPanel(CREPrePostList::Mode mode, const QList<QuestConditionScript*> scripts, QWidget* parent);
+        CREPrePostPanel(PrePostWidget::Mode mode, const QList<QuestConditionScript*> scripts, QWidget* parent);
         virtual ~CREPrePostPanel();
 
         QStringList getData();
@@ -178,7 +178,7 @@ class CREPrePostPanel : public QDialog
         /** Arguments panels, only one visible based on the choice. */
         QStackedWidget* mySubItemsStack;
         /** Mode we're working in. */
-        CREPrePostList::Mode myMode;
+        PrePostWidget::Mode myMode;
 
         /**
          * Creates a CRESubItemWidget for the specified script.

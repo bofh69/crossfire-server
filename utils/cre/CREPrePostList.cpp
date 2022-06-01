@@ -14,23 +14,11 @@
 #include "CREPrePostList.h"
 #include "CREPrePostConditionDelegate.h"
 
-CREPrePostList::CREPrePostList(QWidget* parent, Mode mode, const MessageManager* manager) : myMode(mode)
+PrePostWidget::PrePostWidget(QWidget* parent, Mode mode, const MessageManager* manager) : QWidget(parent), myMode(mode)
 {
-    setModal(true);
-    switch (mode) {
-        case PreConditions:
-            setWindowTitle(tr("Message pre-conditions"));
-            break;
-        case PostConditions:
-            setWindowTitle(tr("Message post-conditions"));
-            break;
-        case SetWhen:
-            setWindowTitle(tr("Step set when conditions are met"));
-            break;
-    }
-
     myList = new QListWidget(parent);
     myList->setItemDelegate(new CREPrePostSingleConditionDelegate(myList, mode, manager));
+    connect(myList, &QListWidget::itemChanged, this, [&] () { emit dataModified(); });
 
     QPushButton* addCondition = new QPushButton(tr("add"), this);
     connect(addCondition, SIGNAL(clicked(bool)), this, SLOT(onAddCondition(bool)));
@@ -52,11 +40,7 @@ CREPrePostList::CREPrePostList(QWidget* parent, Mode mode, const MessageManager*
     setLayout(l);
 }
 
-CREPrePostList::~CREPrePostList()
-{
-}
-
-QList<QStringList> CREPrePostList::data() const
+QList<QStringList> PrePostWidget::data() const
 {
     QList<QStringList> value;
     for (int i = 0; i < myList->count(); i++)
@@ -70,7 +54,7 @@ QList<QStringList> CREPrePostList::data() const
     return value;
 }
 
-void CREPrePostList::addItem(const QStringList &item)
+void PrePostWidget::addItem(const QStringList &item)
 {
     QStringList display(item);
     if (myMode == SetWhen)
@@ -79,9 +63,10 @@ void CREPrePostList::addItem(const QStringList &item)
     wi->setData(Qt::UserRole, QVariant::fromValue(item));
     wi->setFlags(wi->flags() | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
     myList->addItem(wi);
+    emit dataModified();
 }
 
-void CREPrePostList::setData(const QList<QStringList>& data)
+void PrePostWidget::setData(const QList<QStringList>& data)
 {
     myList->clear();
     for (QStringList item : data)
@@ -93,26 +78,48 @@ void CREPrePostList::setData(const QList<QStringList>& data)
     myOriginal = data;
 }
 
-void CREPrePostList::onAddCondition(bool)
+void PrePostWidget::onAddCondition(bool)
 {
     QStringList item;
     item << "quest";
     addItem(item);
     myList->setCurrentRow(myList->count() - 1);
     myList->edit(myList->currentIndex());
+    emit dataModified();
 }
 
-void CREPrePostList::onDeleteCondition(bool)
+void PrePostWidget::onDeleteCondition(bool)
 {
     if (myList->currentRow() == -1)
         return;
 
     delete myList->takeItem(myList->currentRow());
+    emit dataModified();
 }
 
-void CREPrePostList::onReset(bool)
+void PrePostWidget::onReset(bool)
 {
     if (QMessageBox::question(this, "Confirm reset", "Reset the conditions to their initial values, losing all changes?") != QMessageBox::StandardButton::Yes)
         return;
     setData(myOriginal);
+    emit dataModified();
+}
+
+CREPrePostList::CREPrePostList(QWidget* parent, PrePostWidget::Mode mode, const MessageManager* manager) : QDialog(parent) {
+    setModal(true);
+    switch (mode) {
+        case PrePostWidget::PreConditions:
+            setWindowTitle(tr("Message pre-conditions"));
+            break;
+        case PrePostWidget::PostConditions:
+            setWindowTitle(tr("Message post-conditions"));
+            break;
+        case PrePostWidget::SetWhen:
+            setWindowTitle(tr("Step set when conditions are met"));
+            break;
+    }
+
+   auto layout = new QVBoxLayout(this);
+    myWidget = new PrePostWidget(this, mode, manager);
+    layout->addWidget(myWidget);
 }

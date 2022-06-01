@@ -131,6 +131,7 @@ class ResourcesManager : public QObject, AssetsTracker
         AssetWrapper *wrap(face_sets *fs, AssetWrapper *parent) { return myWrappedFacesets.wrap(fs, parent, this); }
         AssetWrapper *wrap(GeneralMessage *message, AssetWrapper *parent) { return myWrappedMessages.wrap(message, parent, this); }
         AssetWrapper *wrap(quest_definition *quest, AssetWrapper *parent) { return myWrappedQuests.wrap(quest, parent, this); }
+        AssetWrapper *wrap(quest_step_definition *step, AssetWrapper *parent) { return myWrappedQuestSteps.wrap(step, parent, this); }
         AssetWrapper *wrap(artifactlist *al, AssetWrapper *parent) { return myWrappedArtifactLists.wrap(al, parent, this); }
         AssetWrapper *wrap(artifact *art, AssetWrapper *parent) {
             auto wrapper = myWrappedArtifacts.wrap(art, parent, this);
@@ -172,6 +173,7 @@ class ResourcesManager : public QObject, AssetsTracker
         AssetWrapperManager<face_sets, FacesetsWrapper> myWrappedFacesets;
         AssetWrapperManager<GeneralMessage, GeneralMessageWrapper> myWrappedMessages;
         AssetWrapperManager<quest_definition, QuestWrapper> myWrappedQuests;
+        AssetWrapperManager<quest_step_definition, QuestStepWrapper> myWrappedQuestSteps;
         AssetWrapperManager<artifactlist, ArtifactListWrapper> myWrappedArtifactLists;
         AssetWrapperManager<artifact, ArtifactWrapper> myWrappedArtifacts;
         AssetWrapperManager<recipelist, RecipeListWrapper> myWrappedRecipeLists;

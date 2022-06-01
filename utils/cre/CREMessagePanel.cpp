@@ -57,10 +57,10 @@ CREMessagePanel::CREMessagePanel(const MessageManager* manager, QWidget* parent)
     myRules->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     myRules->setItemDelegateForColumn(0, new CREMultilineItemDelegate(myRules, true, true));
-    myRules->setItemDelegateForColumn(1, new CREPrePostConditionDelegate(myRules, CREPrePostList::PreConditions, manager));
+    myRules->setItemDelegateForColumn(1, new CREPrePostConditionDelegate(myRules, PrePostWidget::PreConditions, manager));
     myRules->setItemDelegateForColumn(2, new CREPlayerRepliesDelegate(myRules));
     myRules->setItemDelegateForColumn(3, new CREStringListDelegate(myRules));
-    myRules->setItemDelegateForColumn(4, new CREPrePostConditionDelegate(myRules, CREPrePostList::PostConditions, manager));
+    myRules->setItemDelegateForColumn(4, new CREPrePostConditionDelegate(myRules, PrePostWidget::PostConditions, manager));
     myRules->setItemDelegateForColumn(5, new CREMultilineItemDelegate(myRules, true, true));
     myRules->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 

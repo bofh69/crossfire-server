@@ -21,4 +21,28 @@ void addMime(QMimeData *data, const QString &mime, const QString &name) {
     data->setData(mime, ba);
 }
 
+void addQuestStep(QMimeData *data, QString code, int index) {
+    QByteArray ba(data->data(QuestStep));
+    QDataStream df(&ba, QIODevice::WriteOnly);
+    df << code << index;
+    data->setData(QuestStep, ba);
+}
+
+QList<QPair<QString, int>> extractQuestSteps(const QMimeData *data) {
+    QList<QPair<QString, int>> ret;
+    if (data->hasFormat(QuestStep)) {
+        QString name;
+        int index;
+        QByteArray ba(data->data(QuestStep));
+        QDataStream df(&ba, QIODevice::ReadOnly);
+        while (!df.atEnd()) {
+            df >> name >> index;
+            if (!name.isEmpty()) {
+                ret.push_back(QPair<QString, int>(name, index));
+            }
+        }
+    }
+    return ret;
+}
+
 }

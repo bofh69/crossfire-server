@@ -15,11 +15,12 @@
 #include <QVariant>
 #include <QGridLayout>
 #include "FaceComboBox.h"
+#include "quests/QuestComboBox.h"
 #include "treasures/TreasureListComboBox.h"
 #include "archetypes/ArchetypeComboBox.h"
 #include "assets/AssetUseTree.h"
 
-AssetWrapperPanel::AssetWrapperPanel(QWidget *parent) : QWidget(parent), myAsset(nullptr), myInhibit(false) {
+AssetWrapperPanel::AssetWrapperPanel(QWidget *parent) : QWidget(parent), myTab(nullptr), myAsset(nullptr), myInhibit(false) {
     myLayout = new QGridLayout(this);
 }
 
@@ -31,6 +32,17 @@ AssetWrapperPanel::~AssetWrapperPanel() {
         disconnect(myDelete);
     }
 }
+
+void AssetWrapperPanel::addTab(const QString &title) {
+    if (!myTab) {
+        myTab = new QTabWidget(this);
+        myLayout->addWidget(myTab);
+    }
+    QWidget *tab = new QWidget(myTab);
+    myLayout = new QGridLayout(tab);
+    myTab->addTab(tab, title);
+}
+
 void AssetWrapperPanel::setAsset(AssetWrapper *asset) {
     if (myAsset) {
         disconnect(myChanged);
@@ -89,6 +101,11 @@ QCheckBox *AssetWrapperPanel::addCheckBox(const QString &label, const char *prop
 
 void AssetWrapperPanel::addFaceChoice(const QString &label, const char *property, bool readOnly, bool allowNone) {
     auto widget = addWidget(label, new FaceComboBox(this, allowNone), true, property, "face");
+    widget->setEnabled(!readOnly);
+}
+
+void AssetWrapperPanel::addQuestChoice(const QString &label, const char *property, bool readOnly, bool allowNone) {
+    auto widget = addWidget(label, new QuestComboBox(this, allowNone), true, property, "quest");
     widget->setEnabled(!readOnly);
 }
 

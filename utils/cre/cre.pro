@@ -30,7 +30,6 @@ CREPixmap.cpp \
  CREStringListPanel.cpp \
  CREPrePostPanel.cpp \
  CREReplyPanel.cpp \
- CREQuestItemModel.cpp \
  CREMultilineItemDelegate.cpp \
  QuestConditionScript.cpp \
  CREHPBarMaker.cpp \
@@ -75,6 +74,7 @@ CREPixmap.cpp \
  general_messages/GeneralMessagePanel.cpp \
  general_messages/GeneralMessageWrapper.cpp \
  quests/QuestWrapper.cpp \
+ quests/QuestComboBox.cpp \
  recipes/RecipeListWrapper.cpp \
  recipes/RecipePanel.cpp \
  recipes/RecipeWrapper.cpp \
@@ -121,7 +121,6 @@ CREPixmap.h \
  CREStringListPanel.h \
  CREPrePostPanel.h \
  CREReplyPanel.h \
- CREQuestItemModel.h \
  CREMultilineItemDelegate.h \
  QuestConditionScript.h \
  CREHPBarMaker.h \
@@ -171,6 +170,7 @@ CREPixmap.h \
  general_messages/GeneralMessagePanel.h \
  general_messages/GeneralMessageWrapper.h \
  general_messages/GeneralMessagesWrapper.h \
+ quests/QuestComboBox.h \
  quests/QuestWrapper.h \
  quests/QuestsWrapper.h \
  recipes/RecipeListWrapper.h \

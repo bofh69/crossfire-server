@@ -20,56 +20,26 @@
 #include "CREReportDialog.h"
 #include "assets/AssetWrapperPanel.h"
 
-extern "C" {
-#include "global.h"
-#include "quest.h"
-}
-
-class Quest;
-class QuestStep;
-class CREMapInformationManager;
-class CREQuestItemModel;
 class MessageManager;
-class ResourcesManager;
-class FaceComboBox;
-class UseFilterAssetModel;
 class AssetModel;
+class PrePostWidget;
 
-class CREQuestPanel : public AssetTWrapperPanel<quest_definition>
+class QuestStepPanel : public AssetWrapperPanel {
+    Q_OBJECT
+
+public:
+    QuestStepPanel(MessageManager *messages, QWidget *parent);
+
+private:
+    PrePostWidget *myPrePost;
+};
+
+class CREQuestPanel : public AssetWrapperPanel
 {
     Q_OBJECT
 
-    public:
-        CREQuestPanel(CREMapInformationManager* mapManager, MessageManager* messageManager, ResourcesManager *resources, AssetModel *model, QWidget* parent);
-        virtual ~CREQuestPanel();
-
-        virtual void commitData() override;
-        virtual void updateItem() override;
-
-    private:
-        CREMapInformationManager *myMapManager;
-        MessageManager* myMessageManager;
-        ResourcesManager *myResources;
-        QuestStep* myCurrentStep;
-        QLineEdit* myCode;
-        QLineEdit* myTitle;
-        FaceComboBox* myFace;
-        QComboBox* myFile;
-        QCheckBox* myCanRestart;
-        QCheckBox* myIsSystem;
-        QComboBox* myParent;
-        QTextEdit* myDescription;
-        QPlainTextEdit* myComment;
-        CREQuestItemModel* myStepsModel;
-        QTreeView* mySteps;
-        UseFilterAssetModel *myUse;
-
-        void displaySteps();
-
-    protected slots:
-        void deleteStep(bool);
-        void moveUp(bool);
-        void moveDown(bool);
+public:
+    CREQuestPanel(AssetModel *model, QWidget* parent);
 };
 
 #endif /* _CREQUESTPANEL_H */

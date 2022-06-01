@@ -23,6 +23,7 @@
 namespace MimeUtils {
     static const char *Archetype = "x-crossfire/archetype";
     static const char *TreasureList = "x-crossfire/treasure-list";
+    static const char *QuestStep = "x-crossfire/quest-step";
 
     void addMime(QMimeData *data, const QString &mime, const QString &name);
 
@@ -45,6 +46,9 @@ namespace MimeUtils {
         }
         return ret;
     }
+
+    void addQuestStep(QMimeData *data, QString code, int index);
+    QList<QPair<QString, int>> extractQuestSteps(const QMimeData *data);
 }
 
 #endif /* MIME_UTILS_H */

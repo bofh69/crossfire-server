@@ -147,7 +147,8 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     addPanel("Treasure", new TreasurePanel(this));
     addPanel("TreasureList", new CRETreasurePanel(model, this));
     addPanel("Faceset", new FacesetsPanel(this, myResources->licenseManager()));
-    addPanel("Quest", new CREQuestPanel(myStore, myMessages, myResources, model, this));
+    addPanel("Quest", new CREQuestPanel(model, this));
+    addPanel("QuestStep", new QuestStepPanel(myMessages, this));
     addPanel("GeneralMessage", new CREGeneralMessagePanel(this));
     addPanel("Region", new RegionPanel(this));
     addPanel("Map", new CREMapPanel(myScripts, this));

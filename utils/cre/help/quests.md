@@ -7,13 +7,15 @@ depending on the quest.
 
 A quest is composed of different `steps`, each one having:
 
- * `an internal code`, numeric value
+ * `an internal code`, numeric value which must be unique for the quest
  * a `descriptive text`
  * whether this step ends the quest or not
 
 ## Editing
 
-Select the quest you want to edit on the asset tree. In the right panel, you can:
+On the asset tree, the quests will be displayed with steps as their children. In the right panel, you can:
 
  * edit attributes of the quest (the `code` is read-only)
- * add, remove, edit steps (double-click on what you want to edit), move them up or down
+ * edit attributes of the quest step
+
+You can also right-click on the asset tree to add a new step or remove steps. Drag and drop allows reordering of steps in a quest (you can't drag a step from a quest to another quest).
