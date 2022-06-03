@@ -104,7 +104,7 @@ typedef enum party_rejoin_mode {
 /** One player. */
 typedef struct pl {
     struct pl   *next;                  /**< Pointer to next player, NULL if this is last. */
-    socket_struct socket;               /**< Socket information for this player.  See the page on
+    socket_struct *socket;              /**< Socket information for this player.  See the page on
                                          * @ref page_connection "the login process" for a description of its use. */
     char        maplevel[MAX_BUF];      /**< On which level is the player? */
     char        savebed_map[MAX_BUF];   /**< Map where player will respawn after death. */

@@ -62,7 +62,7 @@ int count_players() {
             continue;
         if (pl->state != ST_PLAYING && pl->state != ST_GET_PARTY_PASSWORD)
             continue;
-        if (pl->socket.is_bot)
+        if (pl->socket->is_bot)
             continue;
         num_players++;
     }

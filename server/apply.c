@@ -250,7 +250,7 @@ int apply_container(object *op, object *sack, int aflags) {
         if ( op->container == sack ) {
             op->container = NULL;
             if (op->contr != NULL)
-                op->contr->socket.container_position = 0;
+                op->contr->socket->container_position = 0;
             CLEAR_FLAG(sack, FLAG_APPLIED);
             draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_APPLY, MSG_TYPE_APPLY_SUCCESS,
                                  "You readied %s.",
@@ -340,7 +340,7 @@ int apply_container(object *op, object *sack, int aflags) {
 
         op->container = NULL;
         if (op->contr != NULL)
-            op->contr->socket.container_position = 0;
+            op->contr->socket->container_position = 0;
 
         /* The container may have been destroyed by the event handler. */
         if (!object_was_destroyed(tmp, tmp_tag)) {
@@ -425,7 +425,7 @@ int apply_container(object *op, object *sack, int aflags) {
         SET_FLAG(sack, FLAG_APPLIED);
         op->container = sack;
         if (op->contr != NULL)
-            op->contr->socket.container_position = 0;
+            op->contr->socket->container_position = 0;
 
         if (set_object_face_other(sack))
             esrv_update_item(UPD_FLAGS|UPD_FACE, op, sack);
@@ -441,7 +441,7 @@ int apply_container(object *op, object *sack, int aflags) {
             SET_FLAG(sack, FLAG_APPLIED);
             op->container = sack;
             if (op->contr != NULL)
-                op->contr->socket.container_position = 0;
+                op->contr->socket->container_position = 0;
 
             if (set_object_face_other(sack))
                 esrv_update_item(UPD_FLAGS|UPD_FACE, op, sack);

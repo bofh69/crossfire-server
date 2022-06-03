@@ -195,11 +195,11 @@ void esrv_draw_look(object *pl) {
     SockList sl;
     char buf[MAX_BUF];
 
-    if (!pl->contr->socket.update_look) {
+    if (!pl->contr->socket->update_look) {
         LOG(llevDebug, "esrv_draw_look called when update_look was not set\n");
         return;
     } else {
-        pl->contr->socket.update_look = 0;
+        pl->contr->socket->update_look = 0;
     }
 
     if (QUERY_FLAG(pl, FLAG_REMOVED)
@@ -217,19 +217,19 @@ void esrv_draw_look(object *pl) {
 
     SockList_Init(&sl);
     SockList_AddString(&sl, "delinv 0");
-    Send_With_Handling(&pl->contr->socket, &sl);
+    Send_With_Handling(pl->contr->socket, &sl);
 
     SockList_Reset(&sl);
     SockList_AddPrintf(&sl, "item2 ");
     SockList_AddInt(&sl, 0);
 
-    if (!(pl->contr->socket.faces_sent[empty_face->number]&NS_FACESENT_FACE))
-        esrv_send_face(&pl->contr->socket, empty_face, 0);
+    if (!(pl->contr->socket->faces_sent[empty_face->number]&NS_FACESENT_FACE))
+        esrv_send_face(pl->contr->socket, empty_face, 0);
 
-    if (pl->contr->socket.look_position) {
+    if (pl->contr->socket->look_position) {
         int overhead = 1+(pl->contr->transport != NULL);
-        int prev_len = pl->contr->socket.num_look_objects-overhead-(pl->contr->socket.look_position > pl->contr->socket.num_look_objects-overhead);
-        SockList_AddInt(&sl, 0x80000000|MAX(0, pl->contr->socket.look_position-prev_len));
+        int prev_len = pl->contr->socket->num_look_objects-overhead-(pl->contr->socket->look_position > pl->contr->socket->num_look_objects-overhead);
+        SockList_AddInt(&sl, 0x80000000|MAX(0, pl->contr->socket->look_position-prev_len));
         SockList_AddInt(&sl, 0);
         SockList_AddInt(&sl, -1);
         SockList_AddInt(&sl, empty_face->number);
@@ -244,7 +244,7 @@ void esrv_draw_look(object *pl) {
     }
 
     if (pl->contr->transport) {
-        add_object_to_socklist(&pl->contr->socket, &sl, pl->contr->transport);
+        add_object_to_socklist(pl->contr->socket, &sl, pl->contr->transport);
         objects_sent++;
         got_one++;
     }
@@ -266,16 +266,16 @@ void esrv_draw_look(object *pl) {
             }
         }
         if (QUERY_FLAG(pl, FLAG_WIZ) || LOOK_OBJ(tmp)) {
-            if (start_look++ < pl->contr->socket.look_position)
+            if (start_look++ < pl->contr->socket->look_position)
                 continue;
             end_look++;
             objects_sent++;
-            if (objects_sent >= pl->contr->socket.num_look_objects) {
+            if (objects_sent >= pl->contr->socket->num_look_objects) {
                 /* What we basically do is make a 'fake' object -
                  * when the user applies it, we notice the special
                  * tag the object has, and act accordingly.
                  */
-                SockList_AddInt(&sl, 0x80000000|(pl->contr->socket.look_position+end_look-1));
+                SockList_AddInt(&sl, 0x80000000|(pl->contr->socket->look_position+end_look-1));
                 SockList_AddInt(&sl, 0);
                 SockList_AddInt(&sl, -1);
                 SockList_AddInt(&sl, empty_face->number);
@@ -288,11 +288,11 @@ void esrv_draw_look(object *pl) {
                 break;
             }
             head = HEAD(tmp);
-            add_object_to_socklist(&pl->contr->socket, &sl, head);
+            add_object_to_socklist(pl->contr->socket, &sl, head);
             got_one++;
 
             if (SockList_Avail(&sl) < MAXITEMLEN) {
-                Send_With_Handling(&pl->contr->socket, &sl);
+                Send_With_Handling(pl->contr->socket, &sl);
                 SockList_Reset(&sl);
                 SockList_AddPrintf(&sl, "item2 ");
                 SockList_AddInt(&sl, 0);
@@ -301,7 +301,7 @@ void esrv_draw_look(object *pl) {
         } /* If LOOK_OBJ() */
     } FOR_OB_AND_BELOW_FINISH();
     if (got_one)
-        Send_With_Handling(&pl->contr->socket, &sl);
+        Send_With_Handling(pl->contr->socket, &sl);
 
     SockList_Term(&sl);
 }
@@ -316,19 +316,19 @@ void esrv_send_inventory(object *pl, object *op) {
     int got_one = 0, start_look = 0, end_look = 0, objects_sent = 0;
     SockList sl;
     char buf[MAX_BUF];
-    int prev_len = pl->contr->socket.num_look_objects - 2 - (((pl->contr->socket.container_position > pl->contr->socket.num_look_objects - 1)) ? 1 : 0);
+    int prev_len = pl->contr->socket->num_look_objects - 2 - (((pl->contr->socket->container_position > pl->contr->socket->num_look_objects - 1)) ? 1 : 0);
 
     SockList_Init(&sl);
     SockList_AddPrintf(&sl, "delinv %u", op->count);
-    Send_With_Handling(&pl->contr->socket, &sl);
+    Send_With_Handling(pl->contr->socket, &sl);
 
     SockList_Reset(&sl);
     SockList_AddString(&sl, "item2 ");
     SockList_AddInt(&sl, op->count);
     objects_sent++;
 
-    if (pl != op && pl->contr->socket.container_position) {
-        SockList_AddInt(&sl, 0x80000000|MAX(0, pl->contr->socket.container_position-prev_len));
+    if (pl != op && pl->contr->socket->container_position) {
+        SockList_AddInt(&sl, 0x80000000|MAX(0, pl->contr->socket->container_position-prev_len));
         SockList_AddInt(&sl, 0);
         SockList_AddInt(&sl, -1);
         SockList_AddInt(&sl, empty_face->number);
@@ -347,16 +347,16 @@ void esrv_send_inventory(object *pl, object *op) {
 
         head = HEAD(tmp);
         if (LOOK_OBJ(head)) {
-            if (start_look++ < pl->contr->socket.container_position && pl != op)
+            if (start_look++ < pl->contr->socket->container_position && pl != op)
                 continue;
             end_look++;
             objects_sent++;
-            if (pl != op && objects_sent >= pl->contr->socket.num_look_objects) {
+            if (pl != op && objects_sent >= pl->contr->socket->num_look_objects) {
                 /* What we basically do is make a 'fake' object -
                  * when the user applies it, we notice the special
                  * tag the object has, and act accordingly.
                  */
-                SockList_AddInt(&sl, 0x80000000|(pl->contr->socket.container_position + end_look - 1));
+                SockList_AddInt(&sl, 0x80000000|(pl->contr->socket->container_position + end_look - 1));
                 SockList_AddInt(&sl, 0);
                 SockList_AddInt(&sl, -1);
                 SockList_AddInt(&sl, empty_face->number);
@@ -369,7 +369,7 @@ void esrv_send_inventory(object *pl, object *op) {
                 break;
             }
 
-            add_object_to_socklist(&pl->contr->socket, &sl, head);
+            add_object_to_socklist(pl->contr->socket, &sl, head);
 
             got_one++;
 
@@ -378,7 +378,7 @@ void esrv_send_inventory(object *pl, object *op) {
              * overflow the buffer.  IF so, send multiple item commands.
              */
             if (SockList_Avail(&sl) < MAXITEMLEN) {
-                Send_With_Handling(&pl->contr->socket, &sl);
+                Send_With_Handling(pl->contr->socket, &sl);
                 SockList_Reset(&sl);
                 SockList_AddString(&sl, "item2 ");
                 SockList_AddInt(&sl, op->count);
@@ -388,16 +388,16 @@ void esrv_send_inventory(object *pl, object *op) {
     } FOR_INV_FINISH();
     if (got_one) {
         /* special case: only one item, the "prev group" arrow */
-        if (pl != op && pl->contr->socket.container_position) {
+        if (pl != op && pl->contr->socket->container_position) {
             if (got_one > 1)
-                Send_With_Handling(&pl->contr->socket, &sl);
+                Send_With_Handling(pl->contr->socket, &sl);
             else {
                 /* view shifted, get to previous page and resend */
-                pl->contr->socket.container_position = MAX(0, pl->contr->socket.container_position - prev_len);
+                pl->contr->socket->container_position = MAX(0, pl->contr->socket->container_position - prev_len);
                 esrv_send_inventory(pl, op);
             }
         } else
-            Send_With_Handling(&pl->contr->socket, &sl);
+            Send_With_Handling(pl->contr->socket, &sl);
     }
     SockList_Term(&sl);
 }
@@ -463,8 +463,8 @@ void esrv_update_item(int flags, object *pl, object *op) {
     }
 
     if (flags&UPD_FACE) {
-        if (!(pl->contr->socket.faces_sent[op->face->number]&NS_FACESENT_FACE))
-            esrv_send_face(&pl->contr->socket, op->face, 0);
+        if (!(pl->contr->socket->faces_sent[op->face->number]&NS_FACESENT_FACE))
+            esrv_send_face(pl->contr->socket, op->face, 0);
         SockList_AddInt(&sl, op->face->number);
     }
     if (flags&UPD_NAME) {
@@ -510,7 +510,7 @@ void esrv_update_item(int flags, object *pl, object *op) {
     if (flags&UPD_NROF)
         SockList_AddInt(&sl, op->nrof);
 
-    Send_With_Handling(&pl->contr->socket, &sl);
+    Send_With_Handling(pl->contr->socket, &sl);
     SockList_Term(&sl);
 }
 
@@ -529,7 +529,7 @@ void esrv_send_item(object *pl, object*op) {
          * be updated.
          */
         if (!op->env) {
-            pl->contr->socket.update_look = 1;
+            pl->contr->socket->update_look = 1;
             return;
         }
     }
@@ -540,16 +540,16 @@ void esrv_send_item(object *pl, object*op) {
     op = HEAD(op);
     SockList_AddInt(&sl, op->env ? op->env->count : 0);
 
-    add_object_to_socklist(&pl->contr->socket, &sl, op);
+    add_object_to_socklist(pl->contr->socket, &sl, op);
 
-    Send_With_Handling(&pl->contr->socket, &sl);
+    Send_With_Handling(pl->contr->socket, &sl);
     SET_FLAG(op, FLAG_CLIENT_SENT);
     SockList_Term(&sl);
 
     /* if the object is in an opened container, then it may shift the contents,
      * so resend everything */
     if (pl->contr != NULL && pl->container != NULL && op->env == pl->container)
-        pl->contr->socket.update_inventory = 1;
+        pl->contr->socket->update_inventory = 1;
 }
 
 /**
@@ -563,12 +563,12 @@ void esrv_del_item(player *pl, object *ob) {
     SockList_Init(&sl);
     SockList_AddString(&sl, "delitem ");
     SockList_AddInt(&sl, ob->count);
-    Send_With_Handling(&pl->socket, &sl);
+    Send_With_Handling(pl->socket, &sl);
     SockList_Term(&sl);
     /* if the object is in an opened container, then it may shift the contents,
      * so resend everything */
     if (pl->ob->container != NULL && ob->env == pl->ob->container)
-        pl->socket.update_inventory = 1;
+        pl->socket->update_inventory = 1;
 }
 
 /**************************************************************************
@@ -682,12 +682,12 @@ void apply_cmd(char *buf, int len, player *pl) {
     /* If the high bit is set, player applied a pseudo object. */
     if (tag&0x80000000) {
         if (pl->ob->container != NULL) {
-            pl->socket.container_position = tag&0x7fffffff;
+            pl->socket->container_position = tag&0x7fffffff;
             esrv_send_inventory(pl->ob, pl->ob->container);
-            pl->socket.update_inventory = 0;
+            pl->socket->update_inventory = 0;
         } else {
-            pl->socket.look_position = tag&0x7fffffff;
-            pl->socket.update_look = 1;
+            pl->socket->look_position = tag&0x7fffffff;
+            pl->socket->update_look = 1;
         }
         return;
     }
@@ -876,7 +876,7 @@ void look_at_cmd(char *buf, int len, player *pl) {
         return;
     }
 
-    if (pl->blocked_los[dx+(pl->socket.mapx/2)][dy+(pl->socket.mapy/2)]) {
+    if (pl->blocked_los[dx+(pl->socket->mapx/2)][dy+(pl->socket->mapy/2)]) {
         draw_ext_info(NDI_UNIQUE, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_FAILURE,
                       "You can't see there from where you're standing.");
         return;

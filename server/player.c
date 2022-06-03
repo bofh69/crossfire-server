@@ -121,7 +121,7 @@ player* find_player_socket(const socket_struct *ns) {
     player *pl;
 
     for (pl = first_player; pl != NULL; pl = pl->next) {
-        if (&pl->socket == ns)
+        if (pl->socket == ns)
             return pl;
     }
     return NULL;
@@ -286,7 +286,7 @@ player *get_player(player *p) {
     if (!p) {
         player *tmp;
 
-        p = (player *)malloc(sizeof(player));
+        p = (player *)calloc(1, sizeof(player));
         if (p == NULL)
             fatal(OUT_OF_MEMORY);
 
@@ -303,19 +303,6 @@ player *get_player(player *p) {
             tmp->next = p;
         else
             first_player = p;
-
-        p->next = NULL;
-        /* This only needs to be done on initial creation of player
-         * object.  the callers of get_player() will copy over the
-         * socket structure to p->socket, and if this is an existing
-         * player object, that has been done.  The call to
-         * roll_stats() below will try to send spell information to
-         * the client - if this is non zero (eg, garbage from not
-         * being cleared), that will cause problems.  So just clear
-         * it, and no spell data is sent.
-         */
-        p->socket.monitor_spells = 0;
-        p->socket.account_chars = 0;
     } else {
         /* Only needed when reusing existing player. */
         clear_player(p);
@@ -386,9 +373,6 @@ player *get_player(player *p) {
     }
     p->last_stats.exp = -1;
     p->last_weight = (uint32_t)-1;
-
-    p->socket.update_look = 0;
-    p->socket.look_position = 0;
     return p;
 }
 
@@ -417,12 +401,16 @@ void set_first_map(object *op) {
  * @param ns
  * the socket structure to copy.
  */
-static void set_player_socket(player *p, socket_struct *ns) {
-    if (p->socket.account_chars) {
-        account_char_free(p->socket.account_chars);
+void set_player_socket(player *p, socket_struct *ns) {
+    if (p->socket && p->socket->account_chars) {
+        account_char_free(p->socket->account_chars);
     }
 
-    memcpy(&p->socket, ns, sizeof(socket_struct));
+    p->socket = malloc(sizeof(socket_struct));
+    if (!p->socket) {
+        fatal(OUT_OF_MEMORY);
+    }
+    memcpy(p->socket, ns, sizeof(socket_struct));
 
     /* The memcpy above copies the reference to faces sent.  So we need to clear
      * that pointer in ns, otherwise we get a double free.
@@ -432,14 +420,14 @@ static void set_player_socket(player *p, socket_struct *ns) {
     ns->account_name = strdup_local("");
     ns->account_chars = NULL;   // If not NULL, the reference is now kept by p
 
-    if (p->socket.faces_sent == NULL)
+    if (p->socket->faces_sent == NULL)
         fatal(OUT_OF_MEMORY);
 
     /* Needed because the socket we just copied over needs to be cleared.
      * Note that this can result in a client reset if there is partial data
      * on the incoming socket.
      */
-    SockList_ResetRead(&p->socket.inbuf);
+    SockList_ResetRead(&p->socket->inbuf);
 
 
 }
@@ -464,8 +452,8 @@ player *add_player(socket_struct *ns, int flags) {
     player *p;
 
     p = get_player(NULL);
-    ns->status = Ns_Avail;
     set_player_socket(p, ns);
+    ns->status = Ns_Avail;
 
     CLEAR_FLAG(p->ob, FLAG_FRIENDLY);
 
@@ -872,7 +860,7 @@ void give_initial_items(object *pl, treasurelist *items) {
  */
 void get_name(object *op) {
     player_set_state(op->contr, ST_GET_NAME);
-    send_query(&op->contr->socket, 0, i18n(op, "What is your name?\n:"));
+    send_query(op->contr->socket, 0, i18n(op, "What is your name?\n:"));
 }
 
 /**
@@ -883,7 +871,7 @@ void get_name(object *op) {
  */
 void get_password(object *op) {
     player_set_state(op->contr, ST_GET_PASSWORD);
-    send_query(&op->contr->socket, CS_QUERY_HIDEINPUT, i18n(op, "What is your password?\n:"));
+    send_query(op->contr->socket, CS_QUERY_HIDEINPUT, i18n(op, "What is your password?\n:"));
 }
 
 /**
@@ -895,7 +883,7 @@ void get_password(object *op) {
 void play_again(object *op) {
     SockList sl;
 
-    op->contr->socket.status = Ns_Add;
+    op->contr->socket->status = Ns_Add;
     player_set_state(op->contr, ST_PLAY_AGAIN);
     op->chosen_skill = NULL;
 
@@ -903,8 +891,8 @@ void play_again(object *op) {
      * For old clients, ask if they want to play again.
      * For clients with account support, just return to character seletion (see below).
      */
-    if (op->contr->socket.login_method == 0) {
-        send_query(&op->contr->socket, CS_QUERY_SINGLECHAR, i18n(op, "Do you want to play again (a/q)?"));
+    if (op->contr->socket->login_method == 0) {
+        send_query(op->contr->socket, CS_QUERY_SINGLECHAR, i18n(op, "Do you want to play again (a/q)?"));
     }
     /* a bit of a hack, but there are various places early in th
      * player creation process that a user can quit (eg, roll
@@ -929,10 +917,10 @@ void play_again(object *op) {
     SockList_AddInt(&sl, 0);
     SockList_AddChar(&sl, 0);
 
-    Send_With_Handling(&op->contr->socket, &sl);
+    Send_With_Handling(op->contr->socket, &sl);
     SockList_Term(&sl);
 
-    if (op->contr->socket.login_method > 0) {
+    if (op->contr->socket->login_method > 0) {
         receive_play_again(op, 'a');
     }
 }
@@ -963,7 +951,7 @@ void receive_play_again(object *op, char key) {
         op->contr->password[0] = '~';
         FREE_AND_CLEAR_STR(op->name);
         FREE_AND_CLEAR_STR(op->name_pl);
-        if (pl->socket.login_method >= 1 && pl->socket.account_name != NULL) {
+        if (pl->socket->login_method >= 1 && pl->socket->account_name != NULL) {
             /* If we are using new login, we send the
              * list of characters to the client - this should
              * result in the client popping up this list so
@@ -972,7 +960,7 @@ void receive_play_again(object *op, char key) {
              * If the account_name is NULL, it means the client
              * says it uses account but started playing without logging in.
              */
-            send_account_players(&pl->socket);
+            send_account_players(pl->socket);
             player_set_state(pl, ST_GET_NAME);
         } else {
             /* Lets put a space in here */
@@ -997,7 +985,7 @@ void receive_play_again(object *op, char key) {
  */
 void confirm_password(object *op) {
     player_set_state(op->contr, ST_CONFIRM_PASSWORD);
-    send_query(&op->contr->socket, CS_QUERY_HIDEINPUT, i18n(op, "Please type your password again.\n:"));
+    send_query(op->contr->socket, CS_QUERY_HIDEINPUT, i18n(op, "Please type your password again.\n:"));
 }
 
 /**
@@ -1017,7 +1005,7 @@ int get_party_password(object *op, partylist *party) {
 
     player_set_state(op->contr, ST_GET_PARTY_PASSWORD);
     op->contr->party_to_join = party;
-    send_query(&op->contr->socket, CS_QUERY_HIDEINPUT, i18n(op, "What is the password?\n:"));
+    send_query(op->contr->socket, CS_QUERY_HIDEINPUT, i18n(op, "What is the password?\n:"));
     return 1;
 }
 
@@ -1127,7 +1115,7 @@ void roll_stats(object *op) {
  */
 void roll_again(object *op) {
     esrv_new_player(op->contr, 0);
-    send_query(&op->contr->socket, CS_QUERY_SINGLECHAR, i18n(op, "<y> to roll new stats <n> to use stats\n<1-7> <1-7> to swap stats.\nRoll again (y/n/1-7)?  "));
+    send_query(op->contr->socket, CS_QUERY_SINGLECHAR, i18n(op, "<y> to roll new stats <n> to use stats\n<1-7> <1-7> to swap stats.\nRoll again (y/n/1-7)?  "));
 }
 
 /**
@@ -1219,7 +1207,7 @@ void key_roll_stat(object *op, char key) {
         } else
             swap_stat(op, stat_trans[keynum]);
 
-        send_query(&op->contr->socket, CS_QUERY_SINGLECHAR, "");
+        send_query(op->contr->socket, CS_QUERY_SINGLECHAR, "");
         return;
     }
     switch (key) {
@@ -1234,7 +1222,7 @@ void key_roll_stat(object *op, char key) {
         SET_ANIMATION(op, 2);     /* So player faces south */
         /* Enter exit adds a player otherwise */
         add_statbonus(op);
-        send_query(&op->contr->socket, CS_QUERY_SINGLECHAR, i18n(op, "Now choose a character.\nPress any key to change outlook.\nPress `d' when you're pleased.\n"));
+        send_query(op->contr->socket, CS_QUERY_SINGLECHAR, i18n(op, "Now choose a character.\nPress any key to change outlook.\nPress `d' when you're pleased.\n"));
         player_set_state(op->contr, ST_CHANGE_CLASS);
         if (op->msg)
             draw_ext_info(NDI_BLUE, 0, op,
@@ -1245,7 +1233,7 @@ void key_roll_stat(object *op, char key) {
     case 'y':
     case 'Y':
         roll_stats(op);
-        send_query(&op->contr->socket, CS_QUERY_SINGLECHAR, "");
+        send_query(op->contr->socket, CS_QUERY_SINGLECHAR, "");
         return;
 
     case 'q':
@@ -1254,7 +1242,7 @@ void key_roll_stat(object *op, char key) {
         return;
 
     default:
-        send_query(&op->contr->socket, CS_QUERY_SINGLECHAR, i18n(op, "Yes, No, Quit or 1-6.  Roll again?"));
+        send_query(op->contr->socket, CS_QUERY_SINGLECHAR, i18n(op, "Yes, No, Quit or 1-6.  Roll again?"));
         return;
     }
     return;
@@ -1292,7 +1280,7 @@ void key_change_class(object *op, char key) {
         events_execute_global_event(EVENT_BORN, op);
 
         /* We then generate a LOGIN event */
-        events_execute_global_event(EVENT_LOGIN, op->contr, op->contr->socket.host);
+        events_execute_global_event(EVENT_LOGIN, op->contr, op->contr->socket->host);
         player_set_state(op->contr, ST_PLAYING);
 
         object_set_msg(op, NULL);
@@ -1389,7 +1377,7 @@ void key_change_class(object *op, char key) {
     if (op->msg)
         draw_ext_info(NDI_BLUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_NEWPLAYER,
                       op->msg);
-    send_query(&op->contr->socket, CS_QUERY_SINGLECHAR, i18n(op, "Press any key for the next race.\nPress `d' to play this race.\n"));
+    send_query(op->contr->socket, CS_QUERY_SINGLECHAR, i18n(op, "Press any key for the next race.\nPress `d' to play this race.\n"));
 }
 
 /**
@@ -1542,7 +1530,7 @@ int apply_race_and_class(object *op, archetype *race, archetype *opclass, living
     events_execute_global_event(EVENT_BORN, op);
 
     /* We then generate a LOGIN event */
-    events_execute_global_event(EVENT_LOGIN, op->contr, op->contr->socket.host);
+    events_execute_global_event(EVENT_LOGIN, op->contr, op->contr->socket->host);
 
     object_set_msg(op, NULL);
 
@@ -1623,14 +1611,14 @@ void key_confirm_quit(object *op, char key) {
     delete_character(op->name);
 
     /* Remove player from account list and send back data if needed */
-    if (op->contr->socket.account_chars != NULL) {
-        account_char_remove(op->contr->socket.account_chars, op->name);
-        account_char_save(op->contr->socket.account_chars);
+    if (op->contr->socket->account_chars != NULL) {
+        account_char_remove(op->contr->socket->account_chars, op->name);
+        account_char_save(op->contr->socket->account_chars);
         /* char information is reloaded in send_account_players below */
-        account_char_free(op->contr->socket.account_chars);
-        op->contr->socket.account_chars = NULL;
-        account_remove_player(op->contr->socket.account_name, op->name);
-        send_account_players(&op->contr->socket);
+        account_char_free(op->contr->socket->account_chars);
+        op->contr->socket->account_chars = NULL;
+        account_remove_player(op->contr->socket->account_name, op->name);
+        send_account_players(op->contr->socket);
     }
 
     play_again(op);
@@ -2860,9 +2848,9 @@ static int turn_one_transport(object *transport, object *captain, int dir) {
                 pl->map = transport->map;
                 pl->x = x;
                 pl->y = y;
-                esrv_map_scroll(&pl->contr->socket, freearr_x[scroll_dir], freearr_y[scroll_dir]);
-                pl->contr->socket.update_look = 1;
-                pl->contr->socket.look_position = 0;
+                esrv_map_scroll(pl->contr->socket, freearr_x[scroll_dir], freearr_y[scroll_dir]);
+                pl->contr->socket->update_look = 1;
+                pl->contr->socket->look_position = 0;
             }
         } FOR_INV_FINISH();
     }
@@ -3838,7 +3826,7 @@ static void kill_player_permadeath(object *op) {
          * Put the account name under slaying.
          * Does not seem to cause weird effects, but more testing may ensure this.
          */
-        snprintf(ac_buf, sizeof(ac_buf), "%s", op->contr->socket.account_name);
+        snprintf(ac_buf, sizeof(ac_buf), "%s", op->contr->socket->account_name);
         FREE_AND_COPY(tmp->slaying, ac_buf);
         object_insert_in_map_at(tmp, map, NULL, 0, x, y);
     }
@@ -4141,9 +4129,9 @@ int player_can_view(object *pl, object *op) {
          * code, so we need to restrict ourselves to that range of values
          * for any meaningful values.
          */
-        if (FABS(dx) <= (pl->contr->socket.mapx/2)
-        && FABS(dy) <= (pl->contr->socket.mapy/2)
-        && !pl->contr->blocked_los[dx+(pl->contr->socket.mapx/2)][dy+(pl->contr->socket.mapy/2)])
+        if (FABS(dx) <= (pl->contr->socket->mapx/2)
+        && FABS(dy) <= (pl->contr->socket->mapy/2)
+        && !pl->contr->blocked_los[dx+(pl->contr->socket->mapx/2)][dy+(pl->contr->socket->mapy/2)])
             return 1;
         op = op->more;
     }

@@ -1514,7 +1514,7 @@ void object_update(object *op, int action) {
             /* If update_look is set, we're going to send this entire space
              * to the client, so no reason to send face information now.
              */
-            if (!pl->contr->socket.update_look) {
+            if (!pl->contr->socket->update_look) {
                 esrv_update_item(UPD_FACE, pl, op);
             }
         }
@@ -1983,7 +1983,7 @@ void object_remove(object *op) {
                 CLEAR_FLAG(op, FLAG_APPLIED);
                 tmp->container = NULL;
             }
-            tmp->contr->socket.update_look = 1;
+            tmp->contr->socket->update_look = 1;
         }
         /* See if player moving off should effect something */
         if (check_walk_off
@@ -2514,7 +2514,7 @@ object *object_insert_in_map(object *op, mapstruct *m, object *originator, int f
         tmp = floor ? floor : GET_MAP_OB(op->map, op->x, op->y);
         FOR_OB_AND_ABOVE_PREPARE(tmp)
             if (tmp->type == PLAYER)
-                tmp->contr->socket.update_look = 1;
+                tmp->contr->socket->update_look = 1;
         FOR_OB_AND_ABOVE_FINISH();
 
         /* If this object glows, it may affect lighting conditions that are
@@ -2708,7 +2708,7 @@ object *object_decrease_nrof(object *op, uint32_t i) {
 
             FOR_MAP_PREPARE(op->map, op->x, op->y, pl)
                 if (pl->contr) {
-                    pl->contr->socket.update_look = 1;
+                    pl->contr->socket->update_look = 1;
                     break;
                 }
             FOR_MAP_FINISH();
@@ -2785,7 +2785,7 @@ static void object_increase_nrof(object *op, uint32_t i) {
 
         FOR_MAP_PREPARE(op->map, op->x, op->y, pl)
             if (pl->contr) {
-                pl->contr->socket.update_look = 1;
+                pl->contr->socket->update_look = 1;
                 break;
             }
         FOR_MAP_FINISH();

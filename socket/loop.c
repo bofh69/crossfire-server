@@ -515,7 +515,7 @@ bool connection_alive(socket_struct socket) {
  */
 static void send_delayed_buffers(player *pl) {
     for (uint8_t buf = 0; buf < pl->delayed_buffers_used; buf++) {
-        Send_With_Handling(&pl->socket, pl->delayed_buffers[buf]);
+        Send_With_Handling(pl->socket, pl->delayed_buffers[buf]);
     }
     pl->delayed_buffers_used = 0;
 }
@@ -537,12 +537,12 @@ static void send_updates(player *pl) {
      * valid, so don't do it here.
      */
     draw_client_map(pl->ob);
-    if (pl->socket.update_look)
+    if (pl->socket->update_look)
         esrv_draw_look(pl->ob);
-    if (pl->socket.update_inventory) {
+    if (pl->socket->update_inventory) {
         if (pl->ob->container != NULL)
             esrv_send_inventory(pl->ob, pl->ob->container);
-        pl->socket.update_inventory = 0;
+        pl->socket->update_inventory = 0;
     }
 }
 
@@ -586,12 +586,12 @@ void do_server(void) {
      */
     player *pl, *next;
     for (pl = first_player; pl != NULL; ) {
-        if (pl->socket.status != Ns_Dead && !is_fd_valid(pl->socket.fd)) {
-            LOG(llevError, "do_server: invalid file descriptor for player %s [%s]: %d\n", (pl->ob && pl->ob->name) ? pl->ob->name : "(unnamed player?)", (pl->socket.host) ? pl->socket.host : "(unknown ip?)", pl->socket.fd);
-            pl->socket.status = Ns_Dead;
+        if (pl->socket->status != Ns_Dead && !is_fd_valid(pl->socket->fd)) {
+            LOG(llevError, "do_server: invalid file descriptor for player %s [%s]: %d\n", (pl->ob && pl->ob->name) ? pl->ob->name : "(unnamed player?)", (pl->socket->host) ? pl->socket->host : "(unknown ip?)", pl->socket->fd);
+            pl->socket->status = Ns_Dead;
         }
 
-        if (pl->socket.status == Ns_Dead) {
+        if (pl->socket->status == Ns_Dead) {
             player *npl = pl->next;
 
             save_player(pl->ob, 0);
@@ -599,8 +599,8 @@ void do_server(void) {
             final_free_player(pl);
             pl = npl;
         } else {
-            FD_SET((uint32_t)pl->socket.fd, &tmp_read);
-            FD_SET((uint32_t)pl->socket.fd, &tmp_exceptions);
+            FD_SET((uint32_t)pl->socket->fd, &tmp_read);
+            FD_SET((uint32_t)pl->socket->fd, &tmp_exceptions);
             pl = pl->next;
         }
     }
@@ -650,17 +650,17 @@ void do_server(void) {
         /* This does roughly the same thing, but for the players now */
         for (pl = first_player; pl != NULL; pl = next) {
             next = pl->next;
-            if (pl->socket.status == Ns_Dead)
+            if (pl->socket->status == Ns_Dead)
                 continue;
 
-            if (FD_ISSET(pl->socket.fd, &tmp_exceptions)) {
+            if (FD_ISSET(pl->socket->fd, &tmp_exceptions)) {
                 save_player(pl->ob, 0);
                 leave(pl, 1);
                 final_free_player(pl);
             } else {
-                bool keep_processing = handle_client(&pl->socket, pl);
+                bool keep_processing = handle_client(pl->socket, pl);
                 if (!keep_processing) {
-                    FD_CLR(pl->socket.fd, &tmp_read);
+                    FD_CLR(pl->socket->fd, &tmp_read);
                 }
 
                 /* There seems to be rare cases where next points to a removed/freed player.
@@ -679,7 +679,7 @@ void do_server(void) {
                  * need to call leave again, as it has already been called
                  * once.
                  */
-                if (pl->socket.status == Ns_Dead) {
+                if (pl->socket->status == Ns_Dead) {
                     save_player(pl->ob, 0);
                     leave(pl, 1);
                     final_free_player(pl);
@@ -703,14 +703,14 @@ void update_players() {
         send_updates(pl);
         /* Increment time since last contact only if logged in. */
         if (pl->state == ST_PLAYING) {
-            pl->socket.last_tick++;
+            pl->socket->last_tick++;
 
-            if (!connection_alive(pl->socket)) {
+            if (!connection_alive(*pl->socket)) {
                 // TODO: Handle a lost client connection.
                 LOG(llevDebug, "Lost client connection!\n");
             }
 
-            if (pl->socket.tick)
+            if (pl->socket->tick)
                 send_tick(pl);
         }
     }

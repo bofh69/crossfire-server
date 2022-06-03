@@ -124,7 +124,7 @@ void draw_ext_info(
         SockList *sl = player_get_delayed_buffer(pl->contr);
         do_print_ext(sl, flags & NDI_COLOR_MASK, type, subtype, flags&NDI_NO_TRANSLATE ? message : i18n(pl, message));
     } else {
-        print_ext_msg(&pl->contr->socket, flags&NDI_COLOR_MASK, type, subtype, flags&NDI_NO_TRANSLATE ? message : i18n(pl, message));
+        print_ext_msg(pl->contr->socket, flags&NDI_COLOR_MASK, type, subtype, flags&NDI_NO_TRANSLATE ? message : i18n(pl, message));
     }
 }
 
@@ -515,6 +515,6 @@ void draw_magic_map(object *pl) {
         } /* x loop */
     } /* y loop */
 
-    Send_With_Handling(&pl->contr->socket, &sl);
+    Send_With_Handling(pl->contr->socket, &sl);
     SockList_Term(&sl);
 }

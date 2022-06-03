@@ -616,8 +616,8 @@ player *account_get_logged_in_player(const char *name)
     player *pl;
 
     for (pl = first_player; pl; pl=pl->next) {
-        if (pl->socket.account_name &&
-            !strcasecmp(pl->socket.account_name, name)) return pl;
+        if (pl->socket->account_name &&
+            !strcasecmp(pl->socket->account_name, name)) return pl;
     }
     return NULL;
 }

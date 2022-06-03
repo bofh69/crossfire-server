@@ -588,7 +588,7 @@ void list_players(object *op, region *reg, partylist *party) {
             if (QUERY_FLAG(pl->ob, FLAG_AFK))
                 num_afk++;
 
-            if (pl->socket.is_bot)
+            if (pl->socket->is_bot)
                 num_bot++;
         }
     }
@@ -728,7 +728,7 @@ static void get_who_escape_code_value(char *return_val, int size, const char let
         break;
 
     case 'b':
-        strlcpy(return_val, (pl->socket.is_bot == 1) ? " <BOT>" : "", size);
+        strlcpy(return_val, (pl->socket->is_bot == 1) ? " <BOT>" : "", size);
         break;
 
     case 'm':
@@ -748,7 +748,7 @@ static void get_who_escape_code_value(char *return_val, int size, const char let
         break;
 
     case 'i':
-        strlcpy(return_val, pl->socket.host, size);
+        strlcpy(return_val, pl->socket->host, size);
         break;
 
     case '%':
@@ -1890,7 +1890,7 @@ void command_delete(object *op, const char *params) {
         return;
     }
 
-    send_query(&op->contr->socket, CS_QUERY_SINGLECHAR,
+    send_query(op->contr->socket, CS_QUERY_SINGLECHAR,
                i18n(op, "Quitting will delete your character.\nAre you sure you want to delete your character (y/n):"));
 
     player_set_state(op->contr, ST_CONFIRM_QUIT);
@@ -1906,12 +1906,12 @@ void command_delete(object *op, const char *params) {
  */
 void command_sound(object *op, const char *params) {
     (void)params;
-    if (!(op->contr->socket.sound&SND_MUTE)) {
-        op->contr->socket.sound = op->contr->socket.sound|SND_MUTE;
+    if (!(op->contr->socket->sound&SND_MUTE)) {
+        op->contr->socket->sound = op->contr->socket->sound|SND_MUTE;
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
                       "Sounds are turned off.");
     } else {
-        op->contr->socket.sound = op->contr->socket.sound&~SND_MUTE;
+        op->contr->socket->sound = op->contr->socket->sound&~SND_MUTE;
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
                       "The sounds are enabled.");
     }
@@ -1967,8 +1967,8 @@ void receive_player_password(object *op, const char *password) {
     /* With currently clients, not sure if this is really the case - MSW */
     draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE, "          ");
 
-    if (checkbanned(op->name, op->contr->socket.host)) {
-        LOG(llevInfo, "Banned player tried to add: [%s@%s]\n", op->name, op->contr->socket.host);
+    if (checkbanned(op->name, op->contr->socket->host)) {
+        LOG(llevInfo, "Banned player tried to add: [%s@%s]\n", op->name, op->contr->socket->host);
         draw_ext_info(NDI_UNIQUE|NDI_RED, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
                       "You are not allowed to play.");
         get_name(op);
@@ -1982,7 +1982,7 @@ void receive_player_password(object *op, const char *password) {
             get_name(op);
             return;
         }
-        LOG(llevInfo, "LOGIN: New player named %s from ip %s\n", op->name, op->contr->socket.host);
+        LOG(llevInfo, "LOGIN: New player named %s from ip %s\n", op->name, op->contr->socket->host);
         display_motd(op);
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
                       "\nWelcome, Brave New Warrior!\n");
@@ -1997,7 +1997,7 @@ void receive_player_password(object *op, const char *password) {
                           "You entered the wrong current password.");
             player_set_state(op->contr, ST_PLAYING);
         } else {
-            send_query(&op->contr->socket, CS_QUERY_HIDEINPUT, i18n(op, "Please enter your new password, or blank to cancel:"));
+            send_query(op->contr->socket, CS_QUERY_HIDEINPUT, i18n(op, "Please enter your new password, or blank to cancel:"));
             player_set_state(op->contr, ST_CHANGE_PASSWORD_NEW);
         }
         return;
@@ -2006,7 +2006,7 @@ void receive_player_password(object *op, const char *password) {
     if (op->contr->state == ST_CHANGE_PASSWORD_NEW) {
         safe_strncpy(op->contr->new_password, newhash(password),
                 sizeof(op->contr->new_password));
-        send_query(&op->contr->socket, CS_QUERY_HIDEINPUT,
+        send_query(op->contr->socket, CS_QUERY_HIDEINPUT,
                 i18n(op, "Please confirm your new password, or blank to cancel:"));
         player_set_state(op->contr, ST_CHANGE_PASSWORD_CONFIRM);
         return;
@@ -2237,8 +2237,8 @@ void command_kill_pets(object *op, const char *params) {
 void command_passwd(object *pl, const char *params) {
     (void)params;
     /* If old client, this is the way you change your password. */
-    if (pl->contr->socket.login_method < 1){
-        send_query(&pl->contr->socket, CS_QUERY_HIDEINPUT, i18n(pl, "Password change.\nPlease enter your current password, or empty string to cancel."));
+    if (pl->contr->socket->login_method < 1){
+        send_query(pl->contr->socket, CS_QUERY_HIDEINPUT, i18n(pl, "Password change.\nPlease enter your current password, or empty string to cancel."));
 
         player_set_state(pl->contr, ST_CHANGE_PASSWORD_OLD);
     }

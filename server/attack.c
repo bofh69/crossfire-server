@@ -1631,7 +1631,7 @@ static int kill_object(object *op, int dam, object *hitter) {
             strftime(buf, sizeof(buf), "%a %b %d %H:%M:%S %Y", tmv);
             query_name(op, name, MAX_BUF);
 
-            LOG(llevInfo, "%s PLAYER_KILL_PLAYER: %s (%s) killed %s\n", buf, owner->name, owner->contr->socket.host, name);
+            LOG(llevInfo, "%s PLAYER_KILL_PLAYER: %s (%s) killed %s\n", buf, owner->name, owner->contr->socket->host, name);
         }
 
         /* try to filter some things out - basically, if you are

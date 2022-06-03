@@ -979,7 +979,7 @@ static knowledge_player *knowledge_get_or_create(const player *pl) {
     knowledge_global = cur;
     /* read knowledge for this player */
     knowledge_read_player_data(cur);
-    if (pl->socket.notifications < 2)
+    if (pl->socket->notifications < 2)
         cur->sent_up_to = -1;
     return cur;
 }
@@ -1400,7 +1400,7 @@ void knowledge_send_info(socket_struct *ns) {
 void knowledge_send_known(player *pl) {
     knowledge_player *kp;
 
-    if (pl->socket.notifications < 2)
+    if (pl->socket->notifications < 2)
         return;
 
     /* merely loading the knowledge will mark it as to be sent through knowledge_process_incremental(),
@@ -1492,15 +1492,15 @@ void knowledge_process_incremental(void) {
             size = 4 + (2 + strlen(item->handler->type)) + (2 + strlen(title)) + 4;
 
             if (SockList_Avail(&sl) < size) {
-                Send_With_Handling(&pl->socket, &sl);
+                Send_With_Handling(pl->socket, &sl);
                 SockList_Reset(&sl);
                 SockList_AddString(&sl, "addknowledge ");
             }
 
             SockList_AddInt(&sl, i + 1);
             SockList_AddLen16Data(&sl, item->handler->type, strlen(item->handler->type));
-            if (face != NULL && !(pl->socket.faces_sent[face->number]&NS_FACESENT_FACE))
-                esrv_send_face(&pl->socket, face, 0);
+            if (face != NULL && !(pl->socket->faces_sent[face->number]&NS_FACESENT_FACE))
+                esrv_send_face(pl->socket, face, 0);
             SockList_AddLen16Data(&sl, title, strlen(title));
             SockList_AddInt(&sl, face ? face->number : 0);
 
@@ -1509,7 +1509,7 @@ void knowledge_process_incremental(void) {
 
         cur->sent_up_to = last;
 
-        Send_With_Handling(&pl->socket, &sl);
+        Send_With_Handling(pl->socket, &sl);
         SockList_Term(&sl);
 
         /* don't send more this tick */

@@ -1047,7 +1047,7 @@ void put_object_in_sack(object *op, object *sack, object *tmp, uint32_t nrof) {
     if (sack->type == TRANSPORT) {
         FOR_INV_PREPARE(sack, tmp)
             if (tmp->type == PLAYER)
-                tmp->contr->socket.update_look = 1;
+                tmp->contr->socket->update_look = 1;
         FOR_INV_FINISH();
     } else {
         /* update the sacks weight */
@@ -1334,7 +1334,7 @@ void command_dropall(object *op, const char *params) {
             }
         } FOR_INV_FINISH();
     }
-    op->contr->socket.update_look = 1;
+    op->contr->socket->update_look = 1;
     CLEAR_FLAG(op, FLAG_NO_FIX_PLAYER);
     /* call it now, once */
     fix_object(op);

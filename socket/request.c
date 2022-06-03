@@ -514,7 +514,7 @@ void new_player_cmd(uint8_t *buf, int len, player *pl) {
     else
         time = (int)(MAX_TIME/FABS(pl->ob->speed));
     SockList_AddInt(&sl, time);
-    Send_With_Handling(&pl->socket, &sl);
+    Send_With_Handling(pl->socket, &sl);
     SockList_Term(&sl);
 }
 
@@ -745,7 +745,7 @@ static void send_extra_stats(SockList *sl, player *pl) {
     uint32_t uflags = 0;
     const char *god = "none";
 
-    if (pl->socket.notifications < 3) {
+    if (pl->socket->notifications < 3) {
         return;
     }
 
@@ -787,7 +787,7 @@ static void send_extra_stats(SockList *sl, player *pl) {
 
     AddIfInt(pl->last_character_flags, uflags, sl, CS_STAT_CHARACTER_FLAGS);
     AddIfFloat(pl->last_character_load, pl->character_load, sl, CS_STAT_OVERLOAD);
-    AddIfString(pl->socket.stats.god, god, sl, CS_STAT_GOD_NAME);
+    AddIfString(pl->socket->stats.god, god, sl, CS_STAT_GOD_NAME);
     AddIfShort(pl->last_item_power, pl->item_power, sl, CS_STAT_ITEM_POWER);
 }
 
@@ -821,7 +821,7 @@ void esrv_update_stats(player *pl) {
         AddIfShort(pl->last_stats.Con, pl->ob->stats.Con, &sl, CS_STAT_CON);
         AddIfShort(pl->last_stats.Cha, pl->ob->stats.Cha, &sl, CS_STAT_CHA);
     }
-    if (pl->socket.extended_stats) {
+    if (pl->socket->extended_stats) {
         int16_t golem_hp, golem_maxhp;
         AddIfShort(pl->last_orig_stats.Str, pl->orig_stats.Str, &sl, CS_STAT_BASE_STR);
         AddIfShort(pl->last_orig_stats.Int, pl->orig_stats.Int, &sl, CS_STAT_BASE_INT);
@@ -901,7 +901,7 @@ void esrv_update_stats(player *pl) {
         flags |= SF_RUNON;
 
     AddIfShort(pl->last_flags, flags, &sl, CS_STAT_FLAGS);
-    if (pl->socket.sc_version < 1025) {
+    if (pl->socket->sc_version < 1025) {
         AddIfShort(pl->last_resist[ATNR_PHYSICAL], pl->ob->resist[ATNR_PHYSICAL], &sl, CS_STAT_ARMOUR);
     } else {
         int i;
@@ -913,16 +913,16 @@ void esrv_update_stats(player *pl) {
             AddIfShort(pl->last_resist[i], pl->ob->resist[i], &sl, (char)atnr_cs_stat[i]);
         }
     }
-    if (pl->socket.monitor_spells) {
+    if (pl->socket->monitor_spells) {
         AddIfInt(pl->last_path_attuned, pl->ob->path_attuned, &sl, CS_STAT_SPELL_ATTUNE);
         AddIfInt(pl->last_path_repelled, pl->ob->path_repelled, &sl, CS_STAT_SPELL_REPEL);
         AddIfInt(pl->last_path_denied, pl->ob->path_denied, &sl, CS_STAT_SPELL_DENY);
     }
     /* we want to use the new fire & run system in new client */
     rangetostring(pl->ob, buf, sizeof(buf));
-    AddIfString(pl->socket.stats.range, buf, &sl, CS_STAT_RANGE);
+    AddIfString(pl->socket->stats.range, buf, &sl, CS_STAT_RANGE);
     set_title(pl->ob, buf, sizeof(buf));
-    AddIfString(pl->socket.stats.title, buf, &sl, CS_STAT_TITLE);
+    AddIfString(pl->socket->stats.title, buf, &sl, CS_STAT_TITLE);
 
     send_extra_stats(&sl, pl);
 
@@ -931,7 +931,7 @@ void esrv_update_stats(player *pl) {
 #ifdef ESRV_DEBUG
         LOG(llevDebug, "Sending stats command, %d bytes long.\n", sl.len);
 #endif
-        Send_With_Handling(&pl->socket, &sl);
+        Send_With_Handling(pl->socket, &sl);
     }
     SockList_Term(&sl);
 }
@@ -944,8 +944,8 @@ void esrv_new_player(player *pl, uint32_t weight) {
 
     pl->last_weight = weight;
 
-    if (!(pl->socket.faces_sent[pl->ob->face->number]&NS_FACESENT_FACE))
-        esrv_send_face(&pl->socket, pl->ob->face, 0);
+    if (!(pl->socket->faces_sent[pl->ob->face->number]&NS_FACESENT_FACE))
+        esrv_send_face(pl->socket, pl->ob->face, 0);
 
     SockList_Init(&sl);
     SockList_AddString(&sl, "player ");
@@ -954,7 +954,7 @@ void esrv_new_player(player *pl, uint32_t weight) {
     SockList_AddInt(&sl, pl->ob->face->number);
     SockList_AddLen8Data(&sl, pl->ob->name, strlen(pl->ob->name));
 
-    Send_With_Handling(&pl->socket, &sl);
+    Send_With_Handling(pl->socket, &sl);
     SockList_Term(&sl);
     SET_FLAG(pl->ob, FLAG_CLIENT_SENT);
 }
@@ -1373,10 +1373,10 @@ static void draw_client_map2(object *pl) {
     startlen = sl.len;
 
     /* Handle map scroll */
-    if (plyr->socket.map_scroll_x || plyr->socket.map_scroll_y) {
-        coord = MAP2_COORD_ENCODE(plyr->socket.map_scroll_x, plyr->socket.map_scroll_y, 1);
-        plyr->socket.map_scroll_x = 0;
-        plyr->socket.map_scroll_y = 0;
+    if (plyr->socket->map_scroll_x || plyr->socket->map_scroll_y) {
+        coord = MAP2_COORD_ENCODE(plyr->socket->map_scroll_x, plyr->socket->map_scroll_y, 1);
+        plyr->socket->map_scroll_x = 0;
+        plyr->socket->map_scroll_y = 0;
         SockList_AddShort(&sl, coord);
     }
 
@@ -1386,10 +1386,10 @@ static void draw_client_map2(object *pl) {
     /* We could do this logic as conditionals in the if statement,
      * but that started to get a bit messy to look at.
      */
-    min_x = pl->x-plyr->socket.mapx/2;
-    min_y = pl->y-plyr->socket.mapy/2;
-    max_x = pl->x+(plyr->socket.mapx+1)/2+MAX_HEAD_OFFSET;
-    max_y = pl->y+(plyr->socket.mapy+1)/2+MAX_HEAD_OFFSET;
+    min_x = pl->x-plyr->socket->mapx/2;
+    min_y = pl->y-plyr->socket->mapy/2;
+    max_x = pl->x+(plyr->socket->mapx+1)/2+MAX_HEAD_OFFSET;
+    max_y = pl->y+(plyr->socket->mapy+1)/2+MAX_HEAD_OFFSET;
 
     /* x, y are the real map locations. ax, ay are viewport relative
      * locations.
@@ -1403,8 +1403,8 @@ static void draw_client_map2(object *pl) {
              * handle big images - if they extend to a viewable
              * portion, we need to send just the lower right corner.
              */
-            if (ax >= plyr->socket.mapx || ay >= plyr->socket.mapy) {
-                check_space_for_heads(ax, ay, &sl, &plyr->socket);
+            if (ax >= plyr->socket->mapx || ay >= plyr->socket->mapy) {
+                check_space_for_heads(ax, ay, &sl, plyr->socket);
             } else {
                 /* This space is within the viewport of the client. Due
                  * to walls or darkness, it may still not be visible.
@@ -1433,19 +1433,19 @@ static void draw_client_map2(object *pl) {
                      * If the space is out of the map, it shouldn't
                      * have a head.
                      */
-                    if (plyr->socket.lastmap.cells[ax][ay].darkness != 0) {
+                    if (plyr->socket->lastmap.cells[ax][ay].darkness != 0) {
                         SockList_AddShort(&sl, coord);
                         SockList_AddChar(&sl, MAP2_TYPE_CLEAR);
                         SockList_AddChar(&sl, 255); /* Termination byte */
                         // Reduce dereferences by passing the inner array offset instead of address of value
-                        map_clearcell(plyr->socket.lastmap.cells[ax] + ay, 0, 0);
+                        map_clearcell(plyr->socket->lastmap.cells[ax] + ay, 0, 0);
                     }
                 } else if (d >= MAX_LIGHT_RADII) {
                     /* This block deals with spaces that are not
                      * visible due to darkness or walls. Still
                      * need to send the heads for this space.
                      */
-                    check_space_for_heads(ax, ay, &sl, &plyr->socket);
+                    check_space_for_heads(ax, ay, &sl, plyr->socket);
                 } else {
                     int have_darkness = 0, has_obj = 0, got_one = 0, del_one = 0, g1, alive_layer = -1, old_got;
 
@@ -1468,9 +1468,9 @@ static void draw_client_map2(object *pl) {
                     SockList_AddShort(&sl, coord);
 
                     /* Darkness changed */
-                    if (plyr->socket.lastmap.cells[ax][ay].darkness != d
-                    && plyr->socket.darkness) {
-                        plyr->socket.lastmap.cells[ax][ay].darkness = d;
+                    if (plyr->socket->lastmap.cells[ax][ay].darkness != d
+                    && plyr->socket->darkness) {
+                        plyr->socket->lastmap.cells[ax][ay].darkness = d;
                         /* Darkness tag & length*/
                         SockList_AddChar(&sl, MAP2_TYPE_DARKNESS|1<<5);
                         SockList_AddChar(&sl, 255-d*(256/MAX_LIGHT_RADII));
@@ -1491,11 +1491,11 @@ static void draw_client_map2(object *pl) {
                         if (ob) {
                             g1 = has_obj;
                             old_got = got_one;
-                            got_one += map2_add_ob(ax, ay, layer, ob, &sl, &plyr->socket, &has_obj, 0);
+                            got_one += map2_add_ob(ax, ay, layer, ob, &sl, plyr->socket, &has_obj, 0);
 
                             /* if we added the face, or it is a monster's head, check probe spell */
                             if (got_one != old_got || (ob->head == NULL && ob->more))
-                                got_one += annotate_ob(ax, ay, ob, &sl, &plyr->socket, &has_obj, &alive_layer);
+                                got_one += annotate_ob(ax, ay, ob, &sl, plyr->socket, &has_obj, &alive_layer);
 
                             /* If we are just storing away the head
                              * for future use, then effectively this
@@ -1503,14 +1503,14 @@ static void draw_client_map2(object *pl) {
                              * it if needed.
                              */
                             if (g1 == has_obj) {
-                                del_one += map2_delete_layer(ax, ay, layer, &sl, &plyr->socket);
+                                del_one += map2_delete_layer(ax, ay, layer, &sl, plyr->socket);
                             } else if (ob->head == NULL) {
                                 /* for single-part items */
-                                got_one += annotate_ob(ax, ay, ob, &sl, &plyr->socket, &has_obj, &alive_layer);
+                                got_one += annotate_ob(ax, ay, ob, &sl, plyr->socket, &has_obj, &alive_layer);
                             }
                         } else {
                             if (layer != alive_layer)
-                                del_one += map2_delete_layer(ax, ay, layer, &sl, &plyr->socket);
+                                del_one += map2_delete_layer(ax, ay, layer, &sl, plyr->socket);
                         }
                     }
                     /* If nothing to do for this space, we
@@ -1530,7 +1530,7 @@ static void draw_client_map2(object *pl) {
                         SockList_AddChar(&sl, MAP2_TYPE_CLEAR);
                         SockList_AddChar(&sl, 255); /* Termination byte */
                         // Reduce dereferences by passing the inner array offset instead of address of value
-                        map_clearcell(plyr->socket.lastmap.cells[ax] + ay, 0, 0);
+                        map_clearcell(plyr->socket->lastmap.cells[ax] + ay, 0, 0);
                     } else {
                         SockList_AddChar(&sl, 255); /* Termination byte */
                     }
@@ -1541,7 +1541,7 @@ static void draw_client_map2(object *pl) {
 
     /* Only send this if there are in fact some differences. */
     if (sl.len > startlen) {
-        Send_With_Handling(&plyr->socket, &sl);
+        Send_With_Handling(plyr->socket, &sl);
     }
     SockList_Term(&sl);
 }
@@ -1577,10 +1577,10 @@ void draw_client_map(object *pl) {
      * This block just makes sure all the spaces are properly
      * updated in terms of what they look like.
      */
-    min_x = pl->x-pl->contr->socket.mapx/2;
-    min_y = pl->y-pl->contr->socket.mapy/2;
-    max_x = pl->x+(pl->contr->socket.mapx+1)/2;
-    max_y = pl->y+(pl->contr->socket.mapy+1)/2;
+    min_x = pl->x-pl->contr->socket->mapx/2;
+    min_y = pl->y-pl->contr->socket->mapy/2;
+    max_x = pl->x+(pl->contr->socket->mapx+1)/2;
+    max_y = pl->y+(pl->contr->socket->mapy+1)/2;
     for (j = min_y; j < max_y; j++) {
         for (i = min_x; i < max_x; i++) {
             ax = i;
@@ -1653,7 +1653,7 @@ void send_plugin_custom_message(object *pl, char *buf) {
 
     SockList_Init(&sl);
     SockList_AddString(&sl, buf);
-    Send_With_Handling(&pl->contr->socket, &sl);
+    Send_With_Handling(pl->contr->socket, &sl);
     SockList_Term(&sl);
 }
 
@@ -1667,7 +1667,7 @@ void esrv_update_spells(player *pl) {
     int flags = 0;
     client_spell *spell_info;
 
-    if (!pl->socket.monitor_spells)
+    if (!pl->socket || !pl->socket->monitor_spells)
         return;
 
     /* Handles problem at login, where this is called from fix_object
@@ -1707,7 +1707,7 @@ void esrv_update_spells(player *pl) {
                 if (flags&UPD_SP_DAMAGE)
                     SockList_AddShort(&sl, spell_info->last_dam);
                 flags = 0;
-                Send_With_Handling(&pl->socket, &sl);
+                Send_With_Handling(pl->socket, &sl);
                 SockList_Term(&sl);
             }
         }
@@ -1721,13 +1721,13 @@ void esrv_remove_spell(player *pl, object *spell) {
         LOG(llevError, "Invalid call to esrv_remove_spell\n");
         return;
     }
-    if (!pl->socket.monitor_spells)
+    if (!pl->socket->monitor_spells)
         return;
 
     SockList_Init(&sl);
     SockList_AddString(&sl, "delspell ");
     SockList_AddInt(&sl, spell->count);
-    Send_With_Handling(&pl->socket, &sl);
+    Send_With_Handling(pl->socket, &sl);
     SockList_Term(&sl);
 }
 
@@ -1740,12 +1740,12 @@ void esrv_remove_spell(player *pl, object *spell) {
 void esrv_send_pickup(player *pl) {
     SockList sl;
 
-    if (!pl->socket.want_pickup)
+    if (!pl->socket->want_pickup)
         return;
     SockList_Init(&sl);
     SockList_AddString(&sl, "pickup ");
     SockList_AddInt(&sl, pl->mode);
-    Send_With_Handling(&pl->socket, &sl);
+    Send_With_Handling(pl->socket, &sl);
     SockList_Term(&sl);
 }
 
@@ -1790,8 +1790,8 @@ static void append_spell(player *pl, SockList *sl, object *spell) {
         return;
     }
 
-    if (spell->face && !(pl->socket.faces_sent[spell->face->number]&NS_FACESENT_FACE))
-        esrv_send_face(&pl->socket, spell->face, 0);
+    if (spell->face && !(pl->socket->faces_sent[spell->face->number]&NS_FACESENT_FACE))
+        esrv_send_face(pl->socket, spell->face, 0);
 
     spell_info = get_client_spell_state(pl, spell);
     SockList_AddInt(sl, spell->count);
@@ -1830,7 +1830,7 @@ static void append_spell(player *pl, SockList *sl, object *spell) {
 
     /* Extended spell information available if the client wants it.
      */
-    if (pl->socket.monitor_spells >= 2) {
+    if (pl->socket->monitor_spells >= 2) {
         /* spellmon 2
          */
         sstring req = object_get_value(spell, "casting_requirements");
@@ -1861,7 +1861,7 @@ void esrv_add_spells(player *pl, object *spell) {
         return;
     }
 
-    if (!pl->socket.monitor_spells)
+    if (!pl->socket->monitor_spells)
         return;
 
     SockList_Init(&sl);
@@ -1881,13 +1881,13 @@ void esrv_add_spells(player *pl, object *spell) {
              * and restart packet formation.
              */
             size = 26+strlen(spell->name)+(spell->msg ? strlen(spell->msg) : 0);
-            if (pl->socket.monitor_spells >= 2) {
+            if (pl->socket->monitor_spells >= 2) {
                 /** @todo casting_requirements should be a constant somewhere */
                 value = object_get_value(spell, "casting_requirements");
                 size += 2 + (value ? strlen(value) : 0);
             }
             if (SockList_Avail(&sl) < size) {
-                Send_With_Handling(&pl->socket, &sl);
+                Send_With_Handling(pl->socket, &sl);
                 SockList_Reset(&sl);
                 SockList_AddString(&sl, "addspell ");
             }
@@ -1899,7 +1899,7 @@ void esrv_add_spells(player *pl, object *spell) {
     } else
         append_spell(pl, &sl, spell);
     /* finally, we can send the packet */
-    Send_With_Handling(&pl->socket, &sl);
+    Send_With_Handling(pl->socket, &sl);
     SockList_Term(&sl);
 }
 
@@ -1922,12 +1922,12 @@ void send_tick(player *pl) {
     SockList_AddString(&sl, "tick ");
     SockList_AddInt(&sl, pticks);
     tmp = 1;
-    if (setsockopt(pl->socket.fd, IPPROTO_TCP, TCP_NODELAY, &tmp, sizeof(tmp)))
+    if (setsockopt(pl->socket->fd, IPPROTO_TCP, TCP_NODELAY, &tmp, sizeof(tmp)))
         LOG(llevError, "send_tick: Unable to turn on TCP_NODELAY\n");
 
-    Send_With_Handling(&pl->socket, &sl);
+    Send_With_Handling(pl->socket, &sl);
     tmp = 0;
-    if (setsockopt(pl->socket.fd, IPPROTO_TCP, TCP_NODELAY, &tmp, sizeof(tmp)))
+    if (setsockopt(pl->socket->fd, IPPROTO_TCP, TCP_NODELAY, &tmp, sizeof(tmp)))
         LOG(llevError, "send_tick: Unable to turn off TCP_NODELAY\n");
     SockList_Term(&sl);
 }
@@ -2504,7 +2504,7 @@ void account_play_cmd(char *buf, int len, socket_struct *ns)
     }
 
     for (pl = first_player; pl; pl = pl->next) {
-        if (pl->ob && &pl->socket != ns && strcmp(buf, pl->ob->name) == 0) {
+        if (pl->ob && pl->socket != ns && strcmp(buf, pl->ob->name) == 0) {
             SockList_AddPrintf(&sl,
                                "failure accountplay Character %s is already playing",
                                buf);
@@ -2521,7 +2521,7 @@ void account_play_cmd(char *buf, int len, socket_struct *ns)
      * we don't need to make a new player object, etc.
      */
     for (pl=first_player; pl; pl=pl->next) {
-        if (&pl->socket == ns) {
+        if (pl->socket == ns) {
             /* The player still in the socket must be saved first. */
             save_player(pl->ob, 0);
             break;
@@ -2534,11 +2534,10 @@ void account_play_cmd(char *buf, int len, socket_struct *ns)
      */
     if (!pl) {
         pl = get_player(NULL);
+        set_player_socket(pl, ns);
         ns->status = Ns_Avail;
-        memcpy(&pl->socket, ns, sizeof(socket_struct));
-        ns->faces_sent = NULL;
         ns->account_chars = NULL;
-        SockList_ResetRead(&pl->socket.inbuf);
+        SockList_ResetRead(&pl->socket->inbuf);
     } else {
         pl->state = ST_PLAYING;
     }
@@ -2662,7 +2661,7 @@ void create_player_cmd(char *buf, int len, socket_struct *ns)
      * we don't need to make a new player object, etc.
      */
     for (pl=first_player; pl; pl=pl->next)
-      if (&pl->socket == ns) {
+      if (pl->socket == ns) {
         if (pl->ob->name) {
           if (!strcmp(pl->ob->name, name)) {
               /* For some reason not only the socket is the same but also
@@ -2962,7 +2961,7 @@ void create_player_cmd(char *buf, int len, socket_struct *ns)
             ob_apply(op, pl->ob, 0);
     }
 
-    LOG(llevInfo, "new character %s from %s\n", pl->ob->name, pl->ob->contr->socket.host);
+    LOG(llevInfo, "new character %s from %s\n", pl->ob->name, pl->ob->contr->socket->host);
     draw_ext_info_format(NDI_UNIQUE | NDI_ALL | NDI_DK_ORANGE, 5, NULL,
                          MSG_TYPE_ADMIN, MSG_TYPE_ADMIN_PLAYER,
                          "%s has entered the game.", pl->ob->name);

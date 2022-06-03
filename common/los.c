@@ -176,8 +176,8 @@ static void set_wall(player *pl, int x, int y) {
      * Assume the mapsize will not change mid-drawing. This seemed to work in my testing
      * Daniel Hawkins 2019-12-03
      */
-    const int map_sock_x = (MAP_CLIENT_X-pl->socket.mapx)>>1,
-              map_sock_y = (MAP_CLIENT_Y-pl->socket.mapy)>>1;
+    const int map_sock_x = (MAP_CLIENT_X-pl->socket->mapx)>>1,
+              map_sock_y = (MAP_CLIENT_Y-pl->socket->mapy)>>1;
     for (int i = 0; i < at->index; i++) {
         int dx = at->x[i], dy = at->y[i];
 
@@ -189,8 +189,8 @@ static void set_wall(player *pl, int x, int y) {
         x = dx-map_sock_x;
         y = dy-map_sock_y;
 
-        if (x < 0 || x >= pl->socket.mapx
-        || y < 0 || y >= pl->socket.mapy
+        if (x < 0 || x >= pl->socket->mapx
+        || y < 0 || y >= pl->socket->mapy
         /* If already set to 100, we probably hit this space through recursion already. */
         || pl->blocked_los[x][y] == 100)
             continue;
@@ -221,13 +221,13 @@ static void check_wall(object *op, int x, int y) {
         return;
 
     /* ax, ay are coordinates as indexed into the look window */
-    ax = x-(MAP_CLIENT_X-op->contr->socket.mapx)/2;
-    ay = y-(MAP_CLIENT_Y-op->contr->socket.mapy)/2;
+    ax = x-(MAP_CLIENT_X-op->contr->socket->mapx)/2;
+    ay = y-(MAP_CLIENT_Y-op->contr->socket->mapy)/2;
 
     /* If the converted coordinates are outside the viewable
      * area for the client, return now.
      */
-    if (ax < 0 || ay < 0 || ax >= op->contr->socket.mapx || ay >= op->contr->socket.mapy)
+    if (ax < 0 || ay < 0 || ax >= op->contr->socket->mapx || ay >= op->contr->socket->mapy)
         return;
 
     /* If this space is already blocked, prune the processing - presumably
@@ -272,12 +272,12 @@ void clear_los(player *pl) {
 static void expand_sight(object *op) {
     int i, x, y, dx, dy;
 
-    for (x = 1; x < op->contr->socket.mapx-1; x++) /* loop over inner squares */
-        for (y = 1; y < op->contr->socket.mapy-1; y++) {
+    for (x = 1; x < op->contr->socket->mapx-1; x++) /* loop over inner squares */
+        for (y = 1; y < op->contr->socket->mapy-1; y++) {
             if (!op->contr->blocked_los[x][y]
             && !(get_map_flags(op->map, NULL,
-                    op->x-op->contr->socket.mapx/2+x,
-                    op->y-op->contr->socket.mapy/2+y,
+                    op->x-op->contr->socket->mapx/2+x,
+                    op->y-op->contr->socket->mapy/2+y,
                     NULL, NULL)&(P_BLOCKSVIEW|P_OUT_OF_MAP))) {
                 for (i = 1; i <= 8; i += 1) { /* mark all directions */
                     dx = x+freearr_x[i];
@@ -293,8 +293,8 @@ static void expand_sight(object *op) {
 
 
     /* clear mark squares */
-    for (x = 0; x < op->contr->socket.mapx; x++)
-        for (y = 0; y < op->contr->socket.mapy; y++)
+    for (x = 0; x < op->contr->socket->mapx; x++)
+        for (y = 0; y < op->contr->socket->mapy; y++)
             if (op->contr->blocked_los[x][y] < 0)
                 op->contr->blocked_los[x][y] = 0;
 }
@@ -353,8 +353,8 @@ static void expand_lighted_sight(object *op) {
     }
 
     /* First, limit player furthest (unlighted) vision */
-    for (x = 0; x < op->contr->socket.mapx; x++)
-        for (y = 0; y < op->contr->socket.mapy; y++)
+    for (x = 0; x < op->contr->socket->mapx; x++)
+        for (y = 0; y < op->contr->socket->mapy; y++)
             if (op->contr->blocked_los[x][y] != 100)
                 op->contr->blocked_los[x][y] = MAX_LIGHT_RADII;
 
@@ -364,10 +364,10 @@ static void expand_lighted_sight(object *op) {
      * array.  Its easier to just increment them here (and start with the right
      * value) than to recalculate them down below.
      */
-    for (x = (op->x-op->contr->socket.mapx/2-MAX_LIGHT_RADII), basex = -MAX_LIGHT_RADII;
-            x <= (op->x+op->contr->socket.mapx/2+MAX_LIGHT_RADII); x++, basex++) {
-        for (y = (op->y-op->contr->socket.mapy/2-MAX_LIGHT_RADII), basey = -MAX_LIGHT_RADII;
-                y <= (op->y+op->contr->socket.mapy/2+MAX_LIGHT_RADII); y++, basey++) {
+    for (x = (op->x-op->contr->socket->mapx/2-MAX_LIGHT_RADII), basex = -MAX_LIGHT_RADII;
+            x <= (op->x+op->contr->socket->mapx/2+MAX_LIGHT_RADII); x++, basex++) {
+        for (y = (op->y-op->contr->socket->mapy/2-MAX_LIGHT_RADII), basey = -MAX_LIGHT_RADII;
+                y <= (op->y+op->contr->socket->mapy/2+MAX_LIGHT_RADII); y++, basey++) {
             m = op->map;
             nx = x;
             ny = y;
@@ -383,10 +383,10 @@ static void expand_lighted_sight(object *op) {
             light = GET_MAP_LIGHT(m, nx, ny);
             if (light != 0) {
                 for (ax = basex-light; ax <= basex+light; ax++) {
-                    if (ax < 0 || ax >= op->contr->socket.mapx)
+                    if (ax < 0 || ax >= op->contr->socket->mapx)
                         continue;
                     for (ay = basey-light; ay <= basey+light; ay++) {
-                        if (ay < 0 || ay >= op->contr->socket.mapy)
+                        if (ay < 0 || ay >= op->contr->socket->mapy)
                             continue;
 
                         /* If the space is fully blocked, do nothing.  Otherwise, we
@@ -414,20 +414,20 @@ static void expand_lighted_sight(object *op) {
      * a dungeon, so let the player at least see a little around themselves
      */
     if (op->map->outdoor && darklevel > (MAX_DARKNESS-3)) {
-        if (op->contr->blocked_los[op->contr->socket.mapx/2][op->contr->socket.mapy/2] > (MAX_DARKNESS-3))
-            op->contr->blocked_los[op->contr->socket.mapx/2][op->contr->socket.mapy/2] = MAX_DARKNESS-3;
+        if (op->contr->blocked_los[op->contr->socket->mapx/2][op->contr->socket->mapy/2] > (MAX_DARKNESS-3))
+            op->contr->blocked_los[op->contr->socket->mapx/2][op->contr->socket->mapy/2] = MAX_DARKNESS-3;
 
         for (x = -1; x <= 1; x++)
             for (y = -1; y <= 1; y++) {
-                if (op->contr->blocked_los[x+op->contr->socket.mapx/2][y+op->contr->socket.mapy/2] > (MAX_DARKNESS-2))
-                    op->contr->blocked_los[x+op->contr->socket.mapx/2][y+op->contr->socket.mapy/2] = MAX_DARKNESS-2;
+                if (op->contr->blocked_los[x+op->contr->socket->mapx/2][y+op->contr->socket->mapy/2] > (MAX_DARKNESS-2))
+                    op->contr->blocked_los[x+op->contr->socket->mapx/2][y+op->contr->socket->mapy/2] = MAX_DARKNESS-2;
             }
     }
     /*  grant some vision to the player, based on the darklevel */
     for (x = darklevel-MAX_DARKNESS; x < MAX_DARKNESS+1-darklevel; x++)
         for (y = darklevel-MAX_DARKNESS; y < MAX_DARKNESS+1-darklevel; y++)
-            if (!(op->contr->blocked_los[x+op->contr->socket.mapx/2][y+op->contr->socket.mapy/2] == 100))
-                op->contr->blocked_los[x+op->contr->socket.mapx/2][y+op->contr->socket.mapy/2] -= MAX(0, 6-darklevel-MAX(abs(x), abs(y)));
+            if (!(op->contr->blocked_los[x+op->contr->socket->mapx/2][y+op->contr->socket->mapy/2] == 100))
+                op->contr->blocked_los[x+op->contr->socket->mapx/2][y+op->contr->socket->mapy/2] -= MAX(0, 6-darklevel-MAX(abs(x), abs(y)));
 }
 
 /**
@@ -442,11 +442,11 @@ static void expand_lighted_sight(object *op) {
 static void blinded_sight(player *pl) {
     int x, y;
 
-    for (x = 0; x < pl->socket.mapx; x++)
-        for (y = 0; y <  pl->socket.mapy; y++)
+    for (x = 0; x < pl->socket->mapx; x++)
+        for (y = 0; y <  pl->socket->mapy; y++)
             pl->blocked_los[x][y] = 100;
 
-    pl->blocked_los[pl->socket.mapx/2][pl->socket.mapy/2] = 0;
+    pl->blocked_los[pl->socket->mapx/2][pl->socket->mapy/2] = 0;
 }
 
 /**
@@ -457,7 +457,7 @@ static void blinded_sight(player *pl) {
  * player's object for which to compute.
  */
 void update_los(object *op) {
-    int dx = op->contr->socket.mapx/2, dy = op->contr->socket.mapy/2, x, y;
+    int dx = op->contr->socket->mapx/2, dy = op->contr->socket->mapy/2, x, y;
 
     if (QUERY_FLAG(op, FLAG_REMOVED))
         return;
@@ -471,8 +471,8 @@ void update_los(object *op) {
      * be blocked by different spaces in front, this mean that a lot of spaces
      * could be examined multile times, as each path would be looked at.
      */
-    for (x = (MAP_CLIENT_X-op->contr->socket.mapx)/2+1; x < (MAP_CLIENT_X+op->contr->socket.mapx)/2-1; x++)
-        for (y = (MAP_CLIENT_Y-op->contr->socket.mapy)/2+1; y < (MAP_CLIENT_Y+op->contr->socket.mapy)/2-1; y++)
+    for (x = (MAP_CLIENT_X-op->contr->socket->mapx)/2+1; x < (MAP_CLIENT_X+op->contr->socket->mapx)/2-1; x++)
+        for (y = (MAP_CLIENT_Y-op->contr->socket->mapy)/2+1; y < (MAP_CLIENT_Y+op->contr->socket->mapy)/2-1; y++)
             check_wall(op, x, y);
 
 
@@ -553,8 +553,8 @@ void update_all_los(const mapstruct *map, int x, int y) {
          * some.
          */
         if (pl->ob->map == map) {
-            if ((abs(pl->ob->x-x) <= pl->socket.mapx/2)
-            && (abs(pl->ob->y-y) <= pl->socket.mapy/2))
+            if ((abs(pl->ob->x-x) <= pl->socket->mapx/2)
+            && (abs(pl->ob->y-y) <= pl->socket->mapy/2))
                 pl->do_los = 1;
         }
         /* Now we check to see if player is on adjacent
@@ -574,20 +574,20 @@ void update_all_los(const mapstruct *map, int x, int y) {
          * a distance.
          */
         else if (pl->ob->map == map->tile_map[0]) {
-            if ((abs(pl->ob->x-x) <= pl->socket.mapx/2)
-            && (abs(y+MAP_HEIGHT(map->tile_map[0])-pl->ob->y) <= pl->socket.mapy/2))
+            if ((abs(pl->ob->x-x) <= pl->socket->mapx/2)
+            && (abs(y+MAP_HEIGHT(map->tile_map[0])-pl->ob->y) <= pl->socket->mapy/2))
                 pl->do_los = 1;
         } else if (pl->ob->map == map->tile_map[2]) {
-            if ((abs(pl->ob->x-x) <= pl->socket.mapx/2)
-            && (abs(pl->ob->y+MAP_HEIGHT(map)-y) <= pl->socket.mapy/2))
+            if ((abs(pl->ob->x-x) <= pl->socket->mapx/2)
+            && (abs(pl->ob->y+MAP_HEIGHT(map)-y) <= pl->socket->mapy/2))
                 pl->do_los = 1;
         } else if (pl->ob->map == map->tile_map[1]) {
-            if ((abs(pl->ob->x+MAP_WIDTH(map)-x) <= pl->socket.mapx/2)
-            && (abs(pl->ob->y-y) <= pl->socket.mapy/2))
+            if ((abs(pl->ob->x+MAP_WIDTH(map)-x) <= pl->socket->mapx/2)
+            && (abs(pl->ob->y-y) <= pl->socket->mapy/2))
                 pl->do_los = 1;
         } else if (pl->ob->map == map->tile_map[3]) {
-            if ((abs(x+MAP_WIDTH(map->tile_map[3])-pl->ob->x) <= pl->socket.mapx/2)
-            && (abs(pl->ob->y-y) <= pl->socket.mapy/2))
+            if ((abs(x+MAP_WIDTH(map->tile_map[3])-pl->ob->x) <= pl->socket->mapx/2)
+            && (abs(pl->ob->y-y) <= pl->socket->mapy/2))
                 pl->do_los = 1;
         }
     }
@@ -608,14 +608,14 @@ void print_los(object *op) {
     char buf[MAP_CLIENT_X*2+20], buf2[10];
 
     snprintf(buf, sizeof(buf), "[fixed]   ");
-    for (x = 0; x < op->contr->socket.mapx; x++) {
+    for (x = 0; x < op->contr->socket->mapx; x++) {
         snprintf(buf2, sizeof(buf2), "%2d", x);
         strncat(buf, buf2, sizeof(buf)-strlen(buf)-1);
     }
     draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_DEBUG, buf);
-    for (y = 0; y < op->contr->socket.mapy; y++) {
+    for (y = 0; y < op->contr->socket->mapy; y++) {
         snprintf(buf, sizeof(buf), "[fixed]%2d:", y);
-        for (x = 0; x < op->contr->socket.mapx; x++) {
+        for (x = 0; x < op->contr->socket->mapx; x++) {
             snprintf(buf2, sizeof(buf2), " %1d", op->contr->blocked_los[x][y] == 100 ? 1 : 0);
             strncat(buf, buf2, sizeof(buf)-strlen(buf)-1);
         }
@@ -638,11 +638,11 @@ void make_sure_seen(const object *op) {
 
     for (pl = first_player; pl; pl = pl->next)
         if (pl->ob->map == op->map
-        && pl->ob->y-pl->socket.mapy/2 <= op->y
-        && pl->ob->y+pl->socket.mapy/2 >= op->y
-        && pl->ob->x-pl->socket.mapx/2 <= op->x
-        && pl->ob->x+pl->socket.mapx/2 >= op->x)
-            pl->blocked_los[pl->socket.mapx/2+op->x-pl->ob->x][pl->socket.mapy/2+op->y-pl->ob->y] = 0;
+        && pl->ob->y-pl->socket->mapy/2 <= op->y
+        && pl->ob->y+pl->socket->mapy/2 >= op->y
+        && pl->ob->x-pl->socket->mapx/2 <= op->x
+        && pl->ob->x+pl->socket->mapx/2 >= op->x)
+            pl->blocked_los[pl->socket->mapx/2+op->x-pl->ob->x][pl->socket->mapy/2+op->y-pl->ob->y] = 0;
 }
 
 /**
@@ -661,9 +661,9 @@ void make_sure_not_seen(const object *op) {
 
     for (pl = first_player; pl; pl = pl->next)
         if (pl->ob->map == op->map
-        && pl->ob->y-pl->socket.mapy/2 <= op->y
-        && pl->ob->y+pl->socket.mapy/2 >= op->y
-        && pl->ob->x-pl->socket.mapx/2 <= op->x
-        && pl->ob->x+pl->socket.mapx/2 >= op->x)
+        && pl->ob->y-pl->socket->mapy/2 <= op->y
+        && pl->ob->y+pl->socket->mapy/2 >= op->y
+        && pl->ob->x-pl->socket->mapx/2 <= op->x
+        && pl->ob->x+pl->socket->mapx/2 >= op->x)
             pl->do_los = 1;
 }

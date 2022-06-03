@@ -269,16 +269,16 @@ int save_player(object *op, int flag) {
     /* Update information on this character.  Only do it if it is eligible for
      * for saving.
      */
-    if (pl->socket.account_name) {
-        account_char_add(pl->socket.account_chars, pl);
-        account_char_save(pl->socket.account_chars);
+    if (pl->socket->account_name) {
+        account_char_add(pl->socket->account_chars, pl);
+        account_char_save(pl->socket->account_chars);
         /* Add this character to the account.  This really only comes up
          * for new characters, at which time we want to wait until save -
          * otherwise there is a good chance that character will be
          * terminated.
          */
         if (!account_get_account_for_char(pl->ob->name))
-            account_link(pl->socket.account_name, pl->ob->name);
+            account_link(pl->socket->account_name, pl->ob->name);
     }
 
 
@@ -493,16 +493,16 @@ static void wrong_password(object *op) {
     FREE_AND_COPY(op->name, "noname");
     FREE_AND_COPY(op->name_pl, "noname");
 
-    op->contr->socket.password_fails++;
-    if (op->contr->socket.password_fails >= MAX_PASSWORD_FAILURES) {
+    op->contr->socket->password_fails++;
+    if (op->contr->socket->password_fails >= MAX_PASSWORD_FAILURES) {
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_ADMIN, MSG_TYPE_ADMIN_LOGIN,
                       "You gave an incorrect password too many times, "
                       "you will now be dropped from the server.");
 
         LOG(llevInfo, "A player connecting from %s has been dropped for password failure\n",
-            op->contr->socket.host);
+            op->contr->socket->host);
 
-        op->contr->socket.status = Ns_Dead; /* the socket loop should handle the rest for us */
+        op->contr->socket->status = Ns_Dead; /* the socket loop should handle the rest for us */
     } else
         get_name(op);
 }
@@ -546,7 +546,7 @@ void check_login(object *op, const char *password) {
                  * as just a normal login is the safest and easiest thing to do.
                  */
 
-                pltmp->socket.status = Ns_Dead;
+                pltmp->socket->status = Ns_Dead;
 
                 save_player(pltmp->ob, 0);
                 leave(pltmp, 1);
@@ -783,7 +783,7 @@ void check_login(object *op, const char *password) {
 
     CLEAR_FLAG(op, FLAG_NO_FIX_PLAYER);
 
-    LOG(llevInfo, "login: %s from %s\n", op->name, op->contr->socket.host);
+    LOG(llevInfo, "login: %s from %s\n", op->name, op->contr->socket->host);
     strncpy(pl->title, op->arch->clone.name, sizeof(pl->title)-1);
     pl->title[sizeof(pl->title)-1] = '\0';
 
@@ -846,8 +846,8 @@ void check_login(object *op, const char *password) {
                          pl->ob->name);
     login_check_shutdown(op);
 
-    events_execute_global_event(EVENT_LOGIN, pl, pl->socket.host);
-    op->contr->socket.update_look = 1;
+    events_execute_global_event(EVENT_LOGIN, pl, pl->socket->host);
+    op->contr->socket->update_look = 1;
     /* If the player should be dead, call kill_player for them
      * Only check for hp - if player lacks food, let the normal
      * logic for that to take place.  If player is permanently

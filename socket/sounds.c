@@ -54,9 +54,9 @@ void play_sound_player_only(player *pl, int8_t sound_type, object *emitter, int 
     sstring name;
     object *source;
 
-    if (pl->socket.sound&SND_MUTE || !(pl->socket.sound&SND_EFFECTS))
+    if (pl->socket->sound&SND_MUTE || !(pl->socket->sound&SND_EFFECTS))
         return;
-    if (pl->socket.sounds_this_tick >= MAX_SOUNDS_TICK)
+    if (pl->socket->sounds_this_tick >= MAX_SOUNDS_TICK)
         return;
     if (!emitter->map && !(emitter->env && emitter->env->map))
         return;
@@ -72,7 +72,7 @@ void play_sound_player_only(player *pl, int8_t sound_type, object *emitter, int 
     // Downscale the volume by distance
     volume = distance ? volume / distance : volume;
 
-    pl->socket.sounds_this_tick++;
+    pl->socket->sounds_this_tick++;
 
     name = emitter->name;
     if (emitter->type == PLAYER) {
@@ -93,7 +93,7 @@ void play_sound_player_only(player *pl, int8_t sound_type, object *emitter, int 
     SockList_AddChar(&sl, sound_type);
     SockList_AddLen8Data(&sl, action, strlen(action));
     SockList_AddLen8Data(&sl, name, strlen(name));
-    Send_With_Handling(&pl->socket, &sl);
+    Send_With_Handling(pl->socket, &sl);
     SockList_Term(&sl);
 }
 
@@ -141,13 +141,13 @@ void play_sound_map(int8_t sound_type, object *emitter, int dir, const char *act
 void send_background_music(player *pl, const char *music) {
     SockList sl;
 
-    if (pl->socket.sound&SND_MUTE || !(pl->socket.sound&SND_MUSIC))
+    if (pl->socket->sound&SND_MUTE || !(pl->socket->sound&SND_MUSIC))
         return;
 
     SockList_Init(&sl);
     SockList_AddString(&sl, "music ");
     SockList_AddString(&sl, music == NULL ? "NONE" : music);
-    Send_With_Handling(&pl->socket, &sl);
+    Send_With_Handling(pl->socket, &sl);
     SockList_Term(&sl);
 }
 

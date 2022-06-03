@@ -412,12 +412,12 @@ int make_perma_dead(object *op) {
     /* Is this necessary? I'm not sure. It was in the code I found to use as an example */
     pl = get_player(pl);
     /* Make sure there is an account name to do things to */
-    if (!pl->socket.account_name) {
+    if (!pl->socket->account_name) {
         return 1;
     }
 
     /* Load the appropriate account for the action. */
-    chars = account_char_load(pl->socket.account_name);
+    chars = account_char_load(pl->socket->account_name);
 
     /* Find the right character. */
     for (ac = chars->chars; ac; ac = ac->next) {

@@ -630,7 +630,7 @@ static int attempt_jump(object *pl, int dir, int spaces, object *skill) {
                 pl->y = y;
                 pl->map = m;
                 if (pl->contr)
-                    esrv_map_scroll(&pl->contr->socket, dx, dy);
+                    esrv_map_scroll(pl->contr->socket, dx, dy);
                 stop_jump(pl);
                 return 1;
             }
@@ -639,7 +639,7 @@ static int attempt_jump(object *pl, int dir, int spaces, object *skill) {
         pl->y = y;
         pl->map = m;
         if (pl->contr)
-            esrv_map_scroll(&pl->contr->socket, dx, dy);
+            esrv_map_scroll(pl->contr->socket, dx, dy);
     }
     stop_jump(pl);
     return 1;

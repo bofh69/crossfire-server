@@ -125,9 +125,9 @@ static method_ret shop_mat_type_move_on(object *trap, object *victim, object *or
         else {
             object_remove(victim);
             rv = object_insert_in_map_at(victim, victim->map, trap, 0, victim->x+freearr_x[i], victim->y+freearr_y[i]) == NULL;
-            esrv_map_scroll(&victim->contr->socket, freearr_x[i], freearr_y[i]);
-            victim->contr->socket.update_look = 1;
-            victim->contr->socket.look_position = 0;
+            esrv_map_scroll(victim->contr->socket, freearr_x[i], freearr_y[i]);
+            victim->contr->socket->update_look = 1;
+            victim->contr->socket->look_position = 0;
         }
     }
     CLEAR_FLAG(victim, FLAG_NO_APPLY);

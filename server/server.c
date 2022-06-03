@@ -270,7 +270,7 @@ static void enter_map(object *op, mapstruct *newmap, int x, int y) {
         player_map_change_common(op, oldmap, newmap);
     }
 
-    map_newmap_cmd(&op->contr->socket);
+    map_newmap_cmd(op->contr->socket);
 }
 
 void player_map_change_common(object* op, mapstruct* const oldmap,
@@ -926,7 +926,7 @@ static void do_follow(player *pl) {
                 }
                 object_remove(pl->ob);
                 object_insert_in_map_at(pl->ob, followed->ob->map, NULL, 0, followed->ob->x+freearr_x[space], followed->ob->y+freearr_y[space]);
-                map_newmap_cmd(&pl->socket);
+                map_newmap_cmd(pl->socket);
                 player_update_bg_music(pl->ob);
             }
         } else {
@@ -1022,7 +1022,7 @@ static void process_players1(void) {
         if (pl->ob->weapon_speed_left > 1.0)
             pl->ob->weapon_speed_left = 1.0;
 
-        pl->socket.sounds_this_tick = 0;
+        pl->socket->sounds_this_tick = 0;
 
         if (settings.casting_time == TRUE) {
             if (pl->ob->casting_time > 0) {
@@ -1305,8 +1305,8 @@ void leave(player *pl, int draw_exit) {
         object_remove(pl->ob);
     }
 
-    pl->socket.status = Ns_Dead;
-    LOG(llevInfo, "logout: %s from %s\n", pl->ob->name, pl->socket.host);
+    pl->socket->status = Ns_Dead;
+    LOG(llevInfo, "logout: %s from %s\n", pl->ob->name, pl->socket->host);
 
     strcpy(pl->ob->contr->killer, "left");
     hiscore_check(pl->ob, 1);

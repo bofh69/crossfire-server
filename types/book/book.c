@@ -123,7 +123,7 @@ static method_ret book_type_apply(object *op, object *applier, int aflags) {
         if (op->env)
             esrv_update_item(UPD_FLAGS|UPD_NAME, applier, op);
         else
-            applier->contr->socket.update_look = 1;
+            applier->contr->socket->update_look = 1;
     }
     return METHOD_OK;
 }

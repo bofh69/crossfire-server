@@ -421,6 +421,7 @@ void free_newsocket(socket_struct *ns) {
 #endif
     }
     ns->fd = -1;
+    FREE_AND_CLEAR(ns->faces_sent);
     if (ns->stats.range)
         FREE_AND_CLEAR(ns->stats.range);
     if (ns->stats.title)
@@ -446,8 +447,9 @@ void final_free_player(player *pl) {
 
     SockList_Init(&sl);
     SockList_AddString(&sl, "goodbye");
-    Send_With_Handling(&pl->socket, &sl);
+    Send_With_Handling(pl->socket, &sl);
     SockList_Term(&sl);
-    free_newsocket(&pl->socket);
+    free_newsocket(pl->socket);
+    free(pl->socket);
     free_player(pl);
 }

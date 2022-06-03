@@ -499,7 +499,7 @@ static void command_kick2(object *op, const char *params) {
             if (op->map)
                 op->map->timeout = MAP_TIMEOUT(op->map);
 #endif
-            pl->socket.status = Ns_Dead;
+            pl->socket->status = Ns_Dead;
         }
     }
 }
@@ -549,11 +549,11 @@ void command_banish(object *op, const char *params) {
      * Record this as a comment - then we don't have to worry about changing
      * the parsing code.
      */
-    fprintf(banishfile, "# %s (%s) banned by %s at %s\n", pl->ob->name, pl->socket.host, op->name, ctime(&now));
-    fprintf(banishfile, "*@%s\n", pl->socket.host);
+    fprintf(banishfile, "# %s (%s) banned by %s at %s\n", pl->ob->name, pl->socket->host, op->name, ctime(&now));
+    fprintf(banishfile, "*@%s\n", pl->socket->host);
     fclose(banishfile);
 
-    LOG(llevDebug, "! %s banned %s from IP: %s.\n", op->name, pl->ob->name, pl->socket.host);
+    LOG(llevDebug, "! %s banned %s from IP: %s.\n", op->name, pl->ob->name, pl->socket->host);
 
     draw_ext_info_format(NDI_UNIQUE|NDI_RED, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_DM,
                          "You banish %s",
@@ -1537,14 +1537,16 @@ void command_recollect(object *op, const char *params) {
 
     // Clear sent faces for connected sockets so that clients see new faces.
     for (int i = 0; i < socket_info.allocated_sockets; i++) {
+        /*
         if (init_sockets[i].status == Ns_Add) {
             reset_faces_sent(&init_sockets[i]);
         }
+        */
     }
 
     player *next;
     for (player *pl = first_player; pl != NULL; pl = next) {
-        reset_faces_sent(&pl->socket);
+        reset_faces_sent(pl->socket);
         next = pl->next;
     }
 }
@@ -2145,7 +2147,7 @@ static int do_wizard_dm(object *op, const char *params, int silent) {
         return 0;
     }
 
-    if (checkdm(op, op->name, (*params != '\0' ? params : "*"), op->contr->socket.host)) {
+    if (checkdm(op, op->name, (*params != '\0' ? params : "*"), op->contr->socket->host)) {
         SET_FLAG(op, FLAG_WIZ);
         SET_FLAG(op, FLAG_WAS_WIZ);
         SET_FLAG(op, FLAG_WIZPASS);

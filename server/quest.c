@@ -413,7 +413,7 @@ static void quest_set_state(player* dm, player *pl, sstring quest_code, int stat
         draw_ext_info(NDI_UNIQUE|NDI_DELAYED, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_QUESTS, step->step_description);
     }
 
-    if (pl->socket.notifications > 0) {
+    if (pl->socket->notifications > 0) {
         SockList *sl = player_get_delayed_buffer(pl);
 
         if (qs->sent_to_client) {
@@ -425,8 +425,8 @@ static void quest_set_state(player* dm, player *pl, sstring quest_code, int stat
         SockList_AddInt(sl, quest->client_code);
         if (qs->sent_to_client == 0) {
             SockList_AddLen16Data(sl, quest->quest_title, strlen(quest->quest_title));
-            if (quest->face && !(pl->socket.faces_sent[quest->face->number]&NS_FACESENT_FACE))
-                esrv_send_face(&pl->socket, quest->face, 0);
+            if (quest->face && !(pl->socket->faces_sent[quest->face->number]&NS_FACESENT_FACE))
+                esrv_send_face(pl->socket, quest->face, 0);
             SockList_AddInt(sl, quest->face ? quest->face->number : 0);
             SockList_AddChar(sl, quest->quest_restart ? 1 : 0);
             SockList_AddInt(sl, quest->parent ? quest->parent->client_code : 0);
@@ -933,7 +933,7 @@ void quest_send_initial_states(player *pl) {
     quest_definition *quest;
     quest_step_definition *step;
 
-    if (pl->socket.notifications < 1)
+    if (pl->socket->notifications < 1)
         return;
 
     states = get_or_create_quest(pl);
@@ -951,15 +951,15 @@ void quest_send_initial_states(player *pl) {
         size = 2 + (2 + strlen(quest->quest_title)) + 4 + 1 + (2 + (step != NULL ? strlen(step->step_description) : 0));
 
         if (SockList_Avail(&sl) < size) {
-            Send_With_Handling(&pl->socket, &sl);
+            Send_With_Handling(pl->socket, &sl);
             SockList_Reset(&sl);
             SockList_AddString(&sl, "addquest ");
         }
 
         SockList_AddInt(&sl, quest->client_code);
         SockList_AddLen16Data(&sl, quest->quest_title, strlen(quest->quest_title));
-        if (quest->face && !(pl->socket.faces_sent[quest->face->number]&NS_FACESENT_FACE))
-            esrv_send_face(&pl->socket, quest->face, 0);
+        if (quest->face && !(pl->socket->faces_sent[quest->face->number]&NS_FACESENT_FACE))
+            esrv_send_face(pl->socket, quest->face, 0);
         SockList_AddInt(&sl, quest->face ? quest->face->number : 0);
         SockList_AddChar(&sl, quest->quest_restart ? 1 : 0);
         SockList_AddInt(&sl, quest->parent ? quest->parent->client_code : 0);
@@ -972,7 +972,7 @@ void quest_send_initial_states(player *pl) {
         state->sent_to_client = 1;
     }
 
-    Send_With_Handling(&pl->socket, &sl);
+    Send_With_Handling(pl->socket, &sl);
     SockList_Term(&sl);
 }
 

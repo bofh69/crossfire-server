@@ -119,9 +119,9 @@ int move_ob(object *op, int dir, object *originator) {
 
     /* Hmmm.  Should be possible for multispace players now */
     if (op->type == PLAYER) {
-        esrv_map_scroll(&op->contr->socket, freearr_x[dir], freearr_y[dir]);
-        op->contr->socket.update_look = 1;
-        op->contr->socket.look_position = 0;
+        esrv_map_scroll(op->contr->socket, freearr_x[dir], freearr_y[dir]);
+        op->contr->socket->update_look = 1;
+        op->contr->socket->look_position = 0;
     } else if (op->type == TRANSPORT) {
         FOR_INV_PREPARE(op, pl)
             if (pl->type == PLAYER) {
@@ -129,9 +129,9 @@ int move_ob(object *op, int dir, object *originator) {
                 pl->map = op->map;
                 pl->x = op->x;
                 pl->y = op->y;
-                esrv_map_scroll(&pl->contr->socket, freearr_x[dir], freearr_y[dir]);
-                pl->contr->socket.update_look = 1;
-                pl->contr->socket.look_position = 0;
+                esrv_map_scroll(pl->contr->socket, freearr_x[dir], freearr_y[dir]);
+                pl->contr->socket->update_look = 1;
+                pl->contr->socket->look_position = 0;
             }
         FOR_INV_FINISH();
     }
@@ -175,7 +175,7 @@ int transfer_ob(object *op, int x, int y, int randomly, object *originator) {
     object_remove(op);
     op = object_insert_in_map_at(op, op->map, originator, 0, x+freearr_x[i], y+freearr_y[i]);
     if (op && op->type == PLAYER) {
-        map_newmap_cmd(&op->contr->socket);
+        map_newmap_cmd(op->contr->socket);
         player_update_bg_music(op);
         pets_attempt_follow(op, 1);
     }
@@ -273,7 +273,7 @@ int teleport(object *teleporter, uint8_t tele_type, object *user) {
 
     user = object_insert_in_map_at(user, other_teleporter->map, NULL, 0, other_teleporter->x+freearr_x[k], other_teleporter->y+freearr_y[k]);
     if (user && user->type == PLAYER) {
-        map_newmap_cmd(&user->contr->socket);
+        map_newmap_cmd(user->contr->socket);
         player_update_bg_music(user);
         pets_attempt_follow(user, 1);
     }
@@ -470,9 +470,9 @@ int push_ob(object *who, int dir, object *pusher) {
          * the case.  Putting the map_scroll should also improve performance some.
          */
         if (pusher->type == PLAYER) {
-            esrv_map_scroll(&pusher->contr->socket, freearr_x[dir], freearr_y[dir]);
-            pusher->contr->socket.update_look = 1;
-            pusher->contr->socket.look_position = 0;
+            esrv_map_scroll(pusher->contr->socket, freearr_x[dir], freearr_y[dir]);
+            pusher->contr->socket->update_look = 1;
+            pusher->contr->socket->look_position = 0;
         }
         return 0;
     }
@@ -608,7 +608,7 @@ int object_teleport(object *op, mapstruct *map, int x, int y) {
 
         object_insert_in_map_at(op, map, NULL, 0, x, y);
         if (op->type == PLAYER) {
-            map_newmap_cmd(&op->contr->socket);
+            map_newmap_cmd(op->contr->socket);
             player_update_bg_music(op);
         }
         return 1;

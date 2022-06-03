@@ -198,7 +198,7 @@ static method_ret spellbook_type_apply(object *book, object *applier, int aflags
                 if (book->env)
                     esrv_update_item(UPD_FLAGS|UPD_NAME, applier, book);
                 else
-                    applier->contr->socket.update_look = 1;
+                    applier->contr->socket->update_look = 1;
             }
             return METHOD_OK;
         }
@@ -211,7 +211,7 @@ static method_ret spellbook_type_apply(object *book, object *applier, int aflags
                 if (book->env)
                     esrv_update_item(UPD_FLAGS|UPD_NAME, applier, book);
                 else
-                    applier->contr->socket.update_look = 1;
+                    applier->contr->socket->update_look = 1;
             }
             draw_ext_info_format(NDI_UNIQUE, 0, applier,
                 MSG_TYPE_APPLY, MSG_TYPE_APPLY_FAILURE,
@@ -300,7 +300,7 @@ static method_ret spellbook_type_apply(object *book, object *applier, int aflags
             if (book->env)
                 esrv_update_item(UPD_FLAGS|UPD_NAME, applier, book);
             else
-                applier->contr->socket.update_look = 1;
+                applier->contr->socket->update_look = 1;
             spell = book->inv;
 
             /* If they hadn't previously IDed the book, they didn't know what

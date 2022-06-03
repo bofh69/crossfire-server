@@ -312,7 +312,7 @@ static void send_changed_object(object *op) {
     } else {
         FOR_ABOVE_PREPARE(op, tmp)
             if (tmp->type == PLAYER)
-                tmp->contr->socket.update_look = 1;
+                tmp->contr->socket->update_look = 1;
         FOR_ABOVE_FINISH();
     }
 }
@@ -2175,7 +2175,7 @@ static void cfapi_object_get_property(int *type, ...) {
 
     case CFAPI_PLAYER_PROP_IP:
         rsstring = va_arg(args, sstring *);
-        *rsstring = op->contr->socket.host;
+        *rsstring = op->contr->socket->host;
         *type = CFAPI_SSTRING;
         break;
 
@@ -2430,7 +2430,7 @@ static void cfapi_object_set_property(int *type, ...) {
                 } else {
                     FOR_ABOVE_PREPARE(op, tmp)
                         if (tmp->type == PLAYER)
-                            tmp->contr->socket.update_look = 1;
+                            tmp->contr->socket->update_look = 1;
                     FOR_ABOVE_FINISH();
                 }
             }
@@ -3889,7 +3889,7 @@ static void cfapi_object_drop(int *type, ...) {
 
     if (author->type == PLAYER) {
         author->contr->count = 0;
-        author->contr->socket.update_look = 1;
+        author->contr->socket->update_look = 1;
     }
 }
 

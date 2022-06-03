@@ -1731,7 +1731,7 @@ int dimension_door(object *op, object *caster, object *spob, int dir) {
         return 1;
 
     if (op->type == PLAYER) {
-        map_newmap_cmd(&op->contr->socket);
+        map_newmap_cmd(op->contr->socket);
         player_update_bg_music(op);
     }
     op->speed_left = -FABS(op->speed)*5; /* Freeze them for a short while */
@@ -2387,7 +2387,7 @@ int alchemy(object *op, object *caster, object *spell_ob) {
     /* reset this so that if player standing on a big pile of stuff,
      * it is redrawn properly.
      */
-    op->contr->socket.look_position = 0;
+    op->contr->socket->look_position = 0;
     return 1;
 }
 
