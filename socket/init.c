@@ -425,6 +425,7 @@ void free_newsocket(socket_struct *ns) {
         FREE_AND_CLEAR(ns->stats.range);
     if (ns->stats.title)
         FREE_AND_CLEAR(ns->stats.title);
+    FREE_AND_CLEAR(ns->faces_sent);
     FREE_AND_CLEAR(ns->stats.god);
     if (ns->host)
         FREE_AND_CLEAR(ns->host);

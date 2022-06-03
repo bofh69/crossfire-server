@@ -86,9 +86,6 @@ void free_player(player *pl) {
     }
 
     clear_player(pl);
-
-    free(pl->socket.faces_sent);
-
     free(pl);
 }
 
