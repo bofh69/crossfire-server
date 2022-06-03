@@ -430,10 +430,10 @@ void free_newsocket(socket_struct *ns) {
     if (ns->host)
         FREE_AND_CLEAR(ns->host);
     if (ns->account_name) {
-        account_char_save(ns->account_chars);
         FREE_AND_CLEAR(ns->account_name);
     }
     if (ns->account_chars) {
+        account_char_save(ns->account_chars);
         account_char_free(ns->account_chars);
         ns->account_chars = NULL;
     }
