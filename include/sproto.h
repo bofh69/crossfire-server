@@ -4,6 +4,7 @@ void accounts_load(void);
 void accounts_save(void);
 const char *account_exists(const char *account_name);
 int account_login(const char *account_name, const char *account_password);
+void account_logout(const char *account_name);
 int account_check_string(const char *str);
 int account_new(const char *account_name, const char *account_password);
 int account_link(const char *account_name, const char *player_name);
@@ -11,8 +12,6 @@ int account_remove_player(const char *account_name, const char *player_name);
 char **account_get_players_for_account(const char *account_name);
 linked_char *account_get_additional_chars(const char *account_name, const Account_Chars *chars, int *count);
 const char *account_get_account_for_char(const char *charname);
-player *account_get_logged_in_player(const char *name);
-socket_struct *account_get_logged_in_init_socket(const char *name);
 int account_is_logged_in(const char *name);
 int account_change_password(const char *account_name, const char *current_password, const char *new_password);
 /* account_char.c */

@@ -47,6 +47,14 @@
  * bits of information there.  An example might be dm=1.  But it is there for expansion.
  */
 
+#include <set>
+#include <string>
+
+/** Set of accounts names that are currently logged in. */
+static std::set<std::string> accounts_logged_in = std::set<std::string>();
+
+extern "C" {
+
 #include "global.h"
 
 #include <ctype.h>
@@ -112,7 +120,7 @@ static void ensure_available_characters(account_struct *account, int count) {
     if (count >= account->allocated_characters) { // The list is NULL-terminated
         const int pa = account->allocated_characters;
         account->allocated_characters = count + 1;
-        account->character_names = realloc(account->character_names, account->allocated_characters * sizeof(account->character_names[0]));
+        account->character_names = static_cast<char **>(realloc(account->character_names, account->allocated_characters * sizeof(account->character_names[0])));
         if (!account->character_names) {
             LOG(llevError, "Unable to allocate %d characters names!", account->allocated_characters);
             fatal(OUT_OF_MEMORY);
@@ -331,6 +339,7 @@ int account_login(const char *account_name, const char *account_password) {
         if (!strcasecmp(ac->name, account_name)) {
             if (check_password(account_password, ac->password)) {
                 ac->last_login = time(NULL);
+                accounts_logged_in.insert(account_name);
                 return 1;
             } else {
                 return 0;
@@ -338,6 +347,13 @@ int account_login(const char *account_name, const char *account_password) {
         }
     }
     return 0;
+}
+
+/**
+ * Remove 'account_name' from the list of logged in accounts.
+ */
+void account_logout(const char *account_name) {
+    accounts_logged_in.erase(account_name);
 }
 
 /**
@@ -603,48 +619,6 @@ const char *account_get_account_for_char(const char *charname)
 }
 
 /**
- * This checks to see if the account is logged in with a player attached
- * If so, it returns the player object.
- *
- * @param name
- * account name to check against.
- * @return
- * player structure of matching account, or NULL if no match.
- */
-player *account_get_logged_in_player(const char *name)
-{
-    player *pl;
-
-    for (pl = first_player; pl; pl=pl->next) {
-        if (pl->socket->account_name &&
-            !strcasecmp(pl->socket->account_name, name)) return pl;
-    }
-    return NULL;
-}
-
-/**
- * This is like the above routine, but checks the init_sockets
- * (account in process of logging in).
- *
- * @param name
- * account name to check against
- * @return
- * index value into init_sockets[] of matching socket, or -1 if
- * no match.
- */
-socket_struct *account_get_logged_in_init_socket(const char *name)
-{
-    int i;
-
-    for (i=0; i < socket_info.allocated_sockets; i++) {
-        if (init_sockets[i].status == Ns_Add &&
-            init_sockets[i].account_name &&
-            !strcasecmp(init_sockets[i].account_name, name)) return(&init_sockets[i]);
-    }
-    return NULL;
-}
-
-/**
  * This checkes if an account is logged in.  It is mainly
  * used because some operations should not be done on logged
  * in accounts (keeping everything synchronized is harder.)
@@ -654,13 +628,8 @@ socket_struct *account_get_logged_in_init_socket(const char *name)
  * @return
  * 0 if not logged in, 1 if logged in.
  */
-int account_is_logged_in(const char *name)
-{
-    if (account_get_logged_in_player(name)) return 1;
-
-    if (account_get_logged_in_init_socket(name)!=NULL) return 1;
-
-    return 0;
+int account_is_logged_in(const char *name) {
+    return accounts_logged_in.find(name) != accounts_logged_in.end();
 }
 
 /**
@@ -714,4 +683,5 @@ int account_change_password(const char *account_name,
     ac->password = strdup_local(newhash(new_password));
 
     return 0;
+}
 }

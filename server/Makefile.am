@@ -3,7 +3,7 @@ bin_PROGRAMS = crossfire-server
 noinst_LIBRARIES = libserver.a
 crossfire_server_SOURCES = main.c
 libserver_a_SOURCES = \
-	account.c\
+	account.cpp\
 	account_char.c\
 	alchemy.c\
 	apply.c\
