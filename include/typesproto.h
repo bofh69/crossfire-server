@@ -116,7 +116,6 @@ void init_type_trigger_pedestal(void);
 /* weapon_improver/weapon_improver.c */
 void init_type_weapon_improver(void);
 /* common/common_apply.c */
-method_ret common_ob_move_on(object *trap, object *victim, object *originator);
 method_ret common_pre_ob_move_on(object *trap, object *victim, object *originator);
 void common_post_ob_move_on(object *trap, object *victim, object *originator);
 /* common/describe.c */

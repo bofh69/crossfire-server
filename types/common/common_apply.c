@@ -29,23 +29,6 @@
 #include <ob_types.h>
 #include <sproto.h>
 
-/**
- * 'victim' moves onto 'trap'
- * 'victim' leaves 'trap'
- * effect is determined by move_on/move_off of trap and move_type of victim.
- *
- * originator: Player, monster or other object that caused 'victim' to move
- * onto 'trap'.  Will receive messages caused by this action.  May be NULL.
- * However, some types of traps require an originator to function.
- */
-method_ret common_ob_move_on(object *trap, object *victim, object *originator) {
-    if (common_pre_ob_move_on(trap, victim, originator) == METHOD_ERROR)
-        return METHOD_OK;
-    LOG(llevDebug, "name %s, arch %s, type %d with fly/walk on/off not handled in move_apply()\n", trap->name, trap->arch->name, trap->type);
-    common_post_ob_move_on(trap, victim, originator);
-    return METHOD_OK;
-}
-
 static int ob_move_on_recursion_depth = 0;
 
 method_ret common_pre_ob_move_on(object *trap, object *victim, object *originator) {
@@ -60,9 +43,6 @@ method_ret common_pre_ob_move_on(object *trap, object *victim, object *originato
     && !QUERY_FLAG(trap, FLAG_APPLIED))
         return METHOD_ERROR;
 
-    /* common_ob_move_on() is the most likely candidate for causing unwanted and
-     * possibly unlimited recursion.
-     */
     /* The following was changed because it was causing perfectly correct
      * maps to fail.  1)  it's not an error to recurse:
      * rune detonates, summoning monster.  monster lands on nearby rune.
