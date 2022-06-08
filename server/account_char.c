@@ -182,6 +182,10 @@ void account_char_save(Account_Chars *chars) {
     OutputFile of;
     Account_Char *ac;
 
+    if (!chars) {
+        return;
+    }
+
     snprintf(fname, MAX_BUF, "%s/%s/%s", settings.localdir, ACCOUNT_DIR, chars->account_name);
 
     /* It is certanly possibly that all characters for an account have
@@ -223,6 +227,10 @@ void account_char_save(Account_Chars *chars) {
  * Player structure to add
  */
 void account_char_add(Account_Chars *chars, player *pl) {
+
+    if (!chars) {
+        return;
+    }
 
     Account_Char *ap, *last = NULL;
 
@@ -328,6 +336,10 @@ void account_char_add(Account_Chars *chars, player *pl) {
 void account_char_remove(Account_Chars *chars, const char *pl_name) {
     Account_Char *ap, *last = NULL;
 
+    if (!chars) {
+        return;
+    }
+
     for (ap = chars->chars; ap; ap = ap->next) {
         if (!strcmp(ap->name, pl_name)) break;
         last = ap;
@@ -360,6 +372,10 @@ void account_char_remove(Account_Chars *chars, const char *pl_name) {
  * any data in this list.
  */
 void account_char_free(Account_Chars *chars) {
+    if (!chars) {
+        return;
+    }
+
     if (chars->ref_count > 1) {
         chars->ref_count--;
         return;
