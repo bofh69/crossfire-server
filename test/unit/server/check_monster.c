@@ -46,10 +46,13 @@ void teardown(void) {
 START_TEST(test_monster_find_nearest_enemy) {
     object *first, *second, *third, *owner, *found;
     player pl;
+    socket_struct sock;
 
     // The function randomizes directions, so check 200 times to be safe.
 
     memset(&pl, 0, sizeof(pl));
+    memset(&sock, 0, sizeof(sock));
+    pl.socket = &sock;
 
     mapstruct *map = get_empty_map(3, 3);
 

@@ -12,6 +12,8 @@
 
 #include <Qt>
 #include <QtWidgets>
+#include <memory>
+
 #include <CREMainWindow.h>
 #include <CREResourcesWindow.h>
 #include "CREMapInformationManager.h"
@@ -940,15 +942,18 @@ static int monsterFight(archetype* monster, archetype* skill, int level)
 {
     int limit = 50, result = 1;
     player pl;
+    socket_struct sock;
     memset(&pl, 0, sizeof(player));
+    memset(&sock, 0, sizeof(sock));
     strncpy(pl.savebed_map, "/HallOfSelection", MAX_BUF);
     pl.bed_x = 5;
     pl.bed_y = 5;
-    pl.socket.faces_sent = (uint8_t*)calloc(sizeof(uint8_t), get_faces_count());
+    pl.socket = &sock;
+    std::unique_ptr<uint8_t[]> faces(new uint8_t[get_faces_count()]);
+    sock.faces_sent = faces.get();
 
     archetype *dwarf_player_arch = find_archetype("dwarf_player");
     if (dwarf_player_arch == NULL) {
-        free(pl.socket.faces_sent);
         return 0;
     }
     object* obfirst = object_create_arch(dwarf_player_arch);
@@ -961,7 +966,6 @@ static int monsterFight(archetype* monster, archetype* skill, int level)
     object_insert_in_ob(obskill, obfirst);
     archetype *skill_arch = find_archetype((skill->clone.subtype == SK_TWO_HANDED_WEAPON) ? "sword_3" : "sword");
     if (skill_arch == NULL) {
-        free(pl.socket.faces_sent);
         return 0;
     }
     object* sword = object_create_arch(skill_arch);
@@ -1023,7 +1027,6 @@ static int monsterFight(archetype* monster, archetype* skill, int level)
             obsecond->speed_left += FABS(obsecond->speed);
     }
 
-    free(pl.socket.faces_sent);
     if (!object_was_destroyed(obfirst, tagfirst))
     {
         object_remove(obfirst);

@@ -3470,4 +3470,7 @@ void account_char_free(Account_Chars *) {
 void command_help(object *, const char *) {
 }
 
+void account_logout(const char *) {
+}
+
 #endif /* dummy DOXYGEN_SHOULD_SKIP_THIS */
