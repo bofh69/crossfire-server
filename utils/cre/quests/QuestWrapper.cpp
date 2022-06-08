@@ -208,7 +208,7 @@ void QuestWrapper::removeChild(AssetWrapper *child) {
 
     markModified(BeforeChildRemove, index);
     if (last == nullptr) {
-        assert(step = myWrappedItem->steps);
+        assert(step == myWrappedItem->steps);
         myWrappedItem->steps = step->next;
     } else {
         last->next = step->next;
