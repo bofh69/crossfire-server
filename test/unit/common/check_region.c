@@ -117,6 +117,7 @@ END_TEST
 Suite *region_suite(void) {
     Suite *s = suite_create("region");
     TCase *tc_core = tcase_create("Core");
+    tcase_set_timeout(tc_core, 60);
 
     /*setup and teardown will be called before each test in testcase 'tc_core' */
     tcase_add_checked_fixture(tc_core, setup, teardown);

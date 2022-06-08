@@ -75,6 +75,7 @@ END_TEST
 Suite *holy_suite(void) {
     Suite *s = suite_create("holy");
     TCase *tc_core = tcase_create("Core");
+    tcase_set_timeout(tc_core, 60);
 
     /*setup and teardown will be called before each test in testcase 'tc_core' */
     tcase_add_checked_fixture(tc_core, setup, teardown);
