@@ -19,9 +19,7 @@ automenu:
 	echo '<?xml version="1.0"?><menu>' > $$output_menu; \
 	echo '<parentMenu>$(CHECK_PARENT_NAME)</parentMenu>' >> $$output_menu;\
 	for tst in $$list; do \
-	  tst="$${tst/check_/}" ; \
-	  tst="$${tst/-/_}" ; \
-	  xml="$(LOGDIR)/$${tst}.xml" ;\
+	  xml=$(echo "$(LOGDIR)/$${tst}.xml" | sed -e 's/check_//' -e 's/-/_/') ;\
 	  if test -e "$$xml"; then \
 	      successCount=`grep -c 'result="success"' $$xml`;\
 	      errorCount=`grep -c 'result="error"' $$xml`;\
@@ -42,23 +40,19 @@ logreport: automenu $(LOG_ROOT)/logresult.xsl
 	builddir='$(top_builddir)'; \
 	xsl="$${builddir}/test/logs/logresult.xsl" ; \
 	xsltproc='$(XSLTENGINE)';\
-	xsltproc=$${xsltproc/\%2/$$xsl};\
 	xml_siteuri='$(CHECK_ROOT)' ;\
 	xml_check_folder='../logs/$(CHECK_FOLDER)' ;\
 	runxml='.autorun.xml';\
 	if test -n "$$list"; then \
 	  for tst in $$list; do \
-	    tst="$${tst/check_/}" ; \
-	    tst="$${tst/-/_}" ; \
-	    checkFile="$${tst}.xml" ;\
+	    checkFile=$(echo "$${tst}.xml" | sed -e 's/check_//' -e 's/-/_/') ;\
 	    echo '<?xml version="1.0"?><config>' > $$runxml;\
 	    echo "<baseSiteUri>$$xml_siteuri</baseSiteUri>" >> $$runxml;\
 	    echo "<checkFile>$$checkFile</checkFile>" >> $$runxml;\
 	    echo "<checkFolder>$$xml_check_folder</checkFolder></config>" >> $$runxml;\
 	    html=$(LOGDIR)/$${tst}.html ;\
 	    if test -e "$(LOGDIR)/$$xml"; then \
-	        torun="$${xsltproc/\%1/$$runxml}";\
-	        torun="$${torun/\%3/$$html}";\
+	        to_run=$(echo "$xsltproc" | sed -e 's/%1/$$runxml/' -e 's/%2/$$xsl/' -e 's/%3/$$html/');\
 	        echo "running $$torun";\
 	        $$torun; \
 	    fi; \
@@ -68,8 +62,7 @@ logreport: automenu $(LOG_ROOT)/logresult.xsl
 	echo "<baseSiteUri>$$xml_siteuri</baseSiteUri>" >> $$runxml;\
 	echo "<checkFolder>$$xml_check_folder</checkFolder></config>" >> $$runxml;\
 	html='$(LOGDIR)/.index.html' ;\
-	torun="$${xsltproc/\%1/$$runxml}";\
-	torun="$${torun/\%3/$$html}";\
+	to_run=$(echo "$xsltproc" | sed -e 's/%1/$$runxml/' -e 's/%2/$$xsl/' -e 's/%3/$$html/');\
 	echo "running $$torun";\
 	$$torun;
 
@@ -91,8 +84,6 @@ textlog: automenu $(LOG_ROOT)/checkTextResult.xsl
 	@echo "processing logs to text..."
 	@builddir='$(top_builddir)'; \
 	xsl="$${builddir}/test/logs/checkTextResult.xsl" ; \
-	xsltproc='$(XSLTENGINE)';\
-	xsltproc="$${xsltproc/\%2/$$xsl}";\
 	xml_siteuri='$(CHECK_ROOT)' ;\
 	xml_check_folder='../logs/$(CHECK_FOLDER)' ;\
 	runxml='.autorun.xml';\
@@ -100,8 +91,7 @@ textlog: automenu $(LOG_ROOT)/checkTextResult.xsl
 	echo "<baseSiteUri>$$xml_siteuri</baseSiteUri>" >> $$runxml;\
 	echo "<checkFolder>$$xml_check_folder</checkFolder></config>" >> $$runxml;\
 	txt='$(LOGDIR)/testlog.txt' ;\
-	torun="$${xsltproc/\%1/$$runxml}";\
-	torun="$${torun/\%3/$$txt}";\
+	to_run=$(echo "$xsltproc" | sed -e 's/%1/$$runxml/' -e 's/%2/$$xsl/' -e 's/%3/$$txt/');\
 	echo "running $$torun";\
 	$$torun;
 
