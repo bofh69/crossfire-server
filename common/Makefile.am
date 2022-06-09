@@ -37,7 +37,7 @@ libcross_a_SOURCES = \
 	assets/assets.cpp\
 	bufferreader.c \
 	button.c\
-	cf_random.c \
+	cf_random.cpp \
 	dialog.c \
 	events.cpp \
 	exp.c\

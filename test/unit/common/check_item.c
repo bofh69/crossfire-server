@@ -146,17 +146,17 @@ START_TEST(test_describe_item) {
     };
     static const char *treasure_results[] = {
         "",
-        "(wc+1)(dam+2)(Attacks: physical)",
-        "",
-        "(dam+6)(weapon speed 9)(Attacks: physical)",
-        "(food+70)",
-        "(Con+2)(Cha-1)(dam+10)(item_power +15)(weapon speed 5)(regeneration+1)(Attacks: weaponmagic)[ul](resist drain +100)[/ul][color=green](resist poison +30)[/color]",
+        "(wc+2)(dam+3)(item_power +1)(Attacks: physical)",
+        "of adornment",
+        "(dam+6)(item_power +3)(weapon speed 7)(Attacks: physical)",
+        "(food+600)",
+        "(dam+10)(item_power +1)",
         "",
         "of adornment",
         "(Str+1)(dam+9)(item_power +20)(weapon speed 6)(regeneration+1)(Attacks: electricity, drain)[color=#930C76](resist magic +30)[/color][color=blue](resist electricity +30)[/color][ul](resist drain +100)[/ul]",
-        "of adornment",
-        "(Str+1)[color=#FF15CD](armour +5)[/color]",
-        "",
+        "(item_power +2)(magic+2)",
+        "(speed +3)(item_power +3)(stealth)",
+        "(dam+6)(weapon speed 9)(Attacks: physical)",
         NULL
     };
 
@@ -178,8 +178,8 @@ START_TEST(test_describe_item) {
         object_free_drop_inventory(test);
     }
 
-    /* we initialize the random generator to always be able to reproduce, and we use rand() in case RANDOM is something else. */
-    srand(100);
+    /* we initialize the random generator to always be able to reproduce. */
+    SRANDOM(100);
     for (check = 0; treasures[check] != NULL; check++) {
         list = find_treasurelist(treasures[check]);
         fail_unless(list != NULL, "couldn't find treasure list %s", treasures[check]);
@@ -194,7 +194,7 @@ START_TEST(test_describe_item) {
             printf("Item %d describe_item(treasure %s) returned \"%s\" instead of \"%s\"\n", check, treasures[check], buf, treasure_results[check]);
         */
 
-        fail_unless(strcmp(buf, treasure_results[check]) == 0, "describe_item(treasure %s) returned \"%s\" instead of \"%s\" for item %s", treasures[check], buf, treasure_results[check], test->arch->name);
+        fail_unless(strcmp(buf, treasure_results[check]) == 0, "describe_item(treasure %s) returned \"%s\" instead of \"%s\" for item %s (index %d)", treasures[check], buf, treasure_results[check], test->arch->name, check);
 
         free(buf);
         object_free_drop_inventory(test);

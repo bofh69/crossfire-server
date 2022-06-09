@@ -103,7 +103,7 @@ dnl#############################################################################
 dnl Library Function Checks
 dnl#############################################################################
 dnl Checks for library functions.
-AC_CHECK_FUNCS([getdtablesize strcasecmp strcasestr strdup strncasecmp srandom srand48 sysconf tempnam getaddrinfo getnameinfo])
+AC_CHECK_FUNCS([getdtablesize strcasecmp strcasestr strdup strncasecmp sysconf tempnam getaddrinfo getnameinfo])
 
 dnl Check for better but non-portable functions.
 AC_CHECK_FUNCS([strlcat strlcpy])
