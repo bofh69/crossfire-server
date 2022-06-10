@@ -341,7 +341,9 @@ void watchdog(void) {
         insock.sin_port = htons((unsigned short)13325);
         insock.sin_addr.s_addr = inet_addr("127.0.0.1");
     }
-    sendto(fd, (void *)&fd, 1, 0, (struct sockaddr *)&insock, sizeof(insock));
+    char buf[MAX_BUF];
+    snprintf(buf, sizeof(buf), "%d\n", pticks);
+    sendto(fd, buf, strlen(buf), 0, (struct sockaddr *)&insock, sizeof(insock));
 }
 #endif
 
