@@ -383,10 +383,15 @@ START_TEST(test_object_copy) {
     object *ob1;
     object *ob2;
     const char *reference;
+    key_value *kv;
 
     ob1 = cctk_create_game_object(NULL);
     ob2 = cctk_create_game_object(NULL);
     cctk_set_object_strings(ob1, "test String1");
+    object_set_value(ob1, "some_key", "value", 1);
+    object_set_value(ob1, "some_other_key", "another_value", 1);
+    object_set_value(ob2, "random", "bla", 1);
+    object_set_value(ob2, "?!?", "!!!", 1);
     cctk_set_object_strings(ob2, "test String2");
     reference = add_string("test String2");
     object_copy(ob1, ob2);
@@ -400,6 +405,17 @@ START_TEST(test_object_copy) {
     fail_unless(ob1->materialname == ob2->materialname, "Field materialname of ob1 should match ob2");
     fail_unless(ob1->lore == ob2->lore, "Field lore of ob1 should match ob2");
     fail_unless(query_refcount(reference) == 1, "refcount of marker string is not dropped to 1 after copy object, some string field were not cleaned. refcount: %d", query_refcount(reference));
+
+    fail_unless(ob2->key_values, "Key values should have been copied");
+    kv = ob2->key_values;
+    fail_unless(strcmp(kv->key, "some_other_key") == 0, "Wrong first key %s", ob2->key_values->key);
+    fail_unless(strcmp(kv->value, "another_value") == 0, "Wrong first value %s", ob2->key_values->value);
+    kv = kv->next;
+    fail_unless(kv, "Missing second key/value");
+    fail_unless(strcmp(kv->key, "some_key") == 0, "Wrong second key %s", ob2->key_values->key);
+    fail_unless(strcmp(kv->value, "value") == 0, "Wrong second value %s", ob2->key_values->value);
+    kv = kv->next;
+    fail_unless(kv == NULL, "Third key/value?!?");
 }
 END_TEST
 
