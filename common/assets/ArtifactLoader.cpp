@@ -71,11 +71,11 @@ void ArtifactLoader::load(BufferReader *reader, const std::string &filename) {
                 art->allowed = tmp;
                 art->allowed_size++;
             } while ((cp = next) != NULL);
-        } else if (sscanf(cp, "chance %d", &value))
+        } else if (sscanf(cp, "chance %d", &value) && art)
             art->chance = (uint16_t)value;
-        else if (sscanf(cp, "difficulty %d", &value))
+        else if (sscanf(cp, "difficulty %d", &value) && art)
             art->difficulty = (uint8_t)value;
-        else if (!strncmp(cp, "Object", 6)) {
+        else if (!strncmp(cp, "Object", 6) && art) {
             art->item = (object *)calloc(1, sizeof(object));
             if (art->item == NULL) {
                 LOG(llevError, "init_artifacts: memory allocation failure.\n");
