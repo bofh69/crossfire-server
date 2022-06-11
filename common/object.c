@@ -5298,27 +5298,27 @@ void save_object_in_sb(StringBuffer *sb, object *op, const int flag) {
 
     ADD_STRINGLINE_ENTRY(sb, "arch ", at->name);
 
-    if (op->arch->reference_count > 0) {
+    if (at->reference_count > 0) {
         /* The object is a custom item/monster, so we handle its save differently.
          * We compare the custom archetype to the "original" one, then only save hp/gr/sp
          * which are the only values we can't recompute later - all others are modified by items in inventory.
          * Note that hp/gr/sp will appear twice in save, but last value will take precedence.
          */
-        archetype *original = find_archetype(op->arch->name);
+        archetype *original = find_archetype(at->name);
         if (!original) {
-            LOG(llevError, "could not find original archetype %s for custom monster!\n", op->arch->name);
+            LOG(llevError, "could not find original archetype %s for custom monster!\n", at->name);
             abort();
         }
-        get_ob_diff(sb, &op->arch->clone, &original->clone);
-        if (op->stats.hp != op->arch->clone.stats.hp)
+        get_ob_diff(sb, &at->clone, &original->clone);
+        if (op->stats.hp != at->clone.stats.hp)
             FAST_SAVE_LONG(sb, "hp ", op->stats.hp);
-        if (op->stats.sp != op->arch->clone.stats.sp)
+        if (op->stats.sp != at->clone.stats.sp)
             FAST_SAVE_LONG(sb, "sp ", op->stats.sp);
-        if (op->stats.grace != op->arch->clone.stats.grace)
+        if (op->stats.grace != at->clone.stats.grace)
             FAST_SAVE_LONG(sb, "grace ", op->stats.grace);
-        if (op->x != op->arch->clone.x)
+        if (op->x != at->clone.x)
             FAST_SAVE_LONG(sb, "x ", op->x);
-        if (op->y != op->arch->clone.y)
+        if (op->y != at->clone.y)
             FAST_SAVE_LONG(sb, "y ", op->y);
     } else if (op->artifact != NULL) {
     /* if op is an artifact, then find the "standard" artifact to use that for the diff */
