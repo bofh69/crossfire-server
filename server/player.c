@@ -510,7 +510,7 @@ static archetype *get_player_archetype(archetype *at) {
 }
 
 /**
- * Finds the nearest visible player for some object.
+ * Finds the nearest visible player or player-friendly for some object.
  *
  * @param mon
  * what object is searching a player.
@@ -525,9 +525,6 @@ object *get_nearest_player(object *mon) {
     rv_vector rv;
 
     list = get_friends_of(NULL);
-    if (!list) {
-        return NULL;
-    }
 
     for (ol = list, lastdist = 1000; ol != NULL; ol = ol->next) {
         if (QUERY_FLAG(ol->ob, FLAG_FREED) || !QUERY_FLAG(ol->ob, FLAG_FRIENDLY)) {
@@ -549,7 +546,9 @@ object *get_nearest_player(object *mon) {
             lastdist = rv.distance;
         }
     }
-    free_objectlink(list);
+    if (list) {
+        free_objectlink(list);
+    }
     for (pl = first_player; pl != NULL; pl = pl->next) {
         if (monster_can_detect_enemy(mon, pl->ob, &rv)) {
             if (lastdist > rv.distance) {
