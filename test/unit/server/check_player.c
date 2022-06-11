@@ -1,29 +1,13 @@
 /*
- * static char *rcsid_check_player_c =
- *   "$Id$";
- */
-
-/*
- * CrossFire, A Multiplayer game for X-windows
+ * Crossfire -- cooperative multi-player graphical RPG and adventure game
  *
- * Copyright (C) 2002 Mark Wedel & Crossfire Development Team
- * Copyright (C) 1992 Frank Tore Johansen
+ * Copyright (c) 1999-2022 the Crossfire Development Team
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * Crossfire is free software and comes with ABSOLUTELY NO WARRANTY. You are
+ * welcome to redistribute it under certain conditions. For details, please
+ * see COPYING and LICENSE.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- *
- * The authors can be reached via e-mail at crossfire-devel@real-time.com
+ * The authors can be reached via e-mail at <crossfire@metalforge.org>.
  */
 
 /*
@@ -31,30 +15,68 @@
  */
 
 #include <stdlib.h>
+#include <global.h>
 #include <check.h>
+#include <loader.h>
+#include <toolkit_common.h>
+#include <sproto.h>
 
 void setup(void) {
-    /* put any initialisation steps here, they will be run before each testcase */
+    settings.debug = 0;
+    cctk_setdatadir(SOURCE_ROOT "lib");
+    init(0, NULL);
 }
 
 void teardown(void) {
     /* put any cleanup steps here, they will be run after each testcase */
 }
 
-START_TEST(test_empty) {
-    /*TESTME test not yet developped*/
+START_TEST(test_get_nearest_player) {
+    mapstruct *map = get_empty_map(5, 5);
+
+    object *monster = create_archetype("kobold");
+    fail_unless(monster != NULL, "failed to find arch kobold");
+    object_insert_in_map_at(monster, map, NULL, 0 , 0 , 0);
+
+    object *friend = get_nearest_player(monster);
+    fail_unless(friend == NULL, "Shouldn't get any friend");
+
+    // Add a player, should be found
+    object *ob = create_archetype("angel");
+    fail_unless(QUERY_FLAG(ob, FLAG_MONSTER), "not a monster??");
+    player pl;
+    memset(&pl, 0, sizeof(pl));
+    socket_struct sock;
+    memset(&sock, 0, sizeof(sock));
+    pl.socket = &sock;
+    pl.ob = ob;
+    first_player = &pl;
+    object_insert_in_map_at(ob, map, NULL, 0, 4, 4);
+
+    friend = get_nearest_player(monster);
+    fail_unless(friend == ob, "Should get the player");
+
+    // Add a pet closer, should be found
+    object *pet = create_archetype("vampire");
+    fail_unless(QUERY_FLAG(pet, FLAG_MONSTER), "not a monster??");
+    SET_FLAG(pet, FLAG_FRIENDLY);
+    add_friendly_object(pet);
+    object_insert_in_map_at(pet, map, NULL, 0, 2, 2);
+    friend = get_nearest_player(monster);
+    fail_unless(friend == pet, "Should find the pet");
 }
 END_TEST
 
 Suite *player_suite(void) {
     Suite *s = suite_create("player");
     TCase *tc_core = tcase_create("Core");
+    tcase_set_timeout(tc_core, 20);
 
     /*setup and teardown will be called before each test in testcase 'tc_core' */
     tcase_add_checked_fixture(tc_core, setup, teardown);
 
     suite_add_tcase(s, tc_core);
-    tcase_add_test(tc_core, test_empty);
+    tcase_add_test(tc_core, test_get_nearest_player);
 
     return s;
 }
@@ -63,6 +85,7 @@ int main(void) {
     int nf;
     Suite *s = player_suite();
     SRunner *sr = srunner_create(s);
+//    srunner_set_fork_status (sr, CK_NOFORK);
 
     srunner_set_xml(sr, LOGDIR "/unit/server/player.xml");
     srunner_set_log(sr, LOGDIR "/unit/server/player.out");
