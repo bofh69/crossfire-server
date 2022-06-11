@@ -146,17 +146,17 @@ START_TEST(test_describe_item) {
     };
     static const char *treasure_results[] = {
         "",
-        "(wc+2)(dam+3)(item_power +1)(Attacks: physical)",
-        "of adornment",
-        "(dam+6)(item_power +3)(weapon speed 7)(Attacks: physical)",
+        "(wc+2)(dam+3)(Attacks: physical)",
+        "",
+        "(dam+11)(weapon speed 9)(Attacks: physical)",
         "(food+600)",
-        "(dam+10)(item_power +1)",
+        "(dam+20)(item_power +4)(weapon speed 9)(slay skull)(Attacks: physical)",
         "",
         "of adornment",
-        "(Str+1)(dam+9)(item_power +20)(weapon speed 6)(regeneration+1)(Attacks: electricity, drain)[color=#930C76](resist magic +30)[/color][color=blue](resist electricity +30)[/color][ul](resist drain +100)[/ul]",
-        "(item_power +2)(magic+2)",
-        "(speed +3)(item_power +3)(stealth)",
-        "(dam+6)(weapon speed 9)(Attacks: physical)",
+        "(Con+2)(Cha-1)(dam+10)(item_power +15)(weapon speed 5)(regeneration+1)(Attacks: weaponmagic)[ul](resist drain +100)[/ul][color=green](resist poison +30)[/color]",
+        "of adornment",
+        "(dam+15)(item_power +3)(weapon speed 7)(Attacks: physical, depletion)",
+        "(dam+1)(weapon speed 5)(Attacks: physical)",
         NULL
     };
 
