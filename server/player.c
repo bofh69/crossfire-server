@@ -21,6 +21,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <math.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1040,20 +1041,25 @@ int roll_stat(void) {
  * player to roll for.
  */
 void roll_stats(object *op) {
-    int sum = 0;
     int i = 0, j = 0;
     int statsort[7];
 
-    do {
-        op->stats.Str = roll_stat();
-        op->stats.Dex = roll_stat();
-        op->stats.Int = roll_stat();
-        op->stats.Con = roll_stat();
-        op->stats.Wis = roll_stat();
-        op->stats.Pow = roll_stat();
-        op->stats.Cha = roll_stat();
-        sum = op->stats.Str+op->stats.Dex+op->stats.Int+op->stats.Con+op->stats.Wis+op->stats.Pow+op->stats.Cha;
-    } while (sum != settings.roll_stat_points);
+    op->stats.Str = roll_stat();
+    op->stats.Dex = roll_stat();
+    op->stats.Int = roll_stat();
+    op->stats.Con = roll_stat();
+    op->stats.Wis = roll_stat();
+    op->stats.Pow = roll_stat();
+    op->stats.Cha = roll_stat();
+    int sum = op->stats.Str+op->stats.Dex+op->stats.Int+op->stats.Con+op->stats.Wis+op->stats.Pow+op->stats.Cha;
+    float scale = settings.roll_stat_points / sum;
+    op->stats.Str = roundf(scale * op->stats.Str);
+    op->stats.Dex = roundf(scale * op->stats.Dex);
+    op->stats.Int = roundf(scale * op->stats.Int);
+    op->stats.Con = roundf(scale * op->stats.Con);
+    op->stats.Wis = roundf(scale * op->stats.Wis);
+    op->stats.Pow = roundf(scale * op->stats.Pow);
+    op->stats.Cha = roundf(scale * op->stats.Cha);
 
     /* Sort the stats so that rerolling is easier... */
     statsort[0] = op->stats.Str;
