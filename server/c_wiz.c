@@ -1526,7 +1526,7 @@ void command_patch(object *op, const char *params) {
 
 static void reset_faces_sent(struct socket_struct *socket) {
     free(socket->faces_sent);
-    socket->faces_sent = calloc(sizeof(socket->faces_sent), get_faces_count());
+    socket->faces_sent = calloc(sizeof(socket->faces_sent[0]), get_faces_count());
     socket->faces_sent_len = get_faces_count();
 }
 
