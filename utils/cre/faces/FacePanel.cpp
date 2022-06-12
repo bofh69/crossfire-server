@@ -23,24 +23,6 @@
 #include "assets/AssetModel.h"
 #include "ResourcesManager.h"
 
-/** @todo duplication with common/image */
-static const char *const colorname[] = {
-    "black",                    /* 0  */
-    "white",                    /* 1  */
-    "blue",                     /* 2  */
-    "red",                      /* 3  */
-    "orange",                   /* 4  */
-    "light_blue",               /* 5  */
-    "dark_orange",              /* 6  */
-    "green",                    /* 7  */
-    "light_green",              /* 8  */
-    "grey",                     /* 9  */
-    "brown",                    /* 10 */
-    "yellow",                   /* 11 */
-    "khaki"                     /* 12 */
-};
-
-
 CREFacePanel::CREFacePanel(QWidget* parent, AssetModel *model, ResourcesManager *resources, CREMapInformationManager* maps) : AssetTWrapperPanel(parent) {
     myMaps = maps;
     myResources = resources;
@@ -64,8 +46,9 @@ CREFacePanel::CREFacePanel(QWidget* parent, AssetModel *model, ResourcesManager 
     myLayout->addWidget(new QLabel("Magicmap color: "), 4, 1);
     myLayout->addWidget(myColor, 4, 2, 1, 3);
 
-    for(uint color = 0; color < sizeof(colorname) / sizeof(*colorname); color++)
-        myColor->addItem(colorname[color], color);
+    const char *name;
+    for(uint color = 0; strcmp(name = get_colorname(color), "") != 0; color++)
+        myColor->addItem(name, color);
 
     myFile = new QLineEdit(this);
     myFile->setReadOnly(true);
