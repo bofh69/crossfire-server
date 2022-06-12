@@ -1259,8 +1259,8 @@ void command_players(object *op, const char *params) {
                 }
             }
         }
+        closedir(dir);
     }
-    closedir(dir);
 }
 
 /**
