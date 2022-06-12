@@ -495,7 +495,8 @@ void new_player_cmd(uint8_t *buf, int len, player *pl) {
 
     /* This should not happen anymore. */
     if (pl->ob->speed_left < 0) {
-        LOG(llevError, "Player has negative time - shouldn't do command.\n");
+        LOG(llevError, "Player %s (%s) has negative time - shouldn't do command.\n",
+            pl->ob->name ? pl->ob->name : "(unnamed)", pl->socket->account_name ? pl->socket->account_name : "(no account)");
     }
     command_execute(pl->ob, command);
     /* Perhaps something better should be done with a left over count.
