@@ -48,7 +48,7 @@ The following fields are available:
 - change_slaying: what slaying to give to the generated item
 - chance: probability of the item appearing, in % for a \e treasure list or relative to the sum of all \e chance for \e treasureone. Defaults to 100
 - nrof: maximum number of items to generate. Omitted means archetype default
-- magic: minimum magic required for this item to be generated
+- magic: for a `list`, minimum magic required for this list to be generated; for an `item`, the maximum magic it can have (capping the magic from the difficulty), this may restrict artifacts which may be generated
 - yes: starts a new treasure that will be generated if the current item is generated
 - no: starts a new treasure that will be generated if the current item is not generated
 - end: ends the current treasure definition
