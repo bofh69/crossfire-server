@@ -39,7 +39,7 @@ static void setup(void) {
     cctk_setdatadir(SOURCE_ROOT "lib");
     cctk_setlog(LOGDIR "/unit/common/object.out");
     printf("set log to %s\n", LOGDIR"/unit/common/object.out");
-    //cctk_init_std_archetypes();
+    cctk_init_std_archetypes();
 }
 
 static void teardown(void) {
@@ -88,6 +88,125 @@ START_TEST(test_treasure_remove_item) {
 }
 END_TEST
 
+static void check_treasure_inv(object *op, const char **items) {
+    object *inv = op->inv;
+    while ((*items) != NULL) {
+        fail_unless(inv != NULL, "missing item %s", *items);
+        fail_unless(strcmp(inv->name, *items) == 0, "got %s instead of %s", inv->name, *items);
+        ++items;
+        inv = inv->below;
+    }
+    if (inv) {
+        while (inv) {
+            printf(" => unexpected inv %s\n", inv->name);
+            inv = inv->below;
+        }
+        fail_unless(inv != NULL, "got extra inv");
+    }
+}
+
+const char *empty[] = {NULL};
+
+START_TEST(test_create_treasure_one) {
+    const char *items[] = {"kobold's heart", NULL};
+    cf_srandom(145);
+    treasurelist *list = find_treasurelist("ape_parts");
+    fail_unless(list, "missing list 'ape_parts'");
+    object *k = create_archetype("kobold");
+    fail_unless(k, "missing kobold");
+    check_treasure_inv(k, empty);
+    create_treasure(list, k, 0, 0, 0);
+    check_treasure_inv(k, items);
+}
+END_TEST
+
+START_TEST(test_create_treasure_all) {
+    const const char *items[] = {
+        "arrow",
+        "bow",
+        "ring",
+        "plate mail",
+        "long sword",
+        "kobold's finger",
+        "use magic item",
+        NULL,
+    };
+    cf_srandom(94);
+    treasurelist *list = find_treasurelist("c_knight");
+    fail_unless(list, "missing list 'c_knight'");
+    object *k = create_archetype("kobold");
+    fail_unless(k, "missing kobold");
+    check_treasure_inv(k, empty);
+    create_treasure(list, k, 0, 0, 0);
+    check_treasure_inv(k, items);
+}
+END_TEST
+
+static bool check_treasure_arch(object *op, const char **first, const char **last) {
+    object *inv = op->inv;
+    fail_unless(inv, "missing inv");
+    fail_unless(inv->below == NULL, "unexpected below");
+    while (first != last) {
+        if (strcmp(*first, inv->arch->name) == 0) {
+            return true;
+        }
+        ++first;
+    }
+    return false;
+}
+
+START_TEST(test_magic_limit) {
+    const const char *possible[] = {
+    // magical traps
+    "rune_medium_fireball",
+    "rune_burning_hands",
+    "rune_poison_cloud",
+    "rune_create_bomb",
+    "rune_paralysis",
+    "rune_shock",
+    "rune_confusion",
+    "rune_icestorm",
+    "rune_drain_magic",
+    "rune_blast",
+    "rune_fire",
+    "rune_frost",
+    // nastier traps
+    "rune_summon_air_elemental",
+    "rune_dragonbreath",
+    "rune_large_icestorm",
+    "rune_large_fireball",
+    "rune_ball_lightning",
+    "rune_summon_devil",
+    "rune_summon_earth_elemental",
+    "rune_summon_fire_elemental",
+    "rune_summon_water_elemental",
+    "rune_death",
+    NULL};
+
+    cf_srandom(19);
+    treasurelist *list = find_treasurelist("magical_traps");
+    fail_unless(list, "missing list");
+    for (int i = 0; i < 1000; i++) {
+        object *k = create_archetype("kobold");
+        create_treasure(list, k, GT_INVISIBLE, 0, 0);
+        if (!k->inv) {
+            continue;
+        }
+        fail_unless(check_treasure_arch(k, possible, possible + 12), "wrong inv %s", k->inv->arch->name);
+    }
+
+    int nastier = 0;
+    for (int i = 0; i < 1000; i++) {
+        object *k = create_archetype("kobold");
+        create_treasure(list, k, GT_INVISIBLE, 6, 0);
+        if (check_treasure_arch(k, possible + 12, possible + 22)) {
+            nastier++;
+        }
+    }
+    fail_unless(nastier > 0, "should get a nastier trap");
+}
+END_TEST
+
 static Suite *treasure_suite(void) {
     Suite *s = suite_create("treasure");
     TCase *tc_core = tcase_create("Core");
@@ -98,6 +217,9 @@ static Suite *treasure_suite(void) {
     suite_add_tcase(s, tc_core);
     tcase_add_test(tc_core, test_add_treasure_in_list);
     tcase_add_test(tc_core, test_treasure_remove_item);
+    tcase_add_test(tc_core, test_create_treasure_one);
+    tcase_add_test(tc_core, test_create_treasure_all);
+    tcase_add_test(tc_core, test_magic_limit);
 
     return s;
 }
