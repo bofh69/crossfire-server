@@ -62,6 +62,7 @@ typedef struct _change_arch {
 */
 typedef struct treasurestruct {
     struct archt *item;                 /**< Which item this link can be */
+    sstring artifact;                   /**< If not null, the name of the artifact to apply to item */
     sstring name;                       /**< If non null, name of list to use instead */
     int8_t list_magic_adjustment;       /**< Adjust difficulty when generating the list pointed by name, ignored if list_magic_value is non zero */
     uint8_t list_magic_value;           /**< Set difficulty when generating the list pointed by name */

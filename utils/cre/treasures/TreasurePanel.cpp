@@ -27,6 +27,7 @@ TreasurePanel::TreasurePanel(QWidget* parent) : AssetWrapperPanel(parent) {
     addSpinBox(tr("Magic to generate with:"), "list_magic_value", std::numeric_limits<uint8_t>::min(), std::numeric_limits<uint8_t>::max(), false);
     addSpinBox(tr("Magic adjustment:"), "list_magic_adjustment", std::numeric_limits<int8_t>::min(), std::numeric_limits<int8_t>::max(), false);
     myArch = addArchetype(tr("Archetype:"), "arch");
+    addLineEdit(tr("Artifact:"), "artifact", false);
     addBottomFiller();
     setAcceptDrops(true);
     HelpManager::setHelpId(this, "treasures");

@@ -134,8 +134,18 @@ static void do_single_item(treasure *t, object *op, int flag, int difficulty) {
         object *tmp = arch_to_object(t->item);
         if (t->nrof && tmp->nrof <= 1)
             tmp->nrof = RANDOM()%((int)t->nrof)+1;
-        fix_generated_item(tmp, op, difficulty, t->magic, flag);
-        change_treasure(t, tmp);
+        if (t->artifact) {
+            const artifact *art = find_artifact(tmp, t->artifact);
+            if (!art || !legal_artifact_combination(tmp, art)) {
+                LOG(llevError, "Invalid artifact %s for treasure %s\n", t->artifact, tmp->arch->name);
+                object_free(tmp, FREE_OBJ_FREE_INVENTORY | FREE_OBJ_NO_DESTROY_CALLBACK);
+                return;
+            }
+            give_artifact_abilities(tmp, art->item);
+        } else {
+            fix_generated_item(tmp, op, difficulty, t->magic, flag);
+            change_treasure(t, tmp);
+        }
         put_treasure(tmp, op, flag);
     }
 }
@@ -1377,6 +1387,10 @@ treasure *get_empty_treasure(void) {
  * treasure to free. Pointer is free()d too, so becomes invalid.
  */
 void treasure_free(treasure *t) {
+    if (t->name)
+        free_string(t->name);
+    if (t->artifact)
+        free_string(t->artifact);
     if (t->next)
         treasure_free(t->next);
     if (t->next_yes)

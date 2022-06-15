@@ -248,6 +248,42 @@ START_TEST(test_magic_adjustment) {
 }
 END_TEST
 
+static object *do_artifact(const char *name) {
+    treasure t;
+    memset(&t, 0, sizeof(t));
+    t.chance = 1;
+    t.item = try_find_archetype("dagger");
+    fail_unless(t.item, "missing dagger");
+    t.artifact = add_string(name);
+    treasurelist tl;
+    memset(&tl, 0, sizeof(tl));
+    tl.items = &t;
+    tl.total_chance = 1;
+    object *k = create_archetype("kobold");
+    create_treasure(&tl, k, 0, 30, 0);
+    return k;
+}
+
+START_TEST(test_artifact_valid) {
+    sstring p = add_string("Poisoning");
+    object *k = do_artifact(p);
+    fail_unless(k->inv, "nothing generated");
+    fail_unless(k->inv->artifact == p, "artifact not generated");
+}
+END_TEST
+
+START_TEST(test_artifact_invalid) {
+    object *k = do_artifact("Xebinon");
+    fail_unless(k->inv == NULL, "something was generated");
+}
+END_TEST
+
+START_TEST(test_artifact_not_existing) {
+    object *k = do_artifact("garbage");
+    fail_unless(k->inv == NULL, "something was generated");
+}
+END_TEST
+
 static Suite *treasure_suite(void) {
     Suite *s = suite_create("treasure");
     TCase *tc_core = tcase_create("Core");
@@ -263,6 +299,9 @@ static Suite *treasure_suite(void) {
     tcase_add_test(tc_core, test_magic_limit);
     tcase_add_test(tc_core, test_magic_set);
     tcase_add_test(tc_core, test_magic_adjustment);
+    tcase_add_test(tc_core, test_artifact_valid);
+    tcase_add_test(tc_core, test_artifact_invalid);
+    tcase_add_test(tc_core, test_artifact_not_existing);
 
     return s;
 }

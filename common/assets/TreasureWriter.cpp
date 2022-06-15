@@ -21,6 +21,7 @@ static void writeItem(const treasure *item, const std::string &indent, StringBuf
     if (item->item) {
         stringbuffer_append_printf(buf, "%sarch %s\n", indentItems.c_str(), item->item->name);
     }
+    W(artifact, "artifact %s");
     W(name, "list %s");
     W(list_magic_value, "list_magic_value %d");
     W(list_magic_adjustment, "list_magic_adjustment %d");

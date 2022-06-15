@@ -64,6 +64,7 @@ treasure *generate_random_treasure(Archetypes &arches, int depth, bool single) {
         trs->list_magic_value = rndm(0, 10);
     } else {
         trs->item = arches.get(generate_name(50));
+        trs->artifact = add_string(generate_name(49));
     }
     trs->magic = rndm(0, 6);
     trs->nrof = rndm(0, 5);
@@ -101,6 +102,7 @@ bool equal(const treasure *left, treasure *right) {
     }
     fail_unless(right != nullptr, "left treasure != null but right treasure == null");
     fail_unless(left->item == right->item, "different arch");
+    fail_unless(left->artifact == right->artifact, "different artifacts");
     fail_unless(left->name == right->name, "different list");
     fail_unless(left->chance == right->chance, "different chance %d %d", left->chance, right->chance);
     fail_unless(left->magic == right->magic, "different magic %d %d", left->magic, right->magic);

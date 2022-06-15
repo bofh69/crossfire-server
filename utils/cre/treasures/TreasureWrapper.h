@@ -39,6 +39,7 @@ class TreasureWrapper : public AssetWithArtifacts<treasure> {
     Q_PROPERTY(quint8 list_magic_value READ listMagicValue WRITE setListMagicValue)
     Q_PROPERTY(qint8 list_magic_adjustment READ listMagicAdjustment WRITE setListMagicAdjustment)
     Q_PROPERTY(const archetype *arch READ arch WRITE setArch)
+    Q_PROPERTY(QString artifact READ artifact WRITE setArtifact)
 
 public:
     TreasureWrapper(AssetWrapper *parent, treasure *tr, ResourcesManager *resources);
@@ -73,6 +74,8 @@ public:
     void setListMagicAdjustment(qint8 value);
     const archetype *arch() const;
     void setArch(const archetype *arch);
+    const QString artifact() const;
+    void setArtifact(const QString &art);
 
 public slots:
     void swapYesNo();

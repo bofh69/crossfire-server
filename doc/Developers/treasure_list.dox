@@ -42,6 +42,7 @@ The following fields are available:
 - treasure: starts a new treasure list, from which all items may be generated
 - treasureone: starts a new treasure list, from which only one item may be generated
 - arch: archetype name of the item to generate
+- artifact: name of the artifact to make `arch` of; in this case `magic` is ignored. If the `item` is incompatible with `artifact`, then no item is generated
 - list: treasure list name to reference
 - list_magic_value: if non-zero, `list` will be generated with this difficulty instead of the current one
 - list_magic_adjustment: if list_magic_value is 0, this value is added (it can be negative) to the current difficulty to generate `list`
@@ -50,7 +51,7 @@ The following fields are available:
 - change_slaying: what slaying to give to the generated item
 - chance: probability of the item appearing, in % for a \e treasure list or relative to the sum of all \e chance for \e treasureone. Defaults to 100
 - nrof: maximum number of items to generate. Omitted means archetype default
-- magic: for a `list`, minimum magic required for this list to be generated; for an `item`, the maximum magic it can have (capping the magic from the difficulty), this may restrict artifacts which may be generated
+- magic: for a `list`, minimum magic required for this list to be generated; for an `item`, the maximum magic it can have (capping the magic from the difficulty), this may restrict artifacts which may be generated; does not apply if `artifact` is set
 - yes: starts a new treasure that will be generated if the current item is generated
 - no: starts a new treasure that will be generated if the current item is not generated
 - end: ends the current treasure definition

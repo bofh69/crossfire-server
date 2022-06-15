@@ -282,6 +282,21 @@ void TreasureWrapper::setArch(const archetype *arch) {
     }
 }
 
+const QString TreasureWrapper::artifact() const {
+    return myWrappedItem->artifact;
+}
+
+void TreasureWrapper::setArtifact(const QString &art) {
+    if (art != myWrappedItem->artifact) {
+        FREE_AND_CLEAR_STR_IF(myWrappedItem->artifact);
+        if (!art.isEmpty()) {
+            myWrappedItem->artifact = add_string(art.toLocal8Bit().data());
+        }
+        markModified(AssetUpdated);
+    }
+}
+
+
 void TreasureWrapper::fillMenu(QMenu *menu) {
     connect(menu->addAction(tr("Delete")), &QAction::triggered, [this] () { myParent->removeChild(this); });
     if (myNextYes || myNextNo) {
