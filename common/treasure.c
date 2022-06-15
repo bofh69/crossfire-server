@@ -117,6 +117,30 @@ static void change_treasure(treasure *t, object *op) {
 }
 
 /**
+ * Creates the item for a treasure.
+ *
+ * @param t
+ * what to generate.
+ * @param op
+ * for who to generate the treasure.
+ * @param flag
+ * combination of @ref GT_xxx values.
+ * @param difficulty
+ * map difficulty.
+ * @ingroup page_treasure_list
+ */
+static void do_single_item(treasure *t, object *op, int flag, int difficulty) {
+    if (t->item && (t->item->clone.invisible != 0 || !(flag&GT_INVISIBLE))) {
+        object *tmp = arch_to_object(t->item);
+        if (t->nrof && tmp->nrof <= 1)
+            tmp->nrof = RANDOM()%((int)t->nrof)+1;
+        fix_generated_item(tmp, op, difficulty, t->magic, flag);
+        change_treasure(t, tmp);
+        put_treasure(tmp, op, flag);
+    }
+}
+
+/**
  * Creates all the treasures.
  *
  * @param t
@@ -132,21 +156,12 @@ static void change_treasure(treasure *t, object *op) {
  * @ingroup page_treasure_list
  */
 static void create_all_treasures(treasure *t, object *op, int flag, int difficulty, int tries) {
-    object *tmp;
-
     if ((int)t->chance >= 100 || (RANDOM()%100+1) < t->chance) {
         if (t->name) {
             if (strcmp(t->name, "NONE") && difficulty >= t->magic)
                 create_treasure(find_treasurelist(t->name), op, flag, difficulty, tries);
         } else {
-            if (t->item->clone.invisible != 0 || !(flag&GT_INVISIBLE)) {
-                tmp = arch_to_object(t->item);
-                if (t->nrof && tmp->nrof <= 1)
-                    tmp->nrof = RANDOM()%((int)t->nrof)+1;
-                fix_generated_item(tmp, op, difficulty, t->magic, flag);
-                change_treasure(t, tmp);
-                put_treasure(tmp, op, flag);
-            }
+            do_single_item(t, op, flag, difficulty);
         }
         if (t->next_yes != NULL)
             create_all_treasures(t->next_yes, op, flag, difficulty, tries);
@@ -210,17 +225,7 @@ static void create_one_treasure(treasurelist *tl, object *op, int flag, int diff
             return;
         }
     }
-    if ((t->item && t->item->clone.invisible != 0) || flag != GT_INVISIBLE) {
-        object *tmp = arch_to_object(t->item);
-
-        if (!tmp)
-            return;
-        if (t->nrof && tmp->nrof <= 1)
-            tmp->nrof = RANDOM()%((int)t->nrof)+1;
-        fix_generated_item(tmp, op, difficulty, t->magic, flag);
-        change_treasure(t, tmp);
-        put_treasure(tmp, op, flag);
-    }
+    do_single_item(t, op, flag, difficulty);
 }
 
 /**
