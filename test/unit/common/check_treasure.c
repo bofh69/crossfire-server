@@ -37,8 +37,7 @@
 
 static void setup(void) {
     cctk_setdatadir(SOURCE_ROOT "lib");
-    cctk_setlog(LOGDIR "/unit/common/object.out");
-    printf("set log to %s\n", LOGDIR"/unit/common/object.out");
+    cctk_setlog(LOGDIR "/unit/common/treasure.out");
     cctk_init_std_archetypes();
 }
 
@@ -155,8 +154,7 @@ static bool check_treasure_arch(object *op, const char **first, const char **las
     return false;
 }
 
-START_TEST(test_magic_limit) {
-    const const char *possible[] = {
+const const char *allTraps[] = {
     // magical traps
     "rune_medium_fireball",
     "rune_burning_hands",
@@ -183,6 +181,8 @@ START_TEST(test_magic_limit) {
     "rune_death",
     NULL};
 
+
+START_TEST(test_magic_limit) {
     cf_srandom(19);
     treasurelist *list = find_treasurelist("magical_traps");
     fail_unless(list, "missing list");
@@ -192,18 +192,59 @@ START_TEST(test_magic_limit) {
         if (!k->inv) {
             continue;
         }
-        fail_unless(check_treasure_arch(k, possible, possible + 12), "wrong inv %s", k->inv->arch->name);
+        fail_unless(check_treasure_arch(k, allTraps, allTraps + 12), "wrong inv %s", k->inv->arch->name);
     }
 
     int nastier = 0;
     for (int i = 0; i < 1000; i++) {
         object *k = create_archetype("kobold");
         create_treasure(list, k, GT_INVISIBLE, 6, 0);
-        if (check_treasure_arch(k, possible + 12, possible + 22)) {
+        if (check_treasure_arch(k, allTraps + 12, allTraps + 22)) {
             nastier++;
         }
     }
     fail_unless(nastier > 0, "should get a nastier trap");
+}
+END_TEST
+
+static void do_magic(int difficulty, uint8_t value, int8_t adjustment) {
+    cf_srandom(57);
+    treasurelist *list = find_treasurelist("magical_traps");
+    fail_unless(list, "missing list");
+
+    treasure t;
+    memset(&t, 0, sizeof(t));
+    t.chance = 1;
+    t.name = add_string(list->name);
+    t.list_magic_value = value;
+    t.list_magic_adjustment = adjustment;
+    treasurelist tl;
+    memset(&tl, 0, sizeof(tl));
+    tl.items = &t;
+    tl.total_chance = 1;
+
+    int nastier = 0;
+    for (int i = 0; (i < 1000) && (nastier == 0); i++) {
+        object *k = create_archetype("kobold");
+        create_treasure(&tl, k, GT_INVISIBLE, difficulty, 0);
+        if (!k->inv) {
+            continue;
+        }
+        if (check_treasure_arch(k, allTraps + 12, allTraps + 22)) {
+            nastier++;
+            break;
+        }
+    }
+    fail_unless(nastier > 0, "should get a nastier trap");
+}
+
+START_TEST(test_magic_set) {
+    do_magic(0, 6, 0);
+}
+END_TEST
+
+START_TEST(test_magic_adjustment) {
+    do_magic(3, 0, 3);
 }
 END_TEST
 
@@ -220,6 +261,8 @@ static Suite *treasure_suite(void) {
     tcase_add_test(tc_core, test_create_treasure_one);
     tcase_add_test(tc_core, test_create_treasure_all);
     tcase_add_test(tc_core, test_magic_limit);
+    tcase_add_test(tc_core, test_magic_set);
+    tcase_add_test(tc_core, test_magic_adjustment);
 
     return s;
 }

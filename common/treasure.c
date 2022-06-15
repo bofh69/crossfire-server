@@ -159,7 +159,7 @@ static void create_all_treasures(treasure *t, object *op, int flag, int difficul
     if ((int)t->chance >= 100 || (RANDOM()%100+1) < t->chance) {
         if (t->name) {
             if (strcmp(t->name, "NONE") && difficulty >= t->magic)
-                create_treasure(find_treasurelist(t->name), op, flag, difficulty, tries);
+                create_treasure(find_treasurelist(t->name), op, flag, t->list_magic_value ? t->list_magic_value : difficulty + t->list_magic_adjustment, tries);
         } else {
             do_single_item(t, op, flag, difficulty);
         }
@@ -213,7 +213,7 @@ static void create_one_treasure(treasurelist *tl, object *op, int flag, int diff
         if (!strcmp(t->name, "NONE"))
             return;
         if (difficulty >= t->magic)
-            create_treasure(find_treasurelist(t->name), op, flag, difficulty, tries);
+            create_treasure(find_treasurelist(t->name), op, flag, t->list_magic_value ? t->list_magic_value : difficulty + t->list_magic_adjustment, tries);
         else if (t->nrof)
             create_one_treasure(tl, op, flag, difficulty, tries);
         return;

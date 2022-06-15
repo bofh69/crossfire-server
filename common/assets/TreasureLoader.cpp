@@ -58,6 +58,10 @@ treasure *TreasureLoader::loadTreasure(BufferReader *reader, const std::string &
                 LOG(llevError, "treasure: duplicate 'arch' in %s:%d\n", filename.c_str(), bufferreader_current_line(reader));
             }
             t->item = m_archetypes->get(variable);
+        } else if (sscanf(cp, "list_magic_value %d", &value)) {
+            t->list_magic_value = (uint8_t)value;
+        } else if (sscanf(cp, "list_magic_adjustment %d", &value)) {
+            t->list_magic_adjustment = (int8_t)value;
         } else if (sscanf(cp, "list %s", variable)) {
             if (t->name) {
                 LOG(llevError, "treasure: duplicate 'name' in %s:%d\n", filename.c_str(), bufferreader_current_line(reader));

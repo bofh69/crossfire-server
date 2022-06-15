@@ -43,6 +43,8 @@ The following fields are available:
 - treasureone: starts a new treasure list, from which only one item may be generated
 - arch: archetype name of the item to generate
 - list: treasure list name to reference
+- list_magic_value: if non-zero, `list` will be generated with this difficulty instead of the current one
+- list_magic_adjustment: if list_magic_value is 0, this value is added (it can be negative) to the current difficulty to generate `list`
 - change_name: what name to give to the generated item
 - change_title: what title to give to the generated item
 - change_slaying: what slaying to give to the generated item

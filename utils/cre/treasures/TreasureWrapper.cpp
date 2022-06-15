@@ -245,6 +245,28 @@ void TreasureWrapper::setList(const treasurelist *list) {
     }
 }
 
+quint8 TreasureWrapper::listMagicValue() const {
+    return myWrappedItem->list_magic_value;
+}
+
+void TreasureWrapper::setListMagicValue(quint8 value) {
+    if (value != myWrappedItem->list_magic_value) {
+        myWrappedItem->list_magic_value = value;
+        markModified(AssetUpdated);
+    }
+}
+
+qint8 TreasureWrapper::listMagicAdjustment() const {
+    return myWrappedItem->list_magic_adjustment;
+}
+void TreasureWrapper::setListMagicAdjustment(qint8 value) {
+    if (value != myWrappedItem->list_magic_adjustment) {
+        myWrappedItem->list_magic_adjustment = value;
+        markModified(AssetUpdated);
+    }
+}
+
+
 const archetype *TreasureWrapper::arch() const {
     return myWrappedItem->item;
 }
