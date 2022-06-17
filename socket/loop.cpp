@@ -378,12 +378,12 @@ static void block_until_new_connection(void) {
          * a second.
          */
         if (settings.fastclock > 0) {
-#ifdef WATCHDOG
             if (cycles%120000 == 0) {
+#ifdef WATCHDOG
                 watchdog();
+#endif
                 flush_old_maps();
             }
-#endif
             if (cycles == 720000) {
                 metaserver_update();
                 cycles = 1;
@@ -397,6 +397,9 @@ static void block_until_new_connection(void) {
                 metaserver_update();
                 cycles = 1;
             }
+#ifdef WATCHDOG
+            watchdog();
+#endif
             flush_old_maps();
         }
     } while (select(socket_info.max_filedescriptor, &readfs, NULL, NULL, &Timeout) == 0);
