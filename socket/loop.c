@@ -497,14 +497,14 @@ static void new_connection(int listen_fd) {
  *
  * @return True if connection is active, false if not.
  */
-bool connection_alive(socket_struct socket) {
+bool connection_alive(const socket_struct *socket) {
     // If the client doesn't send heartbeats, assume it's connected.
-    if (!socket.heartbeat) {
+    if (!socket->heartbeat) {
         return true;
     }
 
     // If a client message was received recently, it's connected.
-    if (socket.last_tick < tick_length(BEAT_INTERVAL + 1)) {
+    if (socket->last_tick < tick_length(BEAT_INTERVAL + 1)) {
         return true;
     }
 
@@ -707,7 +707,7 @@ void update_players() {
         if (pl->state == ST_PLAYING) {
             pl->socket->last_tick++;
 
-            if (!connection_alive(*pl->socket)) {
+            if (!connection_alive(pl->socket)) {
                 // TODO: Handle a lost client connection.
                 LOG(llevDebug, "Lost client connection!\n");
             }
