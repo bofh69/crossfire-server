@@ -604,12 +604,18 @@ int monster_compute_path(object *source, object *target, int default_dir) {
                     int newdir = absdir(dir+4+1-(RANDOM()&2)); // Bob/weave up to one space.
                     int newx = source->x+freearr_x[newdir],
                         newy = source->y+freearr_y[newdir];
-                    const path_data *newloc = &distance[map_height * newx + newy];
-                    // If we checked the tile during pathing and it is not a wall and the movement penalty of the tile
-                    // is not greater than the shortest-path's movement penalty, then go to that space.
-                    if (newloc->distance != 65535 && newloc->distance != 1 &&
-                        newloc->movement_penalty <= current->movement_penalty)
-                            dir = newdir; // Commit to the bob/weave
+                    // If we travel out of the map with this dodge, then we didn't try to path there.
+                    // In such a case, we need to skip bob/weave and just go at the target.
+                    if (!OUT_OF_REAL_MAP(source->map, newx, newy)) {
+                        const path_data *newloc = &distance[map_height * newx + newy];
+                        // If we checked the tile during pathing and it is not a wall and the movement penalty of the tile
+                        // is not greater than the shortest-path's movement penalty, then go to that space.
+                        if (newloc->distance != 65535 && newloc->distance != 1 &&
+                            newloc->movement_penalty <= current->movement_penalty)
+                                dir = newdir; // Commit to the bob/weave
+                        else
+                            dir = absdir(dir + 4);
+                    }
                     else
                         dir = absdir(dir + 4);
                 }
