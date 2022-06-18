@@ -2505,7 +2505,7 @@ void account_play_cmd(char *buf, int len, socket_struct *ns)
     }
 
     for (pl = first_player; pl; pl = pl->next) {
-        if (pl->ob && pl->socket != ns && strcmp(buf, pl->ob->name) == 0) {
+        if (pl->ob && pl->socket != ns && strcmp(buf, pl->ob->name) == 0 && pl->state != ST_PLAY_AGAIN && pl->state != ST_GET_NAME) {
             SockList_AddPrintf(&sl,
                                "failure accountplay Character %s is already playing",
                                buf);
