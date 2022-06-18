@@ -60,7 +60,7 @@ static void load_bells(BufferReader *reader, const char *filename) {
         }
         char *space = strchr(line, ' ');
         if (!space) {
-            LOG(llevError, "Invalid bell line '%s' in %s:%ld\n", line, filename, bufferreader_current_line(reader));
+            LOG(llevError, "Invalid bell line '%s' in %s:%zu\n", line, filename, bufferreader_current_line(reader));
             continue;
         }
         *space = '\0';

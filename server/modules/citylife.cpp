@@ -358,7 +358,7 @@ static void load_citylife(BufferReader *reader, const char *filename) {
 
         char *space = strchr(line, ' ');
         if (!space) {
-            LOG(llevError, "citylife: invalid line in file %s:%ld\n", filename, bufferreader_current_line(reader));
+            LOG(llevError, "citylife: invalid line in file %s:%zu\n", filename, bufferreader_current_line(reader));
             continue;
         }
         *space = '\0';
@@ -379,7 +379,7 @@ static void load_citylife(BufferReader *reader, const char *filename) {
             continue;
         }
         if (!zone) {
-            LOG(llevError, "citylife: error, missing 'map' in file %s:%ld\n", filename, bufferreader_current_line(reader));
+            LOG(llevError, "citylife: error, missing 'map' in file %s:%zu\n", filename, bufferreader_current_line(reader));
             continue;
         }
         if (strcmp(line, "population") == 0) {
@@ -389,7 +389,7 @@ static void load_citylife(BufferReader *reader, const char *filename) {
         if (strcmp(line, "zone") == 0) {
             size_t found = split_string(space, split, 4, ' ');
             if (found != 4) {
-                LOG(llevError, "citylife: 'zone' should have 4 values in file %s:%ld\n", filename, bufferreader_current_line(reader));
+                LOG(llevError, "citylife: 'zone' should have 4 values in file %s:%zu\n", filename, bufferreader_current_line(reader));
             } else {
                 spawn_zone z;
                 z.sx = atoi(split[0]);
@@ -403,7 +403,7 @@ static void load_citylife(BufferReader *reader, const char *filename) {
         if (strcmp(line, "point") == 0) {
             size_t found = split_string(space, split, 2, ' ');
             if (found != 2) {
-                LOG(llevError, "citylife: 'point' should have 2 values in file %s:%ld\n", filename, bufferreader_current_line(reader));
+                LOG(llevError, "citylife: 'point' should have 2 values in file %s:%zu\n", filename, bufferreader_current_line(reader));
             } else {
                 spawn_point p;
                 p.x = atoi(split[0]);
@@ -416,7 +416,7 @@ static void load_citylife(BufferReader *reader, const char *filename) {
             zone->available_archetypes.push_back(space);
             continue;
         }
-        LOG(llevError, "citylife: unknown line %s in file %s:%ld\n", line, filename, bufferreader_current_line(reader));
+        LOG(llevError, "citylife: unknown line %s in file %s:%zu\n", line, filename, bufferreader_current_line(reader));
     }
 
     if (zone) {

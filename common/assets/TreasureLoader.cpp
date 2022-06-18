@@ -55,12 +55,12 @@ treasure *TreasureLoader::loadTreasure(BufferReader *reader, const std::string &
 
         if (sscanf(cp, "arch %s", variable)) {
             if (t->item) {
-                LOG(llevError, "treasure: duplicate 'arch' in %s:%d\n", filename.c_str(), bufferreader_current_line(reader));
+                LOG(llevError, "treasure: duplicate 'arch' in %s:%zu\n", filename.c_str(), bufferreader_current_line(reader));
             }
             t->item = m_archetypes->get(variable);
         } else if (sscanf(cp, "artifact %s", variable)) {
             if (t->artifact) {
-                LOG(llevError, "treasure: duplicate 'artifact' in %s:%d\n", filename.c_str(), bufferreader_current_line(reader));
+                LOG(llevError, "treasure: duplicate 'artifact' in %s:%zu\n", filename.c_str(), bufferreader_current_line(reader));
                 free_string(t->artifact);
             }
             t->artifact = add_string(variable);
@@ -70,7 +70,7 @@ treasure *TreasureLoader::loadTreasure(BufferReader *reader, const std::string &
             t->list_magic_adjustment = (int8_t)value;
         } else if (sscanf(cp, "list %s", variable)) {
             if (t->name) {
-                LOG(llevError, "treasure: duplicate 'name' in %s:%d\n", filename.c_str(), bufferreader_current_line(reader));
+                LOG(llevError, "treasure: duplicate 'name' in %s:%zu\n", filename.c_str(), bufferreader_current_line(reader));
                 free_string(t->name);
             }
             t->name = add_string(variable);
@@ -96,9 +96,9 @@ treasure *TreasureLoader::loadTreasure(BufferReader *reader, const std::string &
             t->next = loadTreasure(reader, filename);
             return t;
         } else
-            LOG(llevError, "Unknown treasure-command: '%s', last entry %s in %s:%d\n", cp, t->name ? t->name : "null", filename.c_str(), bufferreader_current_line(reader));
+            LOG(llevError, "Unknown treasure-command: '%s', last entry %s in %s:%zu\n", cp, t->name ? t->name : "null", filename.c_str(), bufferreader_current_line(reader));
     }
-    LOG(llevError, "treasure lacks 'end' in %s at line %d.\n", filename.c_str(), bufferreader_current_line(reader));
+    LOG(llevError, "treasure lacks 'end' in %s at line %zu.\n", filename.c_str(), bufferreader_current_line(reader));
     fatal(SEE_LAST_ERROR);
     return t;
 }
@@ -140,6 +140,6 @@ void TreasureLoader::load(BufferReader *reader, const std::string& filename) {
                 m_tracker->assetDefined(tl, filename);
             }
         } else
-            LOG(llevError, "Treasure-list didn't understand: %s in %s:%d\n", buf, filename.c_str(), bufferreader_current_line(reader));
+            LOG(llevError, "Treasure-list didn't understand: %s in %s:%zu\n", buf, filename.c_str(), bufferreader_current_line(reader));
     }
 }

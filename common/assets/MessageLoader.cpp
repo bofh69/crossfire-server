@@ -94,12 +94,12 @@ void MessageLoader::load(BufferReader *reader, const std::string &filename) {
             }
             /* We need an identifier, so generate one from filename and line, that should be unique enough! */
             if (!tmp->identifier) {
-                snprintf(msgbuf, sizeof(msgbuf), "\n%s\n%ld", filename.c_str(), bufferreader_current_line(reader));
+                snprintf(msgbuf, sizeof(msgbuf), "\n%s\n%zu", filename.c_str(), bufferreader_current_line(reader));
                 tmp->identifier = add_string(msgbuf);
             }
             strcpy(msgbuf, ""); /* reset msgbuf for new message */
         } else {
-            LOG(llevInfo, "Warning: syntax error at %s, line %ld\n", filename.c_str(), bufferreader_current_line(reader));
+            LOG(llevInfo, "Warning: syntax error at %s, line %zu\n", filename.c_str(), bufferreader_current_line(reader));
         }
     }
 

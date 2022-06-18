@@ -186,7 +186,7 @@ void init_formulae(BufferReader *reader, const char *filename) {
                 free_all_recipes();
                 formulalist = init_recipelist();
             } else {
-                LOG(llevError, "Recipes: only '*' is accepted for 'Remove' at %s:%d\n", filename, bufferreader_current_line(reader));
+                LOG(llevError, "Recipes: only '*' is accepted for 'Remove' at %s:%zu\n", filename, bufferreader_current_line(reader));
             }
             continue;
         }
