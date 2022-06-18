@@ -51,7 +51,7 @@ void MessageLoader::load(BufferReader *reader, const std::string &filename) {
                 }
                 tmp->message = add_string(msgbuf);
                 if (tmp->identifier[0] != '\n' && tmp->title == NULL) {
-                    LOG(llevError, "Error: message can't have identifier without title, file %s on line %ld\n", filename.c_str(), bufferreader_current_line(reader));
+                    LOG(llevError, "Error: message can't have identifier without title, file %s on line %zu\n", filename.c_str(), bufferreader_current_line(reader));
                 }
                 tmp = m_messages->define(tmp->identifier, tmp);
                 if (m_tracker) {
@@ -65,7 +65,7 @@ void MessageLoader::load(BufferReader *reader, const std::string &filename) {
                     strcat(msgbuf, buf);
                     strcat(msgbuf, "\n");
                 } else {
-                    LOG(llevInfo, "Warning: truncating book at %s, line %ld\n", filename.c_str(), bufferreader_current_line(reader));
+                    LOG(llevInfo, "Warning: truncating book at %s, line %zu\n", filename.c_str(), bufferreader_current_line(reader));
                 }
             } else if (strcmp(buf, "TEXT") == 0) {
                 text = 1;
@@ -79,7 +79,7 @@ void MessageLoader::load(BufferReader *reader, const std::string &filename) {
                 const Face *face = find_face(buf + 5);
                 tmp->face = face;
             } else {
-                LOG(llevInfo, "Warning: unknown line %s, in file %s line %ld\n", buf, filename.c_str(), bufferreader_current_line(reader));
+                LOG(llevInfo, "Warning: unknown line %s, in file %s line %zu\n", buf, filename.c_str(), bufferreader_current_line(reader));
             }
         } else if (strncmp(buf, "MSG", 3) == 0) {
             tmp = (GeneralMessage *)calloc(1, sizeof(GeneralMessage));
