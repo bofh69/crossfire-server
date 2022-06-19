@@ -403,6 +403,7 @@ void send_news(const object *op);
 int playername_ok(const char *cp);
 player *get_player(player *p);
 void set_first_map(object *op);
+void set_player_socket(player *p, socket_struct *ns);
 player *add_player(socket_struct *ns, int flags);
 object *get_nearest_criminal(object *mon);
 object *get_nearest_player(object *mon);
