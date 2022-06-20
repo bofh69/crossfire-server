@@ -22,8 +22,6 @@ extern "C" {
 
 class Treasures : public AssetsCollection<treasurelist> {
 protected:
-    virtual treasurelist *create(const std::string& name);
-    virtual void destroy(treasurelist *item);
     virtual void replace(treasurelist *existing, treasurelist *update);
 };
 

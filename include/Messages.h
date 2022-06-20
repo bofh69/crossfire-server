@@ -31,8 +31,6 @@ public:
 protected:
     int m_totalChance;
 
-    virtual GeneralMessage *create(const std::string& name);
-    virtual void destroy(GeneralMessage *item);
     virtual void replace(GeneralMessage *existing, GeneralMessage *update);
 
     virtual void added(GeneralMessage *asset);

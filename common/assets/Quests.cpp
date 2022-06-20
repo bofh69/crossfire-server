@@ -12,18 +12,20 @@
 
 #include "Quests.h"
 
+template<>
+quest_definition *asset_create(const std::string& name) {
+    return quest_create(name.data());
+}
+
+template<>
+void asset_destroy(quest_definition *quest) {
+    quest_destroy(quest);
+}
+
 Quests::Quests() : visibleQuests(0) {
 }
 
 Quests::~Quests() {
-}
-
-quest_definition *Quests::create(const std::string& name) {
-    return quest_create(name.data());
-}
-
-void Quests::destroy(quest_definition *quest) {
-    quest_destroy(quest);
 }
 
 void Quests::replace(quest_definition *existing, quest_definition *update) {

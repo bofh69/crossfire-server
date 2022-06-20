@@ -26,8 +26,6 @@ public:
     size_t visibleCount() const { return visibleQuests; }
 
 protected:
-    virtual quest_definition *create(const std::string& name);
-    virtual void destroy(quest_definition *item);
     virtual void replace(quest_definition *existing, quest_definition *update);
     virtual void added(quest_definition *quest);
 

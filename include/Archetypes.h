@@ -115,8 +115,6 @@ public:
     static void recursive_update(object *item, archetype *updated);
 
 protected:
-    virtual archetype *create(const std::string& name);
-    virtual void destroy(archetype *item);
     virtual void replace(archetype *existing, archetype *update);
 
     updateListener m_updateListener;

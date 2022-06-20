@@ -24,8 +24,6 @@ public:
     AllAnimations();
 
 protected:
-    virtual Animations *create(const std::string& name);
-    virtual void destroy(Animations *item);
     virtual void replace(Animations *existing, Animations *update);
 
     virtual void added(Animations *anim);

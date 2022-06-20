@@ -15,21 +15,23 @@ extern "C" {
 #include "global.h"
 }
 
-Messages::Messages() : m_totalChance(0) {
-}
-
-GeneralMessage *Messages::create(const std::string& name) {
+template<>
+GeneralMessage *asset_create(const std::string& name) {
     auto msg = static_cast<GeneralMessage *>(calloc(1, sizeof(GeneralMessage)));
     msg->identifier = add_string(name.c_str());
     return msg;
 }
 
-void Messages::destroy(GeneralMessage *item) {
+template<>
+void asset_destroy(GeneralMessage *item) {
     FREE_AND_CLEAR_STR_IF(item->identifier);
     FREE_AND_CLEAR_STR_IF(item->message);
     FREE_AND_CLEAR_STR_IF(item->quest_code);
     FREE_AND_CLEAR_STR_IF(item->title);
     free(item);
+}
+
+Messages::Messages() : m_totalChance(0) {
 }
 
 void Messages::replace(GeneralMessage *existing, GeneralMessage *update) {
@@ -40,7 +42,7 @@ void Messages::replace(GeneralMessage *existing, GeneralMessage *update) {
     m_totalChance -= existing->chance;
     m_totalChance += update->chance;
     existing->chance = update->chance;
-    destroy(update);
+    asset_destroy(update);
 }
 
 void Messages::added(GeneralMessage *asset) {

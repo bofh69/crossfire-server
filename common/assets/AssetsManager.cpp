@@ -29,13 +29,6 @@ AssetsManager::AssetsManager() {
 
 AssetsManager::~AssetsManager() {
     m_archetypes.clearReplaceListener();
-    m_treasures.clear();
-    m_animations.clear();
-    m_archetypes.clear();
-    m_faces.clear();
-    m_messages.clear();
-    m_facesets.clear();
-    m_quests.clear();
 }
 
 void AssetsManager::archetypeUpdated(archetype *, archetype *update) {

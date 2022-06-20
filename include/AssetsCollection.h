@@ -20,18 +20,33 @@
 #include <functional>
 
 /**
+ * Destroy an asset.
+ * @param asset to destroy.
+ */
+template<class T>
+extern void asset_destroy(T *);
+
+/**
+ * Create an asset with the specified key.
+ * @param key.
+ * @return newly created asset.
+ */
+template <class T, class Key>
+extern T *asset_create(const Key &);
+
+/**
  * Collection of assets identified by a unique name.
  * An asset is whetever is wanted, no assumption are done on the class.
  *
- * A pointer to an asset returned by this class is deleted only when the NamedAssets instance is destroyed.
+ * A pointer to an asset returned by this class is deleted only when the AssetsCollection instance is destroyed.
  * The contents of the asset itself may change though.
  *
  * If an asset is searched for and created on the fly, it is marked as "undefined" until actually defined
  * through a call to define().
  *
- * Assets are owned by this instance, and deleted when clear() is called.
- * Because of how C++ destructors work, clear() unfortunately can't be called automatically
- * (virtual function).
+ * Assets are owned by this instance, and deleted when the instance is destroyed or clear() is called.
+ * The asset_destroy() and asset_create() functions must be implemented
+ * for the type T and key Key.
  *
  * Actual implementations must provide some pure virtual functions.
  */
@@ -41,13 +56,20 @@ class AssetsCollection {
     public:
 
         /**
-         * Destroy all assets.
+         * Destroy this instance and all assets is owns.
+         */
+        virtual ~AssetsCollection() {
+            clear();
+        }
+
+        /**
+         * Clear all assets.
          */
         void clear() {
             for (auto asset : m_assets) {
-                destroy(asset.second);
+                asset_destroy(asset.second);
             }
-            m_assets.empty();
+            m_assets.clear();
         }
 
         /**
@@ -69,7 +91,7 @@ class AssetsCollection {
                 return asset->second;
             }
 
-            T *add = create(name);
+            T *add = asset_create<T>(name);
             m_assets[name] = add;
             m_undefined.insert(name);
             added(add);
@@ -157,17 +179,6 @@ class AssetsCollection {
         std::map<Key, T*> m_assets; /**< Known assets. */
         std::set<Key> m_undefined;  /**< List of undefined assets. */
 
-        /**
-         * Create a new asset.
-         * @param name asset unique name.
-         * @return asset.
-         */
-        virtual T *create(const Key& name) = 0;
-        /**
-         * Destroy an asset.
-         * @param item asset to destroy.
-         */
-        virtual void destroy(T *item) = 0;
         /**
          * Replace an asset by an updated version.
          * @param existing asset to be updated.

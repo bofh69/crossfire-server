@@ -16,23 +16,26 @@ extern "C" {
 }
 #include "assets.h"
 
-AllAnimations::AllAnimations() {
-    get("###none");
-    m_undefined.clear();
-}
-
-Animations *AllAnimations::create(const std::string& name) {
+template<>
+Animations *asset_create(const std::string& name) {
     Animations *anim = (Animations *)calloc(1, sizeof(Animations));
     anim->name = add_string(name.c_str());
     anim->num_animations = 1;
     return anim;
 }
 
-void AllAnimations::destroy(Animations *item) {
+template<>
+void asset_destroy(Animations *item) {
     free_string(item->name);
     free(item->faces);
     free(item);
 }
+
+AllAnimations::AllAnimations() {
+    get("###none");
+    m_undefined.clear();
+}
+
 void AllAnimations::replace(Animations *existing, Animations *update) {
     free(existing->faces);
     existing->faces = update->faces;

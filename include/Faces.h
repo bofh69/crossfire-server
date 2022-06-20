@@ -29,8 +29,6 @@ public:
 protected:
     int m_checksum;
 
-    virtual Face *create(const std::string& name);
-    virtual void destroy(Face *item);
     virtual void replace(Face *existing, Face *update);
     virtual void added(Face *face);
 };

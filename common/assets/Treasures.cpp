@@ -12,13 +12,15 @@
 
 #include "Treasures.h"
 
-treasurelist *Treasures::create(const std::string& name) {
+template<>
+treasurelist *asset_create(const std::string& name) {
     treasurelist *tl = (treasurelist *)calloc(1, sizeof(treasurelist));
     tl->name = add_string(name.c_str());
     return tl;
 }
 
-void Treasures::destroy(treasurelist *item) {
+template<>
+void asset_destroy(treasurelist *item) {
     if (item->name)
         free_string(item->name);
     if (item->items)
@@ -33,5 +35,5 @@ void Treasures::replace(treasurelist *existing, treasurelist *update) {
     existing->items = update->items;
     existing->total_chance = update->total_chance;
     update->items = NULL;
-    destroy(update);
+    asset_destroy(update);
 }

@@ -13,22 +13,23 @@
 #include "Faces.h"
 #include "string.h"
 
+template<>
+Face *asset_create(const std::string& name) {
+    Face *face = (Face *)calloc(1, sizeof(Face));
+    face->name = add_string(name.c_str());
+    return face;
+}
+
+template<>
+void asset_destroy(Face *item) {
+    free_string(item->name);
+    free(item);
+}
+
 Faces::Faces() : m_checksum(0) {
     blank_face = get(BLANK_FACE_NAME);
     empty_face = get(EMPTY_FACE_NAME);
     smooth_face = get(SMOOTH_FACE_NAME);
-}
-
-Face *Faces::create(const std::string& name) {
-    Face *face = (Face *)calloc(1, sizeof(Face));
-    face->name = add_string(name.c_str());
-    face->number = m_assets.size();
-    return face;
-}
-
-void Faces::destroy(Face *item) {
-    free_string(item->name);
-    free(item);
 }
 
 void Faces::replace(Face *existing, Face *update) {
@@ -37,7 +38,7 @@ void Faces::replace(Face *existing, Face *update) {
     if (update->smoothface) {
         existing->smoothface = update->smoothface;
     }
-    destroy(update);
+    asset_destroy(update);
 }
 
 const Face *Faces::findById(uint16_t id) {

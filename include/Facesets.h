@@ -32,8 +32,6 @@ public:
   face_sets *findById(int id);
 
 protected:
-    virtual face_sets *create(const std::string& prefix);
-    virtual void destroy(face_sets *item);
     virtual void replace(face_sets *existing, face_sets *update);
     virtual void added(face_sets *face);
 };

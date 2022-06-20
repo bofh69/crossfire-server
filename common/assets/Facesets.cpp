@@ -16,20 +16,15 @@ extern "C" {
 #include "string.h"
 }
 
-face_sets *Facesets::findById(int id) {
-    auto found = std::find_if(m_assets.begin(), m_assets.end(), [&id] (const auto fs) {
-        return fs.second->id == id;
-    });
-    return found == m_assets.end() ? nullptr : found->second;
-}
-
-face_sets *Facesets::create(const std::string& prefix) {
+template<>
+face_sets *asset_create(const std::string& prefix) {
     auto fs = static_cast<face_sets *>(calloc(1, sizeof(face_sets)));
     fs->prefix = strdup_local(prefix.c_str());
     return fs;
 }
 
-void Facesets::destroy(face_sets *item) {
+template<>
+void asset_destroy(face_sets *item) {
     free(item->prefix);
     free(item->fullname);
     free(item->size);
@@ -37,6 +32,13 @@ void Facesets::destroy(face_sets *item) {
     free(item->comment);
     free(item->faces);
     free(item);
+}
+
+face_sets *Facesets::findById(int id) {
+    auto found = std::find_if(m_assets.begin(), m_assets.end(), [&id] (const auto fs) {
+        return fs.second->id == id;
+    });
+    return found == m_assets.end() ? nullptr : found->second;
 }
 
 void Facesets::replace(face_sets *existing, face_sets *update) {

@@ -14,14 +14,16 @@
 
 #include <string.h>
 
-archetype *Archetypes::create(const std::string& name) {
+template<>
+archetype *asset_create(const std::string& name) {
     auto arch = get_archetype_struct();
     CLEAR_FLAG(&arch->clone, FLAG_REMOVED);
     arch->name = add_string(name.c_str());
     return arch;
 }
 
-void Archetypes::destroy(archetype *item) {
+template<>
+void asset_destroy(archetype *item) {
     object_free_inventory(&item->clone);
     free_arch(item);
 }
