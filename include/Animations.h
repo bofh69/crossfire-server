@@ -24,9 +24,8 @@ public:
     AllAnimations();
 
 protected:
-    virtual void replace(Animations *existing, Animations *update);
-
-    virtual void added(Animations *anim);
+    virtual void replace(Animations *existing, Animations *update) override;
+    virtual void added(Animations *anim) override;
 };
 
 #endif /* ANIMATIONS_H */

@@ -26,8 +26,8 @@ public:
     size_t visibleCount() const { return visibleQuests; }
 
 protected:
-    virtual void replace(quest_definition *existing, quest_definition *update);
-    virtual void added(quest_definition *quest);
+    virtual void replace(quest_definition *existing, quest_definition *update) override;
+    virtual void added(quest_definition *quest) override;
 
 private:
     size_t visibleQuests;

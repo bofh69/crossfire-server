@@ -22,7 +22,7 @@ extern "C" {
 
 class Treasures : public AssetsCollection<treasurelist> {
 protected:
-    virtual void replace(treasurelist *existing, treasurelist *update);
+    virtual void replace(treasurelist *existing, treasurelist *update) override;
 };
 
 #endif /* TREASURES_H */

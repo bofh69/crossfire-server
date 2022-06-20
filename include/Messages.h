@@ -31,9 +31,8 @@ public:
 protected:
     int m_totalChance;
 
-    virtual void replace(GeneralMessage *existing, GeneralMessage *update);
-
-    virtual void added(GeneralMessage *asset);
+    virtual void replace(GeneralMessage *existing, GeneralMessage *update) override;
+    virtual void added(GeneralMessage *asset) override;
 };
 
 #endif /* MESSAGES_H */

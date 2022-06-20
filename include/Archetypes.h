@@ -115,7 +115,7 @@ public:
     static void recursive_update(object *item, archetype *updated);
 
 protected:
-    virtual void replace(archetype *existing, archetype *update);
+    virtual void replace(archetype *existing, archetype *update) override;
 
     updateListener m_updateListener;
 };

@@ -32,8 +32,8 @@ public:
   face_sets *findById(int id);
 
 protected:
-    virtual void replace(face_sets *existing, face_sets *update);
-    virtual void added(face_sets *face);
+    virtual void replace(face_sets *existing, face_sets *update) override;
+    virtual void added(face_sets *face) override;
 };
 
 #endif /* FACESETS_H */

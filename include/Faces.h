@@ -29,8 +29,8 @@ public:
 protected:
     int m_checksum;
 
-    virtual void replace(Face *existing, Face *update);
-    virtual void added(Face *face);
+    virtual void replace(Face *existing, Face *update) override;
+    virtual void added(Face *face) override;
 };
 
 #endif /* FACES_H */
