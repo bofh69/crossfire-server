@@ -16,6 +16,7 @@
 #include "../CREPixmap.h"
 #include "faces/FaceWrapper.h"
 #include "assets.h"
+#include "ArchetypeLoader.h"
 #include "AssetsManager.h"
 #include "animations/AnimationWrapper.h"
 #include "treasures/TreasureListWrapper.h"
@@ -27,6 +28,24 @@ ArchetypeWrapper::ArchetypeWrapper(AssetWrapper *parent, archetype *arch, Resour
     if (appearsOnTreasureList()) {
         setSpecificItem(&arch->clone, false);
     }
+
+    StringBuffer* dump = stringbuffer_new();
+    object_dump(&myWrappedItem->clone, dump);
+    char* final = stringbuffer_finish(dump);
+    myRaw = final;
+    free(final);
+
+    // Hacks: replace initial "arch" by "Object", and remove the "more 0" line which messes things
+    myRaw.replace(0, 4, "Object");
+    auto more = myRaw.find("more 0\n");
+    if (more != std::string::npos) {
+        myRaw.erase(more, 7);
+    }
+}
+
+void ArchetypeWrapper::wasModified(AssetWrapper *asset, ChangeType type, int extra) {
+    myResources->archetypeModified(myWrappedItem);
+    AssetTWrapper::wasModified(asset, type, extra);
 }
 
 QString ArchetypeWrapper::name() const {
@@ -192,4 +211,22 @@ bool ArchetypeWrapper::appearsOnTreasureList() const {
     };
     auto cl = [&] (const treasurelist *item) { return ci(item->items); };
     return getManager()->treasures()->first(cl) != nullptr;
+}
+
+QString ArchetypeWrapper::raw() const {
+    return QString::fromStdString(myRaw);
+}
+
+void ArchetypeWrapper::setRaw(const QString &raw) {
+    if (raw.toStdString() != myRaw) {
+        myRaw = raw.toStdString();
+        BufferReader *br = bufferreader_init_from_memory(nullptr, myRaw.data(), myRaw.length());
+
+        auto origin = myResources->originOf(myWrappedItem);
+        ArchetypeLoader loader(getManager()->archetypes(), nullptr);
+        loader.load(br, origin);
+        bufferreader_destroy(br);
+
+        markModified(AssetUpdated);
+    }
 }

@@ -32,6 +32,7 @@ class ArchetypeWrapper : public AssetWithArtifacts<archetype> {
     Q_PROPERTY(QObject* clone READ clone)
     Q_PROPERTY(QObject *head READ head)
     Q_PROPERTY(QObject *more READ more)
+    Q_PROPERTY(QString raw READ raw WRITE setRaw)
 
 public:
     ArchetypeWrapper(AssetWrapper *parent, archetype* arch, ResourcesManager *resourcesManager);
@@ -51,9 +52,14 @@ public:
     QObject* clone();
     QObject *head() const;
     QObject *more() const;
+    QString raw() const;
+    void setRaw(const QString &raw);
 
 protected:
+    virtual void wasModified(AssetWrapper *asset, ChangeType type, int extra) override;
     bool appearsOnTreasureList() const;
+
+    std::string myRaw;
 };
 
 #endif // ARCHETYPE_WRAPPER_H

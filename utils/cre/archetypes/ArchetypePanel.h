@@ -21,24 +21,13 @@ extern "C" {
 #include "global.h"
 }
 
-class CREMapInformationManager;
-class ResourcesManager;
 class AssetModel;
 
-class ArchetypePanel : public AssetTWrapperPanel<archetype> {
+class ArchetypePanel : public AssetWrapperPanel {
     Q_OBJECT
 
 public:
-    ArchetypePanel(CREMapInformationManager* store, ResourcesManager* resources, AssetModel* model, QWidget* parent);
-    virtual void updateItem() override;
-
-    virtual void commitData() override;
-
-protected:
-    CREMapInformationManager* myStore;
-    ResourcesManager *myResources;
-    QTextEdit* myDisplay;
-    std::string myInitialArch;
+    ArchetypePanel(AssetModel* model, QWidget* parent);
 };
 
 #endif // ARCHETYPE_PANEL_H
