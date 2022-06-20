@@ -14,7 +14,7 @@
 {% if length(map.exits_from) > 0 %}
 <p>Exits from this map:</p>
 <ul>
-  {% set ef = get_list_by_field(maps, "_key", map.exits_from) %}
+  {% set ef = sort(get_list_by_field(maps, "_key", map.exits_from), "name") %}
   {% for x in ef %}
   <li><a href='{{ link_to_page("map.html", x._key) }}'>{{ x.name }}</a></li>
   {% endfor %}
@@ -23,7 +23,7 @@
 {% if length(map.exits_to) > 0 %}
 <p>Exits to this map:</p>
 <ul>
-  {% set et = get_list_by_field(maps, "_key", map.exits_to) %}
+  {% set et = sort(get_list_by_field(maps, "_key", map.exits_to), "name") %}
   {% for x in et %}
   <li><a href='{{ link_to_page("map.html", x._key) }}'>{{ x.name }}</a></li>
   {% endfor %}

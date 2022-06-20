@@ -7,7 +7,7 @@
 
   <p>{{ length(region.maps) }} maps found:</p>
   <ul>
-    {% set rm = get_list_by_field(maps, "_key", region.maps)  %}
+    {% set rm = sort(get_list_by_field(maps, "_key", region.maps), "name")  %}
     {% for map in rm %}
     <li><a href='{{ link_to_page("map.html", map._key) }}'>{{ map.name }}</a></li>
     {% endfor %}
