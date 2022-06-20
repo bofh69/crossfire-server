@@ -27,25 +27,10 @@ CREMessagePanel::CREMessagePanel(const MessageManager* manager, QWidget* parent)
     Q_ASSERT(manager != NULL);
     myMessageManager = manager;
 
-    QTabWidget* tab = new QTabWidget(this);
-    myLayout->addWidget(tab);
+    addTab(tr("Details"));
 
-    QWidget* details = new QWidget(this);
-    tab->addTab(details, tr("Details"));
-
-    QGridLayout* layout = new QGridLayout(details);
-
-    int line = 0;
-
-    layout->addWidget(new QLabel(tr("Path:"), this), line, 0);
-    myPath = new QLineEdit(this);
-    layout->addWidget(myPath, line++, 1);
-
-    layout->addWidget(new QLabel(tr("Location:"), this), line, 0);
-    myLocation = new QLineEdit(this);
-    layout->addWidget(myLocation, line++, 1);
-
-    layout->addWidget(new QLabel(tr("Message rules (blue: uses token set by current rule as pre-condition, red: rule that sets token for pre-condition of current rule)")), line++, 0, 1, 2);
+    myPath = addLineEdit(tr("Path:"), "path", false);
+    addLineEdit(tr("Location:"), "location", false);
 
     myModel = new CREMessageItemModel(this);
     myRules = new QTableView();
@@ -65,7 +50,7 @@ CREMessagePanel::CREMessagePanel(const MessageManager* manager, QWidget* parent)
     myRules->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     connect(myRules->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(currentRowChanged(const QModelIndex&, const QModelIndex&)));
-    layout->addWidget(myRules, line++, 0, 1, 2);
+    addWidget(tr("Message rules (blue: uses token set by current rule as pre-condition, red: rule that sets token for pre-condition of current rule)"), myRules, false, nullptr, nullptr);
 
     QHBoxLayout* buttons = new QHBoxLayout();
 
@@ -91,11 +76,11 @@ CREMessagePanel::CREMessagePanel(const MessageManager* manager, QWidget* parent)
     buttons->addWidget(reset);
     connect(reset, SIGNAL(clicked(bool)), this, SLOT(onReset(bool)));
 
-    layout->addLayout(buttons, line++, 0, 1, 2);
+    myLayout->addLayout(buttons, myLayout->rowCount(), 0, 1, 2);
 
+    addTab(tr("Use"));
     myUse = new QTreeWidget(this);
-    tab->addTab(myUse, tr("Use"));
-    myUse->setHeaderLabel(tr("Referenced by..."));
+    addWidget(tr("Use"), myUse, false, nullptr, nullptr);
 
     myOriginal = nullptr;
 }
@@ -110,10 +95,8 @@ void CREMessagePanel::updateItem()
     if (!myItem) {
         return;
     }
-    myPath->setText(myItem->path());
     /* can only change path when new file is created */
     myPath->setReadOnly(myItem->path() != "<new file>");
-    myLocation->setText(myItem->location());
 
     /* so the change handler won't do anything */
     auto save = myItem;
@@ -200,8 +183,6 @@ void CREMessagePanel::onDeleteRule(bool)
 
 void CREMessagePanel::commitData()
 {
-    myItem->setPath(myPath->text());
-    myItem->setLocation(myLocation->text());
 }
 
 void CREMessagePanel::onMoveUp(bool)

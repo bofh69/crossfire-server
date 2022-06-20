@@ -43,7 +43,6 @@ class CREMessagePanel : public AssetSWrapperPanel<MessageFile>
         const MessageManager* myMessageManager;
         MessageFile* myOriginal;
         QLineEdit* myPath;
-        QLineEdit* myLocation;
         QTableView* myRules;
         CREMessageItemModel* myModel;
         QBrush myDefaultBackground;

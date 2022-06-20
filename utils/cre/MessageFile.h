@@ -68,6 +68,9 @@ class MessageRule : public QObject
 class MessageFile : public AssetWrapper {
     Q_OBJECT
 
+    Q_PROPERTY(QString path READ path WRITE setPath)
+    Q_PROPERTY(QString location READ location WRITE setLocation)
+
 public:
     /**
      * Standard constructor.
