@@ -323,7 +323,6 @@ void CREMainWindow::doResourceWindow(int assets, const QByteArray& position)
     connect(resources, SIGNAL(filtersModified()), this, SLOT(onFiltersModified()));
     connect(this, SIGNAL(updateReports()), resources, SLOT(updateReports()));
     connect(resources, SIGNAL(reportsModified()), this, SLOT(onReportsModified()));
-    connect(this, SIGNAL(commitData()), resources, SLOT(commitData()));
     auto widget = myArea->addSubWindow(resources);
     widget->setAttribute(Qt::WA_DeleteOnClose);
     if (position.isEmpty()) {
@@ -376,13 +375,11 @@ void CREMainWindow::onSaveFormulae()
 
 void CREMainWindow::onSaveQuests()
 {
-    emit commitData();
     myResourcesManager->saveQuests();
 }
 
 void CREMainWindow::onSaveMessages()
 {
-    emit commitData();
     myMessageManager->saveMessages();
 }
 

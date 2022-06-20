@@ -47,7 +47,6 @@ class CREMainWindow : public QMainWindow
     signals:
         void updateFilters();
         void updateReports();
-        void commitData();
 
     private:
         QMdiArea* myArea;

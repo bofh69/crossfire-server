@@ -167,18 +167,8 @@ CREResourcesWindow::~CREResourcesWindow()
     qDeleteAll(myPanels);
 }
 
-void CREResourcesWindow::commitData()
+void CREResourcesWindow::currentRowChanged(const QModelIndex &current, const QModelIndex &)
 {
-    if (myCurrentPanel != NULL)
-        myCurrentPanel->commitData();
-}
-
-void CREResourcesWindow::currentRowChanged(const QModelIndex &current, const QModelIndex &previous)
-{
-    if (previous.isValid()) {
-        commitData();
-    }
-
     if (!current.isValid()) {
         myCurrentPanel = nullptr;
         return;

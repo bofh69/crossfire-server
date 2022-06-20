@@ -32,7 +32,6 @@ public:
     void addTab(const QString &title);
 
     virtual void setAsset(AssetWrapper *item);
-    virtual void commitData() {}
 
     QLabel *addLabel(const QString &label, const char *property);
     QLineEdit *addLineEdit(const QString &label, const char *property, bool readOnly = true);

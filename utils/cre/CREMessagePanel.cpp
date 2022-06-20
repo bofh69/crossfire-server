@@ -181,10 +181,6 @@ void CREMessagePanel::onDeleteRule(bool)
     myModel->removeRows(myRules->selectionModel()->currentIndex().row(), 1);
 }
 
-void CREMessagePanel::commitData()
-{
-}
-
 void CREMessagePanel::onMoveUp(bool)
 {
     int index = myRules->currentIndex().row();

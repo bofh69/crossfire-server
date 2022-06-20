@@ -37,7 +37,6 @@ class CREMessagePanel : public AssetSWrapperPanel<MessageFile>
         virtual ~CREMessagePanel();
 
         virtual void updateItem() override;
-        virtual void commitData() override;
 
     private:
         const MessageManager* myMessageManager;

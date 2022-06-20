@@ -41,7 +41,6 @@ class CREResourcesWindow : public QWidget
     public slots:
         void updateFilters();
         void updateReports();
-        void commitData();
 
     signals:
         void filtersModified();
