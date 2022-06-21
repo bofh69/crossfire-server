@@ -198,7 +198,7 @@ uint64_t shop_price_buy(const object *tmp, object *who) {
     float E = shop_efficiency(who);
     const float adj_val = val * adj / E;
     if (getenv("CF_DEBUG_SHOP")) {
-        LOG(llevDebug, "price_buy %s %u*adj(%.2f)/E(%.2f) = %u\n",
+        LOG(llevDebug, "price_buy %s %lu*adj(%.2f)/E(%.2f) = %.2f\n",
                 tmp->arch->name, val, adj, E, adj_val);
     }
     if (isfinite(adj_val)) {
@@ -225,7 +225,7 @@ uint64_t shop_price_sell(const object *tmp, object *who) {
     uint64_t limval = value_limit(adj_val, number, who, 1);
 
     if (getenv("CF_DEBUG_SHOP")) {
-        LOG(llevDebug, "price_sell %s %u*adj(%.2f)*s(%.2f)*E(%.2f) = %u limited to %u\n",
+        LOG(llevDebug, "price_sell %s %lu*adj(%.2f)*s(%.2f)*E(%.2f) = %lu limited to %lu\n",
                 tmp->arch->name, val, adj, spec, E, adj_val, limval);
     }
     return limval;

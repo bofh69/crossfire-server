@@ -403,7 +403,7 @@ void hiscore_check(object *op, int quiet) {
     } FOR_INV_FINISH();
     new_score.exp = op->stats.exp;
     add_score(&hiscore_tables[0], &new_score, &old_score); // overall
-    PROFILE_END(diff, LOG(llevDebug, "Wrote highscore files for %s (%d ms)\n", op->name, diff/1000));
+    PROFILE_END(diff, LOG(llevDebug, "Wrote highscore files for %s (%ld ms)\n", op->name, diff/1000));
 
     /* Everything below here is just related to print messages
      * to the player.  If quiet is set, we can just return

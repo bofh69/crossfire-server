@@ -274,7 +274,7 @@ static void malloc_info(object *op) {
         }
 
     draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_MALLOC,
-                         "Sizeof: object=%d  player=%d  map=%d",
+                         "Sizeof: object=%zu  player=%zu  map=%zu",
                          sizeof(object), sizeof(player), sizeof(mapstruct));
 
     draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_MALLOC,
@@ -349,7 +349,7 @@ static void malloc_info(object *op) {
     sum_used += i;
 
     draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_MALLOC,
-                         "[fixed]%4d treasurelists    %8d",
+                         "[fixed]%4zu treasurelists    %8d",
                          assets_number_of_treasurelists(), i = (assets_number_of_treasurelists() * sizeof(treasurelist)));
 
     sum_alloc += i;
@@ -2147,9 +2147,8 @@ void command_wimpy(object *op, const char *params) {
     }
 
     if (i < 0 || i > 100) {
-        draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_CONFIG,
-                            "Wimpy level should be between 1 and 100.",
-                            i);
+        draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_CONFIG,
+                            "Wimpy level must be between 1 and 100.");
         return;
     }
 

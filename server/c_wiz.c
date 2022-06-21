@@ -685,7 +685,7 @@ void command_shutdown(object *op, const char *params) {
         } else if (shutdown_state.type == SHUTDOWN_TIME) {
             time_t time_left = shutdown_state.time - time(NULL);
             draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND,
-                    MSG_TYPE_COMMAND_DM, "Shutdown scheduled in %d minutes.", time_left/60);
+                    MSG_TYPE_COMMAND_DM, "Shutdown scheduled in %lu minutes.", time_left/60);
         } else if (shutdown_state.type == SHUTDOWN_IDLE) {
             draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND,
                     MSG_TYPE_COMMAND_DM, "Shutdown scheduled when there are no active players.");

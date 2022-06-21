@@ -218,7 +218,7 @@ static void check_spells(void) {
 
     for (size_t i = 0; i < sizeof(spell_mapping) / sizeof(spell_mapping[0]); i++) {
         if (spell_mapping[i] && !try_find_archetype(spell_mapping[i])) {
-            LOG(llevError, "Unable to find spell mapping %s (%i)\n", spell_mapping[i], i);
+            LOG(llevError, "Unable to find spell mapping %s (%zu)\n", spell_mapping[i], i);
             abort = 1;
         }
     }
@@ -525,7 +525,7 @@ void assets_pack(const char *what, const char *filename) {
                 fatal(SEE_LAST_ERROR);
             }
             if (fwrite(static_cast<void*>(data), 1, length, out) != length) {
-                LOG(llevError, "Failed to write all data!\n", filename);
+                LOG(llevError, "Failed to write all data for %s!\n", filename);
                 fclose(out);
                 fatal(SEE_LAST_ERROR);
             }

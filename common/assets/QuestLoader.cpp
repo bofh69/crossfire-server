@@ -112,7 +112,7 @@ void QuestLoader::load(BufferReader *reader, const std::string &filename) {
                 in = QUESTFILE_STEPCOND;
                 continue;
             }
-            LOG(llevError, "quests: invalid line %s in definition of quest %s in %s:%d!\n",
+            LOG(llevError, "quests: invalid line %s in definition of quest %s in %s:%zu!\n",
                     read, quest->quest_code, filename.c_str(), bufferreader_current_line(reader));
             continue;
         }

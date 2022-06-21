@@ -479,7 +479,7 @@ static void quest_display(player *pl, quest_player *pq, int showall, const char*
         if (!showall) {
             if (restart_count > 0)
                 draw_ext_info_format(NDI_UNIQUE, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_QUESTS,
-                        "%s completed %d out of %d quests, of which %d may be restarted.", name, completed_count, quests_count(false), restart_count);
+                        "%s completed %d out of %zu quests, of which %d may be restarted.", name, completed_count, quests_count(false), restart_count);
             else
                 draw_ext_info_format(NDI_UNIQUE, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_QUESTS,
                         "%s completed %d quests", name, completed_count);

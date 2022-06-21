@@ -770,7 +770,7 @@ int save_objects(mapstruct *m, FILE *fp, FILE *fp2, int flag) {
     free(cp2);
     PROFILE_END(diff, write_time = diff);
 
-    LOG(llevDebug, "saved %d objects on %s (%d us serializing, %d us writing)\n", count, m->path, serialize_time, write_time);
+    LOG(llevDebug, "saved %d objects on %s (%ld us serializing, %ld us writing)\n", count, m->path, serialize_time, write_time);
     return 0;
 }
 

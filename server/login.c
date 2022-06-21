@@ -451,7 +451,7 @@ int save_player(object *op, int flag) {
         quest_first_player_save(op->contr);
     }
 
-    PROFILE_END(diff, LOG(llevDebug, "Saved player %s (%d ms)\n", op->name, diff/1000));
+    PROFILE_END(diff, LOG(llevDebug, "Saved player %s (%ld ms)\n", op->name, diff/1000));
     return 1;
 }
 
@@ -778,7 +778,7 @@ void check_login(object *op, const char *password) {
     /* this loads the standard objects values. */
     PROFILE_BEGIN();
     load_object(fp, op, LO_NEWFILE, 0);
-    PROFILE_END(diff, LOG(llevDebug, "Loaded player file for %s (%d ms)\n", op->name, diff/1000));
+    PROFILE_END(diff, LOG(llevDebug, "Loaded player file for %s (%ld ms)\n", op->name, diff/1000));
     fclose(fp);
 
     CLEAR_FLAG(op, FLAG_NO_FIX_PLAYER);
