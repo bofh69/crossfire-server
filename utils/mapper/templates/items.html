@@ -9,14 +9,14 @@
     <th>Item power</th>
     <th>Calc item power</th>
     <th>Description</th>
-  </tr>
-  {% for item in items %}
+  </tr>{% set iss = sort(items, "name") %}
+  {% for item in iss %}
   <tr>
     <td>{{ item.name }}</td>
     <td>{% if length(item.maps) %}
-      <ul>
-        {% for key in item.maps %}{% set map = get_by_field(maps, "_key", key) %}
-        <li><a href='{{ link_to_page("map.html", key) }}'>{{ map.name }}</a></li>
+      <ul>{% set im = sort(get_list_by_field(maps, "_key", item.maps), "name,path") %}
+        {% for map in im %}
+        <li><a href='{{ link_to_page("map.html", map._key) }}'>{{ map.name }}</a></li>
         {% endfor %}
       </ul>
       {% endif %}
