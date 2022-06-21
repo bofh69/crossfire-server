@@ -8,7 +8,7 @@ void send_image_sums(socket_struct *ns, char *params);
 /* info.c */
 void print_ext_msg(socket_struct *ns, int color, uint8_t type, uint8_t subtype, const char *message);
 void draw_ext_info(int flags, int pri, const object *pl, uint8_t type, uint8_t subtype, const char *message);
-void draw_ext_info_format(int flags, int pri, const object *pl, uint8_t type, uint8_t subtype, const char *format, ...);
+void draw_ext_info_format(int flags, int pri, const object *pl, uint8_t type, uint8_t subtype, const char *format, ...) PRINTF_ARGS(6, 7);
 void ext_info_map(int color, const mapstruct *map, uint8_t type, uint8_t subtype, const char *str1);
 void ext_info_map_except(int color, const mapstruct *map, const object *op, uint8_t type, uint8_t subtype, const char *str1);
 void ext_info_map_except2(int color, const mapstruct *map, const object *op1, const object *op2, int type, int subtype, const char *str1);

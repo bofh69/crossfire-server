@@ -182,7 +182,7 @@ extern float get_speed_bonus(int stat);
 extern int get_fear_bonus(int stat);
 extern void init_stats(int reload);
 /* logger.c */
-extern void LOG(LogLevel logLevel, const char *format, ...);
+extern void LOG(LogLevel logLevel, const char *format, ...) PRINTF_ARGS(2, 3);
 /* los.c */
 extern void init_block(void);
 extern void clear_los(player *pl);

@@ -36,6 +36,9 @@
 #include <unistd.h>
 #include "compat.h"
 
+/** Used for printf-like functions, mostly LOG and draw_ext_info_format */
+#define PRINTF_ARGS(x, y) __attribute__ ((format (printf, x, y)))
+
 /** Strings that should be manipulated through add_string() and free_string(). */
 typedef const char *sstring;
 
