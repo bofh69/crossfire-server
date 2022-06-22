@@ -117,7 +117,10 @@ void init_connection(socket_struct *ns, const char *from_ip) {
     ns->want_pickup = 0;
     ns->extended_stats = 0;
     FREE_AND_CLEAR(ns->account_name);
-    ns->account_chars = NULL;
+    if (ns->account_chars) {
+        account_char_free(ns->account_chars);
+        ns->account_chars = NULL;
+    }
     ns->login_method = 0;
     ns->notifications = 0;
     ns->heartbeat = 0;
