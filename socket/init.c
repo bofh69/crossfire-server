@@ -116,7 +116,7 @@ void init_connection(socket_struct *ns, const char *from_ip) {
     ns->num_look_objects = DEFAULT_NUM_LOOK_OBJECTS;
     ns->want_pickup = 0;
     ns->extended_stats = 0;
-    ns->account_name = NULL;
+    FREE_AND_CLEAR(ns->account_name);
     ns->account_chars = NULL;
     ns->login_method = 0;
     ns->notifications = 0;
