@@ -1088,7 +1088,7 @@ static void process_map_lore(struct_map_info *map) {
                 strncpy(description, next, end-next);
                 description[end-next] = '\0';
                 /* need to erase the text. */
-                memcpy(start, end+4, strlen(map->lore)-(end-start+3));
+                memmove(start, end+4, strlen(map->lore)-(end-start+3));
                 end = start;
             }
             else {
@@ -1120,7 +1120,7 @@ static void process_map_lore(struct_map_info *map) {
                 strncpy(description, next, end-next);
                 description[end-next] = '\0';
                 /* need to erase the text. */
-                memcpy(start, end+4, strlen(map->lore)-(end-start+3));
+                memmove(start, end+4, strlen(map->lore)-(end-start+3));
                 end = start;
             }
             else {
