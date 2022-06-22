@@ -150,6 +150,7 @@ void init_connection(socket_struct *ns, const char *from_ip) {
 
     ns->password_fails = 0;
 
+    free(ns->host);
     ns->host = strdup_local(from_ip);
     SockList_Init(&sl);
     SockList_AddPrintf(&sl, "version %d %d %s\n", VERSION_CS, VERSION_SC, VERSION_INFO);
