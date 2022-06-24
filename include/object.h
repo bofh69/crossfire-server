@@ -438,6 +438,7 @@ typedef struct obj {
     key_value   *key_values;    /**< Fields not explictly known by the loader. */
 
     tag_t       *spell_tags;      /**< Tags used for spell effect merging. */
+    uint64_t    event_bitmask;  /**< Bitmask of events this object has a handler for, see events.h */
 } object;
 
 /**

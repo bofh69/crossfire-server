@@ -192,9 +192,29 @@ void events_execute_global_event(int eventcode, ...) {
     va_end(args);
 }
 
+static void ensure_bitmask(object *op) {
+    if ((op->event_bitmask & BITMASK_VALID) == BITMASK_VALID) {
+        return;
+    }
+
+    object *inv = op->inv;
+    while (inv) {
+        if (inv->type == EVENT_CONNECTOR) {
+            op->event_bitmask |= BITMASK_EVENT(inv->subtype);
+        }
+        inv = inv->below;
+    }
+    op->event_bitmask |= BITMASK_VALID;
+}
+
 static int do_execute_event(object *op, int eventcode, object *activator, object *third, const char *message, int fix, talk_info *talk) {
     int rv = 0;
     bool debug_events = (getenv("CF_DEBUG_EVENTS") != NULL);
+
+    ensure_bitmask(op);
+    if ((op->event_bitmask & BITMASK_EVENT(eventcode)) == 0) {
+        return 0;
+    }
 
     FOR_INV_PREPARE(op, tmp) {
         if (tmp->type == EVENT_CONNECTOR && tmp->subtype == eventcode) {

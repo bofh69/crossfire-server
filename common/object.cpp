@@ -1179,6 +1179,8 @@ void object_copy(const object *src_ob, object *dest_ob) {
     /* This way, dialog information will be parsed again when/if needed. */
     CLEAR_FLAG(dest_ob, FLAG_DIALOG_PARSED);
 
+    dest_ob->event_bitmask = BITMASK_VALID; // Empty inventory so valid
+
     object_update_speed(dest_ob);
 }
 
@@ -1294,6 +1296,7 @@ object *object_new(void) {
     op->active_next = NULL;
     op->active_prev = NULL;
     op->spell_tags = NULL;
+    op->event_bitmask = BITMASK_VALID;
     if (objects != NULL)
         objects->prev = op;
     objects = op;
@@ -1889,6 +1892,10 @@ void object_remove(object *op) {
 
         if (op->below != NULL)
             op->below->above = op->above;
+
+        if (op->type == EVENT_CONNECTOR) {
+            op->env->event_bitmask = 0; // Will be recomputed if needed
+        }
 
         /* we set up values so that it could be inserted into
          * the map, but we don't actually do that - it is up
@@ -2909,6 +2916,10 @@ object *object_insert_in_ob(object *op, object *where) {
         op->below = where->inv;
         op->below->above = op;
         where->inv = op;
+    }
+
+    if (op->type == EVENT_CONNECTOR) {
+        where->event_bitmask |= BITMASK_EVENT(op->subtype);
     }
 
     /* Update in 2 cases: object goes into player's inventory, or object goes into container the player

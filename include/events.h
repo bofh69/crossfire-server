@@ -8,6 +8,11 @@
 
 /**
  * @defgroup EVENT_xxx Event codes.
+ * To not have to check the whole inventory each time, each object has a
+ * event_bitmask field which indicates whether the object has a handler
+ * or not for this event. The bitmask is updated when an event hook is inserted
+ * into another, and cleaned when a hook is removed from an object. In this
+ * case is it recomputed the first time it is needed.
  */
 /*@{*/
 /* Local events. Those are always linked to a specific object. */
@@ -52,6 +57,11 @@
 /*@}*/
 
 #define NR_EVENTS 36  /**< Number of events, maximum code + 1. */
+
+/** Convert an event to its bit. */
+#define BITMASK_EVENT(evt)  (1ULL << evt)
+/** Bit indicating if the event bitmask is valid or not. */
+#define BITMASK_VALID       (1ULL << 63)
 
 /** Function to call to handle global or object-related events. */
 typedef int (*f_plug_event)(int *type, ...);
