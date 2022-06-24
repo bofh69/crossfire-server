@@ -1,15 +1,12 @@
 #include "bufferreader.h"
-/* anim.c */
+/* anim.cpp */
 extern Animations *find_animation(const char *name);
 extern Animations *try_find_animation(const char *name);
 extern void animate_object(object *op, int dir);
 extern void apply_anim_suffix(object *who, const char *suffix);
 extern void dump_animations(void);
 extern void animation_load_block(FILE *file, const char *full_path, const char *animation_name);
-/* arch.c */
-#ifdef __cplusplus
-extern "C" {
-#endif
+/* arch.cpp */
 archetype *find_archetype_by_object_name(const char *name);
 archetype *find_archetype_by_object_type_name(int type, const char *name);
 archetype *get_archetype_by_skill_name(const char *skill, int type);
@@ -27,12 +24,9 @@ archetype *find_archetype(const char *name);
 object *object_create_arch(archetype *at);
 archetype *get_next_archetype(archetype *current);
 void first_arch_pass(FILE *fp, const char *filename);
-#ifdef __cplusplus
-}
-#endif
-/* arch_types_valid.c */
+/* arch_types_valid.cpp */
 extern int is_type_valid(uint8_t type);
-/* artifact.c */
+/* artifact.cpp */
 extern artifactlist *get_empty_artifactlist(void);
 extern artifact *get_empty_artifact(void);
 extern void free_all_artifacts(void);
@@ -45,7 +39,7 @@ extern artifactlist *find_artifactlist(int type);
 extern const artifact *find_artifact(const object *op, const char *name);
 extern void dump_artifacts(void);
 extern uint16_t artifact_get_face(const artifact *art);
-/* button.c */
+/* button.cpp */
 extern void trigger_connected(objectlink *ol, object *cause, const int state);
 extern void push_button(object *op);
 extern void update_button(object *op);
@@ -60,16 +54,16 @@ extern void remove_button_link(object *op);
 extern int get_button_value(const object *button);
 extern object *check_inv_recursive(object *op, const object *trig);
 extern void check_inv(object *op, object *trig);
-/* dialog.c */
+/* dialog.cpp */
 extern void free_dialog_information(object *op);
 extern int get_dialog_message(object *op, const char *text, struct_dialog_message **message, struct_dialog_reply **reply);
-/* exp.c */
+/* exp.cpp */
 extern int64_t new_exp(const object *ob);
 extern int has_ability(const object *ob);
 extern void init_experience(void);
 extern void dump_experience(void);
 extern void free_experience(void);
-/* friend.c */
+/* friend.cpp */
 extern void add_friendly_object(object *op);
 extern void remove_friendly_object(object *op);
 extern void dump_friendly_objects(void);
@@ -78,9 +72,9 @@ extern int is_friendly(const object *op);
 extern objectlink *get_friends_of(const object *owner);
 extern void clear_friendly_list(void);
 extern object *get_next_friend(object *current);
-/* glue.c */
+/* glue.cpp */
 extern void fatal(enum fatal_error err) __attribute__ ((noreturn));
-/* holy.c */
+/* holy.cpp */
 extern void init_gods(void);
 extern const object *get_rand_god(void);
 extern int describe_god(const object *god, int what, StringBuffer *buf, size_t maxlen);
@@ -88,10 +82,10 @@ extern void free_all_god(void);
 extern void dump_gods(void);
 extern const object *find_god(const char *name);
 extern const char *get_god_for_race(const char *race);
-/* info.c */
+/* info.cpp */
 extern void dump_abilities(void);
 extern void print_monsters(void);
-/* image.c */
+/* image.cpp */
 extern int find_smooth(const Face *face, const Face **smoothed);
 extern int is_valid_faceset(int fsn);
 extern int get_face_fallback(int faceset, uint16_t imageno);
@@ -106,14 +100,14 @@ extern uint8_t find_color(const char *name);
 extern const char *get_colorname(uint8_t index);
 extern void dump_faces(void);
 extern int get_bitmap_checksum();
-/* init.c */
+/* init.cpp */
 extern void init_library(void);
 extern void init_globals(void);
 extern void free_globals(void);
 extern void init_objects(void);
 extern void write_todclock(void);
 extern void init_attackmess(BufferReader *reader, const char *filename);
-/* item.c */
+/* item.cpp */
 extern int get_power_from_ench(int ench);
 extern int calc_item_power(const object *op);
 extern const typedata *get_typedata(int itemtype);
@@ -131,7 +125,7 @@ extern int is_identifiable_type(const object *op);
 extern int is_identified(const object *op);
 extern void object_give_identified_properties(object *op);
 extern object *identify(object *op);
-/* languages.c */
+/* languages.cpp */
 extern const char *i18n(const object *who, const char *code);
 extern int i18n_find_language_by_code(const char *code);
 extern int i18n_get_language_by_code(const char *code);
@@ -139,12 +133,12 @@ extern sstring i18n_get_language_code(int language);
 extern void i18n_list_languages(object *who);
 extern void i18n_init(void);
 extern void i18n_free(void);
-/* links.c */
+/* links.cpp */
 extern objectlink *get_objectlink(void);
 extern oblinkpt *get_objectlinkpt(void);
 extern void free_objectlink(objectlink *ol);
 extern void free_objectlinkpt(oblinkpt *obp);
-/* living.c */
+/* living.cpp */
 extern void set_attr_value(living *stats, int attr, int8_t value);
 extern void change_attr_value(living *stats, int attr, int8_t value);
 extern int8_t get_attr_value(const living *stats, int attr);
@@ -181,9 +175,9 @@ extern int get_dam_bonus(int stat);
 extern float get_speed_bonus(int stat);
 extern int get_fear_bonus(int stat);
 extern void init_stats(int reload);
-/* logger.c */
+/* logger.cpp */
 extern void LOG(LogLevel logLevel, const char *format, ...) PRINTF_ARGS(2, 3);
-/* los.c */
+/* los.cpp */
 extern void init_block(void);
 extern void clear_los(player *pl);
 extern int has_carried_lights(const object *op);
@@ -193,7 +187,7 @@ extern void update_all_los(const mapstruct *map, int x, int y);
 extern void print_los(object *op);
 extern void make_sure_seen(const object *op);
 extern void make_sure_not_seen(const object *op);
-/* map.c */
+/* map.cpp */
 extern mapstruct *has_been_loaded(const char *name);
 extern char *create_pathname(const char *name, char *buf, size_t size);
 extern void create_overlay_pathname(const char *name, char *buf, size_t size);
@@ -226,13 +220,13 @@ extern int on_same_map(const object *op1, const object *op2);
 extern object *map_find_by_flag(mapstruct *map, int x, int y, int flag);
 extern void map_remove_unique_files(const mapstruct *map);
 extern const char *map_get_path(const object *item);
-/* ob_methods.c */
+/* ob_methods.cpp */
 extern method_ret ob_apply(object *op, object *applier, int aflags);
 extern method_ret ob_process(object *op);
 extern char *ob_describe(const object *op, const object *observer, int use_media_tags, char *buf, size_t size);
 extern method_ret ob_move_on(object *op, object *victim, object *originator);
 extern method_ret ob_trigger(object *op, object *cause, int state);
-/* ob_types.c */
+/* ob_types.cpp */
 extern void init_ob_method_struct(ob_methods *methods, ob_methods *fallback);
 extern void init_ob_types(ob_methods *base_type);
 extern void register_apply(int ob_type, apply_func method);
@@ -240,7 +234,7 @@ extern void register_process(int ob_type, process_func method);
 extern void register_describe(int ob_type, describe_func method);
 extern void register_move_on(int ob_type, move_on_func method);
 extern void register_trigger(int ob_type, trigger_func method);
-/* object.c */
+/* object.cpp */
 extern int object_can_merge(object *ob1, object *ob2);
 extern signed long object_sum_weight(object *op);
 extern object *object_get_env_recursive(object *op);
@@ -333,16 +327,16 @@ extern int save_object(FILE *fp, object *op, int flag);
 extern void save_object_in_sb(StringBuffer *sb, object *op, const int flag);
 extern void object_handle_death_animation(object *op);
 extern int object_matches_pickup_mode(const object *item, int mode);
-/* path.c */
+/* path.cpp */
 extern char *path_combine(const char *src, const char *dst, char *path, size_t size);
 extern void path_normalize(char *path);
 extern char *path_combine_and_normalize(const char *src, const char *dst, char *path, size_t size);
-/* porting.c */
+/* porting.cpp */
 extern FILE *tempnam_secure(const char *dir, const char *pfx, char **filename);
 extern void remove_directory(const char *path);
 extern int isqrt(int n);
 extern void make_path_to_file(const char *filename);
-/* player.c */
+/* player.cpp */
 extern void clear_player(player *pl);
 extern void free_player(player *pl);
 extern int atnr_is_dragon_enabled(int attacknr);
@@ -356,9 +350,9 @@ extern int player_has_own_title(const struct pl *pl);
 extern const char *player_get_own_title(const struct pl *pl);
 extern void player_set_own_title(struct pl *pl, const char *title);
 extern void link_player_skills(object *op);
-/* re-cmp.c */
+/* re-cmp.cpp */
 extern const char *re_cmp(const char *str, const char *regexp);
-/* readable.c */
+/* readable.cpp */
 extern int nstrtok(const char *buf1, const char *buf2);
 extern char *strtoktolin(const char *buf1, const char *buf2, char *retbuf, size_t size);
 extern int book_overflow(const char *buf1, const char *buf2, size_t booksize);
@@ -373,7 +367,7 @@ extern sstring get_message_title(const GeneralMessage *message);
 extern sstring get_message_body(const GeneralMessage *message);
 extern const Face *get_message_face(const GeneralMessage *message);
 extern void init_msgfile(FILE *file, const char *filename);
-/* recipe.c */
+/* recipe.cpp */
 extern recipelist *get_formulalist(int i);
 extern void init_formulae(BufferReader *reader, const char *filename);
 extern void dump_alchemy(void);
@@ -387,7 +381,7 @@ extern recipe *find_recipe_for_tool(const char *tool, recipe *from);
 extern void check_formulae(void);
 extern const Face *recipe_get_face(const recipe *rp);
 extern void check_recipes();
-/* region.c */
+/* region.cpp */
 extern region *get_region_by_name(const char *region_name);
 extern region *get_region_by_map(mapstruct *m);
 extern const char *get_name_of_region_for_map(const mapstruct *m);
@@ -398,7 +392,7 @@ extern const char *get_region_msg(const region *r);
 extern object *get_jail_exit(object *op);
 extern void init_regions(BufferReader *reader, const char *filename);
 extern region *get_region_struct(void);
-/* shstr.c */
+/* shstr.cpp */
 extern void init_hash_table(void);
 extern sstring add_string(const char *str);
 extern sstring add_refcount(sstring str);
@@ -408,7 +402,7 @@ extern void free_string(sstring str);
 extern void ss_dump_statistics(char *buf, size_t size);
 extern char *ss_dump_table(int what, char *buf, size_t size);
 extern int buf_overflow(const char *buf1, const char *buf2, size_t bufsize);
-/* stringbuffer.c */
+/* stringbuffer.cpp */
 extern StringBuffer *stringbuffer_new(void);
 extern void stringbuffer_delete(StringBuffer *sb);
 extern char *stringbuffer_finish(StringBuffer *sb);
@@ -418,22 +412,24 @@ extern void stringbuffer_append_printf(StringBuffer *sb, const char *format, ...
 extern void stringbuffer_append_stringbuffer(StringBuffer *sb, const StringBuffer *sb2);
 extern void stringbuffer_append_multiline_block(StringBuffer *sb, const char *start, const char *content, const char *end);
 extern size_t stringbuffer_length(StringBuffer *sb);
-/* time.c */
+/* time.cpp */
 extern const char *get_periodofday(const int index);
 extern const char *get_month_name(const int index);
 extern const char *get_weekday(const int index);
 extern const char *get_season_name(const int index);
 extern void reset_sleep(void);
 extern long usec_elapsed(struct timespec first, struct timespec second);
-void tick_game_time(void);
-long get_sleep_remaining(void);
+extern void tick_game_time(void);
+extern long get_sleep_remaining(void);
 extern void jump_time(void);
 extern void set_tick_duration(long t);
 extern void get_tod(timeofday_t *tod);
 extern void time_info(object *op);
 extern long seconds(void);
 extern const char *time_format_time(const timeofday_t *tod, char *buf, size_t bufsize);
-/* treasure.c */
+extern long timespec_diff(struct timespec *end, struct timespec *start);
+extern unsigned int tick_length(float seconds);
+/* treasure.cpp */
 extern void init_archetype_pointers(void);
 extern void load_treasures(void);
 extern treasurelist *find_treasurelist(const char *name);
@@ -446,7 +442,7 @@ extern treasure *get_empty_treasure();
 extern void treasure_free(treasure *t);
 extern treasure *treasure_insert(treasurelist *list, int position);
 extern void treasure_remove_item(treasurelist *list, int position);
-/* utils.c */
+/* utils.cpp */
 extern int random_roll(int min, int max, const object *op, int goodbad);
 extern int64_t random_roll64(int64_t min, int64_t max, const object *op, int goodbad);
 extern int die_roll(int num, int size, const object *op, int goodbad);
@@ -466,7 +462,7 @@ extern size_t split_string(char *str, char *array[], size_t array_size, char sep
 extern StringBuffer *describe_spellpath_attenuation(const char *attenuation, int value, StringBuffer *buf);
 extern StringBuffer *describe_attacktype(const char *attack, int value, StringBuffer *buf);
 extern void free_charlinks(linked_char *lc);
-/* loader.c */
+/* loader.cpp */
 extern void yyrestart(FILE *input_file);
 extern void yypop_buffer_state(void);
 extern int yyget_lineno(void);

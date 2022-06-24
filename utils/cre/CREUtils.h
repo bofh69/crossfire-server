@@ -15,13 +15,11 @@
 
 #include <QtWidgets>
 
-extern "C" {
 #include "global.h"
 #include "artifact.h"
 #include "treasure.h"
 #include "image.h"
 #include "quest.h"
-}
 
 class CREMapInformation;
 class Quest;

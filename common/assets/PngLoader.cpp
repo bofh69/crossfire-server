@@ -14,12 +14,10 @@
 #include "Faces.h"
 #include "Facesets.h"
 
-extern "C" {
 #include "string.h"
 #include "global.h"
 #include "compat.h"
 #include "image.h"
-}
 
 PngLoader::PngLoader(Faces *faces, Facesets *facesets) : m_faces(faces), m_facesets(facesets) {
 }

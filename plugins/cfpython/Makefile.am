@@ -8,22 +8,22 @@ plugin_LTLIBRARIES = cfpython.la
 else
 plugin_LTLIBRARIES =
 endif
-cfpython_la_SOURCES = cfpython.c\
-	cfpython_archetype.c\
-	cfpython_object.c\
-	cfpython_map.c\
-	cfpython_party.c\
-	cfpython_region.c\
-	cjson.c\
-	../common/plugin_common.c\
-	../common/hashtable.c
+cfpython_la_SOURCES = cfpython.cpp \
+	cfpython_archetype.cpp \
+	cfpython_object.cpp \
+	cfpython_map.cpp \
+	cfpython_party.cpp \
+	cfpython_region.cpp \
+	cjson.cpp \
+	../common/plugin_common.cpp \
+	../common/hashtable.cpp
 
-cfpython_la_CPSOURCES = cfpython.c\
-	cfpython_archetype.c\
-	cfpython_object.c\
-	cfpython_party.c\
-	cfpython_region.c\
-	cfpython_map.c
+cfpython_la_CPSOURCES = cfpython.cpp \
+	cfpython_archetype.cpp \
+	cfpython_object.cpp \
+	cfpython_party.cpp \
+	cfpython_region.cpp \
+	cfpython_map.cpp
 
 cfpython_la_LIBADD = @PYTHON_LIBS@
 cfpython_la_LDFLAGS = -module -avoid-version -rdynamic

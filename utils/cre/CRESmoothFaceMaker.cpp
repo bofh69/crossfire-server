@@ -15,10 +15,8 @@
 #include <QtWidgets>
 #include "FaceComboBox.h"
 
-extern "C" {
 #include "global.h"
 #include "image.h"
-}
 
 #include "assets.h"
 #include "AssetsManager.h"

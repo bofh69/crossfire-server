@@ -14,10 +14,8 @@
 #define CREPIXMAP_H
 
 #include <QtWidgets>
-extern "C" {
 #include "global.h"
 #include "image.h"
-}
 
 class CREPixmap
 {

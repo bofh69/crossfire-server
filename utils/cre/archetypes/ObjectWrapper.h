@@ -13,16 +13,13 @@
 #ifndef CRE_WRAPPER_OBJECT_h
 #define CRE_WRAPPER_OBJECT_h
 
-extern "C" {
-#include "global.h"
-}
-
 #include <QObject>
 
+#include "global.h"
 #include "assets/AssetWrapper.h"
+#include "treasures/TreasureListWrapper.h"
 
 class ResourcesManager;
-#include "treasures/TreasureListWrapper.h"
 
 class ObjectWrapper : public AssetTWrapper<object> {
     Q_OBJECT

@@ -18,12 +18,10 @@
 #include "autoconf.h"
 #endif
 
-extern "C" {
 #include "global.h"
 #include "compat.h"
 #include "Utils.h"
 #include <string.h>
-}
 #include "microtar.h"
 
 #include "PngLoader.h"

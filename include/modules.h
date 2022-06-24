@@ -18,10 +18,6 @@
 #ifndef MODULES_H
 #define MODULES_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void cfcitybell_init(Settings *settings);
 void cfcitybell_close();
 
@@ -31,9 +27,4 @@ void citylife_close();
 void random_house_generator_init(Settings *settings);
 void random_house_generator_close();
 
-#ifdef __cplusplus
-}
-#endif
-
 #endif /* MODULES_H */
-

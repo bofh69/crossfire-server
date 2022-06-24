@@ -18,7 +18,6 @@
  * A region is a group of maps. It includes a "parent" region.
  */
 
-extern "C" {
 #include "global.h"
 
 #include <ctype.h>
@@ -28,7 +27,6 @@ extern "C" {
 #ifndef WIN32 /* ---win32 exclude header */
 #include <unistd.h>
 #endif /* win32 */
-}
 
 #include <map>
 #include <string>

@@ -12,9 +12,7 @@
 
 #include "Facesets.h"
 
-extern "C" {
 #include "string.h"
-}
 
 template<>
 face_sets *asset_create(const std::string& prefix) {

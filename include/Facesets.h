@@ -14,10 +14,8 @@
 #define FACESETS_H
 
 #include "AssetsCollection.h"
-extern "C" {
 #include "global.h"
 #include "image.h"
-}
 
 /**
  * Available facesets for clients.

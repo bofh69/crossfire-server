@@ -13,11 +13,9 @@
 #include <QTableWidget>
 #include "AttackMessagePanel.h"
 #include "AttackMessagesWrapper.h"
-extern "C" {
 #include "global.h"
 #include "attack.h"
 #include "sproto.h"
-}
 
 AttackMessagePanel::AttackMessagePanel(QWidget* parent) : AssetSWrapperPanel(parent), myAttackType(0) {
     myMessages = addWidget(nullptr, new QTableWidget(0, 4, this), false, nullptr, nullptr);

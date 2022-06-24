@@ -11,9 +11,7 @@
  */
 
 #include "Animations.h"
-extern "C" {
 #include "global.h"
-}
 #include "assets.h"
 
 template<>

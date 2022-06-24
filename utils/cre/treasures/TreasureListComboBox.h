@@ -15,9 +15,7 @@
 
 #include <QtWidgets>
 
-extern "C" {
 #include "global.h"
-}
 
 /**
  * Combobox displaying a list of treasure lists, allowing selection and search.

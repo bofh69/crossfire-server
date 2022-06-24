@@ -1,8 +1,6 @@
 #include <fstream>
 
-extern "C" {
 #include "include/cfpython.h"
-}
 
 struct methodSignature {
     const char *method;

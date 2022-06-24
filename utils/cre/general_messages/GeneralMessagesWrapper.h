@@ -14,9 +14,7 @@
 #define GENERAL_MESSAGES_WRAPPER_H
 
 #include "assets.h"
-extern "C" {
 #include "book.h"
-}
 #include "AssetsManager.h"
 #include "assets/AssetsCollectionWrapper.h"
 #include "faces/FaceWrapper.h"

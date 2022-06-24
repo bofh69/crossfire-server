@@ -1,9 +1,8 @@
-extern "C" {
 #include "global.h"
 #include "compat.h"
 #include "string.h"
 #include "malloc.h"
-}
+
 #include <string>
 #include <map>
 #include <vector>

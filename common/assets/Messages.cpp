@@ -11,9 +11,7 @@
  */
 
 #include "Messages.h"
-extern "C" {
 #include "global.h"
-}
 
 template<>
 GeneralMessage *asset_create(const std::string& name) {

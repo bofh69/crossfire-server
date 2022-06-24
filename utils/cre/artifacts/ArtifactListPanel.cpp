@@ -12,10 +12,8 @@
 
 #include <QtWidgets>
 
-extern "C" {
 #include "global.h"
 #include "artifact.h"
-}
 
 #include "ArtifactListPanel.h"
 #include "CREUtils.h"

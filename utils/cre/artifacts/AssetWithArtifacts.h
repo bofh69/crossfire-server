@@ -15,10 +15,7 @@
 
 #include "assets/AssetWrapper.h"
 #include "artifacts/ArtifactWrapper.h"
-
-extern "C" {
 #include "global.h"
-}
 
 class ResourcesManager;
 

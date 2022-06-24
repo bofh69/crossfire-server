@@ -16,11 +16,9 @@
 #include <QObject>
 #include <QStringList>
 
-extern "C" {
 #include "global.h"
-}
-
 #include "assets/AssetWrapper.h"
+
 class ResourcesManager;
 
 class ArtifactsWrapper : public AssetWrapper {

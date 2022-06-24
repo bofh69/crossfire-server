@@ -13,10 +13,8 @@
 #ifndef ARCHETYPESMODEL_H
 #define ARCHETYPESMODEL_H
 
-extern "C" {
 #include "global.h"
 #include "object.h"
-}
 
 #include <set>
 #include <QAbstractTableModel>

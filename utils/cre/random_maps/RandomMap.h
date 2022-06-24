@@ -14,14 +14,12 @@
 #define	RANDOM_MAP_H
 
 #include <QString>
+
 #include "assets/AssetWrapper.h"
 #include "CREMapInformation.h"
-
-extern "C" {
 #include "global.h"
 #include "random_maps/random_map.h"
 #include "random_maps/rproto.h"
-}
 
 class RandomMap : public AssetWrapper
 {

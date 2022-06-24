@@ -15,10 +15,8 @@
 
 #include "AssetsCollection.h"
 
-extern "C" {
 #include "global.h"
 #include "treasure.h"
-}
 
 class Treasures : public AssetsCollection<treasurelist> {
 protected:

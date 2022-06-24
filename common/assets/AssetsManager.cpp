@@ -13,9 +13,7 @@
 #include "AssetsManager.h"
 
 #include <functional>
-extern "C" {
 #include "image.h"
-}
 
 AssetsManager::AssetsManager() {
     m_listener = std::bind(&AssetsManager::archetypeUpdated, this, std::placeholders::_1, std::placeholders::_2);

@@ -130,93 +130,11 @@ typedef struct {
 /** Attack messages the player gets when hitting/getting hit. */
 EXTERN attackmess_t attack_mess[NROFATTACKMESS][MAXATTACKMESS];
 
-#ifndef INIT_C
 EXTERN Chaos_Attacks ATTACKS[22];
 EXTERN const char *const change_resist_msg[NROFATTACKS];
 EXTERN const char *const resist_plus[NROFATTACKS];
 EXTERN const char *const resist_color[NROFATTACKS];
 EXTERN const char *const attacktype_desc[NROFATTACKS];
 EXTERN const char *const resist_save[NROFATTACKS];
-
-/* Beware, names require an _ if there is a space, else they will be read
- * as for example: resist_life stealing 50!
- */
-#else
-/** Attack types. */
-EXTERN const char *const resist_save[NROFATTACKS] = {
-    "physical ", "magic ", "fire ", "electricity ", "cold ", "confusion ", "acid ",
-    "drain ", "weaponmagic ", "ghosthit ", "poison ", "slow ", "paralyze ",
-    "turn_undead ", "fear ", "cancellation ", "deplete ", "death ", "chaos ",
-    "counterspell ", "godpower ", "holyword ", "blind ", "internal ", "life_stealing ",
-    "disease "
-};
-
-/** Short description of names of the attacktypes */
-EXTERN const char *const attacktype_desc[NROFATTACKS] = {
-    "physical", "magic", "fire", "electricity", "cold", "confusion", "acid",
-    "drain", "weapon magic", "ghost hit", "poison", "slow", "paralyze",
-    "turn undead", "fear", "cancellation", "deplete", "death", "chaos",
-    "counterspell", "god power", "holy word", "blind", "internal", "life stealing",
-    "disease"
-};
-
-/** Attack types to show to the player. */
-EXTERN const char *const resist_plus[NROFATTACKS] = {
-    "armour", "resist magic", "resist fire", "resist electricity", "resist cold",
-    "resist confusion", "resist acid", "resist drain",
-    "resist weaponmagic", "resist ghosthit", "resist poison", "resist slow",
-    "resist paralyzation", "resist turn undead", "resist fear",
-    "resist cancellation", "resist depletion", "resist death", "resist chaos",
-    "resist counterspell", "resist god power", "resist holy word",
-    "resist blindness", "resist internal", "resist life stealing",
-    "resist diseases"
-};
-
-/** Colors to add to the resistances for media tags. */
-EXTERN const char *const resist_color[NROFATTACKS] = {
-  "#FF15CD", "#930C76", "red", "blue", "#2CFFFF", NULL, NULL, NULL, NULL, NULL, "green", NULL, NULL,
-  NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-};
-
-/**
- * These are the descriptions of the resistances displayed when a
- * player puts on/takes off an item. See change_abil() in living.c.
- */
-EXTERN const char *const change_resist_msg[NROFATTACKS] = {
-    "physical", "magic", "fire", "electricity", "cold", "confusion", "acid",
-    "draining", "weapon magic", "ghosts", "poison", "slow", "paralyze",
-    "turn undead", "fear", "cancellation", "depletion", "death attacks", "chaos",
-    "counterspell", "god power", "holy word", "blinding attacks", "internal",
-    "life stealing", "disease"
-};
-
-
-/** Some local definitions for shuffle_attack(). */
-EXTERN Chaos_Attacks ATTACKS[22] = {
-    { AT_PHYSICAL, 0 },
-    { AT_PHYSICAL, 0 },  /*face = explosion*/
-    { AT_PHYSICAL, 0 },
-    { AT_MAGIC, 1 },
-    { AT_MAGIC, 1 },   /* face = last-burnout */
-    { AT_MAGIC, 1 },
-    { AT_FIRE, 2 },
-    { AT_FIRE, 2 },    /* face = fire....  */
-    { AT_FIRE, 2 },
-    { AT_ELECTRICITY, 3 },
-    { AT_ELECTRICITY, 3 },  /* ball_lightning */
-    { AT_ELECTRICITY, 3 },
-    { AT_COLD, 4 },
-    { AT_COLD, 4 },    /* face=icestorm*/
-    { AT_COLD, 4 },
-    { AT_CONFUSION, 5 },
-    { AT_POISON, 7 },
-    { AT_POISON, 7 },  /* face = acid sphere.  generator */
-    { AT_POISON, 7 },  /* poisoncloud face */
-    { AT_SLOW, 8 },
-    { AT_PARALYZE, 9 },
-    { AT_FEAR, 10 }
-};
-
-#endif /* ifdef init_c */
 
 #endif /* ATTACK_H */

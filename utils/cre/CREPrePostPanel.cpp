@@ -16,9 +16,7 @@
 #include "assets.h"
 #include "AssetsManager.h"
 #include "CREPixmap.h"
-extern "C" {
 #include "quest.h"
-}
 
 CRESubItemList::CRESubItemList(QWidget* parent) : CRESubItemWidget(parent)
 {

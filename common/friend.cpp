@@ -15,9 +15,7 @@
  * Functions related to relationship management.
  */
 
-extern "C" {
 #include "global.h"
-}
 
 #include <stdlib.h>
 #include <vector>

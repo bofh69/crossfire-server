@@ -18,13 +18,11 @@
 #include "ResourcesManager.h"
 #include <locale.h>
 
-extern "C" {
 #include "global.h"
 #include "libproto.h"
 #include "recipe.h"
 #include "image.h"
 #include "sproto.h"
-}
 #include "assets.h"
 #include "AssetsManager.h"
 #include "CREMapInformationManager.h"

@@ -13,11 +13,8 @@
 #ifndef ANIMATIONS_H
 #define ANIMATIONS_H
 
-#include "AssetsCollection.h"
-
-extern "C" {
 #include "global.h"
-}
+#include "AssetsCollection.h"
 
 class AllAnimations : public AssetsCollection<Animations> {
 public:

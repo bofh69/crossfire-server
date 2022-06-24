@@ -19,9 +19,7 @@
 #include "ResourcesManager.h"
 #include "CREPixmap.h"
 
-extern "C" {
 #include "global.h"
-}
 #include "assets.h"
 #include "AssetsManager.h"
 

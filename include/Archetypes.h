@@ -13,13 +13,9 @@
 #ifndef ARCHETYPES_H
 #define ARCHETYPES_H
 
-#include "AssetsCollection.h"
-
-extern "C" {
-#include "global.h"
-}
-
 #include <functional>
+#include "AssetsCollection.h"
+#include "global.h"
 
 /**
  * All archetypes in the game.

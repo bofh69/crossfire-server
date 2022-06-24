@@ -12,10 +12,8 @@
 
 #include <Qt>
 
-extern "C" {
 #include "global.h"
 #include "treasure.h"
-}
 
 #include "TreasureListPanel.h"
 #include "CREUtils.h"

@@ -15,11 +15,9 @@
 
 #include <string>
 
-extern "C" {
 #include "global.h"
 #include "object.h"
 #include "quest.h"
-}
 
 /**
  * Base class to be informed of where an asset is defined.

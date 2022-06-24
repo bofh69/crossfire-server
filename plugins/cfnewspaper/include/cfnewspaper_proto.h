@@ -1,8 +1,8 @@
 /* cfnewspaper.c */
-int initPlugin(const char *iversion, f_plug_api gethooksptr);
-void *getPluginProperty(int *type, ...);
-int cfnewspaper_runPluginCommand(object *op, char *params);
-int cfnewspaper_globalEventListener(int *type, ...);
-int postInitPlugin(void);
-int eventListener(int *type, ...);
-int closePlugin(void);
+extern "C" int initPlugin(const char *iversion, f_plug_api gethooksptr);
+extern "C" void *getPluginProperty(int *type, ...);
+extern "C" int cfnewspaper_runPluginCommand(object *op, char *params);
+extern "C" int cfnewspaper_globalEventListener(int *type, ...);
+extern "C" int postInitPlugin(void);
+extern "C" int eventListener(int *type, ...);
+extern "C" int closePlugin(void);

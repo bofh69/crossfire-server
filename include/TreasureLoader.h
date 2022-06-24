@@ -19,10 +19,8 @@ class Treasures;
 class Archetypes;
 class AssetsTracker;
 
-extern "C" {
 #include "global.h"
 #include "treasure.h"
-}
 
 class TreasureLoader : public AssetLoader {
 public:

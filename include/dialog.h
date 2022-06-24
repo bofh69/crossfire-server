@@ -52,7 +52,7 @@ typedef struct talk_info {
     struct obj *who;                    /**< Player saying something. */
     const char *text;                   /**< What the player actually said. */
     sstring message;                    /**< If not NULL, what the player will be displayed as said. */
-    int message_type;                   /**< A reply_type value for message. */
+    reply_type message_type;            /**< A reply_type value for message. */
     int replies_count;                  /**< How many items in replies_words and replies. */
     sstring replies_words[MAX_REPLIES]; /**< Available reply words. */
     sstring replies[MAX_REPLIES];       /**< Description for replies_words. */

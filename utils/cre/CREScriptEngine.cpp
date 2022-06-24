@@ -12,11 +12,8 @@
 
 #include "CREScriptEngine.h"
 
-extern "C"
-{
 #include "global.h"
 #include "attack.h"
-}
 
 CREScriptEngine::CREScriptEngine()
 {

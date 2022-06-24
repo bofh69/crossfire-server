@@ -1,11 +1,9 @@
-extern "C" {
 #include <stdlib.h>
 #include <string.h>
 #include <check.h>
 #include "global.h"
 #include <toolkit_common.h>
 #include <math.h>
-}
 #include "Archetypes.h"
 #include "Treasures.h"
 #include "TreasureLoader.h"

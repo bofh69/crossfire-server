@@ -13,10 +13,7 @@
 #ifndef TREASUREWRITER_H
 #define TREASUREWRITER_H
 
-extern "C" {
 #include "global.h"
-}
-
 #include "AssetWriter.h"
 
 class TreasureWriter : public AssetWriter<treasurelist> {

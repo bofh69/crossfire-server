@@ -286,6 +286,7 @@ void command_dumpabove(object *op, const char *params);
 void command_dumpbelow(object *op, const char *params);
 void command_settings(object *op, const char *ignored);
 void do_dump(object *who, object *what);
+bool can_follow(object* op, player* other);
 /* commands.c */
 void commands_init(void);
 void command_list(object *pl, bool is_dm);
@@ -448,6 +449,7 @@ void dragon_ability_gain(object *who, int atnr, int level);
 void player_unready_range_ob(player *pl, object *ob);
 void player_set_state(player *pl, uint8_t state);
 SockList *player_get_delayed_buffer(player *pl);
+void set_player_socket(player *p, socket_struct *ns);
 /* plugins.c */
 int plugins_init_plugin(const char *libfile);
 int plugins_remove_plugin(const char *id);
@@ -603,8 +605,6 @@ int process_object(object *op);
 void legacy_remove_force(object *op);
 void legacy_animate_trigger(object *op);
 void legacy_move_hole(object *op);
-unsigned int tick_length(float seconds);
-long timespec_diff(struct timespec *end, struct timespec *start);
 /* timers.c */
 void cftimer_process_timers(void);
 int cftimer_create(int id, long delay, object *ob, int mode);
@@ -627,17 +627,11 @@ void leave(player *pl, int draw_exit);
 int forbid_play(void);
 void server_main(int argc, char *argv[]);
 /* race.cpp */
-#ifdef __cplusplus
-extern "C" {
-#endif
 void load_races(BufferReader *reader, const char *filename);
 void finish_races();
 void dump_races(void);
 void free_races(void);
 object *races_get_random_monster(const char *race, int level);
-#ifdef __cplusplus
-}
-#endif
 /* item.c */
 bool player_can_find(object *op, object *ob);
 

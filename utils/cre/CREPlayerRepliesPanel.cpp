@@ -12,12 +12,9 @@
 
 #include <QtWidgets>
 #include "CREPlayerRepliesPanel.h"
-extern "C"
-{
 #include "global.h"
 #include "dialog.h"
 #include "sproto.h"
-}
 
 /**
  * Small delegate to handle edition of the reply type field.

@@ -1,9 +1,9 @@
 plugindir=$(pkglibdir)/plugins
 plugin_LTLIBRARIES = cfanim.la
-cfanim_la_SOURCES = cfanim.c\
-	../common/plugin_common.c
+cfanim_la_SOURCES = cfanim.cpp \
+	../common/plugin_common.cpp
 
-cfanim_la_CPSOURCES = cfanim.c
+cfanim_la_CPSOURCES = cfanim.cpp
 
 SUBDIRS=include
 

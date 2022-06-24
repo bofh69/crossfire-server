@@ -16,13 +16,6 @@
 #ifndef PLUGIN_H
 #define PLUGIN_H
 
-/*****************************************************************************/
-/* This one does not exist under Win32.                                      */
-/*****************************************************************************/
-#ifndef WIN32
-#include <dlfcn.h>
-#endif
-
 #undef MODULEAPI
 #ifdef WIN32__
 # ifdef PYTHON_PLUGIN_EXPORTS
@@ -41,6 +34,13 @@
 #include <global.h>
 #include <object.h>
 #include <logger.h>
+
+/*****************************************************************************/
+/* This one does not exist under Win32.                                      */
+/*****************************************************************************/
+#ifndef WIN32
+#include <dlfcn.h>
+#endif
 
 #include <time.h>
 #include "random_maps/random_map.h"

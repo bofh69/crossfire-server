@@ -1,57 +1,57 @@
 bin_PROGRAMS = crossfire-server
 
 noinst_LIBRARIES = libserver.a
-crossfire_server_SOURCES = main.c
+crossfire_server_SOURCES = main.cpp
 libserver_a_SOURCES = \
-	account.cpp\
-	account_char.c\
-	alchemy.c\
-	apply.c\
-	attack.c\
-	ban.c\
-	build_map.c\
-	c_chat.c\
-	c_misc.c\
-	c_move.c\
-	c_new.c\
-	c_object.c\
-	c_party.c\
-	c_range.c\
-	c_wiz.c\
+	account.cpp \
+	account_char.cpp \
+	alchemy.cpp \
+	apply.cpp \
+	attack.cpp \
+	ban.cpp \
+	build_map.cpp \
+	c_chat.cpp \
+	c_misc.cpp \
+	c_move.cpp \
+	c_new.cpp \
+	c_object.cpp \
+	c_party.cpp \
+	c_range.cpp \
+	c_wiz.cpp \
 	commands.cpp \
-	disease.c\
-	hiscore.c\
-	gods.c\
-	init.c\
-	knowledge.c \
-	login.c\
-	monster.c\
-	move.c\
-	ob_methods.c\
-	ob_types.c\
-	party.c\
-	pets.c\
-	player.c\
-	plugins.c\
-	quest.c\
+	disease.cpp \
+	hiscore.cpp \
+	gods.cpp \
+	init.cpp \
+	knowledge.cpp \
+	login.cpp \
+	monster.cpp \
+	move.cpp \
+	ob_methods.cpp \
+	ob_types.cpp \
+	party.cpp \
+	pets.cpp \
+	player.cpp \
+	plugins.cpp \
+	quest.cpp \
 	races.cpp \
-	resurrection.c\
-	rune.c\
-	shop.c\
-	skills.c\
-	skill_util.c\
-	spell_attack.c\
-	spell_effect.c\
-	spell_util.c\
-	swap.c\
-	time.c\
-	timers.c\
-	weather.c\
-	server.c \
+	resurrection.cpp \
+	rune.cpp \
+	shop.cpp \
+	skills.cpp \
+	skill_util.cpp \
+	spell_attack.cpp \
+	spell_effect.cpp \
+	spell_util.cpp \
+	swap.cpp \
+	time.cpp \
+	timers.cpp \
+	weather.cpp \
+	server.cpp \
 	modules/cfcitybell.cpp \
 	modules/citylife.cpp \
-	modules/random_house_generator.c \
-	win32.c
+	modules/random_house_generator.cpp \
+	win32.cpp
 
 AM_CPPFLAGS = -I$(top_srcdir)/include -DDATADIR=\"$(pkgdatadir)\" -DCONFDIR=\"$(pkgconfdir)\" \
 	      -DLIBDIR=\"$(pkglibdir)\" -DLOCALDIR=\"$(pkgstatedir)\" \

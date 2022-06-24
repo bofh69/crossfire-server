@@ -14,9 +14,7 @@
 #define FACES_H
 
 #include "AssetsCollection.h"
-extern "C" {
 #include "global.h"
-}
 
 class Faces : public AssetsCollection<Face> {
 public:

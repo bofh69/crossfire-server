@@ -15,13 +15,8 @@
 
 #include <QObject>
 #include <QtWidgets>
-#include "assets/AssetWrapperPanel.h"
-
-extern "C" {
 #include "global.h"
 #include "image.h"
-}
-
 #include "assets/AssetWrapperPanel.h"
 
 class AnimationControl;

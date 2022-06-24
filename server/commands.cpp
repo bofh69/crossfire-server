@@ -16,7 +16,6 @@
  * Contains the definition for all in-game commands a player can issue.
  */
 
-extern "C" {
 #include "global.h"
 
 #include <ctype.h>
@@ -26,7 +25,7 @@ extern "C" {
 #include "commands.h"
 #include "sproto.h"
 #include "assert.h"
-}
+
 #include <map>
 #include <vector>
 #include <string>

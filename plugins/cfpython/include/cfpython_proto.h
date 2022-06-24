@@ -1,11 +1,11 @@
 /* cfpython.c */
-CF_PLUGIN int initPlugin(const char *iversion, f_plug_api gethooksptr);
-CF_PLUGIN void *getPluginProperty(int *type, ...);
-CF_PLUGIN void cfpython_runPluginCommand(object *op, const char *params);
-CF_PLUGIN int postInitPlugin(void);
-CF_PLUGIN int cfpython_globalEventListener(int *type, ...);
-CF_PLUGIN int eventListener(int *type, ...);
-CF_PLUGIN int closePlugin(void);
+extern "C" int initPlugin(const char *iversion, f_plug_api gethooksptr);
+extern "C" void *getPluginProperty(int *type, ...);
+extern "C" void cfpython_runPluginCommand(object *op, const char *params);
+extern "C" int postInitPlugin(void);
+extern "C" int cfpython_globalEventListener(int *type, ...);
+extern "C" int eventListener(int *type, ...);
+extern "C" int closePlugin(void);
 /* cfpython_archetype.c */
 PyObject *Crossfire_Archetype_wrap(archetype *what);
 /* cfpython_object.c */

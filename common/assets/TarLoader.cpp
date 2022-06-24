@@ -11,9 +11,7 @@
  */
 
 #include "TarLoader.h"
-extern "C" {
 #include "string.h"
-}
 
 TarLoader::TarLoader(AssetLoader *loader) : m_loader(loader) {
     m_reader = bufferreader_create();

@@ -13,11 +13,9 @@
 #include <Qt>
 #include "CREPixmap.h"
 
-extern "C" {
 #include "global.h"
 #include "face.h"
 #include "image.h"
-}
 
 #include "assets.h"
 #include "AssetsManager.h"

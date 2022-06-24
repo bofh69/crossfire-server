@@ -18,10 +18,8 @@
 #include "assets/AssetWrapperPanel.h"
 #include "../animations/AnimationControl.h"
 
-extern "C" {
 #include "global.h"
 #include "artifact.h"
-}
 
 class ArtifactPanel : public AssetTWrapperPanel<artifact>
 {

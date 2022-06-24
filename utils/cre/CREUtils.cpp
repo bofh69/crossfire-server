@@ -17,11 +17,9 @@
 #include "MessageFile.h"
 #include "scripts/ScriptFile.h"
 
-extern "C" {
 #include "global.h"
 #include "recipe.h"
 #include "libproto.h"
-}
 
 QTreeWidgetItem* CREUtils::archetypeNode(QTreeWidgetItem* parent)
 {

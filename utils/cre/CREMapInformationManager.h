@@ -16,10 +16,8 @@
 #include <QtCore>
 #include "CREMapInformation.h"
 
-extern "C" {
 #include "global.h"
 #include "quest.h"
-}
 
 class MessageManager;
 class ScriptFileManager;

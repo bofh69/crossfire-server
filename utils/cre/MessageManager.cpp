@@ -15,9 +15,7 @@
 #include "QuestConditionScript.h"
 #include "quests/QuestWrapper.h"
 
-extern "C" {
-    #include "global.h"
-}
+#include "global.h"
 
 #include <QDir>
 #include <QDebug>

@@ -1,10 +1,6 @@
 #ifndef _CRE_PCH_H
 #define _CRE_PCH_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdbool.h>
 #include "global.h"
 #include "artifact.h"
@@ -13,10 +9,6 @@ extern "C" {
 #include "map.h"
 #include "object.h"
 #include "treasure.h"
-
-#ifdef __cplusplus
-}
-#endif
 
 #include <QObject>
 #include <Qt>

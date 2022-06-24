@@ -12,12 +12,10 @@
 
 #include <Qt>
 
-extern "C" {
 #include "global.h"
 #include "artifact.h"
 #include "object.h"
 #include "face.h"
-}
 
 #include "AnimationPanel.h"
 #include "AnimationControl.h"

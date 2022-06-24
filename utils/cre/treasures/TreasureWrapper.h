@@ -18,9 +18,7 @@
 #include <QObject>
 #include <QStringList>
 
-extern "C" {
 #include "global.h"
-}
 
 #include "CREPixmap.h"
 #include "artifacts/AssetWithArtifacts.h"

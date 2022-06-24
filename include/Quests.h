@@ -13,9 +13,7 @@
 #ifndef COMMON_QUESTS_H
 #define COMMON_QUESTS_H
 
-extern "C" {
 #include "quest.h"
-}
 #include "AssetsCollection.h"
 
 class Quests : public AssetsCollection<quest_definition> {

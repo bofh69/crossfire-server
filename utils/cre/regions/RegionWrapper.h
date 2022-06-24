@@ -14,10 +14,8 @@
 #define REGION_WRAPPER_H
 
 #include "assets/AssetWrapper.h"
-extern "C" {
 #include "global.h"
 #include "map.h"
-}
 
 #include "assets/AssetWrapperPanel.h"
 

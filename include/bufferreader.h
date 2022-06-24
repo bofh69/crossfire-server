@@ -37,10 +37,6 @@
 #ifndef BUFFERREADER_H
 #define BUFFERREADER_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "microtar.h"
 #include "logger.h"
 
@@ -128,10 +124,4 @@ size_t bufferreader_data_length(BufferReader *br);
  */
 char *bufferreader_data(BufferReader *br);
 
-
-#ifdef __cplusplus
-}
-#endif
-
 #endif /* BUFFERREADER_H */
-

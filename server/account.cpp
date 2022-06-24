@@ -53,8 +53,6 @@
 /** Set of accounts names that are currently logged in. */
 static std::set<std::string> accounts_logged_in = std::set<std::string>();
 
-extern "C" {
-
 #include "global.h"
 
 #include <ctype.h>
@@ -683,5 +681,4 @@ int account_change_password(const char *account_name,
     ac->password = strdup_local(newhash(new_password));
 
     return 0;
-}
 }

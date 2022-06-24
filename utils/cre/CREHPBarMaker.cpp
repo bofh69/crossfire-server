@@ -16,9 +16,7 @@
 #include <QtCore/qiodevice.h>
 #include <QtCore/qfile.h>
 
-extern "C" {
 #include "global.h"
-}
 
 CREHPBarMaker::CREHPBarMaker()
 {

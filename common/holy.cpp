@@ -16,7 +16,6 @@
  * God-related common functions.
  */
 
-extern "C" {
 #include "global.h"
 
 #include <assert.h>
@@ -26,7 +25,6 @@ extern "C" {
 #include "libproto.h"
 #include "living.h"
 #include "spells.h"
-}
 
 #include "assets.h"
 #include <vector>

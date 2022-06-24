@@ -13,10 +13,7 @@
 #ifndef ANIMATIONWRITER_H
 #define ANIMATIONWRITER_H
 
-extern "C" {
 #include "global.h"
-}
-
 #include "AssetWriter.h"
 
 class AnimationWriter : public AssetWriter<Animations> {

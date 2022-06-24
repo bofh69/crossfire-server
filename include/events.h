@@ -1,10 +1,6 @@
 #ifndef EVENTS_H
 #define EVENTS_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* Event ID codes. Sorted them to present local events first, but it is
  * just a 'cosmetic' thing.
  * Codes should not be changed, as they are linked to objects' subtype for handling.
@@ -127,9 +123,5 @@ int events_execute_object_event(object *op, int eventcode, object *activator, ob
  * @return value to return to the caller.
  */
 int events_execute_object_say(object *npc, talk_info *talk);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* EVENTS_H */

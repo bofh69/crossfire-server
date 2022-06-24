@@ -20,10 +20,8 @@
 #include "autoconf.h"
 #endif
 
-extern "C" {
 #include "global.h"
 #include "compat.h"
-}
 #include "assets.h"
 #include "AssetsManager.h"
 #include "AssetCollector.h"

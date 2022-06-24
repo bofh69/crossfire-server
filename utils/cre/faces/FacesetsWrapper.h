@@ -15,11 +15,8 @@
 
 #include <QObject>
 
-extern "C"
-{
 #include "global.h"
 #include "image.h"
-}
 #include "assets/AssetWrapper.h"
 #include "assets/AssetWrapperPanel.h"
 

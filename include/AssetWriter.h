@@ -13,9 +13,7 @@
 #ifndef ASSETWRITER_H
 #define ASSETWRITER_H
 
-extern "C" {
 #include "global.h"
-}
 
 /**
  * Abstract writer of an asset to a StringBuffer.

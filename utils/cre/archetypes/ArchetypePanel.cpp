@@ -14,9 +14,7 @@
 #include "CREMapInformation.h"
 #include "CREMapInformationManager.h"
 
-extern "C" {
 #include "global.h"
-}
 
 #include "ArchetypePanel.h"
 #include "CREUtils.h"

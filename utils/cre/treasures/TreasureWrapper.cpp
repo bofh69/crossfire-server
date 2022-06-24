@@ -18,11 +18,9 @@
 #include "MimeUtils.h"
 #include "archetypes/ArchetypeWrapper.h"
 
-extern "C" {
 #include "global.h"
 #include "artifact.h"
 #include "libproto.h"
-}
 
 TreasureWrapper::TreasureWrapper(AssetWrapper *parent, treasure *tr, ResourcesManager *resources)
    : AssetWithArtifacts<treasure>(parent, "Treasure", tr, resources), myNextYes(nullptr), myNextNo(nullptr)

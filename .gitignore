@@ -23,7 +23,7 @@
 /common/Makefile
 /common/Makefile.in
 /common/libcross.a
-/common/loader.c
+/common/loader.cpp
 /config.cache
 /config.log
 /config.status
@@ -183,7 +183,7 @@
 /random_maps/Makefile.in
 /random_maps/librandom_map.a
 /random_maps/random_map
-/random_maps/reader.c
+/random_maps/reader.cpp
 /server/.deps
 /server/.libs
 /server/Makefile

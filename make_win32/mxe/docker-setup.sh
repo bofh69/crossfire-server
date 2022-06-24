@@ -50,7 +50,8 @@ RUN DEBIAN_FRONTEND=noninteractive TERM=xterm apt-get install -y \
     mxe-x86-64-w64-mingw32.static-qt5 \
     mxe-x86-64-w64-mingw32.static-libgcrypt \
     mxe-x86-64-w64-mingw32.static-curl \
-    mxe-x86-64-w64-mingw32.static-gendef
+    mxe-x86-64-w64-mingw32.static-gendef \
+    mxe-x86-64-w64-mingw32.static-dlfcn-win32
 
 RUN echo export PS1=\'[$NAME] \\\w\\\\\$ \' >>/etc/bash.bashrc
 RUN adduser --quiet --disabled-login --gecos '' --uid '$UID' user

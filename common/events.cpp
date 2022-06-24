@@ -1,7 +1,5 @@
-extern "C" {
 #include <stdarg.h>
 #include "global.h"
-}
 #include "events.h"
 #include <map>
 #include <string>

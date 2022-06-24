@@ -16,11 +16,9 @@
 #include "Utils.h"
 #include "AssetsTracker.h"
 
-extern "C" {
 #include "string.h"
 #include "global.h"
 #include "compat.h"
-}
 
 TreasureLoader::TreasureLoader(Treasures *treasures, Archetypes *archetypes, AssetsTracker *tracker)
  : m_treasures(treasures), m_archetypes(archetypes), m_tracker(tracker) {

@@ -17,9 +17,7 @@
 #include "Utils.h"
 #include <functional>
 #include <string>
-extern "C" {
 #include "global.h"
-}
 
 /**
  * Loader calling a function for files ending with a specific string.

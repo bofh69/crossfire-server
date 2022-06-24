@@ -39,7 +39,9 @@
 #endif
 #endif
 
+extern "C" {
 #include <plugin.h>
+}
 
 #define PLUGIN_ERROR_INT        0x0FFFFF
 
@@ -119,7 +121,7 @@ extern int          cf_object_transfer(object *op, int x, int y, int randomly, o
 extern int          cf_object_move_to(object *op, int x, int y);
 extern int          cf_object_out_of_map(object *op, int x, int y);
 extern void         cf_object_drop(object *op, object *author);
-extern void         cf_object_say(object *op, char *msg);
+extern void         cf_object_say(object *op, const char *msg);
 extern object      *cf_object_insert_object(object *op, object *container);
 extern object      *cf_object_present_archname_inside(object *op, char *whatstr);
 extern int          cf_object_apply(object *op, object *author, int flags);

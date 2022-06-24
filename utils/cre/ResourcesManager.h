@@ -13,11 +13,9 @@
 #ifndef RESOURCESMANAGER_H
 #define RESOURCESMANAGER_H
 
-extern "C" {
 #include "global.h"
 #include "object.h"
 #include "quest.h"
-}
 #include "AssetsTracker.h"
 #include <set>
 #include <QObject>

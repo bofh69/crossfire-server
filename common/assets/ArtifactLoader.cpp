@@ -12,10 +12,8 @@
 
 #include "ArtifactLoader.h"
 #include "Utils.h"
-extern "C" {
 #include "global.h"
 #include "artifact.h"
-}
 
 int artifact_init;  /**< 1 if doing archetypes initialization */
 

@@ -23,12 +23,10 @@
  * See this page for more information.
  */
 
-extern "C" {
 #include "global.h"
 #include "object.h"
 #include "sproto.h"
 #include <string.h>
-}
 
 #include <string>
 #include <unordered_map>
@@ -151,7 +149,6 @@ static event_registration global_handler;
  * Citybells module initialisation.
  * @param settings server settings.
  */
-extern "C"
 void cfcitybell_init(Settings *settings) {
     timeofday_t tod;
     get_tod(&tod);
@@ -169,7 +166,6 @@ void cfcitybell_init(Settings *settings) {
     settings->disabled_plugins = disable;
 }
 
-extern "C"
 void cfcitybell_close() {
     events_unregister_global_handler(EVENT_CLOCK, global_handler);
     for (auto reg : regions) {

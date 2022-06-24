@@ -15,10 +15,8 @@
 
 #include <QObject>
 
-extern "C" {
 #include "global.h"
 #include "quest.h"
-}
 #include "assets/AssetWrapper.h"
 #include "CREPixmap.h"
 

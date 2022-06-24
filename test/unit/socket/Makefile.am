@@ -1,5 +1,5 @@
 noinst_LIBRARIES = libstubs.a
-libstubs_a_SOURCES=stubs_socket.c
+libstubs_a_SOURCES=stubs_socket.cpp
 LDADD = ../../../common/libcross.a  ../../../socket/libsocket.a libstubs.a @CHECK_LIBS@
 
 ../../logs/unit/socket:

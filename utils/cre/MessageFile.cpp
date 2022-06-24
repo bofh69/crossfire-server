@@ -18,9 +18,7 @@
 #include "MessageFile.h"
 #include "quests/QuestWrapper.h"
 
-extern "C" {
-    #include "global.h"
-}
+#include "global.h"
 
 MessageRule::MessageRule()
 {

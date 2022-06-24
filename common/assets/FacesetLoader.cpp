@@ -12,11 +12,9 @@
 
 #include "FacesetLoader.h"
 
-extern "C" {
 #include "global.h"
 #include "image.h"
 #include "string.h"
-}
 #include "Facesets.h"
 
 FacesetLoader::FacesetLoader(Facesets *facesets) : m_facesets(facesets) {

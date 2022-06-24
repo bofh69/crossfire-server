@@ -1,0 +1,649 @@
+/*
+ * Crossfire -- cooperative multi-player graphical RPG and adventure game
+ *
+ * Copyright (c) 1999-2014 Mark Wedel and the Crossfire Development Team
+ * Copyright (c) 1992 Frank Tore Johansen
+ *
+ * Crossfire is free software and comes with ABSOLUTELY NO WARRANTY. You are
+ * welcome to redistribute it under certain conditions. For details, please
+ * see COPYING and LICENSE.
+ *
+ * The authors can be reached via e-mail at <crossfire@metalforge.org>.
+ */
+
+/**
+ * @file
+ * Basic initialization for the common library.
+ */
+
+#include "global.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+#include "object.h"
+#include "output_file.h"
+
+#include "assets.h"
+
+/** Attack types. */
+const char *const resist_save[NROFATTACKS] = {
+    "physical ", "magic ", "fire ", "electricity ", "cold ", "confusion ", "acid ",
+    "drain ", "weaponmagic ", "ghosthit ", "poison ", "slow ", "paralyze ",
+    "turn_undead ", "fear ", "cancellation ", "deplete ", "death ", "chaos ",
+    "counterspell ", "godpower ", "holyword ", "blind ", "internal ", "life_stealing ",
+    "disease "
+};
+
+/** Short description of names of the attacktypes */
+const char *const attacktype_desc[NROFATTACKS] = {
+    "physical", "magic", "fire", "electricity", "cold", "confusion", "acid",
+    "drain", "weapon magic", "ghost hit", "poison", "slow", "paralyze",
+    "turn undead", "fear", "cancellation", "deplete", "death", "chaos",
+    "counterspell", "god power", "holy word", "blind", "internal", "life stealing",
+    "disease"
+};
+
+/** Attack types to show to the player. */
+const char *const resist_plus[NROFATTACKS] = {
+    "armour", "resist magic", "resist fire", "resist electricity", "resist cold",
+    "resist confusion", "resist acid", "resist drain",
+    "resist weaponmagic", "resist ghosthit", "resist poison", "resist slow",
+    "resist paralyzation", "resist turn undead", "resist fear",
+    "resist cancellation", "resist depletion", "resist death", "resist chaos",
+    "resist counterspell", "resist god power", "resist holy word",
+    "resist blindness", "resist internal", "resist life stealing",
+    "resist diseases"
+};
+
+/** Colors to add to the resistances for media tags. */
+const char *const resist_color[NROFATTACKS] = {
+  "#FF15CD", "#930C76", "red", "blue", "#2CFFFF", NULL, NULL, NULL, NULL, NULL, "green", NULL, NULL,
+  NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+};
+
+/**
+ * These are the descriptions of the resistances displayed when a
+ * player puts on/takes off an item. See change_abil() in living.c.
+ */
+const char *const change_resist_msg[NROFATTACKS] = {
+    "physical", "magic", "fire", "electricity", "cold", "confusion", "acid",
+    "draining", "weapon magic", "ghosts", "poison", "slow", "paralyze",
+    "turn undead", "fear", "cancellation", "depletion", "death attacks", "chaos",
+    "counterspell", "god power", "holy word", "blinding attacks", "internal",
+    "life stealing", "disease"
+};
+
+attackmess_t attack_mess[NROFATTACKMESS][MAXATTACKMESS];
+
+/** Some local definitions for shuffle_attack(). */
+Chaos_Attacks ATTACKS[22] = {
+    { AT_PHYSICAL, 0 },
+    { AT_PHYSICAL, 0 },  /*face = explosion*/
+    { AT_PHYSICAL, 0 },
+    { AT_MAGIC, 1 },
+    { AT_MAGIC, 1 },   /* face = last-burnout */
+    { AT_MAGIC, 1 },
+    { AT_FIRE, 2 },
+    { AT_FIRE, 2 },    /* face = fire....  */
+    { AT_FIRE, 2 },
+    { AT_ELECTRICITY, 3 },
+    { AT_ELECTRICITY, 3 },  /* ball_lightning */
+    { AT_ELECTRICITY, 3 },
+    { AT_COLD, 4 },
+    { AT_COLD, 4 },    /* face=icestorm*/
+    { AT_COLD, 4 },
+    { AT_CONFUSION, 5 },
+    { AT_POISON, 7 },
+    { AT_POISON, 7 },  /* face = acid sphere.  generator */
+    { AT_POISON, 7 },  /* poisoncloud face */
+    { AT_SLOW, 8 },
+    { AT_PARALYZE, 9 },
+    { AT_FEAR, 10 }
+};
+
+player *first_player;                /**< First player. */
+mapstruct *first_map;                /**< First map. */
+region *first_region;                /**< First region. */
+artifactlist *first_artifactlist;    /**< First artifact. */
+
+long trying_emergency_save; /**< True when emergency_save() is reached. */
+long nroferrors;            /**< If it exceeds MAX_ERRORS, call fatal() */
+
+FILE *logfile;                    /**< Used by server/daemon.c */
+int exiting;                      /**< True if the game is about to exit. */
+long nrofartifacts;               /**< Only used in malloc_info(). */
+long nrofallowedstr;              /**< Only used in malloc_info(). */
+
+archetype *empty_archetype;       /**< Nice to have fast access to it. */
+char first_map_path[MAX_BUF];     /**< The start-level. */
+char first_map_ext_path[MAX_BUF]; /**< Path used for per-race start maps. */
+
+long ob_count;
+
+archetype *ring_arch, *amulet_arch, *crown_arch;
+const char *undead_name; /* Used in hit_player() in main.c */
+sstring blocks_prayer;   /**< For update_position() mostly. */
+
+materialtype_t *materialt;
+
+static void init_environ(void);
+static void init_defaults(void);
+static void init_dynamic(void);
+static void init_clocks(void);
+
+/*
+ * Default values for settings.
+ */
+struct Settings settings = {
+    nullptr,
+    CSPORT,
+    llevInfo,
+    0,  // dumpvalues
+    nullptr,    // dumpargs
+    CONFDIR,
+    DATADIR,
+    LOCALDIR,
+    PLAYERDIR,
+    MAPDIR,
+    REGIONS,
+    UNIQUE_DIR,
+    TEMPLATE_DIR,
+    TMPDIR,
+    STAT_LOSS_ON_DEATH,
+    PK_LUCK_PENALTY,
+    PERMANENT_EXPERIENCE_RATIO,
+    DEATH_PENALTY_RATIO,
+    DEATH_PENALTY_LEVEL,
+    BALANCED_STAT_LOSS,
+    NOT_PERMADETH,
+    SIMPLE_EXP,
+    RESET_LOCATION_TIME,
+    SET_TITLE,
+    RESURRECTION,
+    SEARCH_ITEMS,
+    SPELL_ENCUMBRANCE,
+    SPELL_FAILURE_EFFECTS,
+    CASTING_TIME,
+    REAL_WIZ,
+    RECYCLE_TMP_MAPS,
+    ALWAYS_SHOW_HP,
+    SPELLPOINT_LEVEL_DEPEND,
+    SET_FRIENDLY_FIRE,
+    "",
+    "",
+    MOTD,
+    "rules",
+    "news",
+    0,  // meta_on
+    "",
+    "",
+    0,  // meta_port
+    "",
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    nullptr,
+    EMERGENCY_X,
+    EMERGENCY_Y,
+    0,
+    1.0,
+    /* Armor enchantment stuff */
+    ARMOR_MAX_ENCHANT,
+    ARMOR_WEIGHT_REDUCTION,
+    ARMOR_WEIGHT_LINEAR,
+    ARMOR_SPEED_IMPROVEMENT,
+    ARMOR_SPEED_LINEAR,
+    1,
+    0,
+    1,
+    5000000,
+    10,
+    0,
+    0,
+    0,
+    nullptr,    // log_timestamp_format
+    3, // .starting_stat_min
+    18, // .starting_stat_max
+    85, // .starting_stat_points
+    115, // .roll_stat_points
+    0,     /* max_stat - will be loaded from stats file */
+    1,     /* special_break_map, 1 for historical reasons */
+    nullptr,
+    0,
+    0,
+    nullptr,
+    0,
+    0,
+    0, // .hooks_count
+    { nullptr, },
+    { nullptr },
+    0, // .ignore_assets_errors
+    nullptr, // .archetypes_tracker
+    nullptr, // .fatal_hook
+};
+
+struct Statistics statistics;
+
+/**
+ * Perhaps not the best place for this, but needs to be
+ * in some file in the common area so that standalone
+ * programs, like the random map generator, can be built.
+ */
+const char *const spellpathnames[NRSPELLPATHS] = {
+    "Protection",
+    "Fire",
+    "Frost",
+    "Electricity",
+    "Missiles",
+    "Self",
+    "Summoning",
+    "Abjuration",
+    "Restoration",
+    "Detonation",
+    "Mind",
+    "Creation",
+    "Teleportation",
+    "Information",
+    "Transmutation",
+    "Transferrence",
+    "Turning",
+    "Wounding",
+    "Death",
+    "Light"
+};
+
+
+/**
+ * This loads the emergency map information from a
+ * .emergency file in the map directory.  Doing this makes
+ * it easier to switch between map distributions (don't need
+ * to recompile.  Note that there is no reason I see that
+ * this could not be re-loaded during play, but it seems
+ * like there should be little reason to do that.
+ *
+ * @note
+ * If file doesn't exist, will not do anything.
+ */
+static void init_emergency_mappath(void) {
+    char filename[MAX_BUF], tmpbuf[MAX_BUF];
+    FILE *fp;
+    int online = 0;
+
+    settings.emergency_mapname = strdup_local(EMERGENCY_MAPPATH);
+
+    /* If this file doesn't exist, not a big deal */
+    snprintf(filename, sizeof(filename), "%s/%s/.emergency", settings.datadir, settings.mapdir);
+    fp = fopen(filename, "r");
+    if (fp != NULL) {
+        while (fgets(tmpbuf, MAX_BUF-1, fp)) {
+            if (tmpbuf[0] == '#')
+                continue; /* ignore comments */
+
+            if (online == 0) {
+                tmpbuf[strlen(tmpbuf)-1] = 0; /* kill newline */
+                free(settings.emergency_mapname);
+                settings.emergency_mapname = strdup_local(tmpbuf);
+            } else if (online == 1) {
+                settings.emergency_x = atoi(tmpbuf);
+            } else if (online == 2) {
+                settings.emergency_y = atoi(tmpbuf);
+            }
+            online++;
+            if (online > 2)
+                break;
+        }
+        fclose(fp);
+        if (online <= 2)
+            LOG(llevError, "Online read partial data from %s\n", filename);
+        LOG(llevDebug, "emergency map set to %s (%d, %d)\n",
+                settings.emergency_mapname,
+                settings.emergency_x, settings.emergency_y);
+    }
+}
+
+void load_assets(void) {
+    assets_collect(settings.datadir, ASSETS_ALL);
+    assets_end_load();
+}
+
+/**
+ * It is vital that init_library() is called by any functions
+ * using this library.
+ * If you want to lessen the size of the program using the library,
+ * you can replace the call to init_library() with init_globals() and
+ * init_function_pointers().  Good idea to also call
+ * init_hash_table if you are doing any object loading.
+ */
+void init_library(void) {
+    init_environ();
+    init_hash_table();
+    init_globals();
+    init_stats(FALSE);   /* Needs to be fairly early, since the loader will check
+                          * against the settings.max_stat value
+                          */
+
+    for (int mess = 0; mess < MAXATTACKMESS; mess++) {
+        for (int level = 0; level < MAXATTACKMESS; level++) {
+            attack_mess[mess][level].level = -1;
+            attack_mess[mess][level].buf1 = NULL;
+            attack_mess[mess][level].buf2 = NULL;
+            attack_mess[mess][level].buf3 = NULL;
+        }
+    }
+
+    assets_init();
+    i18n_init();
+    init_objects();
+    init_block();
+
+    load_assets();
+
+    init_clocks();
+    init_emergency_mappath();
+    init_experience();
+
+    if (assets_dump_undefined() > 0 && !settings.ignore_assets_errors) {
+        LOG(llevError, "Assets errors, please fix and restart.\n");
+        fatal(SEE_LAST_ERROR);
+    }
+
+    init_dynamic();
+}
+
+/**
+ * Initializes values from the environmental variables.
+ * it needs to be called very early, since command line options should
+ * overwrite these if specified.
+ */
+static void init_environ(void) {
+    char *cp;
+
+    cp = getenv("CROSSFIRE_LIBDIR");
+    if (cp)
+        settings.datadir = cp;
+    cp = getenv("CROSSFIRE_LOCALDIR");
+    if (cp)
+        settings.localdir = cp;
+    cp = getenv("CROSSFIRE_PLAYERDIR");
+    if (cp)
+        settings.playerdir = cp;
+    cp = getenv("CROSSFIRE_MAPDIR");
+    if (cp)
+        settings.mapdir = cp;
+    cp = getenv("CROSSFIRE_UNIQUEDIR");
+    if (cp)
+        settings.uniquedir = cp;
+    cp = getenv("CROSSFIRE_TEMPLATEDIR");
+    if (cp)
+        settings.templatedir = cp;
+    cp = getenv("CROSSFIRE_TMPDIR");
+    if (cp)
+        settings.tmpdir = cp;
+}
+
+/**
+ * Initialises all global variables.
+ * Might use environment-variables as default for some of them.
+ *
+ * Setups logfile, and such variables.
+ */
+void init_globals(void) {
+    memset(&statistics, 0, sizeof(struct Statistics));
+
+    /* Log to stderr by default. */
+    logfile = stderr;
+
+    /* Try to open the log file specified on the command-line. */
+    if (settings.logfilename != NULL) {
+        logfile = fopen(settings.logfilename, "a");
+
+        /* If writable, set buffer mode to per-line. */
+        if (logfile != NULL) {
+            setvbuf(logfile, NULL, _IOLBF, 0);
+        } else {
+            logfile = stderr;
+
+            LOG(llevError, "Could not open '%s' for logging.\n",
+                    settings.logfilename);
+        }
+    }
+
+    exiting = 0;
+    first_player = NULL;
+    first_map = NULL;
+    first_artifactlist = NULL;
+    *first_map_ext_path = 0;
+    nrofartifacts = 0;
+    nrofallowedstr = 0;
+    ring_arch = NULL;
+    amulet_arch = NULL;
+    undead_name = add_string("undead");
+    blocks_prayer = add_string("blocks_prayer");
+    trying_emergency_save = 0;
+    init_defaults();
+}
+
+/**
+ * Cleans all memory allocated for global variables.
+ *
+ * Will clear:
+ *  * attack messages
+ *  * emergency map settings
+ *  * friendly list
+ *  * experience
+ *  * regions
+ */
+void free_globals(void) {
+    int msg, attack;
+    region *reg;
+
+    FREE_AND_CLEAR_STR(undead_name);
+    FREE_AND_CLEAR_STR(blocks_prayer);
+    for (msg = 0; msg < NROFATTACKMESS; msg++)
+        for (attack = 0; attack < MAXATTACKMESS; attack++) {
+            free(attack_mess[msg][attack].buf1);
+            free(attack_mess[msg][attack].buf2);
+            free(attack_mess[msg][attack].buf3);
+        }
+
+    free(settings.emergency_mapname);
+
+    clear_friendly_list();
+    free_experience();
+
+    while (first_region) {
+        reg = first_region->next;
+        FREE_AND_CLEAR(first_region->name);
+        FREE_AND_CLEAR(first_region->jailmap);
+        FREE_AND_CLEAR(first_region->msg);
+        FREE_AND_CLEAR(first_region->longname);
+        FREE_AND_CLEAR(first_region);
+        first_region = reg;
+    }
+
+    assets_free();
+}
+
+/**
+ * Initialises global variables which can be changed by options.
+ * Called by init_library().
+ */
+static void init_defaults(void) {
+    nroferrors = 0;
+}
+
+/**
+ * Initializes first_map_path from the archetype collection, and check that
+ * some required archetype actually exist.
+ *
+ * Must be called after archetypes have been initialized.
+ *
+ * @note
+ * will call exit() in case of error.
+ */
+static void init_dynamic(void) {
+    archetype *at = get_archetype_by_type_subtype(MAP, MAP_TYPE_LEGACY);
+    if (!at) {
+        LOG(llevError, "You need a archetype for a legacy map, with type %d and subtype %d\n", MAP, MAP_TYPE_LEGACY);
+        fatal(SEE_LAST_ERROR);
+    }
+    if (EXIT_PATH(&at->clone)) {
+        mapstruct *first;
+
+        strlcpy(first_map_path, EXIT_PATH(&at->clone), sizeof(first_map_path));
+        first = ready_map_name(first_map_path, 0);
+        if (!first) {
+            LOG(llevError, "Initial map %s can't be found! Please ensure maps are correctly installed.\n", first_map_path);
+            LOG(llevError, "Unable to continue without initial map.\n");
+            fatal(SEE_LAST_ERROR);
+        }
+        delete_map(first);
+    } else {
+        LOG(llevError, "Legacy map must have a 'slaying' field!\n");
+        fatal(SEE_LAST_ERROR);
+    }
+
+    if (!get_archetype_by_type_subtype(MAP, MAP_TYPE_DEFAULT)) {
+        LOG(llevError, "Can not find object of type MAP subtype MAP_TYPE_DEFAULT.\n");
+        LOG(llevError, "Are the archetype files up to date? Can not continue.\n");
+        fatal(SEE_LAST_ERROR);
+    }
+}
+
+/**
+ * Write out the current time to the file so time does not
+ * reset every time the server reboots.
+ */
+void write_todclock(void) {
+    char filename[MAX_BUF];
+    FILE *fp;
+    OutputFile of;
+
+    snprintf(filename, sizeof(filename), "%s/clockdata", settings.localdir);
+    fp = of_open(&of, filename);
+    if (fp == NULL)
+        return;
+    fprintf(fp, "%lu", todtick);
+    of_close(&of);
+}
+
+/**
+ * Initializes the gametime and TOD counters
+ * Called by init_library().
+ */
+static void init_clocks(void) {
+    char filename[MAX_BUF];
+    FILE *fp;
+    static int has_been_done = 0;
+
+    if (has_been_done)
+        return;
+    else
+        has_been_done = 1;
+
+    snprintf(filename, sizeof(filename), "%s/clockdata", settings.localdir);
+    fp = fopen(filename, "r");
+    if (fp == NULL) {
+        LOG(llevError, "Can't open %s.\n", filename);
+        todtick = 0;
+        write_todclock();
+        return;
+    }
+    /* Read TOD and default to 0 on failure. */
+    if (fscanf(fp, "%lu", &todtick) == 1) {
+        LOG(llevDebug, "clockdata: todtick is %lu\n", todtick);
+        fclose(fp);
+    } else {
+        LOG(llevError, "Couldn't parse todtick, using default value 0\n");
+        todtick = 0;
+        fclose(fp);
+        write_todclock();
+    }
+}
+
+/**
+ * Initializes the attack messages.
+ * Called by init_library().
+ *
+ * Memory will be cleared by free_globals().
+ */
+void init_attackmess(BufferReader *reader, const char *filename) {
+    char *buf;
+    char *cp, *p;
+    int mess = -1, level;
+    int mode = 0, total = 0;
+
+    level = 0;
+    while ((buf = bufferreader_next_line(reader)) != NULL) {
+        if (*buf == '#' || *buf == '\0')
+            continue;
+        /*
+         * Skip blanks -- strspn is slightly faster than a loop w/ optimization on
+         * Also, note we go from the beginning of the line again, since cp was at the end.
+         * While here, also skip tabs for more complete whitespace handling.
+         *
+         * SilverNexus 2018-01-21
+         */
+        cp = buf + strspn(buf, " \t");
+
+        if (strncmp(cp, "TYPE:", 5) == 0) {
+            p = strtok(buf, ":");
+            p = strtok(NULL, ":");
+            if (mode == 1) {
+                attack_mess[mess][level].level = -1;
+                free(attack_mess[mess][level].buf1);
+                free(attack_mess[mess][level].buf2);
+                free(attack_mess[mess][level].buf3);
+                attack_mess[mess][level].buf1 = NULL;
+                attack_mess[mess][level].buf2 = NULL;
+                attack_mess[mess][level].buf3 = NULL;
+            }
+            level = 0;
+            mess = atoi(p);
+            mode = 1;
+            continue;
+        }
+        if (mode == 1) {
+            p = strtok(buf, "=");
+            attack_mess[mess][level].level = atoi(buf);
+            p = strtok(NULL, "=");
+            free(attack_mess[mess][level].buf1);
+            if (p != NULL)
+                attack_mess[mess][level].buf1 = strdup_local(p);
+            else
+                attack_mess[mess][level].buf1 = strdup_local("");
+            mode = 2;
+            continue;
+        } else if (mode == 2) {
+            p = strtok(buf, "=");
+            attack_mess[mess][level].level = atoi(buf);
+            p = strtok(NULL, "=");
+            free(attack_mess[mess][level].buf2);
+            if (p != NULL)
+                attack_mess[mess][level].buf2 = strdup_local(p);
+            else
+                attack_mess[mess][level].buf2 = strdup_local("");
+            mode = 3;
+            continue;
+        } else if (mode == 3) {
+            p = strtok(buf, "=");
+            attack_mess[mess][level].level = atoi(buf);
+            p = strtok(NULL, "=");
+            free(attack_mess[mess][level].buf3);
+            if (p != NULL)
+                attack_mess[mess][level].buf3 = strdup_local(p);
+            else
+                attack_mess[mess][level].buf3 = strdup_local("");
+            mode = 1;
+            level++;
+            total++;
+            continue;
+        }
+    }
+    LOG(llevDebug, "attackmsg %s: %d messages in %d categories\n", filename, total, mess+1);
+}

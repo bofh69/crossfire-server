@@ -17,9 +17,7 @@
 #include <QtWidgets>
 #include "../assets/AssetWrapperPanel.h"
 
-extern "C" {
 #include "global.h"
-}
 
 class AssetModel;
 

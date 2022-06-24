@@ -31,11 +31,9 @@
 #include "EditMonstersDialog.h"
 #include "random_maps/RandomMap.h"
 
-extern "C" {
 #include "global.h"
 #include "sproto.h"
 #include "image.h"
-}
 #include "assets.h"
 #include "AssetsManager.h"
 #include "CRESettings.h"

@@ -13,10 +13,8 @@
 #include "CRECombatSimulator.h"
 #include "CREPixmap.h"
 
-extern "C" {
 #include <global.h>
 #include <sproto.h>
-}
 #include "assets.h"
 #include "AssetsManager.h"
 #include "archetypes/ArchetypeComboBox.h"

@@ -7,10 +7,6 @@
  * Should not be used by C++ code, except for getManager() to get the AssetsManager.
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "global.h"
 #include "image.h"
 #include "quest.h"
@@ -97,11 +93,6 @@ void quest_for_each(quest_op op, void *user);
 
 size_t quests_count(bool includeSystem);
 
-#ifdef __cplusplus
-}
-
 class AssetsManager *getManager();
-
-#endif
 
 #endif /* ASSETS_H */

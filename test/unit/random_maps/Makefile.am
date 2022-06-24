@@ -1,5 +1,5 @@
 noinst_LIBRARIES = libstubs.a
-libstubs_a_SOURCES=stubs_random.c
+libstubs_a_SOURCES=stubs_random.cpp
 LDADD = ../../../common/libcross.a libstubs.a ../../../socket/libsocket.a ../../../random_maps/librandom_map.a @CHECK_LIBS@
 
 

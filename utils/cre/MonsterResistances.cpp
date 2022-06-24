@@ -18,10 +18,8 @@
 
 #include "MonsterResistances.h"
 
-extern "C" {
 #include "global.h"
 #include "attack.h"
-}
 #include "assets.h"
 #include "AssetsManager.h"
 

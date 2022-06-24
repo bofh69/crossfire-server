@@ -56,10 +56,8 @@
 #include "random_maps/RandomMap.h"
 #include "random_maps/RandomMapPanel.h"
 
-extern "C" {
 #include "global.h"
 #include "recipe.h"
-}
 #include "assets.h"
 #include "AssetsManager.h"
 

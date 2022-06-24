@@ -15,9 +15,7 @@
 
 #include <string>
 
-extern "C" {
 #include "global.h"
-}
 
 class Utils {
 public:

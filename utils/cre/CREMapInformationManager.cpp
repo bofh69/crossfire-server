@@ -20,9 +20,7 @@
 #include "scripts/ScriptFile.h"
 #include "random_maps/RandomMap.h"
 
-extern "C" {
 #include "global.h"
-}
 #include "assets.h"
 #include "AssetsManager.h"
 

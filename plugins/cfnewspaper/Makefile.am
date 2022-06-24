@@ -7,10 +7,10 @@ else
 plugin_LTLIBRARIES =
 endif
 
-cfnewspaper_la_SOURCES = cfnewspaper.c\
-	../common/plugin_common.c
+cfnewspaper_la_SOURCES = cfnewspaper.cpp \
+	../common/plugin_common.cpp
 
-cfnewspaper_la_CPSOURCES = cfnewspaper.c
+cfnewspaper_la_CPSOURCES = cfnewspaper.cpp
 
 cfnewspaper_la_LIBADD = -lsqlite3
 cfnewspaper_la_LDFLAGS = -module -avoid-version -rdynamic

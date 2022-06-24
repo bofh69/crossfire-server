@@ -15,11 +15,8 @@
 
 #include <QObject>
 
-extern "C"
-{
 #include "global.h"
 #include "face.h"
-}
 #include "assets.h"
 #include "AssetsManager.h"
 #include "../assets/AssetsCollectionWrapper.h"

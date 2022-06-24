@@ -49,12 +49,10 @@
 #include <vector>
 #include <string>
 
-extern "C" {
 #include <assert.h>
 #include "global.h"
 #include "object.h"
 #include "sproto.h"
-}
 
 /** Module name for the event system. */
 #define CITYLIFE_NAME   "citylife"
@@ -426,7 +424,6 @@ static void load_citylife(BufferReader *reader, const char *filename) {
 
 static event_registration c, m;
 
-extern "C"
 void citylife_init(Settings *settings) {
     c = events_register_global_handler(EVENT_CLOCK, citylife_globalEventListener);
     m = events_register_global_handler(EVENT_MAPLOAD, citylife_globalEventListener);
@@ -443,7 +440,6 @@ void citylife_init(Settings *settings) {
     settings->disabled_plugins = disable;
 }
 
-extern "C"
 void citylife_close() {
     events_unregister_global_handler(EVENT_CLOCK, c);
     events_unregister_global_handler(EVENT_MAPLOAD, m);

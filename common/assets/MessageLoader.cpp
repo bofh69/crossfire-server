@@ -13,11 +13,9 @@
 #include "MessageLoader.h"
 #include "Messages.h"
 
-extern "C" {
 #include "global.h"
 #include "compat.h"
 #include "string.h"
-}
 #include "AssetsTracker.h"
 
 MessageLoader::MessageLoader(Messages* messages, AssetsTracker *tracker) : m_messages(messages), m_tracker(tracker) {

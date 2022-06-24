@@ -52,7 +52,7 @@ FIC_MAK=$DIR/Makefile.am
 echo "Copying files..."
 cd ..
 mkdir $1
-cp template/plugin_template.c $FIC_C
+cp template/plugin_template.cpp $FIC_C
 mkdir $1/include
 cp template/include/plugin_template.h $FIC_INC
 cp template/Makefile.am $FIC_MAK

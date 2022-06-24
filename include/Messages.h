@@ -15,11 +15,9 @@
 
 #include "AssetsCollection.h"
 
-extern "C" {
 #include "global.h"
 #include "compat.h"
 #include "book.h"
-}
 
 class Messages : public AssetsCollection<GeneralMessage> {
 

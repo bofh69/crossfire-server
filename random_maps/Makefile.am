@@ -1,32 +1,35 @@
 pkglibexec_PROGRAMS = random_map
 
-random_map_SOURCES = main.c
+random_map_SOURCES = main.cpp
 
 noinst_LIBRARIES = librandom_map.a
 
 librandom_map_a_SOURCES = \
-	decor.c \
-	door.c \
-	exit.c \
-	expand2x.c \
-	floor.c \
-	maze_gen.c \
-	monster.c \
-	random_map.c \
-	reader.l \
-	rogue_layout.c \
-	room_gen_onion.c \
-	room_gen_spiral.c \
-	snake.c \
-	special.c \
-	square_spiral.c \
-	style.c  \
-	treasure.c \
-	wall.c
+	decor.cpp \
+	door.cpp \
+	exit.cpp \
+	expand2x.cpp \
+	floor.cpp \
+	maze_gen.cpp \
+	monster.cpp \
+	random_map.cpp \
+	reader.cpp \
+	rogue_layout.cpp \
+	room_gen_onion.cpp \
+	room_gen_spiral.cpp \
+	snake.cpp \
+	special.cpp \
+	square_spiral.cpp \
+	style.cpp \
+	treasure.cpp \
+	wall.cpp
 
 EXTRA_DIST = \
 	README \
-	main.c
+	main.cpp
+
+reader.cpp:
+	$(LEX) -P rm -o reader.cpp reader.l
 
 AM_CPPFLAGS = -I$(top_srcdir)/include -I${top_srcdir}/include/random_maps
 
@@ -35,4 +38,4 @@ AM_LFLAGS = -Prmap -i
 
 random_map_LDADD = ../common/libcross.a librandom_map.a
 
-CLEANFILES = reader.c
+CLEANFILES = reader.cpp

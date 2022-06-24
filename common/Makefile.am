@@ -1,10 +1,10 @@
 noinst_LIBRARIES = libcross.a
 
 libcross_a_SOURCES = \
-	anim.c \
+	anim.cpp \
 	arch.cpp\
-	arch_types_valid.c \
-	artifact.c\
+	arch_types_valid.cpp \
+	artifact.cpp \
 	assets/AnimationWriter.cpp \
 	assets/Animations.cpp \
 	assets/ArchetypeLoader.cpp \
@@ -24,7 +24,7 @@ libcross_a_SOURCES = \
 	assets/MessageLoader.cpp \
 	assets/MessageWriter.cpp \
 	assets/Messages.cpp \
-	assets/microtar.c \
+	assets/microtar.cpp \
 	assets/PngLoader.cpp \
 	assets/QuestLoader.cpp \
 	assets/QuestWriter.cpp \
@@ -35,49 +35,52 @@ libcross_a_SOURCES = \
 	assets/Treasures.cpp \
 	assets/Utils.cpp \
 	assets/assets.cpp\
-	bufferreader.c \
-	button.c\
+	bufferreader.cpp \
+	button.cpp \
 	cf_random.cpp \
-	dialog.c \
+	dialog.cpp \
 	events.cpp \
-	exp.c\
+	exp.cpp \
 	friend.cpp \
 	holy.cpp \
-	info.c\
-	image.c \
-	init.c\
-	item.c\
-	languages.c\
-	links.c\
-	living.c\
-	loader.l\
-	logger.c\
-	los.c\
-	map.c\
-	minheap.c\
-	ob_methods.c \
-	ob_types.c \
-	object.c\
-	output_file.c \
-	path.c\
-	porting.c\
-	player.c\
-	re-cmp.c\
-	readable.c\
-	recipe.c\
+	info.cpp \
+	image.cpp \
+	init.cpp \
+	item.cpp \
+	languages.cpp \
+	links.cpp \
+	living.cpp \
+	loader.cpp \
+	logger.cpp \
+	los.cpp \
+	map.cpp \
+	minheap.cpp \
+	ob_methods.cpp \
+	ob_types.cpp \
+	object.cpp \
+	output_file.cpp \
+	path.cpp \
+	porting.cpp \
+	player.cpp \
+	re-cmp.cpp \
+	readable.cpp \
+	recipe.cpp \
 	region.cpp \
-	shstr.c\
-	stringbuffer.c\
-	time.c\
-	treasure.c\
-	utils.c
+	shstr.cpp \
+	stringbuffer.cpp \
+	time.cpp \
+	treasure.cpp \
+	utils.cpp
+
+loader.cpp:
+	$(LEX) -i -o loader.cpp loader.l
 
 EXTRA_DIST = README is_valid_types_gen.py
 AM_CPPFLAGS = -I$(top_srcdir)/include -DDATADIR=\"$(pkgdatadir)\" -DCONFDIR=\"$(pkgconfdir)\" \
 	      -DLIBDIR=\"$(pkglibdir)\" -DLOCALDIR=\"$(pkgstatedir)\"
 AM_LFLAGS = -i -B
 
-CLEANFILES = loader.c arch_types_valid.c
+CLEANFILES = loader.cpp arch_types_valid.cpp
 
-arch_types_valid.c: is_valid_types_gen.py $(top_srcdir)/include/object.h
-	$(PY) $(top_srcdir)/common/is_valid_types_gen.py $(top_srcdir)/include/object.h > $(top_srcdir)/common/arch_types_valid.c
+arch_types_valid.cpp: is_valid_types_gen.py $(top_srcdir)/include/object.h
+	$(PY) $(top_srcdir)/common/is_valid_types_gen.py $(top_srcdir)/include/object.h > $(top_srcdir)/common/arch_types_valid.cpp

@@ -18,9 +18,7 @@
 #include <QtWidgets>
 
 
-extern "C" {
 #include "global.h"
-}
 
 class QComboBox;
 class QSpinBox;

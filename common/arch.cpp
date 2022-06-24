@@ -12,7 +12,7 @@
  */
 
 /**
- * @file arch.cpp
+ * @file
  * All archetype-related functions.
  * @note
  * The naming of these functions is really poor - they are all
@@ -25,9 +25,7 @@
  * make the functions use the same order for parameters (type first, then name, or the opposite).
  */
 
-extern "C" {
 #include "global.h"
-}
 
 #include <ctype.h>
 #include <stdlib.h>

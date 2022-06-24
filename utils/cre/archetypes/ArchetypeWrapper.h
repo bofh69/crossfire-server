@@ -15,10 +15,7 @@
 
 #include <QObject>
 
-extern "C"
-{
 #include "global.h"
-}
 #include "CREPixmap.h"
 #include "artifacts/AssetWithArtifacts.h"
 #include "artifacts/ArtifactWrapper.h"

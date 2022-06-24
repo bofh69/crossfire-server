@@ -10,11 +10,9 @@
  * The authors can be reached via e-mail at <crossfire@metalforge.org>.
  */
 
-extern "C" {
 #include "global.h"
 #include "loader.h"
 #include "object.h"
-}
 
 #include "ArchetypeLoader.h"
 #include "Archetypes.h"

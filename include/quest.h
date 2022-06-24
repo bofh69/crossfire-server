@@ -13,10 +13,6 @@
 #ifndef QUEST_H
 #define QUEST_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "global.h"
 
 /** One condition to automatically move to a quest step. */
@@ -96,9 +92,5 @@ int quest_condition_from_string(quest_condition *condition, const char *buffer);
  * @param condition item to write, must not be NULL.
  */
 void quest_write_condition(char *buf, size_t len, const quest_condition *condition);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* QUEST_H */

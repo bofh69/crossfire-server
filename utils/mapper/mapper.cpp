@@ -154,12 +154,12 @@
 #include <sys/types.h>
 #include <time.h>
 
-extern "C" {
 #include "global.h"
 #include "sproto.h"
 #include "image.h"
 #include "quest.h"
 
+extern "C" {
 #include <gd.h>
 #include <gdfonts.h>
 #include <gdfontl.h>

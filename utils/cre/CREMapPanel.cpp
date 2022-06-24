@@ -17,9 +17,7 @@
 #include "scripts/ScriptFile.h"
 #include "CREPixmap.h"
 
-extern "C" {
 #include "define.h"
-}
 #include "assets.h"
 #include "AssetsManager.h"
 

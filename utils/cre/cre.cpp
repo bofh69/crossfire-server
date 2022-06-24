@@ -25,10 +25,8 @@
 #include "CREReportDefinition.h"
 #include "CREReportDefinitionManager.h"
 
-extern "C" {
 #include "global.h"
 #include "quest.h"
-}
 
 int main(int argc, char **argv) {
 

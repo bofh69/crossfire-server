@@ -14,11 +14,9 @@
 #include "Faces.h"
 #include "Animations.h"
 
-extern "C" {
 #include "global.h"
 #include "compat.h"
 #include "string.h"
-}
 
 FaceLoader::FaceLoader(Faces *faces, AllAnimations *animations)
     : m_faces(faces), m_animations(animations)

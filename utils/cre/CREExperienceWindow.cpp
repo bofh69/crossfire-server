@@ -16,9 +16,7 @@
 #include "CREExperienceWindow.h"
 #include "CREFilterDialog.h"
 
-extern "C" {
 #include "global.h"
-}
 
 CREExperienceWindow::CREExperienceWindow()
 {
