@@ -29,7 +29,7 @@ EXTRA_DIST = \
 	main.cpp
 
 reader.cpp:
-	$(LEX) -P rm -o reader.cpp reader.l
+	$(LEX) -P rm -o reader.cpp $(top_srcdir)/random_maps/reader.l
 
 AM_CPPFLAGS = -I$(top_srcdir)/include -I${top_srcdir}/include/random_maps
 

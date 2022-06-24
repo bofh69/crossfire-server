@@ -517,7 +517,8 @@
 /utils/ylwrap
 Makefile
 Makefile.in
-common/arch_types_valid.c
+build
+common/arch_types_valid.cpp
 cov-int/
 cscope.*
 doc/playbook/handbook.idx
