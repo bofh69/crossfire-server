@@ -37,12 +37,13 @@ dnl#############################################################################
 dnl Program Checks
 dnl#############################################################################
 AC_LANG([C++])
-AC_PROG_AWK
-AC_PROG_CC_C99
-AC_PROG_LIBTOOL
-AM_PROG_LEX
 AC_PROG_CXX
 AC_PROG_CXXCPP
+AX_CXX_COMPILE_STDCXX_14()
+
+AC_PROG_AWK
+AC_PROG_LIBTOOL
+AM_PROG_LEX
 
 AC_PATH_PROG(BASENAME, basename)
 AC_PATH_PROG(GIT, git)
@@ -53,9 +54,6 @@ AC_PATH_PROG(TAR, tar)
 
 AC_SUBST(BASENAME)
 AC_SUBST(GZIP)
-
-LIBS="$LIBS -lstdc++ -lm"
-CXXFLAGS="$CXXFLAGS -std=c++14"
 
 dnl#############################################################################
 AS_BOX([Library Checks])
