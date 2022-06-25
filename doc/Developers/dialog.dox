@@ -23,6 +23,7 @@ with | to separate alternatives
 - <code>\@reply value text</code> is one possible reply the player can give to the message. <code>value</code>
 is what the player should say (using <code>say value</code>), <code>test</code> is what will be actually displayed
 - <code>\@question value text</code> is the same as \@reply except the player will ask <code>text</code>
+- <code>\@identify</code> Identifies the speaker when the message containing it is matched
 
 Note that <code>value</code> can't contain spaces.
 

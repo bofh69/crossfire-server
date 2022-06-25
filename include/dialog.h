@@ -30,6 +30,7 @@ typedef struct struct_dialog_message {
     char *message;                              /**< What the NPC will say. */
     struct struct_dialog_reply *replies;        /**< Replies this message has. */
     struct struct_dialog_message *next;         /**< Next message, NULL if last. */
+    bool identifies;                            /**< Identify the speaker when this message is matched. */
 } struct_dialog_message;
 
 /**

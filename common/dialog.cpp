@@ -168,6 +168,10 @@ static void parse_dialog_information(object *op) {
                 op->dialog_information->all_replies = reply;
             } else
                 LOG(llevDebug, "Warning: @reply not in @match block for %s!\n", op->name);
+        } else if ((strncmp(current, "@identify", 9) == 0 && (len = 9))) {
+            if (message) {
+                message->identifies = true;
+            }
         } else if (message) {
             /* Needed to set initial \0 */
             int wasnull = FALSE;
