@@ -469,36 +469,15 @@ static void command_kick2(object *op, const char *params) {
 
     for (pl = first_player; pl != NULL; pl = pl->next) {
         if ((*params == '\0' || !strcmp(pl->ob->name, params)) && pl->ob != op) {
-            object *op;
-            int removed = 0;
-
-            op = pl->ob;
+            object *op = pl->ob;
             if (!QUERY_FLAG(op, FLAG_REMOVED)) {
                 events_execute_global_event(EVENT_KICK, op, *params == '\0' ? NULL : params);
-                object_remove(op);
-                removed = 1;
             }
-            op->direction = 0;
             draw_ext_info_format(NDI_UNIQUE|NDI_ALL|NDI_RED, 5, op, MSG_TYPE_ADMIN, MSG_TYPE_ADMIN_DM,
                                  "%s is kicked out of the game.",
                                  op->name);
-            strcpy(op->contr->killer, "left");
-            hiscore_check(op, 0); /* Always check score */
 
-            /*
-             * not sure how the player would be freed, but did see
-             * a crash here - if that is the case, don't save the
-             * the player.
-             */
-            if (!removed && !QUERY_FLAG(op, FLAG_FREED)) {
-                (void)save_player(op, 0);
-                if (op->map)
-                    op->map->players--;
-            }
-#if MAP_MAXTIMEOUT
-            if (op->map)
-                op->map->timeout = MAP_TIMEOUT(op->map);
-#endif
+            // Saving/leaving/removing is handled on the next tick in do_server().
             pl->socket->status = Ns_Dead;
         }
     }
