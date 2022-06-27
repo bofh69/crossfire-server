@@ -1405,11 +1405,22 @@ int forbid_play(void) {
 #endif
 }
 
+static void save_all_players(void) {
+    for (player *pl = first_player; pl != NULL; ) {
+        player *npl = pl->next;
+        save_player(pl->ob, 0);
+        leave(pl, 0);
+        final_free_player(pl);
+        pl = npl;
+    }
+}
+
 static void do_shutdown(void) {
     draw_ext_info(NDI_UNIQUE | NDI_ALL, 5, NULL, MSG_TYPE_ADMIN,
             MSG_TYPE_ADMIN_DM, "The server has shut down.");
+    save_all_players();
 
-    /* TODO: Kick everyone out and save player files? */
+    // Maps are saved out in clean_tmp_files(), called by cleanup().
     cleanup();
 }
 
