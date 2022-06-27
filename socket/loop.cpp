@@ -450,6 +450,7 @@ static void new_connection(int listen_fd) {
             fatal(OUT_OF_MEMORY);
         newsocknum = socket_info.allocated_sockets;
         socket_info.allocated_sockets++;
+        memset(&init_sockets[newsocknum], 0, sizeof(*init_sockets));
         init_sockets[newsocknum].listen = NULL;
         init_sockets[newsocknum].faces_sent_len = get_faces_count();
         init_sockets[newsocknum].faces_sent = static_cast<uint8_t *>(calloc(get_faces_count(), sizeof(*init_sockets[newsocknum].faces_sent)));
