@@ -87,7 +87,7 @@ protected:
 };
 
 /**
- * Base class for assets representing a native Crossfire structure.
+ * Base class for assets mapping to a native Crossfire structure.
  */
 template<typename T>
 class AssetTWrapper : public AssetWrapper {

@@ -24,6 +24,9 @@ extern "C" {
 class QLabel;
 class LicenseManager;
 
+/**
+ * Display details about a faceset.
+ */
 class FacesetsPanel : public AssetTWrapperPanel<face_sets> {
 public:
     FacesetsPanel(QWidget* parent, LicenseManager *licenseManager);
