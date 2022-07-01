@@ -10,16 +10,9 @@
  * The authors can be reached via e-mail at <crossfire@metalforge.org>.
  */
 
-#include <Qt>
-
 #include "FacePanel.h"
-#include "CREUtils.h"
 #include "CRESmoothFaceMaker.h"
-#include "assets.h"
-#include "AssetsManager.h"
 #include "LicenseManager.h"
-#include "CREMapInformationManager.h"
-#include "Quests.h"
 #include "assets/AssetModel.h"
 #include "ResourcesManager.h"
 

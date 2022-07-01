@@ -16,7 +16,6 @@
 #include <stdexcept>
 
 #include "CREResourcesWindow.h"
-#include "CREUtils.h"
 #include "CREPixmap.h"
 
 #include "CREFilterDialog.h"
