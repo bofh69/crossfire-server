@@ -19,6 +19,9 @@ class AssetWrapper;
 class UseFilterAssetModel;
 class AssetModel;
 
+/**
+ * Tree displaying assets filtered by whether they use a specific asset or not.
+ */
 class AssetUseTree : public QTreeView {
     Q_OBJECT
 

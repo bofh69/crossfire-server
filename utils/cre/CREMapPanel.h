@@ -20,6 +20,9 @@
 class CREMapInformation;
 class ScriptFileManager;
 
+/**
+ * Display details about a map.
+ */
 class CREMapPanel : public AssetSWrapperPanel<CREMapInformation>
 {
     public:

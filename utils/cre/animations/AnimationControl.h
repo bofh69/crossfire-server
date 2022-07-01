@@ -21,6 +21,9 @@
 
 class AnimationWidget;
 
+/**
+ * Widget displaying all directions of an animation.
+ */
 class AnimationControl : public QWidget {
     Q_OBJECT
 

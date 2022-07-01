@@ -21,6 +21,9 @@
 #include "global.h"
 #include "artifact.h"
 
+/**
+ * Display details about an artifact definition.
+ */
 class ArtifactPanel : public AssetTWrapperPanel<artifact>
 {
     Q_OBJECT

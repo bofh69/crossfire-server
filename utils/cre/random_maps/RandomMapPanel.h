@@ -19,6 +19,9 @@ class RandomMap;
 class QTextEdit;
 class QLabel;
 
+/**
+ * Display details about a random map.
+ */
 class CRERandomMapPanel : public AssetSWrapperPanel<const RandomMap>
 {
 public:

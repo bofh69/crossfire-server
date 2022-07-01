@@ -19,6 +19,9 @@
 
 class ResourcesManager;
 
+/**
+ * Represents an asset to which artifacts may be applied.
+ */
 template<class T>
 class AssetWithArtifacts : public AssetTWrapper<T> {
 public:

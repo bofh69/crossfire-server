@@ -16,6 +16,9 @@
 #include <QObject>
 #include <QtWidgets>
 
+/**
+ * Display and play an animation in a single direction.
+ */
 class AnimationWidget : public QWidget {
     Q_OBJECT
 

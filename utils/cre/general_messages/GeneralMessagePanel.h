@@ -15,6 +15,9 @@
 
 #include "assets/AssetWrapperPanel.h"
 
+/**
+ * Display and allow edition of general messages.
+ */
 class CREGeneralMessagePanel : public AssetWrapperPanel {
 public:
     CREGeneralMessagePanel(QWidget* parent);

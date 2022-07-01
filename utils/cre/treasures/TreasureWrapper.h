@@ -27,6 +27,9 @@
 class ResourcesManager;
 class TreasureYesNo;
 
+/**
+ * Wrapper for a @ref treasure item.
+ */
 class TreasureWrapper : public AssetWithArtifacts<treasure> {
     Q_OBJECT
 

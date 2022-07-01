@@ -24,6 +24,9 @@ extern "C" {
 class TreasureListWrapper;
 class AssetModel;
 
+/**
+ * Display and allow edition of a treasure list.
+ */
 class CRETreasurePanel : public AssetTWrapperPanel<treasurelist> {
     Q_OBJECT
 

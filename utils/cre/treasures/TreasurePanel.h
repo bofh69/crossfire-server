@@ -20,6 +20,9 @@
 class ArchetypeComboBox;
 class TreasureListComboBox;
 
+/**
+ * Display and allow edition of a treasure in a treasure list.
+ */
 class TreasurePanel : public AssetWrapperPanel {
     Q_OBJECT
 

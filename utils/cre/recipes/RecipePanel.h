@@ -23,6 +23,9 @@ extern "C" {
 
 #include "assets/AssetWrapperPanel.h"
 
+/**
+ * Display details of a crafting recipe.
+ */
 class RecipePanel : public AssetTWrapperPanel<recipe> {
     Q_OBJECT
 

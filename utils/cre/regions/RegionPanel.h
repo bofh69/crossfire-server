@@ -16,6 +16,9 @@
 #include <QWidget>
 #include "assets/AssetWrapperPanel.h"
 
+/**
+ * Display details of a region.
+ */
 class RegionPanel : public AssetWrapperPanel {
 public:
     RegionPanel(QWidget *parent);

@@ -20,6 +20,9 @@
 class QTableWidget;
 class QLabel;
 
+/**
+ * Display attack messages for a single attack type.
+ */
 class AttackMessagePanel : public AssetSWrapperPanel<SingleAttackWrapper> {
     Q_OBJECT
 public:

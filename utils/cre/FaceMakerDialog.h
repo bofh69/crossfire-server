@@ -20,6 +20,9 @@ class QTextEdit;
 
 #include "ResourcesManager.h"
 
+/**
+ * Utility to generate variations from one or more faces.
+ */
 class FaceMakerDialog : public QDialog {
     Q_OBJECT
 

@@ -23,6 +23,9 @@
 
 #include "assets/AssetWrapper.h"
 
+/**
+ * Qt model representing all items in CRE, with the exception of experience.
+ */
 class AssetModel : public QAbstractItemModel {
     Q_OBJECT
 public:
@@ -49,6 +52,9 @@ private:
     AssetWrapper * myAssets;
 };
 
+/**
+ * Proxy model filtering based on whether an asset uses a specific asset or not.
+ */
 class UseFilterAssetModel : public QSortFilterProxyModel {
 public:
     UseFilterAssetModel(QObject *parent);
@@ -66,6 +72,9 @@ protected:
 
 class QScriptEngine;
 
+/**
+ * Proxy model filtering based on user-written filter, used in the main resource view.
+ */
 class ScriptFilterAssetModel : public QSortFilterProxyModel {
 public:
     ScriptFilterAssetModel(AssetModel *model, QScriptEngine *engine, QObject *parent);

@@ -19,7 +19,9 @@
 
 class CREMapInformation;
 
-/** Information about an event hook, linked to a script file. */
+/**
+ * Information about an event hook, linked to a script file.
+ */
 class HookInformation {
 public:
     HookInformation(CREMapInformation* map, int x, int y, const QString& itemName, const QString& pluginName, const QString& eventName);
@@ -40,7 +42,9 @@ private:
     QString myEventName;
 };
 
-/** Information about a script file. */
+/**
+ * Information about a script file.
+ */
 class ScriptFile : public AssetWrapper {
 public:
     ScriptFile(AssetWrapper *parent, const QString& path);

@@ -23,6 +23,9 @@ class AnimationControl;
 class AssetModel;
 class UseFilterAssetModel;
 
+/**
+ * Display details about an animation.
+ */
 class AnimationPanel : public AssetTWrapperPanel<Animations> {
     Q_OBJECT
 

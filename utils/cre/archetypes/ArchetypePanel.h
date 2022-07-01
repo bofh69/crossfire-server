@@ -21,6 +21,9 @@
 
 class AssetModel;
 
+/**
+ * Display and allow edition of archetypes.
+ */
 class ArchetypePanel : public AssetWrapperPanel {
     Q_OBJECT
 

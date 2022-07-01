@@ -22,7 +22,9 @@ class ArchetypeComboBox;
 class AssetUseTree;
 class AssetModel;
 
-/** Base class for a panel displaying information about an asset. */
+/**
+ * Base class for a panel displaying information about an asset.
+ */
 class AssetWrapperPanel : public QWidget {
     Q_OBJECT
 public:

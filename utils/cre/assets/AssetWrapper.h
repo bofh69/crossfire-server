@@ -19,6 +19,9 @@
 class QMimeData;
 class QMenu;
 
+/**
+ * Base class for all assets that can be displayed or edited by CRE.
+ */
 class AssetWrapper : public QObject {
     Q_OBJECT
 
@@ -83,6 +86,9 @@ protected:
     QString myPanelName;
 };
 
+/**
+ * Base class for assets representing a native Crossfire structure.
+ */
 template<typename T>
 class AssetTWrapper : public AssetWrapper {
 public:

@@ -17,6 +17,9 @@
 
 class AssetModel;
 
+/**
+ * Display details of a Python script.
+ */
 class CREScriptPanel : public AssetWrapperPanel {
 public:
     CREScriptPanel(AssetModel *assets, QWidget *parent);

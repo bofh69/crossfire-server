@@ -19,6 +19,9 @@ class ArchetypesModel;
 class ResourcesManager;
 struct archt;
 
+/**
+ * Display a grid of all monsters and allow edition of various fields.
+ */
 class EditMonstersDialog : public QDialog {
     Q_OBJECT
 

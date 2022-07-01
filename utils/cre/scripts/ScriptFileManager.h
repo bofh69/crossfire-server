@@ -20,7 +20,9 @@
 class HookInformation;
 class CREMapInformation;
 
-/** Manage scripts for items. */
+/**
+ * Manage scripts for items.
+ */
 class ScriptFileManager : public AssetWrapper {
     Q_OBJECT
 

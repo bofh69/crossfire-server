@@ -74,6 +74,9 @@ enum ArchetypeUse {
 
 typedef std::function<bool(ArchetypeUse use, const archt*, const treasurelist*, const CREMapInformation*, recipe*)> AssetUseCallback;
 
+/**
+ * Class managing all assets, tracking in which file they are, which are modified, and such.
+ */
 class ResourcesManager : public QObject, AssetsTracker
 {
     Q_OBJECT

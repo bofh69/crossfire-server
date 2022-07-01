@@ -24,6 +24,9 @@ class AssetModel;
 class UseFilterAssetModel;
 class ResourcesManager;
 
+/**
+ * Display details about a face.
+ */
 class CREFacePanel : public AssetTWrapperPanel<Face> {
     Q_OBJECT
 

@@ -24,6 +24,9 @@ class MessageManager;
 class AssetModel;
 class PrePostWidget;
 
+/**
+ * Display details of a quest step.
+ */
 class QuestStepPanel : public AssetWrapperPanel {
     Q_OBJECT
 
@@ -31,6 +34,9 @@ public:
     QuestStepPanel(MessageManager *messages, QWidget *parent);
 };
 
+/**
+ * Details of a quest.
+ */
 class CREQuestPanel : public AssetWrapperPanel {
     Q_OBJECT
 
