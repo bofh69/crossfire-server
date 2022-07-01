@@ -29,7 +29,6 @@ CREPixmap.cpp \
  MessageFile.cpp \
  CREStringListPanel.cpp \
  CREPrePostPanel.cpp \
- CREReplyPanel.cpp \
  CREMultilineItemDelegate.cpp \
  QuestConditionScript.cpp \
  CREHPBarMaker.cpp \
@@ -120,7 +119,6 @@ CREPixmap.h \
  MessageFile.h \
  CREStringListPanel.h \
  CREPrePostPanel.h \
- CREReplyPanel.h \
  CREMultilineItemDelegate.h \
  QuestConditionScript.h \
  CREHPBarMaker.h \
