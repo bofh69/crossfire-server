@@ -29,9 +29,6 @@ class QuestStepPanel : public AssetWrapperPanel {
 
 public:
     QuestStepPanel(MessageManager *messages, QWidget *parent);
-
-private:
-    PrePostWidget *myPrePost;
 };
 
 class CREQuestPanel : public AssetWrapperPanel
