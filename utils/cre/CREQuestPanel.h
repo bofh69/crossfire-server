@@ -31,8 +31,7 @@ public:
     QuestStepPanel(MessageManager *messages, QWidget *parent);
 };
 
-class CREQuestPanel : public AssetWrapperPanel
-{
+class CREQuestPanel : public AssetWrapperPanel {
     Q_OBJECT
 
 public:
