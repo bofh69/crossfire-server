@@ -1658,7 +1658,7 @@ void CREMainWindow::onReportLicenses()
   report += "<html>";
 
   auto all = myResourcesManager->licenseManager()->getAll();
-  std::set<std::string> faces, facesets;
+  std::set<std::string> faces, facesets, fields;
 
   for (auto item : all)
   {
@@ -1666,6 +1666,10 @@ void CREMainWindow::onReportLicenses()
     for (auto fs : item.second)
     {
       facesets.insert(fs.first);
+      for (auto items : fs.second)
+      {
+          fields.insert(items.first);
+      }
     }
   }
 
@@ -1709,6 +1713,14 @@ void CREMainWindow::onReportLicenses()
     }
     report += "</ul>\n";
   }
+
+  report += "<h1>All fields used in license descriptions</h1>\n";
+  report += "<ul>\n";
+  for (auto f : fields)
+  {
+    report += "<li>" + QString(f.c_str()) + "</li>\n";
+  }
+  report += "</ul>\n";
 
   report += "</html>";
   CREReportDisplay show(report, "Licenses checks");
