@@ -32,6 +32,7 @@
 #include "shared/newclient.h"
 #include "sproto.h"
 #include "assets.h"
+#include "AssetsManager.h"
 
 /**
  * Client has requested pixmap that it somehow missed getting.
@@ -103,15 +104,6 @@ void esrv_send_face(socket_struct *ns, const Face *face, int nocache) {
     SockList_Term(&sl);
 }
 
-/** @todo remove */
-static SockList *ugly;
-static void do_faceset(const face_sets *fs) {
-    SockList_AddPrintf(ugly, "%d:%s:%s:%d:%s:%s:%s\n",
-             fs->id, fs->prefix, fs->fullname,
-             fs->fallback ? fs->fallback->id : 0, fs->size,
-             fs->extension, fs->comment);
-}
-
 /**
  * Sends the number of images, checksum of the face file,
  * and the image_info file information.  See the doc/Developers/protocol
@@ -123,9 +115,13 @@ void send_image_info(socket_struct *ns) {
 
     SockList_Init(&sl);
 
-    ugly = &sl;
     SockList_AddPrintf(&sl, "replyinfo image_info\n%d\n%d\n", get_faces_count()-1, get_bitmap_checksum());
-    facesets_for_each(do_faceset);
+    getManager()->facesets()->each([&sl] (const face_sets *fs) {
+        SockList_AddPrintf(&sl, "%d:%s:%s:%d:%s:%s:%s\n",
+                 fs->id, fs->prefix, fs->fullname,
+                 fs->fallback ? fs->fallback->id : 0, fs->size,
+                 fs->extension, fs->comment);
+    });
     Send_With_Handling(ns, &sl);
     SockList_Term(&sl);
 }

@@ -50,6 +50,7 @@
 #include "sounds.h"
 #include "sproto.h"
 #include "assets.h"
+#include "AssetsManager.h"
 
 /* Note that following protocol commands (was corresponding function)
  * are in image.c and not this file, even though they are requestinfo
@@ -269,19 +270,6 @@ static void send_arch_info(SockList *sl, const object *op)
 
 }
 
-/** @todo remove when C++ and lambdas... */
-static SockList *ugly;
-
-/**
- * Callback used to write race archetypes to the socket.
- * @param race archetype to process.
- */
-static void do_race_list(archetype *race) {
-    if (race->clone.type == PLAYER) {
-        SockList_AddPrintf(ugly, "|%s", race->name);
-    }
-}
-
 /**
  * Creates the appropriate reply to the 'race_list' request info.
  *
@@ -291,8 +279,11 @@ static void do_race_list(archetype *race) {
 static void build_race_list_reply(SockList *sl) {
     SockList_AddString(sl, "replyinfo race_list ");
 
-    ugly = sl;
-    archetypes_for_each(do_race_list);
+    getManager()->archetypes()->each([&sl] (const archetype *race) {
+        if (race->clone.type == PLAYER) {
+            SockList_AddPrintf(sl, "|%s", race->name);
+        }
+    });
 }
 
 /**
@@ -345,12 +336,6 @@ void send_race_info(socket_struct *ns, char *params) {
     SockList_Term(&sl);
 }
 
-static void do_class_list(archetype *cl) {
-    if (cl->clone.type == CLASS) {
-        SockList_AddPrintf(ugly, "|%s", cl->name);
-    }
-}
-
 /**
  * Creates the appropriate reply to the 'class_list' request info.
  *
@@ -360,9 +345,11 @@ static void do_class_list(archetype *cl) {
 static void build_class_list_reply(SockList *sl) {
     SockList_Reset(sl);
     SockList_AddString(sl, "replyinfo class_list ");
-
-    ugly = sl;
-    archetypes_for_each(do_class_list);
+    getManager()->archetypes()->each([&sl] (const archetype *cl) {
+        if (cl->clone.type == CLASS) {
+            SockList_AddPrintf(sl, "|%s", cl->name);
+        }
+    });
 }
 
 /**
@@ -416,29 +403,6 @@ void send_class_info(socket_struct *ns, char *params) {
 }
 
 /**
- * Callback function sending start map information, used by send_map_info().
- *
- * @param m archetype.
- */
-static void do_map_info(archetype *m) {
-    if (m->clone.type == MAP && m->clone.subtype == MAP_TYPE_CHOICE) {
-        SockList_AddChar(ugly, INFO_MAP_ARCH_NAME);
-        SockList_AddLen16Data(ugly, m->name, strlen(m->name));
-
-        SockList_AddChar(ugly, INFO_MAP_NAME);
-        SockList_AddLen16Data(ugly, m->clone.name, strlen(m->clone.name));
-
-        /* In theory, this should always be set, but better not to crash
-         * if it is not.
-         */
-        if (m->clone.msg) {
-            SockList_AddChar(ugly, INFO_MAP_DESCRIPTION);
-            SockList_AddLen16Data(ugly, m->clone.msg, strlen(m->clone.msg));
-        }
-    }
-}
-
-/**
  * Send information on available start maps.
  *
  * @param ns
@@ -450,8 +414,23 @@ void send_map_info(socket_struct *ns) {
     SockList_Init(&sl);
     SockList_AddPrintf(&sl, "replyinfo startingmap\n");
 
-    ugly = &sl;
-    archetypes_for_each(do_map_info);
+    getManager()->archetypes()->each([&sl] (const archetype *m) {
+        if (m->clone.type == MAP && m->clone.subtype == MAP_TYPE_CHOICE) {
+            SockList_AddChar(&sl, INFO_MAP_ARCH_NAME);
+            SockList_AddLen16Data(&sl, m->name, strlen(m->name));
+
+            SockList_AddChar(&sl, INFO_MAP_NAME);
+            SockList_AddLen16Data(&sl, m->clone.name, strlen(m->clone.name));
+
+            /* In theory, this should always be set, but better not to crash
+             * if it is not.
+             */
+            if (m->clone.msg) {
+                SockList_AddChar(&sl, INFO_MAP_DESCRIPTION);
+                SockList_AddLen16Data(&sl, m->clone.msg, strlen(m->clone.msg));
+            }
+        }
+    });
 
     Send_With_Handling(ns, &sl);
     SockList_Term(&sl);
