@@ -72,7 +72,7 @@ libcross_a_SOURCES = \
 	treasure.cpp \
 	utils.cpp
 
-loader.cpp:
+loader.cpp: loader.l
 	$(LEX) -i -o loader.cpp $(top_srcdir)/common/loader.l
 
 EXTRA_DIST = README is_valid_types_gen.py
