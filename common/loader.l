@@ -825,11 +825,6 @@ A       .+
 ^one_hit{S}         SET_OR_CLEAR_FLAG(op, FLAG_ONE_HIT, IVAL);
 ^berserk{S}         SET_OR_CLEAR_FLAG(op, FLAG_BERSERK, IVAL);
 
-^can_knockback{S}   { /* Some archetypes have these values in them */ }
-^can_parry{S}       { /* Probably the pupland archetypes - I imagined */ }
-^can_impale{S}      { /* That these are for the new combat code */ }
-^can_cut{S}         { /* just ignore for now */ }
-^can_dam_armour{S}  { }
 ^weapontype{S}      op->weapontype = IVAL;
 ^casting_time{S}    op->casting_time = FVAL;
 ^smoothlevel{S}     op->smoothlevel = IVAL;
