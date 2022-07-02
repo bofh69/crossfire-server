@@ -69,8 +69,6 @@ void assets_pack(const char *type, const char *filename);
 
 void assets_finish_archetypes_for_play();
 
-long recipe_find_ingredient_cost(const char *name);
-
 /**
  * Find a quest from its code if it exists.
  * @return quest, or NULL if no such quest.

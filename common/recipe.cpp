@@ -41,6 +41,7 @@
 
 #include "object.h"
 #include "assets.h"
+#include "AssetsManager.h"
 
 static void build_stringlist(const char *str, char ***result_list, size_t *result_size);
 
@@ -449,6 +450,132 @@ archetype *find_treasure_by_name(const treasure *t, const char *name, int depth)
         t = t->next;
     }
     return NULL;
+}
+
+/**
+ * Try to find an ingredient with specified name.
+ *
+ * If several archetypes have the same name, the value of the first
+ * one with that name will be returned.  This happens for the
+ * mushrooms (mushroom_1, mushroom_2 and mushroom_3).  For the
+ * monsters' body parts, there may be several monsters with the same
+ * name.  This is not a problem if these monsters have the same level
+ * (e.g. sage & c_sage) or if only one of the monsters generates the
+ * body parts that we are looking for (e.g. big_dragon and
+ * big_dragon_worthless).
+ *
+ * Will also search in artifacts.
+ *
+ * @param name
+ * ingredient we're searching for. Can start with a number.
+ * @return
+ * cost of ingredient, -1 if wasn't found.
+ */
+static long recipe_find_ingredient_cost(const char *name) {
+    long mult;
+    const char *cp;
+    char part1[100];
+    char part2[100];
+
+    /* same as atoi(), but skip number */
+    mult = 0;
+    while (isdigit(*name)) {
+        mult = 10*mult+(*name-'0');
+        name++;
+    }
+    if (mult > 0)
+        name++;
+    else
+        mult = 1;
+    /* first, try to match the name of an archetype */
+
+    long value = 0;
+    bool found = false;
+    getManager()->archetypes()->each([&value, &found, &name, &part1] (const archetype *at) {
+        if (found) {
+            return;
+        }
+
+        if (at->clone.title != NULL) {
+            /* inefficient, but who cares? */
+            snprintf(part1, sizeof(part1), "%s %s", at->clone.name, at->clone.title);
+            if (!strcasecmp(part1, name)) {
+                value = at->clone.value;
+                found = true;
+                return;
+            }
+        }
+        if (!strcasecmp(at->clone.name, name)) {
+            value = at->clone.value;
+            found = true;
+            return;
+        }
+    });
+    if (found) {
+        return mult * value;
+    }
+
+    /* second, try to match an artifact ("arch of something") */
+    cp = strstr(name, " of ");
+    if (cp != NULL) {
+        safe_strncpy(part1, name, sizeof(part1));
+        part1[cp-name] = '\0';
+        safe_strncpy(part2, cp + 4, sizeof(part2));
+        getManager()->archetypes()->each([&value, &found, &part1, &part2] (const archetype *at) {
+            if (found) {
+                return;
+            }
+
+            if (!strcasecmp(at->clone.name, part1) && at->clone.title == NULL) {
+                /* find the first artifact derived from that archetype (same type) */
+                for (auto al = first_artifactlist; al != NULL; al = al->next) {
+                    if (al->type == at->clone.type) {
+                        for (auto art = al->items; art != NULL; art = art->next) {
+                            if (!strcasecmp(art->item->name, part2)) {
+                                value = at->clone.value * art->item->value;
+                                found = true;
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    if (found) {
+        return mult * value;
+    }
+
+    /* third, try to match a body part ("arch's something") */
+    cp = strstr(name, "'s ");
+    if (cp != NULL) {
+        safe_strncpy(part1, name, sizeof(part1));
+        part1[cp-name] = '\0';
+        safe_strncpy(part2, cp + 3, sizeof(part2));
+        /* examine all archetypes matching the first part of the name */
+        getManager()->archetypes()->each([&value, &found, &part1, &part2] (const archetype *at) {
+            if (found) {
+                return;
+            }
+            if (!strcasecmp(at->clone.name, part1) && at->clone.title == NULL) {
+                if (at->clone.randomitems != NULL) {
+                    auto at2 = find_treasure_by_name(at->clone.randomitems->items, part2, 0);
+                    if (at2 != NULL) {
+                        value = at2->clone.value * isqrt(at->clone.level * 2);
+                        found = true;
+                        return;
+                    }
+                }
+            }
+        });
+    }
+    if (found) {
+        return mult * value;
+    }
+
+    /* failed to find any matching items -- formula should be checked */
+    LOG(llevError, "Couldn't find cost for ingredient %s\n", name);
+    return -1;
 }
 
 /**
