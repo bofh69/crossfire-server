@@ -758,6 +758,9 @@ static void get_who_escape_code_value(char *return_val, int size, const char let
     case '_':
         snprintf(return_val, size, "_");
         break;
+
+    default:
+        return_val[0] = '\0';
     }
 }
 
