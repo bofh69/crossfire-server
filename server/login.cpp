@@ -231,7 +231,6 @@ int save_player(object *op, int flag) {
     FILE *fp;
     OutputFile of;
     char filename[MAX_BUF], *tmpfilename;
-    object *container = NULL;
     player *pl = op->contr;
     int i, wiz = QUERY_FLAG(op, FLAG_WIZ);
     long checksum;
@@ -290,12 +289,6 @@ int save_player(object *op, int flag) {
                       "Can't get secure temporary file for save.");
         LOG(llevDebug, "Can't get secure temporary file for save.\n");
         return 0;
-    }
-
-    /* Eneq(@csd.uu.se): If we have an open container hide it. */
-    if (op->container)  {
-        container = op->container;
-        op->container = NULL;
     }
 
     fprintf(fp, "password %s\n", pl->password);
@@ -432,10 +425,6 @@ int save_player(object *op, int flag) {
                       "Can't close file for save.");
         return 0;
     }
-
-    /* Eneq(@csd.uu.se): Reveal the container if we have one. */
-    if (flag && container != NULL)
-        op->container = container;
 
     if (!flag)
         esrv_send_inventory(op, op);
