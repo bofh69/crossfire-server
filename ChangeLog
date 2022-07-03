@@ -1,6 +1,7 @@
 2022-07-02  Nicolas Weeger
 
   * Hopefully fix bug "Container faces stuck open", see https://sourceforge.net/p/crossfire/bugs/925/
+  * Change default 'who' format to use map's name instead of path
 
 2022-05-15  Andreas Kirschbaum
 
