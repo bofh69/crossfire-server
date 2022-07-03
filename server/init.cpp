@@ -1084,9 +1084,9 @@ static void load_settings(void) {
     * new formats have been specified, and if not we will use the old defaults.
     */
     if (!strcmp(settings.who_format, ""))
-        strcpy(settings.who_format, "%N_%T%t%h%d%b%n<%m>");
+        strcpy(settings.who_format, "%N_%t%h%d%b%n<%m>");
     if (!strcmp(settings.who_wiz_format, ""))
-        strcpy(settings.who_wiz_format, "%N_%T%t%h%d%b%nLevel %l <%m>(@%i)(%c)");
+        strcpy(settings.who_wiz_format, "%N_%t%h%d%b%nLevel %l <%m>(@%i)(%c)");
 }
 
 void add_server_collect_hooks() {
