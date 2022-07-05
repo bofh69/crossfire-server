@@ -245,6 +245,8 @@ void CREMainWindow::createMenus()
     reportMenu->addAction(createAction(tr("Materials"), tr("Display all materials with their properties."), this, SLOT(onReportMaterials())));
     reportMenu->addAction(myReportArchetypes);
     reportMenu->addAction(createAction(tr("Licenses checks"), tr("Check for licenses inconsistencies."), this, SLOT(onReportLicenses())));
+    reportMenu->addAction(myReportResetGroups = createAction(tr("Map reset groups"), tr("List map reset groups."), this, SLOT(onReportResetGroups())));
+    myReportResetGroups->setEnabled(false);
 
     myToolsMenu = menuBar()->addMenu("&Tools");
     myToolsMenu->addAction(createAction(tr("Edit monsters"), tr("Edit monsters in a table."), this, SLOT(onToolEditMonsters())));
@@ -394,6 +396,7 @@ void CREMainWindow::browsingFinished()
     myReportShops->setEnabled(true);
     myReportQuests->setEnabled(true);
     myReportArchetypes->setEnabled(true);
+    myReportResetGroups->setEnabled(true);
     myClearMapCache->setEnabled(true);
 }
 
@@ -1721,6 +1724,59 @@ void CREMainWindow::onReportLicenses()
     report += "<li>" + QString(f.c_str()) + "</li>\n";
   }
   report += "</ul>\n";
+
+  report += "</html>";
+  CREReportDisplay show(report, "Licenses checks");
+  QApplication::restoreOverrideCursor();
+  show.exec();
+}
+
+void CREMainWindow::onReportResetGroups()
+{
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+  QString report;
+  report += "<html>";
+
+  auto maps = myResourcesManager->getMapInformationManager()->allMaps();
+  auto groupCmp = [] (const std::string &left, const std::string &right) { return left < right; };
+  auto mapCmp = [] (const CREMapInformation *left, const CREMapInformation *right)
+  {
+      int name = left->name().compare(right->name());
+      if (name != 0)
+      {
+          return name < 0;
+      }
+      return left->path().compare(right->path()) < 0;
+  };
+  std::map<std::string, std::vector<CREMapInformation *>, decltype(groupCmp)> groups(groupCmp);
+
+  for (auto map : maps)
+  {
+    if (!map->resetGroup().isEmpty())
+    {
+      groups[map->resetGroup().toStdString()].push_back(map);
+    }
+  }
+
+  if (groups.empty())
+  {
+    report += "<h1>No reset group defined</h1>\n";
+  }
+  else
+  {
+    for (auto group : groups)
+    {
+      report += "<h1>" + QString(group.first.c_str()) + "</h1>\n";
+      report += "<ul>\n";
+      std::sort(group.second.begin(), group.second.end(), mapCmp);
+      for (auto map : group.second)
+      {
+          report += tr("<li>%1 (%2)</li>").arg(map->name(), map->path());
+      }
+      report += "</ul>\n";
+    }
+  }
 
   report += "</html>";
   CREReportDisplay show(report, "Licenses checks");

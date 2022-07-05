@@ -255,6 +255,7 @@ void CREMapInformationManager::process(const QString& path2)
       information->setShopRace(m->shoprace);
     information->setShopMin(m->shopmin);
     information->setShopMax(m->shopmax);
+    information->setResetGroup(m->reset_group ? m->reset_group : QString());
 
     char exit_path[500];
 
@@ -555,6 +556,11 @@ void CREMapInformationManager::loadCache()
             map->setBackgroundMusic(reader.readElementText());
             continue;
         }
+        if (reader.isStartElement() && reader.name() == "reset_group")
+        {
+            map->setResetGroup(reader.readElementText());
+            continue;
+        }
 
         if (reader.isEndElement() && reader.name() == "map")
         {
@@ -677,6 +683,10 @@ void CREMapInformationManager::storeCache()
         if (!map->backgroundMusic().isEmpty())
         {
             writer.writeTextElement("background_music", map->backgroundMusic());
+        }
+        if (!map->resetGroup().isEmpty())
+        {
+            writer.writeTextElement("reset_group", map->resetGroup());
         }
 
         writer.writeEndElement();

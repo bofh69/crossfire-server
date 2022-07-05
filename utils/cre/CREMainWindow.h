@@ -64,6 +64,7 @@ class CREMainWindow : public QMainWindow
         QAction* myReportShops;
         QAction *myReportQuests;
         QAction* myReportArchetypes;
+        QAction* myReportResetGroups;
         QMenu* myToolsMenu;
         QActionGroup *myFacesetsGroup;
         QAction* myToolFacesetUseFallback;
@@ -101,6 +102,7 @@ class CREMainWindow : public QMainWindow
         void onReportMaterials();
         void onReportArchetypes();
         void onReportLicenses();
+        void onReportResetGroups();
         void onToolEditMonsters();
         void onToolSmooth();
         void onToolCombatSimulator();

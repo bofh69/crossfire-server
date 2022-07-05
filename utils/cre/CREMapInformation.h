@@ -33,6 +33,7 @@ class CREMapInformation : public AssetWrapper
     Q_PROPERTY(int difficulty READ difficulty)
     Q_PROPERTY(int computedDifficulty READ computedDifficulty)
     Q_PROPERTY(qint64 experience READ experience)
+    Q_PROPERTY(QString resetGroup READ resetGroup)
 
     public:
         CREMapInformation();
@@ -51,6 +52,9 @@ class CREMapInformation : public AssetWrapper
 
         const QString& backgroundMusic();
         void setBackgroundMusic(const QString& music);
+
+        const QString& resetGroup() const;
+        void setResetGroup(const QString& resetGroup);
 
         QStringList archetypes() const;
         void addArchetype(const QString& archetype);
@@ -124,6 +128,7 @@ class CREMapInformation : public AssetWrapper
         quint64 myShopMin, myShopMax;
         QList<RandomMap*> myRandomMaps;
         QString myBackgroundMusic;
+        QString myResetGroup;
 };
 
 #endif // CLASS_CRE_MAP_INFORMATION_H

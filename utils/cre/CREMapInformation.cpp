@@ -81,6 +81,16 @@ void CREMapInformation::setBackgroundMusic(const QString& music)
     myBackgroundMusic = music;
 }
 
+const QString& CREMapInformation::resetGroup() const
+{
+    return myResetGroup;
+}
+
+void CREMapInformation::setResetGroup(const QString& resetGroup)
+{
+    myResetGroup = resetGroup;
+}
+
 QStringList CREMapInformation::archetypes() const
 {
     return myArchetypes;
