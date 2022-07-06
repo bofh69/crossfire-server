@@ -1,3 +1,7 @@
+2022-07-06  Nicolas Weeger
+  * Fix bug "Items identified in a container on the ground do not get updated",
+        see https://sourceforge.net/p/crossfire/bugs/928/
+
 2022-07-02  Nicolas Weeger
 
   * Hopefully fix bug "Container faces stuck open", see https://sourceforge.net/p/crossfire/bugs/925/

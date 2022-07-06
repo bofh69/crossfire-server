@@ -1455,10 +1455,17 @@ object *identify(object *op) {
         if (op1) op = op1;
 
         if (pl)
-            /* A lot of the values can change from an update - might as well send
+            /* Item is directly in the player's inventory
+             * A lot of the values can change from an update - might as well send
              * it all.
              */
             esrv_update_item(UPD_ALL, pl, op);
+        else if (op->env->map &&
+                (pl = map_find_by_type(op->env->map, op->env->x, op->env->y, PLAYER))
+                && (pl->container == op->env)) {
+            /* The item is in a container (on the ground) opened by a player, update */
+            esrv_update_item(UPD_FACE | UPD_NAME | UPD_FLAGS, pl, op);
+        }
     }
     return op;
 }
