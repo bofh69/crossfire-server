@@ -1709,7 +1709,7 @@ CF_PLUGIN int cfpython_globalEventListener(int *type, ...) {
     char *buf;
     player *pl;
     object *op;
-    context = static_cast<CFPContext *>(malloc(sizeof(CFPContext)));
+    context = static_cast<CFPContext *>(calloc(1, sizeof(CFPContext)));
     char **files;
 
     va_start(args, type);
@@ -1717,11 +1717,6 @@ CF_PLUGIN int cfpython_globalEventListener(int *type, ...) {
 
     context->message[0] = 0;
 
-    context->who         = NULL;
-    context->activator   = NULL;
-    context->third       = NULL;
-    context->event       = NULL;
-    context->talk        = NULL;
     rv = context->returnvalue = 0;
     switch (context->event_code) {
     case EVENT_CRASH:
