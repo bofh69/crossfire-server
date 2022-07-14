@@ -459,7 +459,10 @@ void final_free_player(player *pl) {
     SockList_AddString(&sl, "goodbye");
     Send_With_Handling(pl->socket, &sl);
     SockList_Term(&sl);
-    free_newsocket(pl->socket);
-    free(pl->socket);
+    // If the player wasn't saved (new for instance), then pl->ob isn't removed,
+    // and the socket is needed for updating inventory. So keep it and free after.
+    socket_struct *socket = pl->socket;
     free_player(pl);
+    free_newsocket(socket);
+    free(socket);
 }
