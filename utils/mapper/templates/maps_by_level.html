@@ -1,6 +1,6 @@
 {% extends "inc-page.html" %}
 {% block title %}List of all {{ length(maps) }} maps, by level{% endblock %}
-{% block contents %}{% set mbl = sort(maps, "level,name") %}
+{% block contents %}{% set mbl = sort(maps, "level,name,path") %}
 <h1>List of all {{ length(maps) }} maps, by level</h1>
 <ul>{% set level = -1 %}
   {% for map in mbl %}
