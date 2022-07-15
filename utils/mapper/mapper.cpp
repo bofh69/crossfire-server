@@ -128,6 +128,7 @@
  *   may include multiple field names separated by a comma. If 'invert' is true then invert order. Strings are
  *   compared in a case-unsensitive manner unless 'ignore_case' is false.
  * - get_by_field(list, field, value): return the first item in the list having a field 'field' with value 'value'.
+ * - get_list_by_field(list, field, value): return all items in the list having a field 'field' with a value in the list 'value'.
  *
  * For maps, 5 pictures are generated, with sizes of 32, 16, 8, 4 and 2 pixels for tiles.
  *
