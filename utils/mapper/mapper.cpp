@@ -46,6 +46,7 @@
  *  - path: map path from the map root
  *  - region: key of the region this map is part of
  *  - level: map level as defined in the map
+ *  - reest_group: reset group of the map, empty if not specified
  *  - lore: map lore as defined in the map
  *  - exits_to: array of map keys that this map contains exits to
  *  - exits_from: array of map keys that link to this map
@@ -128,7 +129,8 @@
  *   may include multiple field names separated by a comma. If 'invert' is true then invert order. Strings are
  *   compared in a case-unsensitive manner unless 'ignore_case' is false.
  * - get_by_field(list, field, value): return the first item in the list having a field 'field' with value 'value'.
- * - get_list_by_field(list, field, value): return all items in the list having a field 'field' with a value in the list 'value'.
+ * - get_list_by_field(list, field, value): return all items in the list having a field 'field'
+ *   with a value in the list 'value' (if value a list) or the value 'value' (if value a single value).
  *
  * For maps, 5 pictures are generated, with sizes of 32, 16, 8, 4 and 2 pixels for tiles.
  *
@@ -219,6 +221,7 @@ typedef struct struct_map_info {
     struct_map_list exits_from;
     struct_map_list exits_to;
     struct_map_in_quest_list quests;
+    sstring reset_group;
 
     struct_map_list tiled_maps;
 
@@ -263,6 +266,8 @@ typedef struct struct_race {
 } struct_race;
 
 static struct_race_list races;     /**< Monsters found in maps. */
+
+static std::set<std::string> reset_groups;  /**< All defined reset groups. */
 
 /**
  * Blanks a struct_race_list.
@@ -1574,6 +1579,10 @@ static void process_map(struct_map_info *info) {
         info->lore = strdup(m->maplore);
         process_map_lore(info);
     }
+    if (m->reset_group) {
+        info->reset_group = add_string(m->reset_group);
+        reset_groups.insert(m->reset_group);
+    }
 
     isworld = (sscanf(info->path, "/world/world_%d_%d", &x, &y) == 2);
 
@@ -2331,6 +2340,7 @@ static nlohmann::json create_map_object(struct_map_info *map, const std::string 
         { "path", map->path },
         { "region", map->cfregion ? reverse_regions[map->cfregion] : "reg_ffff" },
         { "level", map->level },
+        { "reset_group", map->reset_group ? map->reset_group : "" },
         { "lore", map->lore && map->lore[0] ? map->lore : "" },
         { "exits_to", create_maps_array(map->exits_to) },
         { "exits_from", create_maps_array(map->exits_from) },
@@ -2457,6 +2467,11 @@ static void fill_json(nlohmann::json &json) {
             { "maps", nlohmann::json::array() },
             { "links", nlohmann::json::array() },
         });
+    }
+
+    json["reset_groups"] = nlohmann::json::array();
+    for (const auto &rg : reset_groups) {
+        json["reset_groups"].push_back(rg);
     }
 
     json["items"] = nlohmann::json::array();
@@ -2708,14 +2723,20 @@ static void init_renderer_env() {
         return *found;
     });
     env->add_callback("get_list_by_field", 3, [] (inja::Arguments &args) {
+        nlohmann::json ret = nlohmann::json::array();
         const auto &src = args.at(0);
         auto field = args.at(1)->get<std::string>();
-        const auto &list = args.at(2);
-        nlohmann::json ret = nlohmann::json::array();
-        std::copy_if(src->begin(), src->end(), std::back_inserter(ret), [&] (auto &item) {
-            auto val = item[field];
-            return std::find_if(list->begin(), list->end(), [&] (auto li) { return val == li; }) != list->end();
-        });
+        const auto filter = args.at(2);
+        if (filter->is_array()) {
+            std::copy_if(src->begin(), src->end(), std::back_inserter(ret), [&] (auto &item) {
+                auto val = item[field];
+                return std::find_if(filter->begin(), filter->end(), [&] (auto li) { return val == li; }) != filter->end();
+            });
+        } else {
+            std::copy_if(src->begin(), src->end(), std::back_inserter(ret), [&] (auto &item) {
+                return filter->get<std::string>() == item[field];
+            });
+        }
         return ret;
     });
     env->add_callback("sort", [] (inja::Arguments &args) {
