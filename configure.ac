@@ -39,7 +39,7 @@ dnl#############################################################################
 AC_LANG([C++])
 AC_PROG_CXX
 AC_PROG_CXXCPP
-AX_CXX_COMPILE_STDCXX_14()
+AX_CXX_COMPILE_STDCXX([14])
 
 AC_PROG_AWK
 AC_PROG_LIBTOOL
