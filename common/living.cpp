@@ -1602,7 +1602,6 @@ void fix_object(object *op) {
 
     /* I want to limit the power of small monsters with big weapons: */
     if (op->type != PLAYER
-    && op->arch != NULL
     && op->stats.dam > op->arch->clone.stats.dam*3)
         op->stats.dam = op->arch->clone.stats.dam*3;
 
