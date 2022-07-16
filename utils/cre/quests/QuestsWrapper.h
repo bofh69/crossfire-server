@@ -17,9 +17,13 @@
 #include "AssetsManager.h"
 #include "assets/AssetsCollectionWrapper.h"
 
+/**
+ * Asset wrapper representing all quests.
+ */
 class QuestsWrapper : public AssetsCollectionWrapper<quest_definition> {
 public:
     QuestsWrapper(AssetWrapper *parent, ResourcesManager *resources) : AssetsCollectionWrapper(parent, "Quests", getManager()->quests(), resources, tr("Display all quests.")) {
+        myResources = resources;
     }
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override {
@@ -28,6 +32,16 @@ public:
         }
         return DoesntUse;
     }
+
+    virtual void fillMenu(QMenu *menu) override;
+
+protected:
+    ResourcesManager *myResources;  /**< Resources manager, used in quest creation. */
+
+    /**
+     * Helper function to add a new quest.
+     */
+    void addQuest();
 };
 
 #endif /* QUESTS_WRAPPER_H */

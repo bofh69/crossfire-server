@@ -169,6 +169,9 @@ void QuestWrapper::drop(const QMimeData *data, int row) {
 }
 
 void QuestWrapper::fillMenu(QMenu *menu) {
+    if (myParent) {
+        myParent->fillMenu(menu);
+    }
     connect(menu->addAction(tr("Add step")), &QAction::triggered, [this] () { addStep(); });
 }
 

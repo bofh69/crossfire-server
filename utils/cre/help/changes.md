@@ -1,3 +1,7 @@
+# 2022-07-15
+
+**Implement quest creation**, right-click on a quest and select *Add quest*.
+
 # 2022-05-30
 
 **Rework of quests panels**.

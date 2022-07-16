@@ -74,6 +74,7 @@ CREPixmap.cpp \
  general_messages/GeneralMessageWrapper.cpp \
  quests/QuestWrapper.cpp \
  quests/QuestComboBox.cpp \
+ quests/QuestsWrapper.cpp \
  recipes/RecipeListWrapper.cpp \
  recipes/RecipePanel.cpp \
  recipes/RecipeWrapper.cpp \
