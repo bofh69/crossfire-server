@@ -1767,7 +1767,7 @@ void CREMainWindow::onReportResetGroups()
   {
     for (auto group : groups)
     {
-      report += "<h1>" + QString(group.first.c_str()) + "</h1>\n";
+      report += "<h1>" + QString(group.first.c_str()) + " (" + QString::number(group.second.size()) + " maps)</h1>\n";
       report += "<ul>\n";
       std::sort(group.second.begin(), group.second.end(), mapCmp);
       for (auto map : group.second)
