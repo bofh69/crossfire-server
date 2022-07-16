@@ -15,7 +15,9 @@
  * @file
  * Hiscore handling functions.
  */
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE // strcasestr() is a GNU extension in string.h
+#endif
 
 #include "global.h"
 
