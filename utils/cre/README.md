@@ -24,7 +24,7 @@ What you can edit currently:
 
 ### Requirements
 
-- Qt 5 or newer is required.
+- Qt 5 or newer is required, with modules `concurrent`, `script`, `widgets` and `help`, including the development packages.
 - The `crossfire-server` must be compiled before this project.
 - A `make install` of Crossfire server is required for CRE to run.
 
