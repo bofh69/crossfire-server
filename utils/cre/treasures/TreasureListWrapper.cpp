@@ -61,7 +61,7 @@ int TreasureListWrapper::childIndex(AssetWrapper *child) {
 }
 
 void TreasureListWrapper::setSingleItem(bool isSingle) {
-    if (isSingle == isSingleItem()) {
+    if (isSingle == isSingleItem() || myWrappedItem->items == nullptr) {
         return;
     }
     if (isSingle) {

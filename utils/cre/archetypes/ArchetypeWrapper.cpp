@@ -209,7 +209,7 @@ bool ArchetypeWrapper::appearsOnTreasureList() const {
         }
         return false;
     };
-    auto cl = [&] (const treasurelist *item) { return ci(item->items); };
+    auto cl = [&] (const treasurelist *item) { return item->items && ci(item->items); };
     return getManager()->treasures()->first(cl) != nullptr;
 }
 
