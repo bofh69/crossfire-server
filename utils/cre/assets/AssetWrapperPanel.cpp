@@ -101,7 +101,11 @@ QCheckBox *AssetWrapperPanel::addCheckBox(const QString &label, const char *prop
 
 void AssetWrapperPanel::addFaceChoice(const QString &label, const char *property, bool readOnly, bool allowNone) {
     auto widget = addWidget(label, new FaceComboBox(this, allowNone), true, property, "face");
-    widget->setEnabled(!readOnly);
+    if (readOnly) {
+        widget->setEnabled(false);
+    } else {
+        connect(widget, SIGNAL(currentIndexChanged(int)), this, SLOT(dataChanged()));
+    }
 }
 
 void AssetWrapperPanel::addQuestChoice(const QString &label, const char *property, bool readOnly, bool allowNone) {
