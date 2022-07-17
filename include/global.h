@@ -232,6 +232,7 @@ extern socket_struct *init_sockets;
 
 typedef void(*collectorHook)(BufferReader *, const char *);
 typedef void(*fatalHook)(enum fatal_error err);
+typedef void(*logHook)(LogLevel, const char *, va_list);
 
 /**
  * Server settings.
@@ -240,6 +241,7 @@ typedef struct Settings {
     const char *logfilename;    /**< Logfile to use */
     uint16_t  csport;             /**< Port for new client/server */
     LogLevel debug;             /**< Default debugging level */
+    logHook log_callback;       /**< Log hook, to intercept log messages. */
     uint8_t   dumpvalues;         /**< Set to dump various values/tables */
     const char *dumparg;        /**< Additional argument for some dump functions */
     const char *confdir;        /**< Configuration files */

@@ -24,6 +24,7 @@
 #include "image.h"
 #include "sproto.h"
 #include "assets.h"
+#include "logger.h"
 #include "AssetsManager.h"
 #include "CREMapInformationManager.h"
 #include "random_maps/RandomMap.h"
@@ -65,11 +66,35 @@ void ResourcesManager::load()
     settings.hooks_filename[settings.hooks_count] = "";
     settings.hooks_count++;
     settings.fatal_hook = onFatalInit;
+    settings.ignore_assets_errors = 1;
+
+    QStringList log;
+    bool hasWarningOrError = false;
+    static std::function<void(LogLevel, const char *, va_list)> lc = [&] (LogLevel logLevel, const char *format, va_list va) {
+        if (logLevel > llevInfo) {
+            return;
+        }
+        char buf[8192];
+        vsnprintf(buf, sizeof(buf), format, va);
+        QString l(tr("%1%2").arg(loglevel_names[logLevel], buf));
+        log.append(l);
+        if (logLevel == llevError) {
+            hasWarningOrError = true;
+        }
+    };
+    settings.log_callback = [] (LogLevel logLevel, const char *format, va_list va) { lc(logLevel, format, va); };
+
     init_globals();
     init_library();
     settings.fatal_hook = nullptr;
     init_gods();
     init_readable();
+    settings.log_callback = nullptr;
+
+    if (hasWarningOrError) {
+        QString msg(tr("The following errors occurred during asset collection:\n") + log.join(""));
+        QMessageBox::warning(nullptr, tr("Errors during asset collection!"), msg);
+    }
 
     QString key;
 

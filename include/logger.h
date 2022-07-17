@@ -14,4 +14,6 @@ typedef enum LogLevel {
     llevMonster = 3   /**< Many many details. */
 } LogLevel;
 
+extern const char *const loglevel_names[];
+
 #endif /* LOGGER_H */

@@ -28,7 +28,7 @@ int reopen_logfile = 0; /* May be set in SIGHUP handler */
 /**
  * Human-readable name of log levels.
  */
-static const char *const loglevel_names[] = {
+const char *const loglevel_names[] = {
     "[EE] ",
     "[II] ",
     "[DD] ",
@@ -58,6 +58,12 @@ void LOG(LogLevel logLevel, const char *format, ...) {
 
     va_list ap;
     va_start(ap, format);
+
+    if (settings.log_callback) {
+        settings.log_callback(logLevel, format, ap);
+        va_end(ap);
+        return;
+    }
 
     buf[0] = '\0';
     if (logLevel <= settings.debug) {

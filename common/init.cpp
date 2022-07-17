@@ -139,6 +139,7 @@ struct Settings settings = {
     nullptr,
     CSPORT,
     llevInfo,
+    nullptr,
     0,  // dumpvalues
     nullptr,    // dumpargs
     CONFDIR,
