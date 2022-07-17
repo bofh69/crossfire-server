@@ -16,6 +16,7 @@
 #include <string>
 #include <map>
 #include <set>
+#include <vector>
 #include <algorithm>
 #include <functional>
 
@@ -174,6 +175,16 @@ class AssetsCollection {
          * @return list of undefined names.
          */
         const std::set<Key>& undefined() const { return m_undefined; }
+
+        /**
+         * Get the names of all defined assets.
+         * @return list of all names.
+         */
+        std::vector<Key> keys() const {
+            std::vector<Key> k;
+            std::for_each(m_assets.cbegin(), m_assets.cend(), [&k] (const auto &asset) { k.push_back(asset.first); });
+            return k;
+        }
 
     protected:
         std::map<Key, T*> m_assets; /**< Known assets. */

@@ -38,6 +38,7 @@
 #include "archetypes/ObjectWrapper.h"
 #include "faces/FaceWrapper.h"
 #include "animations/AnimationWrapper.h"
+#include "assets/AssetOriginAndCreationDialog.h"
 
 ResourcesManager::ResourcesManager() : myMapInformationManager(nullptr), myArchetypes(new ArchetypeWriter()), myQuests(new QuestWriter()), myTreasures(new TreasureWriter()),
         myGeneralMessages(new MessageWriter()), myArtifacts(new ArtifactWriter())
@@ -234,6 +235,25 @@ void ResourcesManager::treasureModified(treasurelist *treasure) {
 }
 
 void ResourcesManager::saveTreasures() {
+    auto no = myTreasures.dirtyAssetsWithNoOrigin();
+    while (!no.empty()) {
+        auto list = no.back();
+        auto origins = myTreasures.files();
+        while (true) {
+            AssetOriginAndCreationDialog dlg(AssetOriginAndCreationDialog::Treasure, AssetOriginAndCreationDialog::DefineOrigin, list->name,
+                    origins, std::vector<std::string>());
+            if (dlg.exec() == QDialog::Accepted) {
+                myTreasures.assetDefined(list, dlg.file().toStdString());
+                break;
+            } else {
+                if (QMessageBox::question(nullptr, tr("Lose changes to treasure list %1?").arg(list->name),
+                        tr("Really discard changes to treasure list %1?").arg(list->name)) == QMessageBox::Yes) {
+                    break;
+                }
+            }
+        }
+        no.pop_back();
+    }
     myTreasures.saveModifiedAssets();
 }
 

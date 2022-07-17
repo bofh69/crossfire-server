@@ -15,6 +15,8 @@
 
 #include <string>
 #include <set>
+#include <vector>
+#include <algorithm>
 #include "AssetWriter.h"
 #include <QFile>
 
@@ -25,6 +27,14 @@ public:
     virtual ~ModifiedAssetsManager() { delete myWriter; }
 
     const std::map<std::string, std::set<const T*> >& origins() const { return myOrigins; }
+
+    std::vector<std::string> files() const {
+        std::vector<std::string> files;
+        for (const auto &origin : myOrigins) {
+            files.push_back(origin.first);
+        }
+        return files;
+    }
 
     std::string originOf(const T *asset) const {
         for (auto file = myOrigins.begin(); file != myOrigins.end(); file++) {
@@ -57,6 +67,18 @@ public:
     }
 
     bool hasPendingChanges() const { return !myDirty.empty(); }
+
+    /**
+     * Return the list of modified assets which has no origin defined.
+     * @return list of assets.
+     */
+    std::vector<T *> dirtyAssetsWithNoOrigin() const {
+        std::vector<T *> assets;
+        std::copy_if(myDirty.cbegin(), myDirty.cend(), std::back_inserter(assets), [this] (const auto &dirty) {
+            return this->originOf(dirty).empty();
+        });
+        return assets;
+    }
 
 protected:
       void write(const std::string &filename, std::set<const T*> assets) {
