@@ -11,6 +11,7 @@
  */
 
 #include "AssetOriginAndCreationDialog.h"
+#include "global.h"
 
 const char * const addTitles[] = {
     "Quest creation",
