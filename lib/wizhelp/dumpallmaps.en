@@ -1,3 +1,10 @@
+The dumpallmaps prints out map information for all active maps to stderr.
+
 Usage: dumpallmaps
 
-This prints out map information for all active maps to stderr.
+See Also: patch
+See Also: dumpabove
+See Also: dumpallarchtypes
+See Also: dumpallobjects
+See Also: dumpbelow
+See Also: dumpfriendlyobjects
