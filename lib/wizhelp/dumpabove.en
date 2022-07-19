@@ -2,4 +2,9 @@ The command dumpabove will dump the attributes of the item above the dm.
 
 Usage: dumpabove
 
-See Also: dump, dumpbelow
+See Also: patch
+See Also: dumpallarchtypes
+See Also: dumpallmaps
+See Also: dumpallobjects
+See Also: dumpbelow
+See Also: dumpfriendlyobjects
