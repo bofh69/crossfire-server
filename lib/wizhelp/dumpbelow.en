@@ -1,5 +1,10 @@
+The command dumpbelow will dump the attributes of the top item you are standing over.
+
 Usage: dumpbelow
 
-dumpbelow will dump the attributes of the top item you are standing over.
-
-See also: dump
+See Also: patch
+See Also: dumpabove
+See Also: dumpallarchtypes
+See Also: dumpallmaps
+See Also: dumpallobjects
+See Also: dumpfriendlyobjects
