@@ -1,0 +1,5 @@
+The command dumpabove will dump the attributes of the item above the dm.
+
+Usage: dumpabove
+
+See Also: dump, dumpbelow
