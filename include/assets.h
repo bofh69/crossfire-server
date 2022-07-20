@@ -52,7 +52,6 @@ size_t assets_number_of_treasures();
 size_t assets_number_of_treasurelists();
 
 size_t assets_number_of_animations();
-void animations_for_each(anim_op op);
 
 GeneralMessage *get_random_message();
 

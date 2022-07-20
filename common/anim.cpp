@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "assets.h"
+#include "AssetsManager.h"
 
 /**
  * Updates the face-variable of an object.
@@ -182,5 +183,5 @@ static void do_anim(const Animations *anim) {
  */
 void dump_animations(void) {
     fprintf(stderr, "id    name                                               faces\n");
-    animations_for_each(do_anim);
+    getManager()->animations()->each(do_anim);
 }

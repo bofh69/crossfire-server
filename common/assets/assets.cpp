@@ -299,10 +299,6 @@ Animations *try_find_animation(const char *name) {
     return manager->animations()->find(name);
 }
 
-void animations_for_each(anim_op op) {
-    manager->animations()->each(*op);
-}
-
 const Face *find_face(const char *name) {
     return manager->faces()->get(name);
 }
