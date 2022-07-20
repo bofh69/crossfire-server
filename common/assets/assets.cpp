@@ -336,10 +336,6 @@ const Face *get_face_by_id(uint16_t id) {
     return manager->faces()->findById(id);
 }
 
-GeneralMessage *get_random_message() {
-    return manager->messages()->random();
-}
-
 /**
  * Find the message from its identifier.
  * @param identifier message's identifier.

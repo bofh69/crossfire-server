@@ -53,8 +53,6 @@ size_t assets_number_of_treasurelists();
 
 size_t assets_number_of_animations();
 
-GeneralMessage *get_random_message();
-
 /**
  * Pack the specified assets in a file.
  * @param type assets type, see actual implementation.

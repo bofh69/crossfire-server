@@ -35,6 +35,7 @@
 #include "output_file.h"
 #include "spells.h"
 #include "assets.h"
+#include "AssetsManager.h"
 
 /* Define this if you want to archive book titles by contents.
  * This option should enforce UNIQUE combinations of titles,authors and
@@ -1815,7 +1816,7 @@ static void make_formula_book(object *book, int level) {
 static StringBuffer *msgfile_msg(object *book, size_t booksize) {
     StringBuffer *ret = stringbuffer_new();
 
-    GeneralMessage *msg = get_random_message();
+    GeneralMessage *msg = getManager()->messages()->random();
 
     if (msg && strlen(msg->message) <= booksize) {
         stringbuffer_append_string(ret, msg->message);
