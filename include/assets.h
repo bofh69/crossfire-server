@@ -51,8 +51,6 @@ void archetypes_for_each(arch_op op);
 size_t assets_number_of_treasures();
 size_t assets_number_of_treasurelists();
 
-size_t assets_number_of_animations();
-
 /**
  * Pack the specified assets in a file.
  * @param type assets type, see actual implementation.

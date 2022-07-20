@@ -34,6 +34,7 @@
 #include "version.h"
 
 #include "assets.h"
+#include "AssetsManager.h"
 
 /* Static declarations where needed (when ordering would be an issue) */
 static void display_who_entry(object *op, player *pl, const char *format);
@@ -262,7 +263,7 @@ static void malloc_info(object *op) {
 
     anr = assets_number_of_archetypes();
 
-    anims = assets_number_of_animations();
+    anims = getManager()->animations()->count();
 
     for (pl = first_player, players = 0; pl != NULL; pl = pl->next, players++)
         ;
