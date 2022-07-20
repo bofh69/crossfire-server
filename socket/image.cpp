@@ -115,7 +115,7 @@ void send_image_info(socket_struct *ns) {
 
     SockList_Init(&sl);
 
-    SockList_AddPrintf(&sl, "replyinfo image_info\n%d\n%d\n", get_faces_count()-1, get_bitmap_checksum());
+    SockList_AddPrintf(&sl, "replyinfo image_info\n%d\n%d\n", get_faces_count()-1, getManager()->faces()->checksum());
     getManager()->facesets()->each([&sl] (const face_sets *fs) {
         SockList_AddPrintf(&sl, "%d:%s:%s:%d:%s:%s:%s\n",
                  fs->id, fs->prefix, fs->fullname,

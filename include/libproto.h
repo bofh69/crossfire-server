@@ -99,7 +99,6 @@ extern const Face *try_find_face(const char *name, const Face *error);
 extern uint8_t find_color(const char *name);
 extern const char *get_colorname(uint8_t index);
 extern void dump_faces(void);
-extern int get_bitmap_checksum();
 /* init.cpp */
 extern void init_library(void);
 extern void init_globals(void);

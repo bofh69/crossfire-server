@@ -357,10 +357,6 @@ const GeneralMessage *get_message_from_identifier(const char *identifier) {
     return manager->messages()->find(identifier);
 }
 
-int get_bitmap_checksum() {
-    return manager->faces()->checksum();
-}
-
 face_sets *find_faceset(int id) {
     return manager->facesets()->findById(id);
 }
