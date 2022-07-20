@@ -25,6 +25,7 @@
 #include "output_file.h"
 
 #include "assets.h"
+#include "AssetsManager.h"
 
 /** Attack types. */
 const char *const resist_save[NROFATTACKS] = {
@@ -348,7 +349,7 @@ void init_library(void) {
     init_emergency_mappath();
     init_experience();
 
-    if (assets_dump_undefined() > 0 && !settings.ignore_assets_errors) {
+    if (getManager()->dumpUndefined() > 0 && !settings.ignore_assets_errors) {
         LOG(llevError, "Assets errors, please fix and restart.\n");
         fatal(SEE_LAST_ERROR);
     }

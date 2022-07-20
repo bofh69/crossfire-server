@@ -226,14 +226,6 @@ static void check_spells(void) {
 }
 
 /**
- * Dump and reset referenced but undefined assets.
- * @return total number of referenced but not defined assets.
- */
-size_t assets_dump_undefined() {
-    return manager->dumpUndefined();
-}
-
-/**
  * Called after collect is complete, to check various things.
  */
 void assets_end_load() {

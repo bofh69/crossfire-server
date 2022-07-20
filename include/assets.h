@@ -37,7 +37,6 @@ void load_assets(void);
 void assets_init();
 void assets_free();
 void assets_collect(const char* datadir, int what);
-size_t assets_dump_undefined();
 void assets_end_load();
 
 typedef void(*arch_op)(archetype *);
