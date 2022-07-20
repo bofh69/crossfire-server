@@ -601,7 +601,7 @@ int free_no_drop(object *op);
 void change_object(object *op);
 void move_firewall(object *op);
 void move_player_mover(object *op);
-int process_object(object *op);
+void process_object(object *op);
 void legacy_remove_force(object *op);
 void legacy_animate_trigger(object *op);
 void legacy_move_hole(object *op);

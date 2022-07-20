@@ -792,27 +792,24 @@ void move_player_mover(object *op) {
  *
  * @param op
  * object to move.
- * @return
- * 0 if object didn't move, 1 else?
- * @todo remove unused return value?
  */
-int process_object(object *op) {
+void process_object(object *op) {
     if (getenv("CF_DEBUG_PROCESS")) {
         LOG(llevDebug, "processing %s (%d), speed %.3f\n", op->name, op->count, op->speed);
     }
     if (QUERY_FLAG(op, FLAG_IS_A_TEMPLATE))
-        return 0;
+        return;
 
     if (events_execute_object_event(op, EVENT_TIME, NULL, NULL, NULL, SCRIPT_FIX_NOTHING) != 0)
-        return 0;
+        return;
 
     if (QUERY_FLAG(op, FLAG_REMOVED)) {
-        return 1;
+        return;
     }
 
     if (QUERY_FLAG(op, FLAG_MONSTER))
         if (monster_move(op) || QUERY_FLAG(op, FLAG_FREED))
-            return 1;
+            return;
 
     if ((QUERY_FLAG(op, FLAG_ANIMATE) && op->anim_speed == 0)
     || (op->temp_animation && op->temp_anim_speed == 0)) {
@@ -827,7 +824,7 @@ int process_object(object *op) {
     }
     if (QUERY_FLAG(op, FLAG_CHANGING) && !op->state) {
         change_object(op);
-        return 1;
+        return;
     }
     if (QUERY_FLAG(op, FLAG_GENERATOR) && !QUERY_FLAG(op, FLAG_FRIENDLY))
         generate_monster(op);
@@ -857,9 +854,9 @@ int process_object(object *op) {
                 make_sure_not_seen(op);
             object_free(op, FREE_OBJ_DROP_ABOVE_FLOOR);
         }
-        return 1;
+        return;
     }
-    return (ob_process(op) == METHOD_OK ? 1 : 0);
+    ob_process(op);
 }
 
 void legacy_remove_force(object *op) {
