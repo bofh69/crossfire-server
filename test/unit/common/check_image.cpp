@@ -35,6 +35,7 @@
 #include <toolkit_common.h>
 #include "image.h"
 #include "assets.h"
+#include "AssetsManager.h"
 
 void setup(void) {
     cctk_setdatadir(SOURCE_ROOT "lib");
@@ -58,7 +59,7 @@ static void test_faceset(const face_sets *fs) {
 }
 
 START_TEST(test_all_faces_have_data) {
-    facesets_for_each(test_faceset);
+    getManager()->facesets()->each(test_faceset);
 }
 END_TEST
 

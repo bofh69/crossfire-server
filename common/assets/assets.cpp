@@ -322,10 +322,6 @@ void faces_for_each(face_op op) {
     manager->faces()->each(*op);
 }
 
-void facesets_for_each(faceset_op op) {
-    manager->facesets()->each(*op);
-}
-
 void archetypes_for_each(arch_op op) {
     manager->archetypes()->each(*op);
 }
