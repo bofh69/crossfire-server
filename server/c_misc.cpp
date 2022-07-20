@@ -261,7 +261,7 @@ static void malloc_info(object *op) {
     for (al = first_artifactlist, alnr = 0; al != NULL; al = al->next, alnr++)
         ;
 
-    anr = assets_number_of_archetypes();
+    anr = getManager()->archetypes()->count();
 
     anims = getManager()->animations()->count();
 

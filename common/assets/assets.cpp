@@ -271,10 +271,6 @@ size_t assets_number_of_treasurelists() {
     return manager->treasures()->count();
 }
 
-size_t assets_number_of_archetypes() {
-    return manager->archetypes()->count();
-}
-
 archetype *get_next_archetype(archetype *current) {
     return manager->archetypes()->next(current);
 }

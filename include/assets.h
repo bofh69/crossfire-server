@@ -45,7 +45,6 @@ typedef void(*face_op)(const Face *);
 typedef void(*anim_op)(const Animations *);
 typedef void(*faceset_op)(const face_sets *);
 
-size_t assets_number_of_archetypes();
 void archetypes_for_each(arch_op op);
 
 size_t assets_number_of_treasures();
