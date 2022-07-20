@@ -27,6 +27,7 @@
 #include "image.h"
 
 #include "assets.h"
+#include "AssetsManager.h"
 
 /**
  * Following can just as easily be pointers, but
@@ -152,14 +153,12 @@ int get_face_fallback(int faceset, uint16_t imageno) {
     return get_face_fallback(fs->fallback->id, imageno);
 }
 
-static void do_face(const Face *face) {
-    fprintf(stderr, "%5d %50s %50s\n", face->number, face->name, face->smoothface ? face->smoothface->name : "(none)");
-}
-
 /**
  * Dump all faces to stderr, for debugging purposes.
  */
 void dump_faces(void) {
     fprintf(stderr, "id    name                                               smooth\n");
-    faces_for_each(do_face);
+    getManager()->faces()->each([] (const Face *face) {
+        fprintf(stderr, "%5d %50s %50s\n", face->number, face->name, face->smoothface ? face->smoothface->name : "(none)");
+    });
 }

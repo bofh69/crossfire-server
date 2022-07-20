@@ -54,8 +54,6 @@ size_t assets_number_of_treasurelists();
 size_t assets_number_of_animations();
 void animations_for_each(anim_op op);
 
-void faces_for_each(face_op op);
-
 void facesets_for_each(faceset_op op);
 
 GeneralMessage *get_random_message();
