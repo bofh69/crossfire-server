@@ -21,7 +21,7 @@
 #include "sproto.h"
 #include "stringbuffer.h"
 
-#define YY_DECL int lex_load(int *depth, object **items, int maxdepth, int map_flags, int linemode, int *ismore)
+#define YY_DECL int lex_load(int *depth, object **items, int maxdepth, int map_flags, int linemode, int *ismore, bool arch_init, bool artifact_init)
 
 static char *yval(void);
 
@@ -41,8 +41,6 @@ static char lorebuf[HUGE_BUF];
 #define IVAL atoi(yval())
 /** Next value as float. */
 #define FVAL atof(yval())
-extern int arch_init;
-extern int artifact_init;
 
 /**
  * Keep track of whether we're currently inside an object...end block. This
@@ -123,12 +121,10 @@ static void set_body_info(object *op, char *params) {
  *
  * @param op
  * object to check.
+ * @param arch_init
+ * true if doing archetypes initialisation, false else.
  */
-static void check_loaded_object(object *op) {
-    if (artifact_init)
-        /* Artifacts are special beasts, let's not check them. */
-        return;
-
+static void check_loaded_object(object *op, bool arch_init) {
     if (!is_type_valid(op->type)) {
         LOG(llevError, "Invalid type %d for %s\n", op->type, op->arch ? op->arch->name : op->name);
         op->type = 0;
@@ -204,7 +200,7 @@ static void check_loaded_object(object *op) {
      * method, we'll create a new temporary archetype containing defined values.
      * Of course this doesn't apply when loading archetypes or artifacts.
      */
-    if (arch_init == 0
+    if (!arch_init
     && QUERY_FLAG(op, FLAG_MONSTER)
     && op->arch
     && !object_can_merge(op, &op->arch->clone)) {
@@ -490,7 +486,11 @@ A       .+
 
                             tmp = object_new();
                             tmp->arch = find_archetype(yv);
-                            object_copy(&tmp->arch->clone, tmp);
+                            if (arch_init || artifact_init) {
+                                object_copy_no_speed(&tmp->arch->clone, tmp);
+                            } else {
+                                object_copy(&tmp->arch->clone, tmp);
+                            }
                             strcpy(msgbuf, "");
                             strcpy(lorebuf, "");
                             msglen = 0;
@@ -498,7 +498,7 @@ A       .+
                             (*depth)++;
                             items[*depth] = tmp;
                             if (linemode == 0) {
-                                lex_load(depth, items, maxdepth, map_flags, linemode, ismore);
+                                lex_load(depth, items, maxdepth, map_flags, linemode, ismore, arch_init, artifact_init);
                                 (*depth)--;
                                 object_insert_in_ob(tmp, op);
                             }
@@ -508,7 +508,11 @@ A       .+
                             char *yv = yval();
 
                             op->arch = find_archetype(yv);
-                            object_copy(&op->arch->clone, op);
+                            if (arch_init || artifact_init) {
+                                object_copy_no_speed(&op->arch->clone, op);
+                            } else {
+                                object_copy(&op->arch->clone, op);
+                            }
                         }
                     }
 ^artifact{S}        {
@@ -543,7 +547,9 @@ A       .+
 
 ^end{WS}$           {
                         seen_object = false;
-                        check_loaded_object(op);
+                        if (!artifact_init) {
+                            check_loaded_object(op, arch_init);
+                        }
                         reverse_ob_inv(op);
                         reverse_ob_key_values(op);
                         if (linemode) {
@@ -570,7 +576,9 @@ A       .+
                                 op->speed_left = op->speed_left-RANDOM()%100/100.0;
                                 op->speed = -op->speed; // Make this always positive
                             }
-                            object_update_speed(op);
+                            if (!arch_init) {
+                                object_update_speed(op);
+                            }
                         }
                     }
 ^speed_left{S}      op->speed_left = FVAL;
@@ -932,7 +940,7 @@ static char *yval(void)
  * @li LL_EOF if an error occured.
  * @li LL_MORE if this is a multipart object.
  */
-int load_object(FILE *fp, object *op, int bufstate, int map_flags) {
+int load_object(FILE *fp, object *op, int bufstate, int map_flags, bool artifact_init) {
     int retval;
     char inbuf[VERY_BIG_BUF];
 #define MAXDEPTH 10
@@ -955,7 +963,7 @@ int load_object(FILE *fp, object *op, int bufstate, int map_flags) {
         yy_delete_buffer(YY_CURRENT_BUFFER);
         while (fgets(inbuf, VERY_BIG_BUF-3, fp)) {
             yybufstate = yy_scan_string(inbuf);
-            retval = lex_load(&depth, items, MAXDEPTH, map_flags, 1, &ismore);
+            retval = lex_load(&depth, items, MAXDEPTH, map_flags, 1, &ismore, false, artifact_init);
             yy_delete_buffer(yybufstate);
             if (retval == LL_NORMAL) {
                 if (depth == 0)
@@ -968,7 +976,7 @@ int load_object(FILE *fp, object *op, int bufstate, int map_flags) {
         return LL_EOF;
     }
 
-    retval = lex_load(&depth, items, MAXDEPTH, map_flags, 0, &ismore);
+    retval = lex_load(&depth, items, MAXDEPTH, map_flags, 0, &ismore, false, artifact_init);
 
 /*    LOG(llevDebug, " load completed, object=%s\n", op->name);*/
     return retval;
@@ -979,10 +987,11 @@ int load_object(FILE *fp, object *op, int bufstate, int map_flags) {
  * @param reader where to read from.
  * @param op object to read.
  * @param map_flags one or more @ref MAP_xxx "map loading flags".
+ * @param arch_init whether we are loading archetypes or not.
  * @return LL_NORMAL or LL_MORE if no error, LL_EOF if end of file, will LOG an error if unexpected.
  * @todo loading is inefficient because of bufferreader_get_line(), check use of yy_scan_buffer().
  */
-int load_object_from_reader(BufferReader *reader, object *op, int map_flags) {
+int load_object_from_reader(BufferReader *reader, object *op, int map_flags, bool arch_init, bool artifact_init) {
     int retval;
     object *items[MAXDEPTH];
     int depth = 0, ismore = 0;
@@ -1000,7 +1009,7 @@ int load_object_from_reader(BufferReader *reader, object *op, int map_flags) {
 
     while (bufferreader_get_line(reader, buf, sizeof(buf)) != NULL) {
         yybufstate = yy_scan_string(buf);
-        retval = lex_load(&depth, items, MAXDEPTH, map_flags, 1, &ismore);
+        retval = lex_load(&depth, items, MAXDEPTH, map_flags, 1, &ismore, arch_init, artifact_init);
         yy_delete_buffer(yybufstate);
         if (retval == LL_NORMAL || retval == LL_MORE) {
             if (depth == 0) {
@@ -1046,7 +1055,7 @@ int set_variable(object *op, const char *buf) {
     depth = 0;
     yy_push_state(INITIAL);
     yybufstate = yy_scan_string(buf);
-    retval = lex_load(&depth, items, MAXDEPTH, 0, 0, &ismore);
+    retval = lex_load(&depth, items, MAXDEPTH, 0, 0, &ismore, false, false);
     if (yycurbuf) {
         yy_switch_to_buffer(yycurbuf);
     }

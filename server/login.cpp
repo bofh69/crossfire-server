@@ -766,7 +766,7 @@ void check_login(object *op, const char *password) {
     pl->ob = op;
     /* this loads the standard objects values. */
     PROFILE_BEGIN();
-    load_object(fp, op, LO_NEWFILE, 0);
+    load_object(fp, op, LO_NEWFILE, 0, false);
     PROFILE_END(diff, LOG(llevDebug, "Loaded player file for %s (%ld ms)\n", op->name, diff/1000));
     fclose(fp);
 

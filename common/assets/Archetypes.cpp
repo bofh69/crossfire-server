@@ -36,7 +36,7 @@ void Archetypes::recursive_update(object *item, archetype *updated) {
         auto diff = stringbuffer_new();
         get_ob_diff(diff, item, &item->arch->clone);
         auto arch = item->arch;
-        object_copy_with_inv(&updated->clone, item);
+        object_copy_with_inv(&updated->clone, item, false);
         item->arch = arch;
         auto finished = stringbuffer_finish(diff);
         set_variable(item, finished);
@@ -72,7 +72,7 @@ void Archetypes::replace(archetype *existing, archetype *update) {
     // archetype's object is never inserted anywhere.
     mark_inv_not_removed(&existing->clone);
     object_free_inventory(&existing->clone);
-    object_copy_with_inv(&update->clone, &existing->clone);
+    object_copy_with_inv(&update->clone, &existing->clone, false);
     existing->clone.arch = existing;
     mark_inv_not_removed(&update->clone);
     object_free_inventory(&update->clone);

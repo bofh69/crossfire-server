@@ -181,15 +181,8 @@ static void do_run(void) {
 }
 #endif
 
-extern int artifact_init;
-extern int arch_init;
-
 static void local_check_loaded_object(object *op) {
     int ip;
-
-    if (artifact_init)
-        /* Artifacts are special beasts, let's not check them. */
-        return;
 
     /* We do some specialized handling to handle legacy cases of name_pl.
      * If the object doesn't have a name_pl, we just use the object name -
@@ -217,7 +210,7 @@ static void local_check_loaded_object(object *op) {
      * really just to catch any errors - program will still run, but
      * not in the ideal fashion.
      */
-    if ((op->type == WEAPON || op->type == BOW) && arch_init) {
+    if ((op->type == WEAPON || op->type == BOW)) {
         if (!op->skill) {
             LOG(llevError, "Weapon %s lacks a skill.\n", op->name);
         } else if ((!strcmp(op->skill, "one handed weapons") && op->body_info[1] != -1)
@@ -267,8 +260,7 @@ static void local_check_loaded_object(object *op) {
     }
     /* Old spellcasting object - need to load in the appropiate object */
     if ((op->type == ROD || op->type == WAND || op->type == SCROLL || op->type == FIREWALL || /* POTIONS and ALTARS don't always cast spells, but if they do, update them */ ((op->type == POTION || op->type == ALTAR) && op->stats.sp))
-    && !op->inv
-    && !arch_init)  {
+    && !op->inv)  {
         object *tmp;
 
     /* Fireall is bizarre in that spell type was stored in dam.  Rest are 'normal'
@@ -280,7 +272,7 @@ static void local_check_loaded_object(object *op) {
     }
 
     /* spellbooks & runes use slaying.  But not to arch name, but to spell name */
-    if ((op->type == SPELLBOOK || op->type == RUNE) && op->slaying && !op->inv && !arch_init) {
+    if ((op->type == SPELLBOOK || op->type == RUNE) && op->slaying && !op->inv) {
         object *tmp;
 
         tmp = create_archetype_by_object_name(op->slaying);
@@ -309,7 +301,7 @@ static void local_check_loaded_object(object *op) {
      * method, we'll create a new temporary archetype containing defined values.
      * Of course this doesn't apply when loading archetypes or artifacts.
      */
-    if (arch_init == 0 && artifact_init == 0 && QUERY_FLAG(op, FLAG_MONSTER) && op->arch && !object_can_merge(op, &op->arch->clone)) {
+    if (QUERY_FLAG(op, FLAG_MONSTER) && op->arch && !object_can_merge(op, &op->arch->clone)) {
         archetype *temp = get_archetype_struct();
 
         temp->reference_count++;

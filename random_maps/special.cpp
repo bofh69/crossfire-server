@@ -100,7 +100,7 @@ void include_map_in_map(mapstruct *dest_map, const mapstruct *in_map, int x, int
                     continue;
                 }
                 new_ob = object_create_arch(tmp->arch);
-                object_copy_with_inv(tmp, new_ob);
+                object_copy_with_inv(tmp, new_ob, true);
                 if (QUERY_FLAG(tmp, FLAG_IS_LINKED)) {
                     add_button_link(new_ob, dest_map, tmp->path_attuned);
                 }
@@ -224,7 +224,7 @@ void place_fountain_with_specials(mapstruct *map)
     }
     object *potion = object_new();
 
-    object_copy_with_inv(pick_random_object(fountain_style), potion);
+    object_copy_with_inv(pick_random_object(fountain_style), potion, true);
     while (i < 0 && tries < 10) {
         ix = RANDOM()%(MAP_WIDTH(map)-2)+1;
         iy = RANDOM()%(MAP_HEIGHT(map)-2)+1;

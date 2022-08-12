@@ -618,7 +618,7 @@ void load_objects(mapstruct *m, FILE *fp, int mapflags) {
     op->map = m; /* To handle buttons correctly */
 
     PROFILE_BEGIN();
-    while ((i = load_object(fp, op, bufstate, mapflags))) {
+    while ((i = load_object(fp, op, bufstate, mapflags, false))) {
         /* Since the loading of the map header does not load an object
          * anymore, we need to pass LO_NEWFILE for the first object loaded,
          * and then switch to LO_REPEAT for faster loading.
@@ -1404,7 +1404,7 @@ static void load_unique_objects(mapstruct *m) {
     m->in_memory = MAP_LOADING;
     if (m->tmpname == NULL)    /* if we have loaded unique items from */
         delete_unique_items(m); /* original map before, don't duplicate them */
-    load_object(fp, NULL, LO_NOREAD, 0);
+    load_object(fp, NULL, LO_NOREAD, 0, false);
     load_objects(m, fp, 0);
     fclose(fp);
     m->in_memory = MAP_IN_MEMORY;

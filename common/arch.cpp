@@ -235,7 +235,7 @@ object *arch_to_object(archetype *at) {
         return NULL;
     }
     op = object_new();
-    object_copy_with_inv(&at->clone, op);
+    object_copy_with_inv(&at->clone, op, true);
     op->arch = at;
     return op;
 }

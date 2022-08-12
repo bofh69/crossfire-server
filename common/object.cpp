@@ -1051,13 +1051,14 @@ void object_clear(object *op) {
  * data that is malloc'd needs to be re-malloc/copied.  Otherwise,
  * if the first object is freed, the pointers in the new object
  * will point at garbage.
+ * Will not call object_update_speed() on the copied object.
  *
  * @param src_ob
  * object that we copy.from
  * @param dest_ob
  * object that we copy to.
  */
-void object_copy(const object *src_ob, object *dest_ob) {
+void object_copy_no_speed(const object *src_ob, object *dest_ob) {
     int is_freed = QUERY_FLAG(dest_ob, FLAG_FREED), is_removed = QUERY_FLAG(dest_ob, FLAG_REMOVED);
 
     /* Decrement the refcounts, but don't bother zeroing the fields;
@@ -1172,7 +1173,24 @@ void object_copy(const object *src_ob, object *dest_ob) {
     CLEAR_FLAG(dest_ob, FLAG_DIALOG_PARSED);
 
     dest_ob->event_bitmask = BITMASK_VALID; // Empty inventory so valid
+}
 
+/**
+ * Copy object first frees everything allocated by the second object,
+ * and then copies the contents of the first object into the second
+ * object, allocating what needs to be allocated.  Basically, any
+ * data that is malloc'd needs to be re-malloc/copied.  Otherwise,
+ * if the first object is freed, the pointers in the new object
+ * will point at garbage.
+ * Will call object_update_speed() on the copied object.
+ *
+ * @param src_ob
+ * object that we copy.from
+ * @param dest_ob
+ * object that we copy to.
+ */
+void object_copy(const object *src_ob, object *dest_ob) {
+    object_copy_no_speed(src_ob, dest_ob);
     object_update_speed(dest_ob);
 }
 
@@ -1182,16 +1200,22 @@ void object_copy(const object *src_ob, object *dest_ob) {
  * object to copy.
  * @param dest_ob
  * where to copy.
+ * @param update_speed
+ * if true then call update_speed() on the duplicated objects, else don't.
  * @todo
  * replace with a function in common library (there is certainly one).
  */
-void object_copy_with_inv(const object *src_ob, object *dest_ob) {
-    object_copy(src_ob, dest_ob);
+void object_copy_with_inv(const object *src_ob, object *dest_ob, bool update_speed) {
+    if (update_speed) {
+        object_copy(src_ob, dest_ob);
+    } else {
+        object_copy_no_speed(src_ob, dest_ob);
+    }
     FOR_INV_PREPARE(src_ob, walk) {
         object *tmp;
 
         tmp = object_new();
-        object_copy_with_inv(walk, tmp);
+        object_copy_with_inv(walk, tmp, update_speed);
         object_insert_in_ob(tmp, dest_ob);
     } FOR_INV_FINISH();
 }
@@ -1323,8 +1347,6 @@ void object_update_turn_face(object *op) {
  * check fixme & todo
  */
 void object_update_speed(object *op) {
-    /* FIXME what the hell is this crappy hack?*/
-    extern int arch_init;
 
     /* No reason putting the archetypes objects on the speed list,
      * since they never really need to be updated.
@@ -1337,9 +1359,6 @@ void object_update_speed(object *op) {
 #else
         op->speed = 0;
 #endif
-    }
-    if (arch_init) {
-        return;
     }
     if (FABS(op->speed) > MIN_ACTIVE_SPEED) {
         /* If already on active list, don't do anything */

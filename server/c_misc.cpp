@@ -2366,7 +2366,7 @@ void do_harvest(object *pl, int dir, object *skill) {
     /* Ok, got it. */
     if (inv->nrof == 0) {
         harvested = object_new();
-        object_copy_with_inv(inv, harvested);
+        object_copy_with_inv(inv, harvested, true);
     } else {
         if (count == 1 && inv->nrof == 1) {
             check_exhaust = 1;

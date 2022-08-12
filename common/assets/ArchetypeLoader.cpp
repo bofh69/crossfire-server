@@ -17,8 +17,6 @@
 #include "ArchetypeLoader.h"
 #include "Archetypes.h"
 
-int arch_init;  /**< True if doing arch initialization @todo remove */
-
 ArchetypeLoader::ArchetypeLoader(Archetypes *archetypes, AssetsTracker *tracker) : m_archetypes(archetypes), m_tracker(tracker) {
 }
 
@@ -28,9 +26,7 @@ void ArchetypeLoader::load(BufferReader *reader, const std::string &filename) {
 
     at = get_archetype_struct();
 
-    arch_init = 1;
-
-    while ((i = load_object_from_reader(reader, &at->clone, MAP_STYLE))) {
+    while ((i = load_object_from_reader(reader, &at->clone, MAP_STYLE, true, false))) {
         at->clone.speed_left = (float)(-0.1);
         at = m_archetypes->define(at->name, at);
 
@@ -80,6 +76,4 @@ void ArchetypeLoader::load(BufferReader *reader, const std::string &filename) {
     }
     at->clone.arch = NULL; /* arch is checked for temporary archetypes if not NULL. */
     free(at);
-
-    arch_init = 0;
 }

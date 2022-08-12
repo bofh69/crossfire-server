@@ -15,8 +15,6 @@
 #include "global.h"
 #include "artifact.h"
 
-int artifact_init;  /**< 1 if doing archetypes initialization */
-
 bool ArtifactLoader::willLoad(const std::string &filename) {
     return
             Utils::endsWith(filename, "/artifacts")
@@ -32,8 +30,6 @@ void ArtifactLoader::load(BufferReader *reader, const std::string &filename) {
     archetype dummy_archetype;
 
     memset(&dummy_archetype, 0, sizeof(archetype));
-
-    artifact_init = 1;
 
     while ((buf = bufferreader_next_line(reader)) != NULL) {
         if (*buf == '#')
@@ -81,7 +77,7 @@ void ArtifactLoader::load(BufferReader *reader, const std::string &filename) {
             }
             object_reset(art->item);
             art->item->arch = &dummy_archetype;
-            if (!load_object_from_reader(reader, art->item, MAP_STYLE))
+            if (!load_object_from_reader(reader, art->item, MAP_STYLE, false, true))
                 LOG(llevError, "Init_Artifacts: Could not load object.\n");
             art->item->arch = NULL;
             art->item->name = add_string((strchr(cp, ' ')+1));
@@ -114,6 +110,4 @@ void ArtifactLoader::load(BufferReader *reader, const std::string &filename) {
         LOG(llevDebug, "Artifact list type %d has %d total chance\n", al->type, al->total_chance);
 #endif
     }
-
-    artifact_init = 0;
 }

@@ -68,7 +68,7 @@ void place_monsters(mapstruct *map, char *monsterstyle, int difficulty, RMParms 
         freeindex = object_find_first_free_spot(this_monster, map, x, y);
         if (freeindex != -1) {
             object *new_monster = object_create_arch(this_monster->arch);
-            object_copy_with_inv(this_monster, new_monster);
+            object_copy_with_inv(this_monster, new_monster, true);
             x += freearr_x[freeindex];
             y += freearr_y[freeindex];
             object_insert_in_map_at(new_monster, map, NULL, INS_NO_MERGE|INS_NO_WALK_ON, x, y);
