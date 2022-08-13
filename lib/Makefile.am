@@ -42,7 +42,8 @@ dist_adm_SCRIPTS = $(srcdir)/adm/archsearch.pl $(srcdir)/adm/collect_images.pl
 
 i18ndir=$(pkgdatadir)/i18n
 dist_i18n_DATA = $(srcdir)/i18n/messages.en \
-	$(srcdir)/i18n/messages.fr
+	$(srcdir)/i18n/messages.fr \
+	$(srcdir)/i18n/messages.pt
 
 MAINTAINERCLEANFILES = .collect-stamp \
 	crossfire.arc crossfire.trs crossfire.face crossfire.tar
