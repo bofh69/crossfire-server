@@ -1196,6 +1196,42 @@ static int load_map_header(FILE *fp, mapstruct *m) {
     return 0;
 }
 
+void map_path(const char *map, int flags, char *pathname, size_t bufsize) {
+    if (flags&MAP_PLAYER_UNIQUE) {
+        snprintf(pathname, bufsize, "%s/%s/%s", settings.localdir, settings.playerdir, map+1);
+    }
+    else if (flags&MAP_OVERLAY)
+        create_overlay_pathname(map, pathname, bufsize);
+    else
+        create_pathname(map, pathname, bufsize);
+}
+
+mapstruct *mapfile_load_lowlevel(const char *map, const char *pathname, int flags) {
+    FILE *fp;
+    if ((fp = fopen(pathname, "r")) == NULL) {
+        LOG((flags&MAP_PLAYER_UNIQUE) ? llevDebug : llevError,
+                "Can't open %s: %s\n", pathname, strerror(errno));
+        return NULL;
+    }
+
+    mapstruct *m = get_linked_map();
+    safe_strncpy(m->path, map, HUGE_BUF);
+    if (load_map_header(fp, m)) {
+        LOG(llevError, "Error loading map header for %s, flags=%d\n", map, flags);
+        delete_map(m);
+        fclose(fp);
+        return NULL;
+    }
+
+    allocate_map(m);
+
+    m->in_memory = MAP_LOADING;
+    load_objects(m, fp, flags & MAP_STYLE);
+    fclose(fp);
+    m->in_memory = MAP_IN_MEMORY;
+    return m;
+}
+
 /**
  * Opens the file "filename" and reads information about the map
  * from the given file, and stores it in a newly allocated
@@ -1212,42 +1248,14 @@ static int load_map_header(FILE *fp, mapstruct *m) {
  * loaded map, or NULL if failure.
  */
 mapstruct *mapfile_load(const char *map, int flags) {
-    FILE *fp;
     mapstruct *m;
-    char pathname[MAX_BUF];
-
     PROFILE_BEGIN();
-
-    if (flags&MAP_PLAYER_UNIQUE) {
-        snprintf(pathname, sizeof(pathname), "%s/%s/%s", settings.localdir, settings.playerdir, map+1);
-    }
-    else if (flags&MAP_OVERLAY)
-        create_overlay_pathname(map, pathname, MAX_BUF);
-    else
-        create_pathname(map, pathname, MAX_BUF);
-
-    if ((fp = fopen(pathname, "r")) == NULL) {
-        LOG((flags&MAP_PLAYER_UNIQUE) ? llevDebug : llevError,
-                "Can't open %s: %s\n", pathname, strerror(errno));
-        return (NULL);
-    }
-
-    m = get_linked_map();
-
-    safe_strncpy(m->path, map, HUGE_BUF);
-    if (load_map_header(fp, m)) {
-        LOG(llevError, "Error loading map header for %s, flags=%d\n", map, flags);
-        delete_map(m);
-        fclose(fp);
+    char pathname[MAX_BUF];
+    map_path(map, flags, pathname, sizeof(pathname));
+    m = mapfile_load_lowlevel(map, pathname, flags);
+    if (!m) {
         return NULL;
     }
-
-    allocate_map(m);
-
-    m->in_memory = MAP_LOADING;
-    load_objects(m, fp, flags & MAP_STYLE);
-    fclose(fp);
-    m->in_memory = MAP_IN_MEMORY;
     if (!MAP_DIFFICULTY(m) && (!(flags & MAP_NO_DIFFICULTY)))
         MAP_DIFFICULTY(m) = calculate_difficulty(m);
     set_map_reset_time(m);
