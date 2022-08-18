@@ -1,4 +1,6 @@
 noinst_PROGRAMS = perf_mapload perf_mapsave
+perf_mapload_SOURCES = perf_mapload.cpp
+perf_mapsave_SOURCES = perf_mapsave.cpp
 
 AM_CPPFLAGS = -I$(top_srcdir)/include -DDATADIR=\"$(pkgdatadir)\" -DCONFDIR=\"$(pkgconfdir)\" \
 	      -DLIBDIR=\"$(pkglibdir)\" -DLOCALDIR=\"$(pkgstatedir)\" \
