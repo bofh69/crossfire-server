@@ -1,6 +1,7 @@
-noinst_PROGRAMS = perf_mapload perf_mapsave
+noinst_PROGRAMS = perf_mapload perf_mapsave test_mapsave
 perf_mapload_SOURCES = perf_mapload.cpp
 perf_mapsave_SOURCES = perf_mapsave.cpp
+test_mapsave_SOURCES = test_mapsave.cpp
 
 AM_CPPFLAGS = -I$(top_srcdir)/include -DDATADIR=\"$(pkgdatadir)\" -DCONFDIR=\"$(pkgconfdir)\" \
 	      -DLIBDIR=\"$(pkglibdir)\" -DLOCALDIR=\"$(pkgstatedir)\" \
@@ -12,3 +13,5 @@ SERVER_LDADD = ../../server/libserver.a ../../common/libcross.a ../../random_map
 perf_mapload_LDADD = $(SERVER_LDADD)
 
 perf_mapsave_LDADD = $(SERVER_LDADD)
+
+test_mapsave_LDADD = $(SERVER_LDADD)

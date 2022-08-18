@@ -539,6 +539,7 @@ test/bugs/bugtrack/check_free_objects
 test/bugs/bugtrack/check_weight_reduction
 test/performance/perf_mapload
 test/performance/perf_mapsave
+test/performance/test_mapsave
 test/unit/server/check_account
 test/unit/server/check_account_char
 test/unit/server/check_monster_change
