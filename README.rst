@@ -33,6 +33,8 @@ If you are building from Git, you also need:
 
 * autoconf/automake
 
+* pkgconf/pkg-config
+
 * libtool
 
 * flex
@@ -45,7 +47,8 @@ even more fun. These include:
 
 * Python 3 - this is needed for the Crossfire Python plugin
   (CFPython) and is *highly* recommended. Most maps, quests, and NPCs will
-  not work without it.
+  not work without it. On some platforms, you will need the "development"
+  package that comes with header files.
 
 * SQLite3 - for cflogger and cfnewspaper. These plugins are still under
   development and aren't very useful at the moment.
