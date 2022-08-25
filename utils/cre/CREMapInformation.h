@@ -34,6 +34,11 @@ class CREMapInformation : public AssetWrapper
     Q_PROPERTY(int computedDifficulty READ computedDifficulty)
     Q_PROPERTY(qint64 experience READ experience)
     Q_PROPERTY(QString resetGroup READ resetGroup)
+    Q_PROPERTY(QString backgroundMusic READ backgroundMusic)
+    Q_PROPERTY(double shopGreed READ shopGreed)
+    Q_PROPERTY(QString shopRace READ shopRace)
+    Q_PROPERTY(quint64 shopMin READ shopMin)
+    Q_PROPERTY(quint64 shopMax READ shopMax)
 
     public:
         CREMapInformation();
