@@ -56,7 +56,6 @@ check_c_party_SOURCES = check_c_party.cpp
 #check_c_range_SOURCES = check_c_range.cpp
 #check_c_wiz_SOURCES = check_c_wiz.cpp
 #check_disease_SOURCES = check_disease.cpp
-#check_egoitem_SOURCES = check_egoitem.cpp
 #check_gods_SOURCES = check_gods.cpp
 #check_hiscore_SOURCES = check_hiscore.cpp
 #check_init_SOURCES = check_init.cpp
