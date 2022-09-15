@@ -1,3 +1,7 @@
 Usage: mon_aggr
 
+This command requires the possess command to be active. But, possess command was disabled per the server ChangeLog in 801f6142b - (2004-06-06 17:15:12 +0000) Disable possess command - ryo_saeba
+
 Toggles the aggression of the monster you are currently possessing. Not recommended to be flipped on yourself as a player.
+
+See Also: possess
