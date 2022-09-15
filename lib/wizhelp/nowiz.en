@@ -1,3 +1,5 @@
-Usage: nodm or nowiz
+Usage: nowiz
 
-Both of these commands will return you to normal player status.
+This command will return the DM to normal player status.
+
+See Also: nodm
