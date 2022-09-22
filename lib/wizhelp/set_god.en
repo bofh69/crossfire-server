@@ -1,3 +1,8 @@
-Usage: set_god <player> <diety>
+Usage: set_god <player> <deity>
 
-This will change a players deity to the deity specified.
+This will change a player's deity to the deity specified.
+
+Example:
+  set_god Carol Mostrai
+
+The player named Carol is now a follower of Mostrai.
