@@ -1,3 +1,3 @@
 Usage: style_info
 
-This will print out information regarding current styles in use.
+This will print out information regarding current styles in use. The output includes Style maps load, Memory used not including objects, Style objects, and Memory for objects.
