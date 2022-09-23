@@ -1,3 +1,9 @@
 Usage: teleport <player>
 
-Teleport will bring you immediately next to the player's location.
+Teleport will bring you immediately next to the player's location. See 'summon' for the reverse.
+
+Example: teleport Gabriel
+
+This will cause you to appear next to the player named Gabriel - even if it is a private map, such as their personal apartment.
+
+See Also: summon
