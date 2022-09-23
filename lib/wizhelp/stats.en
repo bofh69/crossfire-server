@@ -1,3 +1,8 @@
 Usage: stats <player>
 
-This displays the named players statistics.
+This displays the named player's statistics.
+(Str, Dex, Con, Int, Wis, Pow, Cha, current h.p., current s.p., AC, Damage, EXP, Grace, Food, Maximum health points, Maximum spell points, WC)
+
+Example: stats Darla
+
+The command would display all stats for the player Darla.
