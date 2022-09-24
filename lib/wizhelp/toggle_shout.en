@@ -1,3 +1,11 @@
 Usage: toggle_shout <player>
 
-Will toggle the no_shout bit for the named player. This will prevent or enable the player to use the shout command.
+The toggle_shout command will toggle the no_shout bit for the named player.
+
+This will prevent or enable the player to use the shout channel for communication.
+
+Example:
+ toggle_shout Jessica
+
+If the player named Jessica has access to the shout channel, the command will now disable her access.
+If Jessica had the shout channel disabled by this command, entering the command again will re-enable shout channel access.
