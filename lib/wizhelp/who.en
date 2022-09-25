@@ -1,5 +1,5 @@
 Usage: who
 
-The who command will display all players who are currently logged in to the game and show which ones are AFK (if activated by the player), DMs, and bot accounts. The map path of all logged-in players is also shown.
+The who command will display all players who are currently logged-in to the game and show which ones are AFK (if activated by the player), DMs, and bot accounts. The map path of all logged-in players is also shown.
 
 When used as a DM, all of the above information is displayed in addition to the object tag of players and their total level.
