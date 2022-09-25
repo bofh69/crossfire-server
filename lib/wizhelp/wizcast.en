@@ -1,3 +1,7 @@
 Usage: wizcast [<on_off>]
 
-This will enable/disable your ability to cast spells and prayers anywhere as DM. Without argument it toggles between on and off.
+This will enable/disable your ability to cast spells and prayers anywhere as DM.
+
+Without argument, it toggles between on and off.
+
+For instance, with the ability set to on - the DM can cast prayers on unholy ground and spells in no_magic areas (i.e., the middle of a shop.)
