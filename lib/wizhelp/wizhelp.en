@@ -17,9 +17,9 @@ follow <playername>
 free <tag>
 freeze [ticks] <player>
 goto <map_path>
-Usage: hide
+hide
 insert_into <item> <item>
-Invisible
+invisible
 kick <player>
 learn_special_prayer <prayer name>
 learn_spell <spell name>
@@ -34,7 +34,7 @@ plugout <plugin name>
 possess <object number>
 printlos
 purge_quest_state
-Usage: purge_quests
+purge_quests
 quest (player name) list|info|set
 remove <tag>
 reset <mapname>
@@ -52,6 +52,5 @@ toggle_shout <player>
 who
 wizcast [<on_off>]
 wizpass
-
 
 General notes for DMs: Case sensitivity is important in player and map names.
