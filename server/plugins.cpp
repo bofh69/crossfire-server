@@ -32,6 +32,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
 
 #include "plugin.h"
 #include "shop.h"
@@ -241,8 +242,8 @@ static const hook_entry plug_hooks[] = {
     { cfapi_unregister_command,      98, "cfapi_unregister_command" },
 };
 
-/** Linked list of loaded plugins. */
-crossfire_plugin *plugins_list = NULL;
+/** List of loaded plugins. */
+std::vector<crossfire_plugin *> plugins_list;
 
 /*****************************************************************************/
 /* NEW PLUGIN STUFF STARTS HERE                                              */
@@ -254,14 +255,9 @@ crossfire_plugin *plugins_list = NULL;
  * @return plugin, NULL if not found.
  */
 static crossfire_plugin *plugins_find_plugin(const char *id) {
-    crossfire_plugin *cp;
-
-    if (plugins_list == NULL)
-        return NULL;
-
-    for (cp = plugins_list; cp != NULL; cp = cp->next) {
-        if (!strcmp(id, cp->id)) {
-            return cp;
+    for (crossfire_plugin *plugin : plugins_list) {
+        if (!strcmp(id, plugin->id)) {
+            return plugin;
         }
     }
     return NULL;
@@ -372,7 +368,6 @@ int plugins_init_plugin(const char *libfile) {
     f_plug_postinit closefunc;
     int i;
     crossfire_plugin *cp;
-    crossfire_plugin *ccp;
     char *svn_rev;
 
 
@@ -434,16 +429,7 @@ int plugins_init_plugin(const char *libfile) {
     propfunc(&i, "Identification", cp->id, sizeof(cp->id));
     propfunc(&i, "FullName", cp->fullname, sizeof(cp->fullname));
     events_register_object_handler(cp->id, eventfunc);
-    cp->next = NULL;
-    cp->prev = NULL;
-    if (plugins_list == NULL) {
-        plugins_list = cp;
-    } else {
-        for (ccp = plugins_list; ccp->next != NULL; ccp = ccp->next)
-            ;
-        ccp->next = cp;
-        cp->prev = ccp;
-    }
+    plugins_list.push_back(cp);
     postfunc();
     return 0;
 }
@@ -455,45 +441,21 @@ int plugins_init_plugin(const char *libfile) {
  * @return 0 if the plugin was unloaded, -1 if no such plugin.
  */
 int plugins_remove_plugin(const char *id) {
-    crossfire_plugin *cp;
-
-    if (plugins_list == NULL)
-        return -1;
-
-    for (cp = plugins_list; cp != NULL; cp = cp->next) {
-        if (!strcmp(id, cp->id)) {
-            crossfire_plugin *n;
-            crossfire_plugin *p;
-
-            for (int eventcode = 0; eventcode < NR_EVENTS; eventcode++) {
-                if (cp->global_registration[eventcode]) {
-                    events_unregister_global_handler(eventcode, cp->global_registration[eventcode]);
-                }
+    auto plugin = std::find_if(plugins_list.begin(), plugins_list.end(), [&id] (const auto cp) { return strcmp(id, cp->id) == 0; });
+    if (plugin != plugins_list.end()) {
+        crossfire_plugin *cp = *plugin;
+        plugins_list.erase(plugin);
+        for (int eventcode = 0; eventcode < NR_EVENTS; eventcode++) {
+            if (cp->global_registration[eventcode]) {
+                events_unregister_global_handler(eventcode, cp->global_registration[eventcode]);
             }
-            events_unregister_object_handler(cp->id);
-
-            n = cp->next;
-            p = cp->prev;
-            if (cp->closefunc)
-                cp->closefunc();
-            plugins_dlclose(cp->libptr);
-            if (n != NULL) {
-                if (p != NULL) {
-                    n->prev = p;
-                    p->next = n;
-                } else {
-                    n->prev = NULL;
-                    plugins_list = n;
-                }
-            } else {
-                if (p != NULL)
-                    p->next = NULL;
-                else
-                    plugins_list = NULL;
-            }
-            free(cp);
-            return 0;
         }
+        events_unregister_object_handler(cp->id);
+        if (cp->closefunc)
+            cp->closefunc();
+        plugins_dlclose(cp->libptr);
+        free(cp);
+        return 0;
     }
     return -1;
 }
@@ -504,15 +466,10 @@ int plugins_remove_plugin(const char *id) {
  * @param op who to display the list to.
  */
 void plugins_display_list(object *op) {
-    crossfire_plugin *cp;
-
     draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_DEBUG,
                   "List of loaded plugins:\n-----------------------");
 
-    if (plugins_list == NULL)
-        return;
-
-    for (cp = plugins_list; cp != NULL; cp = cp->next) {
+    for (crossfire_plugin *cp : plugins_list) {
         draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_DEBUG,
                              "%s, %s",
                              cp->id, cp->fullname);
@@ -4552,13 +4509,7 @@ void initPlugins(void) {
  * Will not unload plugins. Free all items of ::plugins_list.
  */
 void cleanupPlugins(void) {
-    crossfire_plugin *cp;
-
-    if (!plugins_list)
-        return;
-
-    for (cp = plugins_list; cp != NULL; ) {
-        crossfire_plugin *next = cp->next;
+    for (crossfire_plugin *cp : plugins_list) {
         if (cp->closefunc)
             cp->closefunc();
         /* Don't actually unload plugins, it makes backtraces for memory
@@ -4567,7 +4518,6 @@ void cleanupPlugins(void) {
          */
         /* plugins_dlclose(cp->libptr); */
         free(cp);
-        cp = next;
     }
-    plugins_list = NULL;
+    plugins_list.clear();
 }

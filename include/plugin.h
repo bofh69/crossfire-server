@@ -94,8 +94,6 @@ typedef struct _crossfire_plugin {
     char            id[MAX_BUF];        /**< Plugin identification string      */
     char            fullname[MAX_BUF];  /**< Plugin full name                  */
     event_registration  global_registration[NR_EVENTS]; /**< Global event registration identifiers. */
-    struct _crossfire_plugin *next;     /**< Next plugin in list               */
-    struct _crossfire_plugin *prev;     /**< Previous plugin in list           */
 } crossfire_plugin;
 
 #ifdef WIN32
