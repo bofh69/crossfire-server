@@ -60,12 +60,8 @@ void ResourcesManager::load()
     settings.archetypes_tracker = (AssetsTracker *)(this);
     add_server_collect_hooks();
     static std::function<void(BufferReader *, const char *)> dummy = [this] (BufferReader *reader, const char *filename) { myLicenseManager.readLicense(reader, filename); };
-    settings.hooks[settings.hooks_count] = [] (BufferReader *reader, const char *filename) { dummy(reader, filename); };
-    settings.hooks_filename[settings.hooks_count] = ".LICENSE";
-    settings.hooks_count++;
-    settings.hooks[settings.hooks_count] = [] (BufferReader *, const char *) { QCoreApplication::processEvents(); };
-    settings.hooks_filename[settings.hooks_count] = "";
-    settings.hooks_count++;
+    settings.add_hook(".LICENSE", [] (BufferReader *reader, const char *filename) { dummy(reader, filename); });
+    settings.add_hook("", [] (BufferReader *, const char *) { QCoreApplication::processEvents(); });
     settings.fatal_hook = onFatalInit;
     settings.ignore_assets_errors = 1;
 

@@ -429,9 +429,7 @@ void citylife_init(Settings *settings) {
     m = events_register_global_handler(EVENT_MAPLOAD, citylife_globalEventListener);
     events_register_object_handler(CITYLIFE_NAME, eventListener);
 
-    settings->hooks_filename[settings->hooks_count] = ".citylife";
-    settings->hooks [settings->hooks_count] = load_citylife;
-    settings->hooks_count++;
+    settings->add_hook(".citylife", load_citylife);
 
     /* Disable the plugin in case it's still there */
     settings->disabled_plugins.push_back(strdup("citylife"));

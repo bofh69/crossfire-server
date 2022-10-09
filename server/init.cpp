@@ -1088,12 +1088,8 @@ static void load_settings(void) {
 }
 
 void add_server_collect_hooks() {
-    settings.hooks_filename[settings.hooks_count] = "/materials";
-    settings.hooks[settings.hooks_count] = load_materials;
-    settings.hooks_count++;
-    settings.hooks_filename[settings.hooks_count] = "/races";
-    settings.hooks[settings.hooks_count] = load_races;
-    settings.hooks_count++;
+    settings.add_hook("/materials", load_materials);
+    settings.add_hook("/races", load_races);
 }
 
 /**

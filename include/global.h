@@ -336,6 +336,12 @@ typedef struct Settings {
     int     ignore_assets_errors;     /**< If set then go on running even if there are errors in assets. */
     void    *archetypes_tracker;      /**< Must be a pointer to a AssetsTracker<archetype> if not NULL. */
     fatalHook fatal_hook;             /**< If not NULL then called when fatal() is called. */
+
+    void add_hook(const char *name, collectorHook hook) {
+        hooks_filename[hooks_count] = name;
+        hooks [hooks_count] = hook;
+        ++hooks_count;
+    }
 } Settings;
 
 /**

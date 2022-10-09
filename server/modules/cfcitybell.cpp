@@ -155,9 +155,7 @@ void cfcitybell_init(Settings *settings) {
     last_hr = tod.hour;
     global_handler = events_register_global_handler(EVENT_CLOCK, clock_listener);
 
-    settings->hooks_filename[settings->hooks_count] = ".bells";
-    settings->hooks[settings->hooks_count] = load_bells;
-    settings->hooks_count++;
+    settings->add_hook(".bells", load_bells);
 
     /* Disable the plugin in case it's still there */
     settings->disabled_plugins.push_back(strdup("cfcitybell"));
