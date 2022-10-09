@@ -371,9 +371,7 @@ static size_t region_count = 0;         /**< Count of regions. */
 static size_t region_allocated = 0;     /**< Allocated size of regions. */
 
 static int list_unused_maps = 0;       /**< If set, program will list maps found in directory but not linked from the first maps. */
-static char **found_maps = NULL;       /**< Maps found in directories. */
-static int found_maps_count = 0;       /**< Number of items in found_maps. */
-static int found_maps_allocated = 0;   /**< Allocated size of found_maps. */
+static std::vector<char *> found_maps;       /**< Maps found in directories. */
 
 /* Path/exit info */
 static gdImagePtr infomap;         /**< World map with exits / roads / blocking / ... */
@@ -788,20 +786,6 @@ static void do_exit_map(mapstruct *map) {
 }
 
 void do_auto_apply(mapstruct *m);
-
-/**
- * Sort values alphabetically
- * Used by qsort to sort values alphabetically.
- * @param a
- * First value
- * @param b
- * Second value
- * @return
- * -1 if a is less than b, 0 if a equals b, 1 else.
- */
-static int sortbyname(const void *a, const void *b) {
-    return (strcmp(*(const char **)a, *(const char **)b));
-}
 
 /**
  * Computes the shortest path from one file to another.
@@ -1332,12 +1316,10 @@ static struct_map_info *get_map_info(const char *path) {
  * map to remove.
  */
 static void list_map(const char *path) {
-    int index;
-
-    for (index = 0; index < found_maps_count; index++) {
-        if (found_maps[index] && strcmp(path, found_maps[index]) == 0) {
-            free(found_maps[index]);
-            found_maps[index] = NULL;
+    for (auto map = found_maps.begin(); map != found_maps.end(); ++map) {
+        if (strcmp(path, *map) == 0) {
+            free(*map);
+            found_maps.erase(map);
             return;
         }
     }
@@ -2827,17 +2809,12 @@ static void find_maps(const char *from) {
             snprintf(full, sizeof(full), "%s/%s", path, file->d_name);
 
             status = stat(full, &statbuf);
+            snprintf(full, sizeof(full), "%s/%s", from, file->d_name);
             if ((status != -1) && (S_ISDIR(statbuf.st_mode))) {
-                snprintf(full, sizeof(full), "%s/%s", from, file->d_name);
                 find_maps(full);
                 continue;
             }
-            if (found_maps_count == found_maps_allocated) {
-                found_maps_allocated += 50;
-                found_maps = (char **)realloc(found_maps, found_maps_allocated*sizeof(char *));
-            }
-            snprintf(full, sizeof(full), "%s/%s", from, file->d_name);
-            found_maps[found_maps_count++] = strdup(full);
+            found_maps.push_back(strdup(full));
         }
         closedir(dir);
     }
@@ -2847,7 +2824,6 @@ static void find_maps(const char *from) {
 static void dump_unused_maps(void) {
     FILE *dump;
     char path[1024];
-    int index, found = 0;
 
     snprintf(path, sizeof(path), "%s/%s", root, "maps.unused");
     dump = fopen(path, "w+");
@@ -2855,15 +2831,11 @@ static void dump_unused_maps(void) {
         printf("Unable to open file maps.unused!\n");
         return;
     }
-    for (index = 0; index < found_maps_count; index++) {
-        if (found_maps[index] != NULL) {
-            fprintf(dump, "%s\n", found_maps[index]);
-            free(found_maps[index]);
-            found++;
-        }
+    for (auto map = found_maps.cbegin(); map != found_maps.cend(); ++map) {
+        fprintf(dump, "%s\n", *map);
     }
     fclose(dump);
-    printf("%d unused maps.\n", found);
+    printf("%ld unused maps.\n", found_maps.size());
 }
 
 /** Writes the exit information world map. */
@@ -3164,8 +3136,7 @@ int main(int argc, char **argv) {
     if (list_unused_maps) {
         printf("listing all maps...");
         find_maps("");
-        printf("done, %d maps found.\n", found_maps_count);
-        qsort(found_maps, found_maps_count, sizeof(char *), sortbyname);
+        printf("done, %ld maps found.\n", found_maps.size());
     }
 
     /* exit/blocking information. */
