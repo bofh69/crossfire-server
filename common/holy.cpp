@@ -306,7 +306,7 @@ int describe_god(const object *god, int what, StringBuffer *buf, size_t maxlen) 
 }
 
 /**
- * Returns a god(s object from its name.
+ * Returns a god's object from its name.
  *
  * @note
  * returned object shouldn't be modified.
