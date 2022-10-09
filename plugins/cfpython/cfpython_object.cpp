@@ -1314,6 +1314,7 @@ static PyObject *Crossfire_Object_Long(PyObject *obj) {
 static PyGetSetDef Object_getseters[] = {
     { "Name",           (getter)Object_GetName,         (setter)Object_SetName, NULL, NULL },
     { "NamePl",         (getter)Object_GetNamePl,       (setter)Object_SetNamePl, NULL, NULL },
+    { "NameSingular",   (getter)Object_GetSStringProperty,  NULL, NULL, (void*)CFAPI_OBJECT_PROP_RAW_NAME },
     { "Title",          (getter)Object_GetSStringProperty,  (setter)Object_SetStringProperty, NULL, (void*)CFAPI_OBJECT_PROP_TITLE },
     { "Race",           (getter)Object_GetSStringProperty,  (setter)Object_SetStringProperty, NULL, (void*)CFAPI_OBJECT_PROP_RACE },
     { "Skill",          (getter)Object_GetSStringProperty,  (setter)Object_SetStringProperty, NULL, (void*)CFAPI_OBJECT_PROP_SKILL },
