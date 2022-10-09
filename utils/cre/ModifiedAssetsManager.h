@@ -37,17 +37,17 @@ public:
     }
 
     std::string originOf(const T *asset) const {
-        for (auto file = myOrigins.begin(); file != myOrigins.end(); file++) {
-            if (file->second.count(asset) > 0) {
-                return file->first;
+        for (auto file : myOrigins) {
+            if (file.second.count(asset) > 0) {
+                return file.first;
             }
         }
         return std::string();
     }
 
     void assetDefined(const T *asset, const std::string &filename) {
-        for (auto it = myOrigins.begin(); it != myOrigins.end(); it++) {
-            it->second.erase(asset);
+        for (auto it : myOrigins) {
+            it.second.erase(asset);
         }
         myOrigins[filename.c_str()].insert(asset);
     }
@@ -55,10 +55,10 @@ public:
     void assetModified(T *asset) { myDirty.insert(asset); }
 
     void saveModifiedAssets() {
-      for (auto a = myDirty.begin(); a != myDirty.end(); a++) {
-          for (auto file = myOrigins.begin(); file != myOrigins.end(); file++) {
-              if (file->second.count(*a) > 0) {
-                  write(file->first, file->second);
+      for (auto a : myDirty) {
+          for (auto file : myOrigins) {
+              if (file.second.count(a) > 0) {
+                  write(file.first, file.second);
               }
           }
       }
