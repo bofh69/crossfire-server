@@ -32,8 +32,6 @@
 #endif
 
 #include <global.h>
-#include <object.h>
-#include <logger.h>
 
 /*****************************************************************************/
 /* This one does not exist under Win32.                                      */
@@ -42,7 +40,6 @@
 #include <dlfcn.h>
 #endif
 
-#include <time.h>
 #include "random_maps/random_map.h"
 #include "random_maps/rproto.h"
 
@@ -52,10 +49,6 @@
 #ifndef WIN32
 #include <dirent.h>
 #endif
-
-#include <stdarg.h>
-
-#include "events.h"
 
 #define CFAPI_NONE    0
 #define CFAPI_INT     1

@@ -35,7 +35,9 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "compat.h"
+#include <time.h>
 #include <vector>
+#include <stdarg.h>
 
 /** Used for printf-like functions, mostly LOG and draw_ext_info_format */
 #define PRINTF_ARGS(x, y) __attribute__ ((format (printf, x, y)))
@@ -387,6 +389,6 @@ extern Statistics statistics;
 #define SCRIPT_FIX_NOTHING 0
 /*@}*/
 
-#include "plugin.h"
+#include "events.h"
 
 #endif /* GLOBAL_H */
