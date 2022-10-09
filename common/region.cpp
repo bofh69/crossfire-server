@@ -30,6 +30,7 @@
 
 #include <map>
 #include <string>
+#include <algorithm>
 
 /**
  * Gets a region by name.
@@ -44,13 +45,11 @@
  * @li if it can't find a matching name and a fallback region it LOG()s an info message and returns NULL.
  */
 region *get_region_by_name(const char *region_name) {
-    region *reg;
-
-    for (reg = first_region; reg != NULL; reg = reg->next)
+    for (auto reg : all_regions)
         if (!strcmp(reg->name, region_name))
             return reg;
 
-    for (reg = first_region; reg != NULL; reg = reg->next) {
+    for (auto reg : all_regions) {
         if (reg->fallback) {
             LOG(llevDebug, "region called %s requested, but not found, fallback used.\n", region_name);
             return reg;
@@ -90,11 +89,9 @@ region *get_region_by_map(mapstruct *m) {
  * @li if no fallback region, LOG()s an info message and returns "unknown".
  */
 const char *get_name_of_region_for_map(const mapstruct  *m) {
-    region *reg;
-
     if (m->region != NULL)
         return m->region->name;
-    for (reg = first_region; reg != NULL; reg = reg->next) {
+    for (auto reg : all_regions) {
         if (reg->fallback)
             return reg->name;
     }
@@ -122,34 +119,34 @@ region *get_region_from_string(const char *name) {
     region *reg;
     char *substr;
 
-    if (first_region == NULL) {
+    if (all_regions.empty()) {
         return NULL;
     }
 
     if (*name == '\0') {
-        for (reg = first_region; reg->parent != NULL; reg = reg->parent)
+        for (reg = all_regions.front(); reg->parent != NULL; reg = reg->parent)
             ;
         return reg;
     }
 
-    for (reg = first_region; reg != NULL; reg = reg->next)
+    for (auto reg : all_regions)
         if (!strcasecmp(reg->name, name))
             return reg;
 
-    for (reg = first_region; reg != NULL; reg = reg->next)
+    for (auto reg : all_regions)
         if (reg->longname != NULL) {
             if (!strcasecmp(reg->longname, name))
                 return reg;
         }
 
     substr = NULL;
-    for (reg = first_region; reg != NULL; reg = reg->next)
+    for (auto reg : all_regions)
         if (reg->longname != NULL) {
             substr = strstr(reg->longname, name);
             if (substr != NULL)
                 return reg;
         }
-    for (reg = first_region; reg != NULL; reg = reg->next)
+    for (auto reg : all_regions)
         if (reg->longname != NULL) {
             /*
              * This is not a bug, we want the region that is  most identifiably a discrete
@@ -161,13 +158,13 @@ region *get_region_from_string(const char *name) {
             if (substr != NULL)
                 return reg;
         }
-    for (reg = first_region; reg != NULL; reg = reg->next) {
+    for (auto reg : all_regions) {
         substr = strstr(reg->name, name);
         if (substr != NULL)
             return reg;
     }
     /* if we are still here, we are going to have to give up, and give the top level region */
-    for (reg = first_region; reg->parent != NULL; reg = reg->parent)
+    for (reg = all_regions.front(); reg->parent != NULL; reg = reg->parent)
         ;
     return reg;
 }
@@ -314,14 +311,13 @@ region *get_region_struct(void) {
  */
 void init_regions(BufferReader *reader, const char *filename) {
     region *add;
-    region *reg;
     char *buf;
 
     char msgbuf[HUGE_BUF], *value;
     int msgpos = 0;
 
     /** @todo support multiple region files */
-    if (first_region != NULL) /* Only do this once */
+    if (!all_regions.empty()) /* Only do this once */
         return;
 
     std::map<region *, std::string> parents;
@@ -446,14 +442,7 @@ void init_regions(BufferReader *reader, const char *filename) {
                 LOG(llevError, "region.c: Ignoring spurious \"end\" between regions.\n");
                 continue;
             }
-            /* Place this add region last on the list, if the list is empty put it first */
-            for (reg = first_region; reg != NULL && reg->next != NULL; reg = reg->next)
-                ;
-
-            if (reg == NULL)
-                first_region = add;
-            else
-                reg->next = add;
+            all_regions.push_back(add);
             add = NULL;
         } else if (!strcmp(buf, "nomore")) {
             if (add) {
@@ -478,4 +467,19 @@ void init_regions(BufferReader *reader, const char *filename) {
             LOG(llevError, "Couldn't find parent %s for region %s\n", p.second.c_str(), p.first->name);
         }
     }
+}
+
+region *region_get_next(region *reg) {
+    if (all_regions.empty()) {
+        return nullptr;
+    }
+    if (!reg) {
+        return all_regions.front();
+    }
+
+    auto r = std::find(all_regions.begin(), all_regions.end(), reg);
+    if (r == all_regions.end() || (++r) == all_regions.end()) {
+        return nullptr;
+    }
+    return *r;
 }

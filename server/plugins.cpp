@@ -4212,7 +4212,7 @@ static void cfapi_region_get_property(int *type, ...) {
 
     case CFAPI_REGION_PROP_NEXT:
         rregion = va_arg(args, region **);
-        *rregion = (reg ? reg->next : first_region);
+        *rregion = region_get_next(reg);
         *type = CFAPI_PREGION;
         break;
 

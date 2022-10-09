@@ -166,7 +166,7 @@ void cfcitybell_close() {
     for (auto reg : regions) {
         delete reg.second;
     }
-    regions.clear();
+    all_regions.clear();
 }
 
 /*@}*/

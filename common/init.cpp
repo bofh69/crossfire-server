@@ -105,7 +105,7 @@ Chaos_Attacks ATTACKS[22] = {
 
 player *first_player;                /**< First player. */
 mapstruct *first_map;                /**< First map. */
-region *first_region;                /**< First region. */
+std::vector<region *> all_regions;
 artifactlist *first_artifactlist;    /**< First artifact. */
 
 long trying_emergency_save; /**< True when emergency_save() is reached. */
@@ -442,7 +442,6 @@ void init_globals(void) {
  */
 void free_globals(void) {
     int msg, attack;
-    region *reg;
 
     FREE_AND_CLEAR_STR(undead_name);
     FREE_AND_CLEAR_STR(blocks_prayer);
@@ -458,15 +457,14 @@ void free_globals(void) {
     clear_friendly_list();
     free_experience();
 
-    while (first_region) {
-        reg = first_region->next;
-        FREE_AND_CLEAR(first_region->name);
-        FREE_AND_CLEAR(first_region->jailmap);
-        FREE_AND_CLEAR(first_region->msg);
-        FREE_AND_CLEAR(first_region->longname);
-        FREE_AND_CLEAR(first_region);
-        first_region = reg;
+    for (auto region : all_regions) {
+        FREE_AND_CLEAR(region->name);
+        FREE_AND_CLEAR(region->jailmap);
+        FREE_AND_CLEAR(region->msg);
+        FREE_AND_CLEAR(region->longname);
+        FREE_AND_CLEAR(region);
     }
+    all_regions.clear();
 
     assets_free();
 }

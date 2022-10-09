@@ -16,7 +16,7 @@
 #include "../archetypes/ArchetypeWrapper.h"
 
 RegionsWrapper::RegionsWrapper(AssetWrapper *parent, ResourcesManager *resources) : AssetWrapper(parent) {
-    for (region* reg = first_region; reg; reg = reg->next) {
+    for (auto reg : all_regions) {
         myRegions.push_front(resources->wrap(reg, this));
     }
     std::sort(myRegions.begin(), myRegions.end(), compareByDisplayName);

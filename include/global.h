@@ -117,7 +117,7 @@ typedef struct linked_char {
 /*@{*/
 EXTERN player *first_player;                /**< First player. */
 EXTERN mapstruct *first_map;                /**< First map. */
-EXTERN region *first_region;                /**< First region. */
+EXTERN std::vector<region *> all_regions;   /**< All regions. */
 EXTERN artifactlist *first_artifactlist;    /**< First artifact. */
 /*@}*/
 

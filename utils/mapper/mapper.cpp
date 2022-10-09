@@ -3069,8 +3069,7 @@ int main(int argc, char **argv) {
     dummy->name = strdup_local("unlinked");
     dummy->longname = strdup_local("This dummy region contains all maps without a region set.");
     dummy->longname = strdup_local("This dummy region contains all maps without a region set.");
-    dummy->next = first_region;
-    first_region = dummy;
+    all_regions.push_back(dummy);
 
     printf("\n\n done.\n\n");
 

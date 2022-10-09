@@ -273,7 +273,6 @@ typedef struct MapSpace {
  * they have to appear here in the headers, before the mapdef
  */
 typedef struct regiondef {
-    struct regiondef *next;      /**< Pointer to next region, NULL for the last one */
     char  *name;                 /**< Shortend name of the region as maps refer to it */
     struct regiondef *parent;   /**<
                                   * Pointer to the region that is a parent of the current
