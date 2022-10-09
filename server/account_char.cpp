@@ -49,6 +49,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
 
 #include "account_char.h"
 #include "object.h"
@@ -68,9 +69,7 @@
  */
 #define ACCOUNT_DIR "account"
 
-static Account_Chars **chars_loaded = NULL; /**< Current character information in use. */
-static size_t chars_loaded_count = 0;       /**< Number of used items in ::chars_loaded. */
-static size_t chars_loaded_allocated = 0;   /**< Allocated length of ::chars_loaded. */
+static std::vector<Account_Chars *> chars_loaded; /**< Current character information in use. */
 
 /**
  * Load characters for a Account_Chars structure.
@@ -145,10 +144,10 @@ static void account_char_load_from_file(Account_Chars *chars) {
  * Character data.
  */
 Account_Chars *account_char_load(const char *account_name) {
-    for (size_t loaded = 0; loaded < chars_loaded_count; loaded++) {
-        if (strcmp(chars_loaded[loaded]->account_name, account_name) == 0) {
-            chars_loaded[loaded]->ref_count++;
-            return chars_loaded[loaded];
+    for (auto account : chars_loaded) {
+        if (strcmp(account->account_name, account_name) == 0) {
+            account->ref_count++;
+            return account;
         }
     }
 
@@ -157,16 +156,7 @@ Account_Chars *account_char_load(const char *account_name) {
     ac->account_name = add_string(account_name);
     account_char_load_from_file(ac);
 
-    if (chars_loaded_count == chars_loaded_allocated) {
-        chars_loaded_allocated += 10;
-        chars_loaded = static_cast<Account_Chars **>(realloc(chars_loaded, chars_loaded_allocated * sizeof(chars_loaded[0])));
-        if (!chars_loaded) {
-            LOG(llevError, "Out of memory allocating %zu account chars\n", chars_loaded_allocated);
-            fatal(OUT_OF_MEMORY);
-        }
-    }
-    chars_loaded[chars_loaded_count] = ac;
-    chars_loaded_count++;
+    chars_loaded.push_back(ac);
 
     return ac;
 }
@@ -381,15 +371,7 @@ void account_char_free(Account_Chars *chars) {
         return;
     }
 
-    for (size_t p = 0; p < chars_loaded_count; p++) {
-        if (chars_loaded[p] == chars) {
-            if (p < chars_loaded_count - 1) {
-                chars_loaded[p] = chars_loaded[chars_loaded_count - 1];
-            }
-            chars_loaded_count--;
-            break;
-        }
-    }
+    chars_loaded.erase(std::remove(chars_loaded.begin(), chars_loaded.end(), chars), chars_loaded.end());
 
     Account_Char *ap, *next;
 
