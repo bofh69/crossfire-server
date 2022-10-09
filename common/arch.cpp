@@ -148,8 +148,7 @@ void dump_arch(archetype *at, StringBuffer *sb) {
  * this with the "dumpallarchetypes" command.
  */
 void dump_all_archetypes(void) {
-    for (auto arch = get_next_archetype(NULL); arch != NULL; arch = get_next_archetype(arch)) {
-
+    getManager()->archetypes()->each([] (const auto arch) {
         StringBuffer *sb;
         char *diff;
 
@@ -158,7 +157,7 @@ void dump_all_archetypes(void) {
         diff = stringbuffer_finish(sb);
         LOG(llevDebug, "%s\n", diff);
         free(diff);
-    }
+    });
 }
 
 /**
