@@ -17,10 +17,8 @@
 #include <QtWidgets>
 #include "assets/AssetWrapperPanel.h"
 
-extern "C" {
 #include "global.h"
 #include "artifact.h"
-}
 
 class ArtifactListPanel : public AssetTWrapperPanel<const artifactlist> {
 Q_OBJECT

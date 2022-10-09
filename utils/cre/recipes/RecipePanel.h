@@ -16,10 +16,8 @@
 #include <QObject>
 #include <QtWidgets>
 
-extern "C" {
 #include "global.h"
 #include "recipe.h"
-}
 
 #include "assets/AssetWrapperPanel.h"
 

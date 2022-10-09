@@ -16,10 +16,8 @@
 #include <QWidget>
 #include "assets/AssetWrapperPanel.h"
 
-extern "C" {
 #include "global.h"
 #include "image.h"
-}
 
 class QLabel;
 class LicenseManager;

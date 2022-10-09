@@ -11,10 +11,8 @@
  */
 
 #include "QuestComboBox.h"
-extern "C" {
 #include "global.h"
 #include "quest.h"
-}
 #include "CREPixmap.h"
 #include "AssetsManager.h"
 #include "assets.h"

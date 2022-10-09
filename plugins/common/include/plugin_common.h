@@ -39,9 +39,7 @@
 #endif
 #endif
 
-extern "C" {
 #include <plugin.h>
-}
 
 #define PLUGIN_ERROR_INT        0x0FFFFF
 

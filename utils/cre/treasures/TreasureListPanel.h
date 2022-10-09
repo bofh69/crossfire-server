@@ -16,10 +16,8 @@
 #include <QObject>
 #include <QtWidgets>
 #include "assets/AssetWrapperPanel.h"
-extern "C" {
 #include "global.h"
 #include "treasure.h"
-}
 
 class TreasureListWrapper;
 class AssetModel;

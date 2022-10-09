@@ -13,9 +13,7 @@
 #ifndef TREASURES_WRAPPER_H
 #define TREASURES_WRAPPER_H
 
-extern "C" {
 #include "global.h"
-}
 
 #include "AssetsManager.h"
 #include "assets.h"
