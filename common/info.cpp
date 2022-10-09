@@ -12,6 +12,8 @@
  */
 
 #include "global.h"
+#include "assets.h"
+#include "AssetsManager.h"
 
 #include <stdlib.h>
 
@@ -61,38 +63,35 @@ static void bitstostring(long bits, int num, char *str) {
  * Dump to standard out the abilities of all monsters.
  */
 void dump_abilities(void) {
-    archetype *at;
-    char *name;
-
-    for (at = get_next_archetype(NULL); at; at = get_next_archetype(at)) {
+    getManager()->archetypes()->each([] (const auto at) {
         const char *gen_name = "";
         archetype *gen;
 
         if (!QUERY_FLAG(&at->clone, FLAG_MONSTER))
-            continue;
+            return;
 
         /* Get rid of e.g. multiple black puddings */
         if (QUERY_FLAG(&at->clone, FLAG_CHANGING))
-            continue;
+            return;
 
         /* Dont print a row for each piece of a multipart object
          * Doing so confounds the documentation generators that use the -m2 flag.
          */
         if (HEAD(&at->clone) != &at->clone)
-            continue;
+            return;
 
-        for (gen = get_next_archetype(NULL); gen; gen = get_next_archetype(gen)) {
-            if (gen->clone.other_arch && gen->clone.other_arch == at) {
-                gen_name = gen->name;
-                break;
-            }
+        gen = getManager()->archetypes()->first([&at] (const auto gen) {
+            return gen->clone.other_arch && gen->clone.other_arch == at;
+        });
+        if (gen) {
+            gen_name = gen->name;
         }
 
-        name = stringbuffer_finish(describe_item(&at->clone, NULL, 0, NULL));
+        char *name = stringbuffer_finish(describe_item(&at->clone, NULL, 0, NULL));
         printf("%-16s|%6" FMT64 "|%4d|%3d|%s|%s|%s\n", at->clone.name, at->clone.stats.exp,
                at->clone.stats.hp, at->clone.stats.ac, name, at->name, gen_name);
         free(name);
-    }
+    });
 }
 
 /**
