@@ -251,11 +251,7 @@ typedef struct struct_equipment {
     struct_map_list origin; /**< Map(s) this item is found in. */
 } struct_equipment;
 
-static struct_equipment **special_equipment = NULL;     /**< Special equipment list. */
-
-static size_t equipment_count = 0;                      /**< Number of items in special_equipment. */
-
-static size_t equipment_allocated = 0;                  /**< Allocated items in special_equipment. */
+static std::vector<struct_equipment *> special_equipment;     /**< Special equipment list. */
 
 
 /** One monster race in the maps. */
@@ -470,7 +466,7 @@ static void free_equipment(struct_equipment *equip) {
 static struct_equipment *ensure_unique(struct_equipment *item) {
     struct_equipment *comp;
 
-    for (size_t check = 0; check < equipment_count; check++) {
+    for (size_t check = 0; check < special_equipment.size(); check++) {
         comp = special_equipment[check];
 
         if (strcmp(comp->name, item->name))
@@ -486,12 +482,7 @@ static struct_equipment *ensure_unique(struct_equipment *item) {
         return comp;
     }
 
-    if (equipment_count == equipment_allocated) {
-        equipment_allocated += 50;
-        special_equipment = (struct_equipment **)realloc(special_equipment, sizeof(struct_equipment *)*equipment_allocated);
-    }
-    special_equipment[equipment_count] = item;
-    equipment_count++;
+    special_equipment.push_back(item);
 
     return item;
 }
@@ -594,16 +585,13 @@ static void check_equipment(object *item, struct_map_info *map) {
  * @param b
  * items to compare.
  * @return
- * -1, 0 or 1.
+ * true if l is before r, false else
  */
-static int sort_equipment(const void *a, const void *b) {
-    const struct_equipment *l = *(const struct_equipment **)a;
-    const struct_equipment *r = *(const struct_equipment **)b;
-    int c = l->power-r->power;
-
-    if (c)
-        return c;
-    return strcasecmp(l->name, r->name);
+static bool sort_equipment(const struct_equipment *l, const struct_equipment *r) {
+    printf("sort %s %s\n", l->name, r->name);
+    if (l->power < r->power)
+        return true;
+    return strcasecmp(l->name, r->name) < 0;
 }
 
 /**
@@ -2457,7 +2445,7 @@ static void fill_json(nlohmann::json &json) {
     }
 
     json["items"] = nlohmann::json::array();
-    for (size_t idx = 0; idx < equipment_count; idx++) {
+    for (size_t idx = 0; idx < special_equipment.size(); idx++) {
         auto eq = special_equipment[idx];
         json["items"][idx] = {
             { "name", eq->name },
@@ -3183,7 +3171,7 @@ int main(int argc, char **argv) {
 
     qsort(maps_list.maps, maps_list.count, sizeof(struct_map_info *), sort_map_info);
     qsort(regions, region_count, sizeof(struct_region_info *), sort_region);
-    qsort(special_equipment, equipment_count, sizeof(struct_equipment *), sort_equipment);
+    std::sort(special_equipment.begin(), special_equipment.end(), sort_equipment);
     qsort(slaying_info, slaying_count, sizeof(struct_slaying_info *), sort_slaying);
     qsort(races.races, races.count, sizeof(struct_race *), sort_race);
     qsort(quests, quests_count, sizeof(struct_quest *), sort_struct_quest);
