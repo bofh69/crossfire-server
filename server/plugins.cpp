@@ -3970,7 +3970,7 @@ static void cfapi_player_message(int *type, ...) {
     buf = va_arg(args, char *);
     va_end(args);
 
-    draw_ext_info(flags, pri, pl, MSG_TYPE_MISC, MSG_SUBTYPE_NONE,
+    draw_ext_info(flags | NDI_DELAYED, pri, pl, MSG_TYPE_MISC, MSG_SUBTYPE_NONE,
                   buf);
     *type = CFAPI_NONE;
 }
