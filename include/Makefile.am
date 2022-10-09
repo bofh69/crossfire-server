@@ -5,7 +5,7 @@ player.h       define.h       dialog.h       loader.h \
 material.h     spells.h       face.h         logger.h \
 re-cmp.h       sproto.h       artifact.h     map.h          recipe.h \
 treasure.h     global.h       path.h         shstr.h        stringbuffer.h \
-tod.h          god.h          newserver.h    xdir.h         book.h \
+tod.h          god.h          newserver.h    book.h \
 object.h       skills.h	    sockproto.h     plugin.h \
 timers.h       typesproto.h   ob_methods.h   ob_types.h     svnversion.h \
 version.h      shared/newclient.h            account_char.h \
