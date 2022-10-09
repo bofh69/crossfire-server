@@ -87,13 +87,12 @@ typedef struct account_struct {
     char  **character_names;        /**< Character names associated with this account,
                                      +1 added to allow for NULL termination */
     time_t  created;                /**< When character was created */
-    struct account_struct *next;    /**< Next in list */
 } account_struct;
 
 /**
  * list of all accounts.
  */
-static account_struct *accounts=NULL;
+static std::vector<account_struct *> accounts;
 
 /**
  * Whether the account information was loaded or not.
@@ -152,7 +151,7 @@ static account_struct *account_alloc() {
  * properly.  As such, we don't worry about memory cleanup, etc.
  */
 void accounts_clear(void) {
-    accounts = NULL;
+    accounts.clear();
     accounts_loaded = 0;
 }
 
@@ -162,11 +161,10 @@ void accounts_clear(void) {
  */
 void accounts_load(void) {
     char fname[MAX_BUF], *buf;
-    account_struct *ac, *last=NULL;
     int fields=0;
     BufferReader *br;
 
-    if (accounts != NULL) {
+    if (!accounts.empty()) {
         LOG(llevError, "account_load_entries(): Called when accounts has been set.\n");
         return;
     }
@@ -184,7 +182,7 @@ void accounts_load(void) {
 
         fields = split_string(buf, tmp, NUM_ACCOUNT_FIELDS, ':');
 
-        ac = account_alloc();
+        account_struct *ac = account_alloc();
         ac->name = strdup_local(tmp[0]);
         ac->password = strdup_local(tmp[1]);
         ac->last_login = strtoul(tmp[2], (char**)NULL, 10);
@@ -218,15 +216,7 @@ void accounts_load(void) {
             }
         }
 
-        /* We tack on to the end of the list - in this way,
-         * the order of the file remains the same.
-         */
-        if (last)
-            last->next = ac;
-        else
-            accounts = ac;
-        last = ac;
-
+        accounts.push_back(ac);
     }
 
     bufferreader_destroy(br);
@@ -268,7 +258,6 @@ void accounts_save(void)
     char fname[MAX_BUF];
     FILE *fp;
     OutputFile of;
-    account_struct *ac;
 
     if (accounts_loaded == 0)
         return;
@@ -284,7 +273,7 @@ void accounts_save(void)
                 "# the server exits.\n");
     fprintf(fp, "# Format:\n");
     fprintf(fp, "# Account name:Password:Account last used:Characters (semicolon separated):created:expansion\n");
-    for (ac=accounts; ac; ac=ac->next) {
+    for (auto ac : accounts) {
         /* Don't write out accounts with no characters associated unless the
          * account is at least a day old.
          */
@@ -307,9 +296,7 @@ void accounts_save(void)
  */
 const char *account_exists(const char *account_name)
 {
-    account_struct *ac;
-
-    for (ac=accounts; ac; ac=ac->next) {
+    for (auto ac : accounts) {
         if (!strcasecmp(ac->name, account_name)) return ac->name;
     }
     return NULL;
@@ -330,9 +317,7 @@ const char *account_exists(const char *account_name)
  * 0 if no match/wrong password, 1 if a match is found and password matches.
  */
 int account_login(const char *account_name, const char *account_password) {
-    account_struct *ac;
-
-    for (ac=accounts; ac; ac=ac->next) {
+    for (auto ac : accounts) {
         /* Look for a matching account name and check the password. */
         if (!strcasecmp(ac->name, account_name)) {
             if (check_password(account_password, ac->password)) {
@@ -433,8 +418,7 @@ int account_new(const char *account_name, const char *account_password) {
      * to save this out.  Note it is still possible for this to get saved out if
      * another player does something that forces writing out of the accounts file.
      */
-    ac->next = accounts;
-    accounts = ac;
+    accounts.insert(accounts.begin(), ac);
 
     /* mark that accounts should be saved through accounts_save(). */
     accounts_loaded = 1;
@@ -459,17 +443,15 @@ int account_new(const char *account_name, const char *account_password) {
  */
 
 int account_link(const char *account_name, const char *player_name) {
-    account_struct *ac;
-
-    for (ac=accounts; ac; ac=ac->next) {
-        if (!strcasecmp(ac->name, account_name)) break;
+    for (auto ac : accounts) {
+        if (!strcasecmp(ac->name, account_name)) {
+            ensure_available_characters(ac, ac->num_characters + 1);
+            ac->character_names[ac->num_characters] = strdup_local(player_name);
+            ac->num_characters++;
+            return 0;
+        }
     }
-    if (ac == NULL) return 1;
-
-    ensure_available_characters(ac, ac->num_characters + 1);
-    ac->character_names[ac->num_characters] = strdup_local(player_name);
-    ac->num_characters++;
-    return 0;
+    return 1;
 }
 
 /**
@@ -491,37 +473,36 @@ int account_link(const char *account_name, const char *player_name) {
  */
 
 int account_remove_player(const char *account_name, const char *player_name) {
-    account_struct *ac;
     int i, match=0;
 
     if (account_name == NULL)
         return 0;
 
-    for (ac=accounts; ac; ac=ac->next) {
-        if (!strcasecmp(ac->name, account_name)) break;
-    }
-    if (ac == NULL) return 1;
+    for (auto ac : accounts) {
+        if (!strcasecmp(ac->name, account_name)) {
+            /* Try to find the character name.  Once we find it, we set match, and
+             * then move the remain character names down by one.  The array is
+             * always null terminated, so this also makes sure we copy the null down.
+             */
+            for (i=0; i<ac->num_characters; i++) {
+                if (!strcmp(ac->character_names[i], player_name)) {
+                    free(ac->character_names[i]);
+                    match=1;
+                }
+                if (match == 1) {
+                    ac->character_names[i] = ac->character_names[i+1];
+                }
+            }
 
-    /* Try to find the character name.  Once we find it, we set match, and
-     * then move the remain character names down by one.  The array is
-     * always null terminated, so this also makes sure we copy the null down.
-     */
-    for (i=0; i<ac->num_characters; i++) {
-        if (!strcmp(ac->character_names[i], player_name)) {
-            free(ac->character_names[i]);
-            match=1;
-        }
-        if (match == 1) {
-            ac->character_names[i] = ac->character_names[i+1];
+            if (match) {
+                ac->num_characters--;
+                return 0;
+            }
+            /* Otherwise, did not find player name */
+            return 2;
         }
     }
-
-    if (match) {
-        ac->num_characters--;
-        return 0;
-    }
-    /* Otherwise, did not find player name */
-    return 2;
+    return 1;
 }
 
 
@@ -538,9 +519,7 @@ int account_remove_player(const char *account_name, const char *player_name) {
  */
 char **account_get_players_for_account(const char *account_name)
 {
-    account_struct *ac;
-
-    for (ac=accounts; ac; ac=ac->next) {
+    for (auto ac : accounts) {
         if (!strcasecmp(ac->name, account_name)) return ac->character_names;
     }
     return NULL;
@@ -571,10 +550,9 @@ static int char_in_list(const char *name, const Account_Char *chars) {
  * @return list of character names not in chars, the caller should free it after use.
  */
 linked_char *account_get_additional_chars(const char *account_name, const Account_Chars *chars, int *count) {
-    account_struct *ac;
     linked_char *ret = NULL;
 
-    for (ac = accounts; ac; ac = ac->next) {
+    for (auto ac : accounts) {
         if (!strcasecmp(ac->name, account_name)) {
             for (int i = 0; i < ac->num_characters; i++) {
                 if (!char_in_list(ac->character_names[i], chars->chars)) {
@@ -602,10 +580,9 @@ linked_char *account_get_additional_chars(const char *account_name, const Accoun
  */
 const char *account_get_account_for_char(const char *charname)
 {
-    account_struct *ac;
     int i;
 
-    for (ac=accounts; ac; ac=ac->next) {
+    for (auto ac : accounts) {
         for (i=0; i<ac->num_characters; i++) {
             if (!strcmp(ac->character_names[i], charname)) {
                 return ac->name;
@@ -651,7 +628,6 @@ int account_is_logged_in(const char *name) {
  */
 int account_change_password(const char *account_name,
         const char *current_password, const char *new_password) {
-    account_struct *ac;
 
     // Check password for invalid characters as in account_new().
     if (account_check_string(account_name) ||
@@ -661,24 +637,19 @@ int account_change_password(const char *account_name,
     }
 
     // Iterate through accounts list until a matching name is found.
-    for (ac = accounts; ac; ac = ac->next) {
+    for (auto ac : accounts) {
         if (!strcasecmp(ac->name, account_name)) {
-            break;
+            // Return an error if the current password does not match.
+            if (current_password != NULL && !check_password(current_password, ac->password)) {
+                return 3;
+            }
+
+            free(ac->password);
+            ac->password = strdup_local(newhash(new_password));
+
+            return 0;
         }
     }
 
-    // Check if the given account actually exists.
-    if (ac == NULL) {
-        return 2;
-    }
-
-    // Return an error if the current password does not match.
-    if (current_password != NULL && !check_password(current_password, ac->password)) {
-        return 3;
-    }
-
-    free(ac->password);
-    ac->password = strdup_local(newhash(new_password));
-
-    return 0;
+    return 2;
 }
