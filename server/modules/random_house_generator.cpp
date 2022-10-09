@@ -211,10 +211,7 @@ void random_house_generator_init(Settings *settings) {
     eg = events_register_global_handler(EVENT_MAPLOAD, cfrhg_globalEventListener);
 
     /* Disable the plugin in case it's still there */
-    linked_char *disable = static_cast<linked_char *>(calloc(1, sizeof(linked_char)));
-    disable->next = settings->disabled_plugins;
-    disable->name = strdup("cfrhg");
-    settings->disabled_plugins = disable;
+    settings->disabled_plugins.push_back(strdup("cfrhg"));
 }
 
 /**

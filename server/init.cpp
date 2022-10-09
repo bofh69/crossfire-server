@@ -22,6 +22,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
 
 /* Needed for strcasecmp(). */
 #ifndef WIN32
@@ -288,10 +289,7 @@ static void set_csport(const char *val) {
  * @param name plugin's name, without extension.
  */
 static void set_disable_plugin(const char *name) {
-    linked_char *disable = static_cast<linked_char *>(calloc(1, sizeof(linked_char)));
-    disable->next = settings.disabled_plugins;
-    disable->name = strdup(name);
-    settings.disabled_plugins = disable;
+    settings.disabled_plugins.push_back(strdup(name));
 }
 
 /**
@@ -1149,12 +1147,8 @@ void free_server(void) {
     free_materials();
     free_races();
     free_quest();
-    while (settings.disabled_plugins) {
-        linked_char *next = settings.disabled_plugins->next;
-        free((void *)settings.disabled_plugins->name);
-        free(settings.disabled_plugins);
-        settings.disabled_plugins = next;
-    }
+    std::for_each(settings.disabled_plugins.begin(), settings.disabled_plugins.end(), [] (char *item) { free(item); });
+    settings.disabled_plugins.clear();
 }
 
 /**

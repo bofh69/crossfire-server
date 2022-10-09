@@ -4519,24 +4519,22 @@ void initPlugins(void) {
     while ((currentfile = readdir(plugdir)) != NULL) {
         l = strlen(currentfile->d_name);
         if (l > strlen(PLUGIN_SUFFIX)) {
-            linked_char *disable = settings.disabled_plugins;
             int ignore = 0;
 
             if (strcmp(currentfile->d_name+l-strlen(PLUGIN_SUFFIX), PLUGIN_SUFFIX) != 0)
                 continue;
 
-            while (disable) {
-                if (strcmp(disable->name, "All") == 0) {
+            for (auto disable = settings.disabled_plugins.cbegin(); disable != settings.disabled_plugins.cend(); ++disable) {
+                if (strcmp(*disable, "All") == 0) {
                     LOG(llevInfo, "plugins: disabling (all) %s\n", currentfile->d_name);
                     ignore = 1;
                     break;
                 }
-                if (strncmp(disable->name, currentfile->d_name, strlen(disable->name)) == 0 && strlen(currentfile->d_name) == strlen(PLUGIN_SUFFIX) + strlen(disable->name)) {
+                if (strncmp(*disable, currentfile->d_name, strlen(*disable)) == 0 && strlen(currentfile->d_name) == strlen(PLUGIN_SUFFIX) + strlen(*disable)) {
                     LOG(llevInfo, "plugins: disabling %s\n", currentfile->d_name);
                     ignore = 1;
                     break;
                 }
-                disable = disable->next;
             }
             if (ignore == 0) {
                 snprintf(buf, sizeof(buf), "%s/plugins/%s", LIBDIR, currentfile->d_name);

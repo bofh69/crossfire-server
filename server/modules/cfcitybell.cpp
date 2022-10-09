@@ -160,10 +160,7 @@ void cfcitybell_init(Settings *settings) {
     settings->hooks_count++;
 
     /* Disable the plugin in case it's still there */
-    linked_char *disable = static_cast<linked_char *>(calloc(1, sizeof(linked_char)));
-    disable->next = settings->disabled_plugins;
-    disable->name = strdup("cfcitybell");
-    settings->disabled_plugins = disable;
+    settings->disabled_plugins.push_back(strdup("cfcitybell"));
 }
 
 void cfcitybell_close() {
