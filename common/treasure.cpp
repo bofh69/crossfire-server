@@ -27,6 +27,8 @@
 #include "loader.h"
 #include "sproto.h"
 #include "treasure.h"
+#include "assets.h"
+#include "AssetsManager.h"
 
 /**
  * Resistances which can show up on rings and amulets.
@@ -1230,12 +1232,11 @@ static void dump_monster_treasure_rec(const char *name, treasure *t, int depth) 
  * Created originally by Raphael Quinet for debugging the alchemy code.
  */
 void dump_monster_treasure(const char *name) {
-    archetype *at;
     int found;
 
     found = 0;
     fprintf(logfile, "\n");
-    for (at = get_next_archetype(NULL); at != NULL; at = get_next_archetype(at))
+    getManager()->archetypes()->each([&] (const auto at) {
         if (!strcasecmp(at->clone.name, name) && at->clone.title == NULL) {
             fprintf(logfile, "treasures for %s (arch: %s)\n", at->clone.name, at->name);
             if (at->clone.randomitems != NULL)
@@ -1245,6 +1246,7 @@ void dump_monster_treasure(const char *name) {
             fprintf(logfile, "\n");
             found++;
         }
+    });
 
     if (found == 0)
         fprintf(logfile, "No objects have the name %s!\n\n", name);
