@@ -28,26 +28,22 @@
 /*****************************************************************************/
 
 #include <cfpython.h>
-#include <hashtable.h>
+#include <map>
 
 /* Table for keeping track of which PyObject goes with with Crossfire object */
-static ptr_assoc_table map_assoc_table;
-
-/* Helper functions for dealing with object_assoc_table */
-void init_map_assoc_table(void) {
-    init_ptr_assoc_table(map_assoc_table);
-}
+static std::map<mapstruct *, Crossfire_Map *> map_assoc_table;
 
 static void add_map_assoc(mapstruct *key, Crossfire_Map *value) {
-    add_ptr_assoc(map_assoc_table, key, value);
+    map_assoc_table[key] = value;
 }
 
-static PyObject *find_assoc_pymap(mapstruct *key) {
-    return (PyObject *)find_assoc_value(map_assoc_table, key);
+static Crossfire_Map *find_assoc_pymap(mapstruct *key) {
+    auto f = map_assoc_table.find(key);
+    return f == map_assoc_table.end() ? nullptr : f->second;
 }
 
 static void free_map_assoc(mapstruct *key) {
-    free_ptr_assoc(map_assoc_table, key);
+    map_assoc_table.erase(key);
 }
 
 
@@ -445,7 +441,7 @@ PyObject *Crossfire_Map_wrap(mapstruct *what) {
         return Py_None;
     }
 
-    wrapper = (Crossfire_Map *)find_assoc_pymap(what);
+    wrapper = find_assoc_pymap(what);
     if (!wrapper) {
         wrapper = PyObject_NEW(Crossfire_Map, &Crossfire_MapType);
         if (wrapper != NULL) {

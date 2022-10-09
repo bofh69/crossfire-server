@@ -1515,9 +1515,6 @@ sys.stderr = catchOutErr\n\
     cf_init_plugin(gethooksptr);
     cf_log(llevDebug, "CFPython 2.0a init\n");
 
-    init_object_assoc_table();
-    init_map_assoc_table();
-
     PyImport_AppendInittab("Crossfire", &PyInit_Crossfire);
     PyImport_AppendInittab("cjson", &PyInit_cjson);
 

@@ -28,7 +28,7 @@
 /*****************************************************************************/
 
 #include <cfpython.h>
-#include <hashtable.h>
+#include <map>
 
 #define EXISTCHECK(ob) { \
     if (!ob || !ob->obj || (object_was_destroyed(ob->obj, ob->obj->count))) { \
@@ -53,24 +53,20 @@
         return -1; \
     } }
 
-/* Table for keeping track of which PyObject goes with with Crossfire object */
-static ptr_assoc_table object_assoc_table;
-
-/* Helper functions for dealing with object_assoc_table */
-void init_object_assoc_table(void) {
-    init_ptr_assoc_table(object_assoc_table);
-}
+/* Map for keeping track of which PyObject goes with with Crossfire object */
+static std::map<object *, PyObject *> object_assoc_table;
 
 static void add_object_assoc(object *key, PyObject *value) {
-    add_ptr_assoc(object_assoc_table, key, value);
+    object_assoc_table[key] = value;
 }
 
 static PyObject *find_assoc_pyobject(object *key) {
-    return (PyObject *)find_assoc_value(object_assoc_table, key);
+    auto f = object_assoc_table.find(key);
+    return f == object_assoc_table.end() ? nullptr : f->second;
 }
 
 static void free_object_assoc(object *key) {
-    free_ptr_assoc(object_assoc_table, key);
+    object_assoc_table.erase(key);
 }
 
 static PyObject *Player_GetTitle(Crossfire_Object *whoptr, void *closure) {

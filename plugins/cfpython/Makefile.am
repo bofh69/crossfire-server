@@ -15,8 +15,7 @@ cfpython_la_SOURCES = cfpython.cpp \
 	cfpython_party.cpp \
 	cfpython_region.cpp \
 	cjson.cpp \
-	../common/plugin_common.cpp \
-	../common/hashtable.cpp
+	../common/plugin_common.cpp
 
 cfpython_la_CPSOURCES = cfpython.cpp \
 	cfpython_archetype.cpp \
