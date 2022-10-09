@@ -98,25 +98,22 @@ void dump_abilities(void) {
  * As dump_abilities(), but with an alternative way of output.
  */
 void print_monsters(void) {
-    archetype *at;
-    object *op;
-    char attbuf[34];
-    int i;
 
     printf("               |     |   |    |    |      attack       |                        resistances                                                                       |\n");
     printf("monster        | hp  |dam| ac | wc |pmf ecw adw gpd ptf|phy mag fir ele cld cfs acd drn wmg ght poi slo par tud fer cnc dep dth chs csp gpw hwd bln int |  exp   | new exp |\n");
     printf("---------------------------------------------------------------------------------------------------------------------------------------------------\n");
-    for (at = get_next_archetype(NULL); at != NULL; at = get_next_archetype(at)) {
-        op = arch_to_object(at);
+    getManager()->archetypes()->each([] (const auto at) {
+        char attbuf[34];
+        object *op = arch_to_object(at);
         if (QUERY_FLAG(op, FLAG_MONSTER)) {
             bitstostring((long)op->attacktype, NROFATTACKS, attbuf);
             printf("%-15s|%5d|%3d|%4d|%4d|%s|",
                    op->arch->name, op->stats.maxhp, op->stats.dam, op->stats.ac,
                    op->stats.wc, attbuf);
-            for (i = 0; i < NROFATTACKS; i++)
+            for (int i = 0; i < NROFATTACKS; i++)
                 printf("%4d", op->resist[i]);
             printf("|%8" FMT64 "|%9" FMT64 "|\n", op->stats.exp, new_exp(op));
         }
         object_free_drop_inventory(op);
-    }
+    });
 }
