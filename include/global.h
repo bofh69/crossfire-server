@@ -99,9 +99,6 @@ typedef struct linked_char {
 /* Now for gods */
 #include "god.h"
 
-/* Now for races */
-#include "race.h"
-
 /* Now for recipe/alchemy */
 #include "recipe.h"
 

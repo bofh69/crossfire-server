@@ -2,7 +2,7 @@ noinst_HEADERS = \
 commands.h     libproto.h     sounds.h	     attack.h       config.h \
 living.h       party.h        output_file.h  \
 player.h       define.h       dialog.h       loader.h \
-race.h         material.h     spells.h       face.h         logger.h \
+material.h     spells.h       face.h         logger.h \
 re-cmp.h       sproto.h       artifact.h     map.h          recipe.h \
 treasure.h     global.h       path.h         shstr.h        stringbuffer.h \
 tod.h          god.h          newserver.h    xdir.h         book.h \
