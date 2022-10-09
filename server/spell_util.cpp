@@ -29,6 +29,8 @@
 #include "sounds.h"
 #include "spells.h"
 #include "sproto.h"
+#include "assets.h"
+#include "AssetsManager.h"
 
 /**
  * This returns a random spell from 'ob'.  If skill is set, then
@@ -104,18 +106,17 @@ void set_spell_skill(object *op, object *caster, object *spob, object *dest) {
  * minimal, but easy enough to keep around.
  */
 void dump_spells(void) {
-    archetype *at;
     int banner = 0;
 
-    for (at = get_next_archetype(NULL); at; at = get_next_archetype(at)) {
+    getManager()->archetypes()->each([] (const auto at) {
         if (at->clone.type == SPELL) {
             fprintf(stderr, "%s:%s:%s:%s:%d\n", at->clone.name ? at->clone.name : "null",
                     at->name, at->clone.other_arch ? at->clone.other_arch->name : "null",
                     at->clone.skill ? at->clone.skill : "null", at->clone.level);
         }
-    }
+    });
 
-    for (at = get_next_archetype(NULL); at; at = get_next_archetype(at)) {
+    getManager()->archetypes()->each([&] (const auto at) {
         if (at->clone.type == SPELL && at->clone.path_attuned == 0) {
             if (banner == 0) {
                 banner = 1;
@@ -124,7 +125,7 @@ void dump_spells(void) {
 
             fprintf(stderr, "- %s\n", at->clone.name ? at->clone.name : "null");
         }
-    }
+    });
 }
 
 /**
