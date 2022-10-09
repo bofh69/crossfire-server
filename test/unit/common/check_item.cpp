@@ -35,6 +35,8 @@
 #include <check.h>
 #include <loader.h>
 #include <toolkit_common.h>
+#include "assets.h"
+#include "AssetsManager.h"
 
 static void setup(void) {
     cctk_setdatadir(SOURCE_ROOT "lib");
@@ -369,16 +371,15 @@ static void old_describe_monster(const object *op, char *retbuf, size_t size) {
 
 START_TEST(test_describe_monster_rewrite) {
     char buf[HUGE_BUF], *compat, *final;
-    archetype *arch;
     object *ob;
     player pl;
 
     memset(&pl, 0, sizeof(pl));
 
-    for (arch = get_next_archetype(NULL); arch; arch = get_next_archetype(arch)) {
+    getManager()->archetypes()->each([&] (const auto arch) {
 
         if (!QUERY_FLAG(&arch->clone, FLAG_MONSTER) && arch->clone.type != PLAYER)
-            continue;
+            return;
 
         ob = object_create_arch(arch);
         ob->contr = &pl;
@@ -393,7 +394,7 @@ START_TEST(test_describe_monster_rewrite) {
         fail_unless(strcmp(buf, final) == 0, "description change: \"%s\" vs \"%s\"", buf, final);
         free(final);
         object_free(ob, FREE_OBJ_NO_DESTROY_CALLBACK | FREE_OBJ_FREE_INVENTORY);
-    }
+    });
 
 } END_TEST
 
