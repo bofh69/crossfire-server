@@ -57,7 +57,7 @@ void ResourcesManager::load()
 {
     setlocale(LC_NUMERIC, "C");
 
-    settings.archetypes_tracker = (AssetsTracker *)(this);
+    settings.archetypes_tracker = this;
     add_server_collect_hooks();
     static std::function<void(BufferReader *, const char *)> dummy = [this] (BufferReader *reader, const char *filename) { myLicenseManager.readLicense(reader, filename); };
     settings.add_hook(".LICENSE", [] (BufferReader *reader, const char *filename) { dummy(reader, filename); });

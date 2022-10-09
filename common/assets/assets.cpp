@@ -115,13 +115,11 @@ static void check_treasurelist(treasure *t, const treasurelist *tl) {
 void assets_collect(const char* datadir, int what) {
     LOG(llevInfo, "Starting to collect assets from %s\n", datadir);
 
-    auto tracker = static_cast<AssetsTracker *>(settings.archetypes_tracker);
-
     AssetCollector collector;
     if (what & ASSETS_TREASURES)
-        collector.addLoader(new TreasureLoader(manager->treasures(), manager->archetypes(), tracker));
+        collector.addLoader(new TreasureLoader(manager->treasures(), manager->archetypes(), settings.archetypes_tracker));
     if (what & ASSETS_ARCHETYPES)
-        collector.addLoader(new ArchetypeLoader(manager->archetypes(), tracker));
+        collector.addLoader(new ArchetypeLoader(manager->archetypes(), settings.archetypes_tracker));
     if (what & ASSETS_PNG)
         collector.addLoader(new PngLoader(manager->faces(), manager->facesets()));
     if (what & ASSETS_FACESETS)
@@ -129,9 +127,9 @@ void assets_collect(const char* datadir, int what) {
     if (what & ASSETS_FACES)
         collector.addLoader(new FaceLoader(manager->faces(), manager->animations()));
     if (what & ASSETS_MESSAGES)
-        collector.addLoader(new MessageLoader(manager->messages(), tracker));
+        collector.addLoader(new MessageLoader(manager->messages(), settings.archetypes_tracker));
     if (what & ASSETS_ARTIFACTS) {
-        collector.addLoader(new ArtifactLoader(tracker));
+        collector.addLoader(new ArtifactLoader(settings.archetypes_tracker));
     }
     if (what & ASSETS_FORMULAE) {
         collector.addLoader(new WrapperLoader("/formulae", init_formulae));
@@ -140,7 +138,7 @@ void assets_collect(const char* datadir, int what) {
     if (what & ASSETS_ATTACK_MESSAGES)
         collector.addLoader(new WrapperLoader("/attackmess", init_attackmess));
     if (what & ASSETS_QUESTS)
-        collector.addLoader(new QuestLoader(manager->quests(), manager->faces(), tracker));
+        collector.addLoader(new QuestLoader(manager->quests(), manager->faces(), settings.archetypes_tracker));
     if (what & ASSETS_REGIONS)
         collector.addLoader(new WrapperLoader("regions.reg", init_regions));
     for (uint8_t hook = 0; hook < settings.hooks_count; hook++) {
