@@ -57,7 +57,7 @@ class AssetsCollection {
     public:
 
         /**
-         * Destroy this instance and all assets is owns.
+         * Destroy this instance and all assets it owns.
          */
         virtual ~AssetsCollection() {
             clear();
