@@ -58,6 +58,6 @@ void AttackMessagePanel::currentCellChanged(int currentRow, int, int, int) {
 
     char buf1[MAX_BUF], buf2[MAX_BUF];
     get_attack_message_for_attack_type(attack_mess[myAttackType][currentRow].level - 1, myAttackType, "victim", buf1, buf2);
-    myForHitter->setText(tr("You %1").arg(buf1));
-    myForVictim->setText(tr("Hitter%1 you").arg(buf2));
+    myForHitter->setText(QString("You %1").arg(buf1));
+    myForVictim->setText(QString("Hitter%1 you").arg(buf2));
 }

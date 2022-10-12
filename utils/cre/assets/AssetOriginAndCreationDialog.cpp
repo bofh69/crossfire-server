@@ -14,16 +14,16 @@
 #include "global.h"
 
 const char * const addTitles[] = {
-    "Quest creation",
-    "Treasure creation",
+    QT_TRANSLATE_NOOP("AssetOriginAndCreationDialog", "Quest creation"),
+    QT_TRANSLATE_NOOP("AssetOriginAndCreationDialog", "Treasure creation"),
 };
 const char * const originTitles[] = {
-    "Quest file definition",
-    "Treasure list file definition",
+    QT_TRANSLATE_NOOP("AssetOriginAndCreationDialog", "Quest file definition"),
+    QT_TRANSLATE_NOOP("AssetOriginAndCreationDialog", "Treasure list file definition"),
 };
 const char * const names[] = {
-    "quest",
-    "treasure",
+    QT_TRANSLATE_NOOP("AssetOriginAndCreationDialog", "quest"),
+    QT_TRANSLATE_NOOP("AssetOriginAndCreationDialog", "treasure"),
 };
 const char * const extensions[] = {
     ".quests",
@@ -40,7 +40,7 @@ AssetOriginAndCreationDialog::AssetOriginAndCreationDialog(Type type, Mode mode,
     setWindowTitle(tr(mode == CreateAsset ? addTitles[type] : originTitles[type]));
     QGridLayout *layout = new QGridLayout(this);
 
-    myRootDirectory = tr("%1/%2/").arg(settings.datadir, isArch[type] ? "arch" : settings.mapdir);
+    myRootDirectory = QString("%1/%2/").arg(settings.datadir, isArch[type] ? "arch" : settings.mapdir);
 
     layout->addWidget(new QLabel(tr("Code:")), 1, 0);
     layout->addWidget(myCode = new QLineEdit(this), 1, 1, 1, 2);

@@ -26,6 +26,7 @@ class LicenseManager;
  * Display details about a faceset.
  */
 class FacesetsPanel : public AssetTWrapperPanel<face_sets> {
+    Q_OBJECT
 public:
     FacesetsPanel(QWidget* parent, LicenseManager *licenseManager);
 

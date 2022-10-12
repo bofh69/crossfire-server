@@ -32,5 +32,5 @@ void CRERandomMapPanel::updateItem()
     myInformation->setText(text);
     free(text);
 
-    mySource->setText(tr("%1 [%2, %3]").arg(myItem->map()->displayName()).arg(myItem->x()).arg(myItem->y()));
+    mySource->setText(QString("%1 [%2, %3]").arg(myItem->map()->displayName()).arg(myItem->x()).arg(myItem->y()));
 }

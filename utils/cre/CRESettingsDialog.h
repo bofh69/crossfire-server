@@ -20,6 +20,7 @@ class CRESettings;
 
 class CRESettingsDialog : public QDialog
 {
+    Q_OBJECT
     public:
         CRESettingsDialog(CRESettings* settings);
 

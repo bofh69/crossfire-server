@@ -17,6 +17,7 @@
 
 class CREExperienceWindow : public QWidget
 {
+    Q_OBJECT
     public:
         CREExperienceWindow();
         virtual ~CREExperienceWindow();

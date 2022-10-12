@@ -178,7 +178,7 @@ CREPixmap.h \
  recipes/RecipePanel.h \
  recipes/RecipeWrapper.h \
  recipes/RecipesWrapper.h \
- regions/RegionPanel.cpp \
+ regions/RegionPanel.h \
  regions/RegionWrapper.h \
  regions/RegionsWrapper.h \
  scripts/ScriptFile.cpp \

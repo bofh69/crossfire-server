@@ -23,11 +23,12 @@ class QuestConditionScript;
  * Manage NPC dialogs.
  */
 class MessageManager : public AssetWrapper {
+    Q_OBJECT
     public:
         MessageManager(AssetWrapper *parent);
         virtual ~MessageManager();
 
-        virtual QString displayName() const override { return "NPC dialogs"; }
+        virtual QString displayName() const override { return tr("NPC dialogs"); }
 
         virtual int childrenCount() const override { return myMessages.size(); }
         virtual AssetWrapper *child(int child) override { return myMessages[child]; }

@@ -22,6 +22,7 @@ class QTextEdit;
  * Display the list of changes since last program run.
  */
 class ChangesDock : public QDockWidget {
+    Q_OBJECT
 public:
     ChangesDock(QHelpEngineCore *help, QWidget *parent);
 

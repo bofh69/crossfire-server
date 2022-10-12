@@ -18,9 +18,10 @@
 class ResourcesManager;
 
 class RegionsWrapper : public AssetWrapper {
+    Q_OBJECT
 public:
     RegionsWrapper(AssetWrapper *parent, ResourcesManager *resources);
-    virtual QString displayName() const { return "Regions and maps"; }
+    virtual QString displayName() const { return tr("Regions and maps"); }
 
     virtual int childrenCount() const { return myRegions.size(); }
     virtual AssetWrapper *child(int index) { return myRegions[index]; }

@@ -30,7 +30,7 @@ class ScriptFileManager : public AssetWrapper {
         ScriptFileManager(AssetWrapper *parent);
         virtual ~ScriptFileManager();
 
-        virtual QString displayName() const override { return "Scripts"; }
+        virtual QString displayName() const override { return tr("Scripts"); }
         virtual int childrenCount() const { return myScripts.size(); }
         virtual AssetWrapper *child(int child) { return myScripts.values()[child]; }
         virtual int childIndex(AssetWrapper *child) { return myScripts.values().indexOf(dynamic_cast<ScriptFile *>(child)); }

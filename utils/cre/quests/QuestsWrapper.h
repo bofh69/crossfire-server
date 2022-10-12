@@ -21,8 +21,9 @@
  * Asset wrapper representing all quests.
  */
 class QuestsWrapper : public AssetsCollectionWrapper<quest_definition> {
+    Q_OBJECT
 public:
-    QuestsWrapper(AssetWrapper *parent, ResourcesManager *resources) : AssetsCollectionWrapper(parent, "Quests", getManager()->quests(), resources, tr("Display all quests.")) {
+    QuestsWrapper(AssetWrapper *parent, ResourcesManager *resources) : AssetsCollectionWrapper(parent, tr("Quests"), getManager()->quests(), resources, tr("Display all quests.")) {
         myResources = resources;
     }
 

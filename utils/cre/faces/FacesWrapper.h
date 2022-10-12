@@ -18,8 +18,9 @@
 #include "assets/AssetsCollectionWrapper.h"
 
 class FacesWrapper : public AssetsCollectionWrapper<Face> {
+    Q_OBJECT
 public:
-    FacesWrapper(AssetWrapper *parent, ResourcesManager *resources) : AssetsCollectionWrapper<Face>(parent, "Faces", getManager()->faces(), resources, tr("Display all faces.")) {
+    FacesWrapper(AssetWrapper *parent, ResourcesManager *resources) : AssetsCollectionWrapper<Face>(parent, tr("Faces"), getManager()->faces(), resources, tr("Display all faces.")) {
     }
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override {

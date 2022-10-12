@@ -79,6 +79,11 @@ no_current:
   File "..\utils\cre\cre.qhc"
   File "cre.ico"
 
+  ; Translations
+  CreateDirectory "l10n"
+  SetOutPath "$INSTDIR\l10n"
+  File "..\utils\cre\l10n\*.qm"
+
   ; Required directories
   CreateDirectory "share"
   CreateDirectory "share\i18n"
@@ -130,6 +135,9 @@ Section "un.${CRE}" un_jx
   Delete "$INSTDIR\cre.qch"
   Delete "$INSTDIR\cre.qhc"
   Delete "$INSTDIR\cre.ico"
+
+  ; Delete translations
+  RmDir /r "$INSTDIR\l10n"
 
   ; Delete server files
   RmDir /r "$INSTDIR\share\i18n"

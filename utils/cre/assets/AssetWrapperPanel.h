@@ -21,6 +21,7 @@ class TreasureListComboBox;
 class ArchetypeComboBox;
 class AssetUseTree;
 class AssetModel;
+class RandomMap;
 
 /**
  * Base class for a panel displaying information about an asset.

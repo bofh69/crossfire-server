@@ -27,7 +27,7 @@ class GeneralMessagesWrapper : public AssetsCollectionWrapper<GeneralMessage> {
 
 public:
     GeneralMessagesWrapper(AssetWrapper *parent, ResourcesManager *resources)
-        : AssetsCollectionWrapper(parent, "General messages", getManager()->messages(), resources, tr("Display all general messages.")) {
+        : AssetsCollectionWrapper(parent, tr("General messages"), getManager()->messages(), resources, tr("Display all general messages.")) {
     }
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override {

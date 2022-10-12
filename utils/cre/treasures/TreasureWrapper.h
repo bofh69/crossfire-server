@@ -91,6 +91,7 @@ protected:
 };
 
 class TreasureYesNo : public AssetWrapper {
+    Q_OBJECT
 public:
     TreasureYesNo(TreasureWrapper *parent, treasure *tr, ResourcesManager *resources, bool isYes);
 

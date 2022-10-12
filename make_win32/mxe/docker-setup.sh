@@ -34,7 +34,8 @@ RUN DEBIAN_FRONTEND=noninteractive TERM=xterm apt-get update && apt-get install 
     sudo \
     automake \
     nsis \
-    qttools5-dev-tools
+    qttools5-dev-tools \
+    qt5-default
 
 RUN apt-key adv \
     --keyserver keyserver.ubuntu.com \
@@ -43,9 +44,7 @@ RUN apt-key adv \
 RUN DEBIAN_FRONTEND=noninteractive TERM=xterm add-apt-repository \
     "deb [arch=amd64] https://pkg.mxe.cc/repos/apt/ stretch main"
 
-RUN DEBIAN_FRONTEND=noninteractive TERM=xterm apt-get update
-
-RUN DEBIAN_FRONTEND=noninteractive TERM=xterm apt-get install -y \
+RUN DEBIAN_FRONTEND=noninteractive TERM=xterm apt-get update && apt-get install -y \
     mxe-x86-64-w64-mingw32.static-cc \
     mxe-x86-64-w64-mingw32.static-qt5 \
     mxe-x86-64-w64-mingw32.static-libgcrypt \

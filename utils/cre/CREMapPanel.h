@@ -16,8 +16,8 @@
 #include <QObject>
 #include <QtWidgets>
 #include "assets/AssetWrapperPanel.h"
+#include "CREMapInformation.h"
 
-class CREMapInformation;
 class ScriptFileManager;
 
 /**
@@ -25,6 +25,7 @@ class ScriptFileManager;
  */
 class CREMapPanel : public AssetSWrapperPanel<CREMapInformation>
 {
+    Q_OBJECT
     public:
         CREMapPanel(ScriptFileManager* manager, QWidget* parent);
         virtual ~CREMapPanel();

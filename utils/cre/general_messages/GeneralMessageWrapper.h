@@ -38,7 +38,7 @@ public:
         myResources(resources) {
     }
 
-    virtual QString displayName() const override { return (myWrappedItem->identifier && myWrappedItem->identifier[0] == '\n') ? "General message" : myWrappedItem->title; }
+    virtual QString displayName() const override { return (myWrappedItem->identifier && myWrappedItem->identifier[0] == '\n') ? tr("General message") : myWrappedItem->title; }
     virtual QIcon displayIcon() const override { return CREPixmap::getIcon(myWrappedItem->face); }
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override;

@@ -20,6 +20,7 @@
  * Display details of a region.
  */
 class RegionPanel : public AssetWrapperPanel {
+    Q_OBJECT
 public:
     RegionPanel(QWidget *parent);
 };

@@ -22,6 +22,7 @@
 class ResourcesManager;
 
 class RecipeListWrapper : public AssetTWrapper<const recipelist> {
+    Q_OBJECT
 public:
     RecipeListWrapper(AssetWrapper *parent, const recipelist *list, ResourcesManager *resources);
 

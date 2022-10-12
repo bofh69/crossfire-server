@@ -20,10 +20,11 @@ class ScriptFileManager;
 class MessageManager;
 
 class AllAssets : public AssetWrapper {
+    Q_OBJECT
 public:
     AllAssets(ResourcesManager *resources, ScriptFileManager *scripts, MessageManager *messages);
 
-    virtual QString displayName() const { return "All assets"; }
+    virtual QString displayName() const { return tr("All assets"); }
 
     virtual int childrenCount() const { return myAssets.size(); }
     virtual AssetWrapper *child(int index) { return myAssets[index]; }

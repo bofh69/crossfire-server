@@ -144,17 +144,17 @@ void CRESettings::setSubWindowCount(int count) {
 }
 
 int CRESettings::subWindowType(int subWindow) const {
-    return value(tr("subWindows/win_%1/type").arg(subWindow)).toInt();
+    return value(QString("subWindows/win_%1/type").arg(subWindow)).toInt();
 }
 
 void CRESettings::setSubWindowType(int subWindow, int type) {
-    setValue(tr("subWindows/win_%1/type").arg(subWindow), type);
+    setValue(QString("subWindows/win_%1/type").arg(subWindow), type);
 }
 
 QByteArray CRESettings::subWindowPosition(int subWindow) const {
-    return value(tr("subWindows/win_%1/position").arg(subWindow)).toByteArray();
+    return value(QString("subWindows/win_%1/position").arg(subWindow)).toByteArray();
 }
 
 void CRESettings::setSubWindowPosition(int subWindow, const QByteArray &data) {
-    setValue(tr("subWindows/win_%1/position").arg(subWindow), data);
+    setValue(QString("subWindows/win_%1/position").arg(subWindow), data);
 }

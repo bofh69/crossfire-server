@@ -29,7 +29,7 @@ class AnimationsWrapper : public AssetsCollectionWrapper<Animations> {
 
 public:
     AnimationsWrapper(AssetWrapper *parent, ResourcesManager *resourcesManager)
-        : AssetsCollectionWrapper(parent, "Animations", getManager()->animations(), resourcesManager, tr("Display all animations.")) {
+        : AssetsCollectionWrapper(parent, tr("Animations"), getManager()->animations(), resourcesManager, tr("Display all animations.")) {
         }
 
     virtual PossibleUse uses(const AssetWrapper *asset, std::string &) const override {

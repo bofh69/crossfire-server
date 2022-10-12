@@ -25,7 +25,7 @@ public:
         setProperty(tipProperty, tr("Display all random maps."));
     }
 
-    virtual QString displayName() const override { return "Random maps"; }
+    virtual QString displayName() const override { return tr("Random maps"); }
 
     virtual int childrenCount() const override { refresh(); return myCache.size(); }
     virtual AssetWrapper *child(int child) override { refresh(); return myCache[child]; }

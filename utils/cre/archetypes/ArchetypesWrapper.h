@@ -26,7 +26,7 @@ class ArchetypesWrapper : public AssetWrapper {
 public:
     ArchetypesWrapper(AssetWrapper *parent, ResourcesManager *resourcesManager);
 
-    virtual QString displayName() const override { return "Archetypes"; }
+    virtual QString displayName() const override { return tr("Archetypes"); }
     virtual int childrenCount() const override { return myArch.size(); }
     virtual AssetWrapper *child(int index) override { return myArch[index]; }
     virtual int childIndex(AssetWrapper *child) override { return myArch.indexOf(child); }

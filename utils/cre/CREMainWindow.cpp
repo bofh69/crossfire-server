@@ -194,7 +194,7 @@ void CREMainWindow::createActions()
     /* can't clear map cache while collecting information */
     myClearMapCache->setEnabled(false);
 
-    myToolFacesetUseFallback = new QAction("Use set fallback for missing faces", this);
+    myToolFacesetUseFallback = new QAction(tr("Use set fallback for missing faces"), this);
     connect(myToolFacesetUseFallback, SIGNAL(triggered()), this, SLOT(onToolFacesetUseFallback()));
     myToolFacesetUseFallback->setCheckable(true);
     myToolFacesetUseFallback->setChecked(true);
@@ -211,7 +211,7 @@ void CREMainWindow::createMenus()
         connect(action, &QAction::triggered, [this, index] () { doResourceWindow(index); });
         myOpenMenu->addAction(action);
     };
-    add(-1, "Assets", tr("Display all defined assets, except the experience table."));
+    add(-1, tr("Assets"), tr("Display all defined assets, except the experience table."));
     for (int asset = 0; asset < myAssets->childrenCount(); asset++) {
         add(asset, myAssets->child(asset)->displayName(), myAssets->child(asset)->property(AssetWrapper::tipProperty).toString());
     }
@@ -232,9 +232,9 @@ void CREMainWindow::createMenus()
     mySaveMenu->addAction(createAction(tr("General messages"), tr("Save all modified general messages."), myResourcesManager, SLOT(saveGeneralMessages())));
     mySaveMenu->addAction(createAction(tr("Artifacts"), tr("Save all modified artifacts."), myResourcesManager, SLOT(saveArtifacts())));
 
-    QMenu* reportMenu = menuBar()->addMenu("&Reports");
+    QMenu* reportMenu = menuBar()->addMenu(tr("&Reports"));
     reportMenu->addAction(createAction(tr("Faces and animations report"), tr("Show faces and animations which are used by multiple archetypes, or not used."), this, SLOT(onReportDuplicate())));
-    reportMenu->addAction(createAction(tr("Spell damage"), tr("Display spell damage by level (bullet spells only for now)"), this, SLOT(onReportSpellDamage())));
+    reportMenu->addAction(createAction(tr("Spell damage"), tr("Display damage by level for some spells."), this, SLOT(onReportSpellDamage())));
     reportMenu->addAction(createAction(tr("Alchemy"), tr("Display alchemy formulae, in a table."), this, SLOT(onReportAlchemy())));
     reportMenu->addAction(createAction(tr("Alchemy graph"), tr("Export alchemy relationship as a DOT file."), this, SLOT(onReportAlchemyGraph())));
     reportMenu->addAction(createAction(tr("Spells"), tr("Display all spells, in a table."), this, SLOT(onReportSpells())));
@@ -248,7 +248,7 @@ void CREMainWindow::createMenus()
     reportMenu->addAction(myReportResetGroups = createAction(tr("Map reset groups"), tr("List map reset groups."), this, SLOT(onReportResetGroups())));
     myReportResetGroups->setEnabled(false);
 
-    myToolsMenu = menuBar()->addMenu("&Tools");
+    myToolsMenu = menuBar()->addMenu(tr("&Tools"));
     myToolsMenu->addAction(createAction(tr("Edit monsters"), tr("Edit monsters in a table."), this, SLOT(onToolEditMonsters())));
     auto resist = createAction(tr("Monster resistances overview"), tr("Display an overview of resistances of monsters"));
     connect(resist, &QAction::triggered, [&] {
@@ -351,7 +351,7 @@ void CREMainWindow::fillFacesets()
     const QString select = settings.facesetToDisplay();
     const bool use = settings.facesetUseFallback();
 
-    QMenu *fs = myToolsMenu->addMenu("Facesets");
+    QMenu *fs = myToolsMenu->addMenu(tr("Facesets"));
     myFacesetsGroup = new QActionGroup(this);
     connect(myFacesetsGroup, SIGNAL(triggered(QAction*)), this, SLOT(onToolFaceset(QAction*)));
     getManager()->facesets()->each([&fs, &select, this] (face_sets *f)

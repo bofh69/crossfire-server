@@ -27,7 +27,7 @@ Q_OBJECT
 public:
     RecipesWrapper(AssetWrapper *parent, ResourcesManager *resourcesManager);
 
-    virtual QString displayName() const { return "Recipes"; }
+    virtual QString displayName() const { return tr("Recipes"); }
 
     virtual int childrenCount() const override;
     virtual AssetWrapper *child(int) override;

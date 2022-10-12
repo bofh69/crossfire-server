@@ -44,7 +44,7 @@ FaceMakerDialog::FaceMakerDialog(QWidget* parent, ResourcesManager* manager) : Q
 
     setWindowTitle(tr("Face variant maker"));
 
-    mySettings->setPlainText(tr(R"RaW(dest: %1/arch/wall/light_blue_cave/
+    mySettings->setPlainText(QString(R"RaW(dest: %1/arch/wall/light_blue_cave/
 name: light_blue_cave
 faces: cave_15.111, cave1.111, cave2.111, cave3.111, cave4.111, cave5.111
 faces: cave6.111, cave7.111, cave8.111, cave9.111, cave10.111, cave11.111

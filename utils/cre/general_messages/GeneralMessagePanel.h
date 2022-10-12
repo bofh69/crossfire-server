@@ -19,6 +19,7 @@
  * Display and allow edition of general messages.
  */
 class CREGeneralMessagePanel : public AssetWrapperPanel {
+    Q_OBJECT
 public:
     CREGeneralMessagePanel(QWidget* parent);
 };

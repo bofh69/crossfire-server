@@ -100,7 +100,7 @@ void CREHPBarMaker::makeBar()
 
     for (int value = 1; value <= 30; value++)
     {
-        QString line = tr("Object %1_%2\nface %1_%2.111\nend\n").arg(myName->text()).arg(value);
+        QString line = QString("Object %1_%2\nface %1_%2.111\nend\n").arg(myName->text()).arg(value);
         arc.write(line.toLocal8Bit());
 
         QPixmap pic(32, 32);

@@ -27,7 +27,7 @@ Q_OBJECT
 public:
     ArtifactsWrapper(AssetWrapper *parent, ResourcesManager *resourcesManager);
 
-    virtual QString displayName() const override { return "Artifacts"; }
+    virtual QString displayName() const override { return tr("Artifacts"); }
 
     virtual int childrenCount() const override;
     virtual AssetWrapper *child(int) override;

@@ -22,6 +22,7 @@ class QGraphicsScene;
  * Display a histogram of monster resistances to fire, cold, electricity, poison.
  */
 class MonsterResistances : public QDialog {
+    Q_OBJECT
 public:
   MonsterResistances(QWidget *parent);
 

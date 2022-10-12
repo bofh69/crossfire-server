@@ -13,6 +13,8 @@
 #ifndef CREMESSAGEITEMMODEL_H
 #define CREMESSAGEITEMMODEL_H
 
+#include <QSet>
+
 #include <QObject>
 #include <QAbstractItemModel>
 
@@ -23,6 +25,7 @@
  */
 class CREMessageItemModel : public QAbstractItemModel
 {
+    Q_OBJECT
 public:
     CREMessageItemModel(QObject* parent);
     virtual ~CREMessageItemModel();

@@ -29,7 +29,7 @@ CREQuestPanel::CREQuestPanel(AssetModel *model, QWidget* parent) : AssetWrapperP
     addLineEdit(tr("Code:"), "code");
     addLineEdit(tr("Title:"), "title", false);
     addFaceChoice(tr("Face:"), "face", false);
-    addQuestChoice(tr("Parent"), "questParent", false);
+    addQuestChoice(tr("Parent:"), "questParent", false);
     addCheckBox(tr("Can be done multiple times"), "canRestart", false);
     addCheckBox(tr("System quest:"), "isSystem", false);
     addTextEdit(tr("Description:"), "description", false);

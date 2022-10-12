@@ -16,6 +16,7 @@
 #include "../assets/AssetWrapper.h"
 
 class SingleAttackWrapper : public AssetWrapper {
+    Q_OBJECT
 public:
     SingleAttackWrapper(AssetWrapper *parent, uint8_t attackType, const std::string &name)
     : AssetWrapper(parent, "AttackMessage"), myAttackType(attackType), myName(QString::fromStdString(name)) { }
@@ -29,10 +30,11 @@ private:
 };
 
 class AttackMessagesWrapper : public AssetWrapper {
+    Q_OBJECT
 public:
     AttackMessagesWrapper(AssetWrapper *parent);
 
-    virtual QString displayName() const { return "Attack messages"; }
+    virtual QString displayName() const { return tr("Attack messages"); }
 
     virtual int childrenCount() const { return myChildren.size(); }
     virtual AssetWrapper *child(int index) { return myChildren[index]; }

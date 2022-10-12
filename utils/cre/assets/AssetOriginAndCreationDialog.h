@@ -19,6 +19,7 @@
  * Helper dialog to input origin of an asset, and maybe create a new one.
  */
 class AssetOriginAndCreationDialog : public QDialog {
+    Q_OBJECT
 public:
     enum Type { Quest = 0, Treasure = 1 };
     enum Mode { CreateAsset, DefineOrigin };

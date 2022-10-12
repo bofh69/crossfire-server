@@ -33,10 +33,16 @@ int main(int argc, char **argv) {
     QCoreApplication::setOrganizationName("The Legendary Team of Ailesse");
     QCoreApplication::setApplicationName("CRE");
     QApplication app(argc, argv);
+
+    QTranslator trans;
+    if (trans.load(QLocale(), "cre", "_", app.applicationDirPath() + "/l10n")) {
+        app.installTranslator(&trans);
+    }
+
     app.setWindowIcon(QIcon(":resources/app_icon.png"));
 
     QSplashScreen *splash = new QSplashScreen(QPixmap(":/resources/crossfirebanner.png"));
-    splash->showMessage("Initializing CRE...", Qt::AlignCenter);
+    splash->showMessage(QObject::tr("Initializing CRE..."), Qt::AlignCenter);
     splash->show();
     app.processEvents();
 
