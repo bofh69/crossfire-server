@@ -47,6 +47,7 @@ RUN DEBIAN_FRONTEND=noninteractive TERM=xterm add-apt-repository \
 RUN DEBIAN_FRONTEND=noninteractive TERM=xterm apt-get update && apt-get install -y \
     mxe-x86-64-w64-mingw32.static-cc \
     mxe-x86-64-w64-mingw32.static-qt5 \
+    mxe-x86-64-w64-mingw32.static-qttools \
     mxe-x86-64-w64-mingw32.static-libgcrypt \
     mxe-x86-64-w64-mingw32.static-curl \
     mxe-x86-64-w64-mingw32.static-gendef \

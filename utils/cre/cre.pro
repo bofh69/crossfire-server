@@ -231,3 +231,5 @@ CONFIG += thread
 CONFIG += c++14
 
 QT += concurrent script widgets help
+
+TRANSLATIONS = l10n/cre_fr.ts
