@@ -291,7 +291,7 @@ static void quest_set_state(player* dm, player *pl, sstring quest_code, int stat
 
 /**
  * Checks whether the conditions for a given step are met.
- * @param condition the linked list of conditions to check.
+ * @param conditions the list of conditions to check.
  * @param pl the player to evaluate conditions for.
  * @return 1 if the conditions match, 0 if they don't.
  */

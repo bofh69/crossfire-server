@@ -582,8 +582,8 @@ static void check_equipment(object *item, struct_map_info *map) {
 
 /**
  * Sort 2 struct_equipment, first on item power then name.
- * @param a
- * @param b
+ * @param l
+ * @param r
  * items to compare.
  * @return
  * true if l is before r, false else

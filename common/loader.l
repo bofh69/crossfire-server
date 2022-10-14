@@ -935,6 +935,8 @@ static char *yval(void)
  * @li LO_NOREAD (3): Reset the buffers, but don't read from it. (op can be null)
  * @param map_flags
  * combination of @ref MAP_xxx flags, though only MAP_STYLE is used.
+ * @param artifact_init
+ * whether the object is being loaded as part of artifact loading or not.
  * @return
  * @li LL_NORMAL if object was read.
  * @li LL_EOF if an error occured.
@@ -988,6 +990,7 @@ int load_object(FILE *fp, object *op, int bufstate, int map_flags, bool artifact
  * @param op object to read.
  * @param map_flags one or more @ref MAP_xxx "map loading flags".
  * @param arch_init whether we are loading archetypes or not.
+ * @param artifact_init whether the object is being loaded as part of artifact loading or not.
  * @return LL_NORMAL or LL_MORE if no error, LL_EOF if end of file, will LOG an error if unexpected.
  * @todo loading is inefficient because of bufferreader_get_line(), check use of yy_scan_buffer().
  */

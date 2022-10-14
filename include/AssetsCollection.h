@@ -22,18 +22,18 @@
 
 /**
  * Destroy an asset.
- * @param asset to destroy.
+ * @param asset asset to destroy.
  */
 template<class T>
-extern void asset_destroy(T *);
+extern void asset_destroy(T *asset);
 
 /**
  * Create an asset with the specified key.
- * @param key.
+ * @param key unique asset key.
  * @return newly created asset.
  */
 template <class T, class Key>
-extern T *asset_create(const Key &);
+extern T *asset_create(const Key &key);
 
 /**
  * Collection of assets identified by a unique name.

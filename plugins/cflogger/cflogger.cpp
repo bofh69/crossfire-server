@@ -27,7 +27,7 @@
 /*****************************************************************************/
 
 /**
- * @file cflogger.c
+ * @file
  * This plugin will log events to an sqlite3 database named cflogger.db in the
  * var directory.
  *
