@@ -1,4 +1,4 @@
-!include "MUI.nsh"
+!include "MUI2.nsh"
 
 !define CRE  "Crossfire Resource Editor"
 !ifndef CREVERSION
@@ -23,7 +23,7 @@ VIProductVersion "1.0.0.0"
 !define MUI_ICON "cre.ico"
 !define MUI_UNICON "cre.ico"
 
-!define MUI_WELCOMEPAGE_TITLE "Welcome to the ${CRE} (version ${CREVERSION}) Setup Wizard"
+!define MUI_WELCOMEPAGE_TITLE $(I18N_WELCOME)
 
 CRCCheck On
 SetCompressor /SOLID lzma
@@ -50,7 +50,15 @@ InstallDirRegKey HKLM "Software\${CRE}" "InstallLocation"
 !insertmacro MUI_UNPAGE_FINISH
 
 
+!define MUI_LANGDLL_ALWAYSSHOW
 !insertmacro MUI_LANGUAGE "English"
+!insertmacro MUI_LANGUAGE "French"
+
+Function .onInit
+
+  !insertmacro MUI_LANGDLL_DISPLAY
+
+FunctionEnd
 
 Section "${CRE}" jx
   SectionIn RO
@@ -61,7 +69,7 @@ Section "${CRE}" jx
   ReadRegStr $1 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${CRE}" "UninstallString"
   StrCmp $1 "" no_current
         ; Uninstall needs to be run in silent mode, and without copying/forking itself (so ExecWait works)
-        DetailPrint "Uninstalling current version..."
+        DetailPrint $(I18N_UNINSTALL_CURRENT)
         ExecWait '$1 /S _?=$0'
         ; This means we need to clean up ourselves after it
         Delete '$1'
@@ -102,7 +110,7 @@ no_current:
   WriteUninstaller "Uninst.exe"
 
   ; Write the uninstall keys for Windows
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${CRE}" "DisplayName" "${CRE} (remove only)"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${CRE}" "DisplayName" $(I18N_UNINSTALL_NAME)
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${CRE}" "UninstallString" "$INSTDIR\Uninst.exe"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${CRE}" "DisplayIcon" "$INSTDIR\jxclient.ico"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${CRE}" "Publisher" "The Crossfire Team"
@@ -112,20 +120,20 @@ no_current:
 
 SectionEnd
 
-Section "Start Menu Shortcuts" menus
+Section "$(I18N_SHORTCUTS)" menus
   ; Add Shortcuts in the Start menu
   CreateDirectory "$SMPROGRAMS\${CRE}"
   CreateShortCut "$SMPROGRAMS\${CRE}\${CRE}.lnk" "$INSTDIR\cre.exe" "" "$INSTDIR\cre.ico" 0
-  CreateShortCut "$SMPROGRAMS\${CRE}\Uninstall ${CRE}.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
+  CreateShortCut "$SMPROGRAMS\${CRE}\$(I18N_UNINSTALL).lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
 SectionEnd
 
-Section "Desktop Shortcut" desktop
+Section $(I18N_DESKTOP) desktop
   ; Add Shortcuts on the common desktop
   SetShellVarContext all
   CreateShortCut "$desktop\${CRE}.lnk" "$INSTDIR\cre.exe" "" "$INSTDIR\cre.ico" 0
 SectionEnd
 
-UninstallText "This will uninstall ${CRE} from your system"
+UninstallText $(I18N_UNINSTALL_TEXT)
 
 Section "un.${CRE}" un_jx
   SectionIn RO
@@ -157,7 +165,7 @@ Section "un.${CRE}" un_jx
   SetShellVarContext all
   Delete "$desktop\${CRE}.lnk"
 
-  ; Delete uninstaller and unistall registry entries
+  ; Delete uninstaller and uninstall registry entries
   Delete "$INSTDIR\Uninst.exe"
   DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\${CRE}"
   DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${CRE}"
@@ -168,11 +176,33 @@ Section "un.${CRE}" un_jx
 SectionEnd
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-  !insertmacro MUI_DESCRIPTION_TEXT ${jx} "${CRE} (required)."
-  !insertmacro MUI_DESCRIPTION_TEXT ${menus} "Create shortcuts in Start Menu."
-  !insertmacro MUI_DESCRIPTION_TEXT ${desktop} "Create shortcut on the Desktop."
+  !insertmacro MUI_DESCRIPTION_TEXT ${jx} $(I18N_DESC_CRE)
+  !insertmacro MUI_DESCRIPTION_TEXT ${menus} $(I18N_DESC_SHORTCUTS)
+  !insertmacro MUI_DESCRIPTION_TEXT ${desktop} $(I18N_DESC_DESKTOP)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 !insertmacro MUI_UNFUNCTION_DESCRIPTION_BEGIN
-  !insertmacro MUI_DESCRIPTION_TEXT ${un_jx} "Remove ${CRE}."
+  !insertmacro MUI_DESCRIPTION_TEXT ${un_jx} $(I18N_UNINSTALL)
 !insertmacro MUI_UNFUNCTION_DESCRIPTION_END
+
+LangString I18N_WELCOME ${LANG_ENGLISH} "Welcome to the ${CRE} (version ${CREVERSION}) Setup Wizard"
+LangString I18N_SHORTCUTS ${LANG_ENGLISH} "Start Menu Shortcuts"
+LangString I18N_DESKTOP $(LANG_ENGLISH) "Desktop Shortcut"
+LangString I18N_UNINSTALL $(LANG_ENGLISH) "Uninstall ${CRE}"
+LangString I18N_UNINSTALL_TEXT $(LANG_ENGLISH) "This will uninstall ${CRE} from your system"
+LangString I18N_DESC_CRE $(LANG_ENGLISH) "${CRE} (required)."
+LangString I18N_DESC_SHORTCUTS $(LANG_ENGLISH) "Create shortcuts in Start Menu."
+LangString I18N_DESC_DESKTOP $(LANG_ENGLISH) "Create shortcut on the Desktop."
+LangString I18N_UNINSTALL_CURRENT $(LANG_ENGLISH) "Uninstalling current version..."
+LangString I18N_UNINSTALL_NAME $(LANG_ENGLISH) "${CRE} (remove only)"
+
+LangString I18N_WELCOME ${LANG_FRENCH} "Bienvenue dans l'installeur de ${CRE} (version ${CREVERSION})"
+LangString I18N_SHORTCUTS ${LANG_FRENCH} "Raccourcis du menu Démarrer"
+LangString I18N_DESKTOP $(LANG_FRENCH) "Raccourci sur le bureau"
+LangString I18N_UNINSTALL $(LANG_FRENCH) "Désinstaller ${CRE}"
+LangString I18N_UNINSTALL_TEXT $(LANG_FRENCH) "Ceci désinstallera ${CRE} de votre système"
+LangString I18N_DESC_CRE $(LANG_FRENCH) "${CRE} (requis)."
+LangString I18N_DESC_SHORTCUTS $(LANG_FRENCH) "Créer des raccourcis dans le menu Démarrer"
+LangString I18N_DESC_DESKTOP $(LANG_FRENCH) "Créer un raccourci sur le bureau"
+LangString I18N_UNINSTALL_CURRENT $(LANG_FRENCH) "Désinstallation de la version présente..."
+LangString I18N_UNINSTALL_NAME $(LANG_FRENCH) "${CRE} (désinstallation uniquement)"
