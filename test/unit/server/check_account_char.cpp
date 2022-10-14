@@ -45,25 +45,23 @@ START_TEST(test_account_char_add) {
     strcpy(pl->maplevel, "test map");
 
     account_char_add(chars, pl);
-    fail_unless(chars->chars != NULL, "account_char_add returned NULL on initial character");
+    fail_unless(chars->chars.size() == 1, "account_char_add returned empty list on initial character");
 
     pl->ob->level = 2;
     account_char_add(chars, pl);
-    fail_unless(chars->chars != NULL, "account_char_add returned NULL on update character");
-    fail_unless(chars->chars->next == NULL, "account_char_add added to list, not updated existing entry");
+    fail_unless(chars->chars.size() == 1, "account_char_add didn't on update character");
 
     account_char_remove(chars, pl->ob->name);
-    fail_unless(chars->chars == NULL, "account_char_remove returned non NULL on final character removal");
+    fail_unless(chars->chars.empty(), "account_char_remove returned non empty list on final character removal");
 
     account_char_add(chars, pl);
-    fail_unless(chars->chars != NULL, "account_char_add returned NULL on initial character");
+    fail_unless(chars->chars.size() == 1, "account_char_add didn't insert initial character");
 
     pl->ob->name = add_string("char 2");
     pl->party = party_form(pl->ob, "rockon");
 
     account_char_add(chars, pl);
-    fail_unless(chars->chars != NULL, "account_char_add returned NULL on initial character");
-    fail_unless(chars->chars->next != NULL, "account_char_add did not set next pointer!");
+    fail_unless(chars->chars.size() == 2, "account_char_add didn't add character");
 
     sprintf(path,"%s/account", settings.localdir);
     mkdir(path, S_IRWXU);
@@ -87,39 +85,37 @@ START_TEST(test_account_char_load) {
 
     chars = account_char_load("testaccount");
     fail_unless(chars != NULL, "account_char_load returned NULL");
-    fail_unless(chars->chars != NULL, "account_char_load didn't load the file");
+    fail_unless(chars->chars.size() == 2, "account_char_load didn't load the file");
 
     /* As of now, the account order is in FIFO order */
 
-    fail_unless(!strcmp(chars->chars->name, "test character"),
+    fail_unless(!strcmp(chars->chars[0]->name, "test character"),
                 "Name for first character is not test char");
 
-    fail_unless(!strcmp(chars->chars->race, ob->race),
+    fail_unless(!strcmp(chars->chars[0]->race, ob->race),
                 "Race for first character does not match");
 
-    fail_unless(chars->chars->level == 2,
+    fail_unless(chars->chars[0]->level == 2,
                 "Level for first character is not 2");
 
-    fail_unless(!strcmp(chars->chars->face, ob->face->name),
+    fail_unless(!strcmp(chars->chars[0]->face, ob->face->name),
                 "Face for first character does not match");
 
-    fail_unless(chars->chars->party[0] == 0,
+    fail_unless(chars->chars[0]->party[0] == 0,
                 "Party for first character is not blank");
 
-    fail_unless(!strcmp(chars->chars->map, "test map"),
+    fail_unless(!strcmp(chars->chars[0]->map, "test map"),
                 "Map for first character does not match");
-
-    fail_unless(chars->chars->next != NULL, "account_char_load only loaded one character");
 
     /* The presumption here is that if it loaded the first entry
      * successfully, so it should the second, but we do check for the fields
      * which are different.
      */
 
-    fail_unless(!strcmp(chars->chars->next->name, "char 2"),
+    fail_unless(!strcmp(chars->chars[1]->name, "char 2"),
                 "Name for second character does not match");
 
-    fail_unless(!strcmp(chars->chars->next->party, "rockon"),
+    fail_unless(!strcmp(chars->chars[1]->party, "rockon"),
                 "Party for second character does not match");
 
     account_char_free(chars);

@@ -531,12 +531,11 @@ char **account_get_players_for_account(const char *account_name)
  * @param chars list of names to check.
  * @return 0 if not in the list, non-zero else.
  */
-static int char_in_list(const char *name, const Account_Char *chars) {
-    while (chars) {
-        if (strcmp(chars->name, name) == 0) {
+static int char_in_list(const char *name, const std::vector<Account_Char *> chars) {
+    for (auto ch : chars) {
+        if (strcmp(ch->name, name) == 0) {
             return 1;
         }
-        chars = chars->next;
     }
     return 0;
 }

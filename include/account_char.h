@@ -18,7 +18,6 @@ typedef struct account_char_struct {
     sstring party;            /** < Character this party belonged to */
     sstring map;              /** < Last map this character was on */
     uint8_t isDead;           /** < Should stay at zero if alive, anything else if dead (hopefully 1, but doesn't have to be) */
-    struct account_char_struct  *next;
 } Account_Char;
 
 /**
@@ -28,7 +27,7 @@ typedef struct account_char_struct {
 typedef struct account_chars_struct {
     sstring account_name;   /**< Account the information is for. */
     uint8_t ref_count;      /**< Number of pointers on this structure. */
-    Account_Char *chars;    /**< Characters of the account, in a linked list. */
+    std::vector<Account_Char *> chars;  /**< Characters of the account. */
 } Account_Chars;
 
 void account_char_remove(Account_Chars *chars, const char *pl_name);

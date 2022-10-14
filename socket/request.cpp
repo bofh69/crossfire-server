@@ -1982,7 +1982,6 @@ static void add_char_field(SockList *sl, int type, const char *data)
 void send_account_players(socket_struct *ns)
 {
     SockList sl;
-    Account_Char *acn;
     int num_chars;
     linked_char *extra;
 
@@ -1997,14 +1996,10 @@ void send_account_players(socket_struct *ns)
     SockList_Init(&sl);
     SockList_AddString(&sl, "accountplayers ");
 
-    for (acn = ns->account_chars->chars; acn; acn = acn->next) {
-        num_chars++;
-    }
-
-    SockList_AddChar(&sl, num_chars);
+    SockList_AddChar(&sl, static_cast<char>(ns->account_chars->chars.size()));
 
     /* Now add real character data */
-    for (acn = ns->account_chars->chars; acn; acn = acn->next) {
+    for (auto acn : ns->account_chars->chars) {
         uint16_t faceno = 0;
 
         /* Ignore a dead character. They don't need to show up. */
