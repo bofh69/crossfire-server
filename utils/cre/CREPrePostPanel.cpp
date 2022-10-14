@@ -280,8 +280,9 @@ void CRESubItemQuest::selectedQuestChanged(int index)
         return;
 
     QString desc;
-    auto step = quest->steps;
-    while (step) {
+    auto it = quest->steps.cbegin();
+    while (it != quest->steps.cend()) {
+        auto step = *it;
         desc = tr("%1 (%2)").arg(QString(step->step_description).left(50), QString::number(step->step));
         if (step->is_completion_step)
             desc += " (end)";
@@ -290,7 +291,7 @@ void CRESubItemQuest::selectedQuestChanged(int index)
         if (mySecondStep)
             mySecondStep->addItem(desc, QString::number(step->step));
 
-        step = step->next;
+        ++it;
     }
 }
 

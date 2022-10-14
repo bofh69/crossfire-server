@@ -156,6 +156,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <time.h>
+#include <algorithm>
 
 #include "global.h"
 #include "sproto.h"
@@ -2176,21 +2177,12 @@ static void write_tiled_maps(void) {
     printf(" done.\n");
 }
 
-static size_t system_quests_count = 0;
-static const quest_definition *system_quests[500];
+static std::vector<quest_definition *> system_quests;
 
 static void quest_callback(const quest_definition *quest, void *) {
     if (list_system_quests || !quest->quest_is_system) {
-        system_quests[system_quests_count++] = quest;
+        system_quests.push_back(const_cast<quest_definition *>(quest));
     }
-}
-
-static int sort_system_quest(const void *a, const void *b) {
-    return strcmp((*((quest_definition **)a))->quest_code, (*((quest_definition **)b))->quest_code);
-}
-
-static int sort_system_quest_step(const void *a, const void *b) {
-    return (*((quest_step_definition**)a))->step - (*((quest_step_definition**)b))->step;
 }
 
 static std::shared_ptr<inja::Environment> env;                  /**< Rendering environment. */
@@ -2468,7 +2460,7 @@ static void fill_json(nlohmann::json &json) {
     }
 
     json["system_quests"] = nlohmann::json::array();
-    for (size_t q = 0; q < system_quests_count; q++) {
+    for (size_t q = 0; q < system_quests.size(); q++) {
         auto quest = system_quests[q];
         nlohmann::json j({
             { "code", quest->quest_code },
@@ -2480,18 +2472,11 @@ static void fill_json(nlohmann::json &json) {
         });
 
         if (detail_quests) {
-            quest_step_definition *steps[100];
-            size_t steps_count = 0;
-            quest_step_definition *step = quest->steps;
-            while (step) {
-                steps[steps_count++] = step;
-                step = step->next;
-            }
-            qsort(steps, steps_count, sizeof(quest_step_definition *), sort_system_quest_step);
-            for (size_t s = 0; s < steps_count; s++) {
+            std::sort(quest->steps.begin(), quest->steps.end(), [] (auto left, auto right) { return left->step < right->step; });
+            for (size_t s = 0; s < quest->steps.size(); s++) {
                 j["steps"].push_back({
-                    { "description", steps[s]->step_description ? steps[s]->step_description : "" },
-                    { "is_completion", steps[s]->is_completion_step ? true : false },
+                    { "description", quest->steps[s]->step_description ? quest->steps[s]->step_description : "" },
+                    { "is_completion", quest->steps[s]->is_completion_step ? true : false },
                 });
             }
 
@@ -3176,7 +3161,7 @@ int main(int argc, char **argv) {
     qsort(quests, quests_count, sizeof(struct_quest *), sort_struct_quest);
 
     quest_for_each(&quest_callback, NULL);
-    qsort(system_quests, system_quests_count, sizeof(quest_definition *), sort_system_quest);
+    std::sort(system_quests.begin(), system_quests.end(), [] (const auto &left, const auto &right) { return strcmp(left->quest_code, right->quest_code); });
 
     init_renderer_env();
 

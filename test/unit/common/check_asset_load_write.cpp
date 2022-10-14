@@ -248,8 +248,7 @@ quest_step_definition *generate_step() {
     s->step_description = rndm(0, 1) ? generate_name(40) : nullptr;
     for (int i = rndm(0, 2); i != 0; i--) {
         auto c = generate_condition();
-        c->next = s->conditions;
-        s->conditions = c;
+        s->conditions.push_back(c);
     }
     return s;
 }
@@ -271,9 +270,7 @@ quest_definition *generate_quest(Quests &quests, Faces &faces) {
         q->face = faces.get("quest_generic.111");
     }
     for (int i = rndm(0, 5); i != 0; i--) {
-        auto s = generate_step();
-        s->next = q->steps;
-        q->steps = s;
+        q->steps.push_back(generate_step());
     }
     return q;
 }
@@ -287,10 +284,9 @@ void check_conditions(const quest_condition *lc, const quest_condition *rc) {
     ck_assert_str_eq(lc->quest_code, rc->quest_code);
     ck_assert_int_eq(lc->minstep, rc->minstep);
     ck_assert_int_eq(lc->maxstep, rc->maxstep);
-    check_conditions(lc->next, rc->next);
 }
 
-void check_steps(const quest_step_definition *ls, const quest_step_definition *rs) {
+void check_step(const quest_step_definition *ls, const quest_step_definition *rs) {
     if (!ls) {
         ck_assert(rs == nullptr);
         return;
@@ -303,8 +299,20 @@ void check_steps(const quest_step_definition *ls, const quest_step_definition *r
     ck_assert_int_eq(ls->is_completion_step, rs->is_completion_step);
     ck_assert_int_eq(ls->step, rs->step);
 
-    check_conditions(ls->conditions, rs->conditions);
-    check_steps(ls->next, rs->next);
+    ck_assert_int_eq(ls->conditions.size(), rs->conditions.size());
+    auto li = ls->conditions.cbegin(), ri = rs->conditions.cbegin();
+    while (li != ls->conditions.cend()) {
+        check_conditions(*li, *ri);
+        ++li;
+        ++ri;
+    }
+}
+
+void check_steps(const std::vector<quest_step_definition *> &ls, const std::vector<quest_step_definition *> &rs) {
+    ck_assert(ls.size() == rs.size());
+    for (size_t i = 0; i < ls.size(); i++) {
+        check_step(ls[i], rs[i]);
+    }
 }
 
 START_TEST(test_quest) {

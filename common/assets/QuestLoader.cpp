@@ -60,15 +60,7 @@ void QuestLoader::load(BufferReader *reader, const std::string &filename) {
                 continue;
             }
 
-            if (step->conditions) {
-                auto c = step->conditions;
-                while (c->next) {
-                    c = c->next;
-                }
-                c->next = cond;
-            } else {
-                step->conditions = cond;
-            }
+            step->conditions.push_back(cond);
             LOG(llevDebug, "condition added for step %d of quest %s, looking for quest %s between steps %d and %d\n",
                     step->step, quest->quest_code, cond->quest_code, cond->minstep, cond->maxstep);
             continue;
@@ -174,15 +166,7 @@ void QuestLoader::load(BufferReader *reader, const std::string &filename) {
             if (sscanf(read, "step %d", &i)) {
                 step = quest_create_step();
                 step->step = i;
-                if (quest->steps) {
-                    auto l = quest->steps;
-                    while (l->next) {
-                        l = l->next;
-                    }
-                    l->next = step;
-                } else {
-                    quest->steps = step;
-                }
+                quest->steps.push_back(step);
                 in = QUESTFILE_STEP;
                 continue;
             }

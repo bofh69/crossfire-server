@@ -38,25 +38,19 @@ void QuestStepWrapper::drop(const QMimeData *data, int row) {
 QList<QStringList> QuestStepWrapper::conditions() const {
     QList<QStringList> ret;
     char buf[200];
-    auto condition = myWrappedItem->conditions;
-    while (condition) {
+    for (const auto condition : myWrappedItem->conditions) {
         quest_write_condition(buf, sizeof(buf), condition);
         ret.append(QString(buf).split(' '));
         Q_ASSERT(ret.back().size() == 2);
-        condition = condition->next;
     }
     return ret;
 }
 
 void QuestStepWrapper::setConditions(const QList<QStringList> &conditions) {
-    auto cond = myWrappedItem->conditions;
-    while (cond) {
-        auto n = cond->next;
+    for (const auto cond : myWrappedItem->conditions) {
         quest_destroy_condition(cond);
-        cond = n;
     }
-    myWrappedItem->conditions = nullptr;
-    quest_condition *last = nullptr;
+    myWrappedItem->conditions.clear();
 
     for (auto single : conditions) {
         auto cond = quest_create_condition();
@@ -64,11 +58,7 @@ void QuestStepWrapper::setConditions(const QList<QStringList> &conditions) {
             free(cond);
             continue;
         }
-        if (last)
-            last->next = cond;
-        else
-            myWrappedItem->conditions = cond;
-        last = cond;
+        myWrappedItem->conditions.push_back(cond);
     }
     markModified(AssetUpdated);
 }
@@ -82,32 +72,23 @@ AssetWrapper::PossibleUse QuestWrapper::uses(const AssetWrapper *asset, std::str
 }
 
 int QuestWrapper::childrenCount() const {
-    int count = 0;
-    auto step = myWrappedItem->steps;
-    while (step) {
-        step = step->next;
-        count++;
-    }
-    return count;
+    return myWrappedItem->steps.size();
 }
 
 AssetWrapper *QuestWrapper::child(int index) {
-    auto step = myWrappedItem->steps;
-    while (step && index > 0) {
-        step = step->next;
-        index--;
+    if (index >= 0 && index < static_cast<int>(myWrappedItem->steps.size())) {
+        return myResources->wrap(myWrappedItem->steps[index], this);
     }
-    return step ? myResources->wrap(step, this) : nullptr;
+    return nullptr;
 }
 
 int QuestWrapper::childIndex(AssetWrapper *child) {
-    int index = 0;
-    auto step = myWrappedItem->steps;
-    while (step && myResources->wrap(step, this) != child) {
-        index++;
-        step = step->next;
+    for (int index = 0; index < static_cast<int>(myWrappedItem->steps.size()); index++) {
+        if (child == myResources->wrap(myWrappedItem->steps[index], this)) {
+            return index;
+        }
     }
-    return step == nullptr ? -1 : index;
+    return -1;
 }
 
 void QuestWrapper::wasModified(AssetWrapper *asset, ChangeType type, int extra) {
@@ -120,12 +101,7 @@ bool QuestWrapper::canDrop(const QMimeData *data, int) const {
 }
 
 void QuestWrapper::drop(const QMimeData *data, int row) {
-    std::vector<quest_step_definition *> steps;
-    auto pos = myWrappedItem->steps;
-    while (pos) {
-        steps.push_back(pos);
-        pos = pos->next;
-    }
+    std::vector<quest_step_definition *> &steps(myWrappedItem->steps);
     if (steps.size() < 2) {
         return;
     }
@@ -156,16 +132,6 @@ void QuestWrapper::drop(const QMimeData *data, int row) {
         steps.insert(steps.begin() + row, step);
         markModified(AfterChildAdd, row);
     }
-
-    pos = myWrappedItem->steps = steps[0];
-    auto step = steps.begin();
-    ++step;
-    while (step < steps.end()) {
-        pos->next = (*step);
-        pos = pos->next;
-        pos->next = nullptr;
-        ++step;
-    }
 }
 
 void QuestWrapper::fillMenu(QMenu *menu) {
@@ -176,46 +142,23 @@ void QuestWrapper::fillMenu(QMenu *menu) {
 }
 
 void QuestWrapper::addStep() {
-    int index = 0, count = 0;;
-    quest_step_definition *step = myWrappedItem->steps, *last = nullptr;
-    while (step) {
-        index = qMax(index, step->step);
-        last = step;
-        step = step->next;
-        count++;
-    }
-    markModified(BeforeChildAdd, count);
+    auto max = std::max_element(myWrappedItem->steps.cbegin(), myWrappedItem->steps.cend(),
+            [] (const auto &left, const auto &right) { return left->step < right->step; });
     auto ns = quest_create_step();
-    ns->step = index + 10;
-    if (last) {
-        last->next = ns;
-    } else {
-        assert(!myWrappedItem->steps);
-        myWrappedItem->steps = ns;
-    }
-    markModified(AfterChildAdd, count);
+    ns->step = (max == myWrappedItem->steps.end() ? 0 : (*max)->step) + 10;
+    markModified(BeforeChildAdd, myWrappedItem->steps.size());
+    myWrappedItem->steps.push_back(ns);
+    markModified(AfterChildAdd, myWrappedItem->steps.size());
 }
 
 void QuestWrapper::removeChild(AssetWrapper *child) {
-    quest_step_definition *step = myWrappedItem->steps, *last = nullptr;
-    int index = 0;
-    while (myResources->wrap(step, this) != child) {
-        index++;
-        last = step;
-        step = step->next;
-    }
-
-    if (!step) {
+    int index = childIndex(child);
+    if (index == -1) {
         return;
     }
-
     markModified(BeforeChildRemove, index);
-    if (last == nullptr) {
-        assert(step == myWrappedItem->steps);
-        myWrappedItem->steps = step->next;
-    } else {
-        last->next = step->next;
-    }
+    auto step = myWrappedItem->steps[index];
+    myWrappedItem->steps.erase(myWrappedItem->steps.begin() + index);
     quest_destroy_step(step);
     markModified(AfterChildRemove, index);
 }

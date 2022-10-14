@@ -27,26 +27,22 @@ void QuestWriter::write(const quest_definition *quest, StringBuffer *buf) {
     W(quest_restart, "restart %d");
     W(quest_is_system, "is_system %d");
     stringbuffer_append_multiline_block(buf, "comment", quest->quest_comment, NULL);
-    auto step = quest->steps;
-    while (step) {
+    for (const auto step : quest->steps) {
         stringbuffer_append_printf(buf, "step %d\n", step->step);
         if (step->is_completion_step) {
             stringbuffer_append_string(buf, "finishes_quest\n");
         }
         stringbuffer_append_multiline_block(buf, "description", step->step_description, NULL);
-        if (step->conditions) {
+        if (!step->conditions.empty()) {
             stringbuffer_append_string(buf, "setwhen\n");
             char when[500];
-            auto cond = step->conditions;
-            while (cond) {
+            for (const auto cond : step->conditions) {
                 quest_write_condition(when, sizeof(when), cond);
                 stringbuffer_append_printf(buf, "%s\n", when);
-                cond = cond->next;
             }
             stringbuffer_append_string(buf, "end_setwhen\n");
         }
         stringbuffer_append_string(buf, "end_step\n");
-        step = step->next;
     }
     stringbuffer_append_string(buf, "end_quest\n");
     /*

@@ -30,6 +30,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
 
 #include "output_file.h"
 #include "sproto.h"
@@ -71,13 +72,9 @@ static quest_player *player_states = NULL;
  * @return step, or NULL if no such step in which case a llevError is emitted.
  */
 static quest_step_definition *quest_get_step(quest_definition *quest, int step) {
-    quest_step_definition *qsd = quest->steps;
-
-    while (qsd) {
-        if (qsd->step == step)
-            return qsd;
-
-        qsd = qsd->next;
+    for (const auto qs : quest->steps) {
+        if (qs->step == step)
+            return qs;
     }
 
     LOG(llevError, "quest %s has no required step %d\n", quest->quest_code, step);
@@ -298,14 +295,12 @@ static void quest_set_state(player* dm, player *pl, sstring quest_code, int stat
  * @param pl the player to evaluate conditions for.
  * @return 1 if the conditions match, 0 if they don't.
  */
-static int evaluate_quest_conditions(const quest_condition *condition, player *pl) {
-    const quest_condition *cond;
+static int evaluate_quest_conditions(const std::vector<quest_condition *> conditions, player *pl) {
     int current_step;
 
-    if (!condition)
+    if (conditions.empty())
         return 0;
-    cond = condition;
-    while (cond) {
+    for (const auto cond : conditions) {
         current_step = quest_get_player_state(pl, cond->quest_code);
         if (cond->minstep < 0 && cond->maxstep < 0) {
             /* we are checking for the quest to have been completed. */
@@ -315,22 +310,17 @@ static int evaluate_quest_conditions(const quest_condition *condition, player *p
             if (current_step < cond->minstep || current_step > cond->maxstep)
                 return 0;
         }
-        cond = cond->next;
     }
     return 1;
 }
 
 static void do_update(const quest_definition *quest, void *user) {
     player *pl = (player *)user;
-    const quest_step_definition *step;
     int new_step = 0;
-    step = quest->steps;
-    while (step) {
-        if (step->conditions)
-            if (evaluate_quest_conditions(step->conditions, pl)) {
-                new_step=new_step<step->step?step->step:new_step;
-            }
-        step = step->next;
+    for (const quest_step_definition *step : quest->steps) {
+        if (evaluate_quest_conditions(step->conditions, pl)) {
+            new_step=new_step<step->step?step->step:new_step;
+        }
     }
     if (new_step > 0) {
         int current_step = quest_get_player_state(pl, quest->quest_code);
@@ -603,9 +593,9 @@ static void quest_info(player *pl, player* who, quest_state *qs, int level) {
     draw_ext_info_format(NDI_UNIQUE, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_QUESTS, TAG_START "Quest:" TAG_END " %s", quest->quest_title);
     if (QUERY_FLAG(pl->ob, FLAG_WIZ)) {
         draw_ext_info_format(NDI_UNIQUE, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_QUESTS, TAG_START "Code:" TAG_END " %s", quest->quest_code);
-        for (step = quest->steps; step != NULL; step = step->next) {
+        std::for_each(quest->steps.cbegin(), quest->steps.cend(), [&pl] (const auto &step) {
             draw_ext_info_format(NDI_UNIQUE, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_QUESTS, " " TAG_START "Step:" TAG_END " %d (%s)", step->step, step->step_description);
-        }
+        });
     }
     draw_ext_info_format(NDI_UNIQUE, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_QUESTS, TAG_START "Description:" TAG_END " %s", quest->quest_description);
 
@@ -877,14 +867,7 @@ static void output_quests(const quest_definition *quest, void *user) {
     }
     prefix[MAX_BUF - 1] = '\0';
 
-    int stepcount = 0;
-    quest_step_definition *step = quest->steps;
-    while (step) {
-        stepcount++;
-        step = step->next;
-    }
-
-    fprintf(logfile, "%s%s - %s - %d steps (%srestartable)\n", prefix, quest->quest_code, quest->quest_title, stepcount, quest->quest_restart ? "" : "not ");
+    fprintf(logfile, "%s%s - %s - %zu steps (%srestartable)\n", prefix, quest->quest_code, quest->quest_title, quest->steps.size(), quest->quest_restart ? "" : "not ");
 
     dump r;
     r.parent = quest;

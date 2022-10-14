@@ -47,47 +47,37 @@ void Quests::added(quest_definition *quest) {
 }
 
 quest_step_definition *quest_create_step(void) {
-    quest_step_definition *step = static_cast<quest_step_definition *>(calloc(1, sizeof(quest_step_definition)));
+    quest_step_definition *step = new quest_step_definition();
     if (!step)
         fatal(OUT_OF_MEMORY);
     return step;
 }
 
 quest_condition *quest_create_condition(void) {
-    quest_condition *cond = static_cast<quest_condition *>(calloc(1, sizeof(quest_condition)));
+    quest_condition *cond = new quest_condition();
     if (!cond)
         fatal(OUT_OF_MEMORY);
     return cond;
 }
 
 quest_definition *quest_create(const char *name) {
-    quest_definition *quest = static_cast<quest_definition *>(calloc(1, sizeof(quest_definition)));
+    quest_definition *quest = new quest_definition();
     quest->quest_code = add_string(name);
     return quest;
 }
 
 void quest_destroy_condition(quest_condition *condition) {
     free_string(condition->quest_code);
-    free(condition);
+    delete condition;
 }
 
 void quest_destroy_step(quest_step_definition *step) {
     FREE_AND_CLEAR_STR_IF(step->step_description);
-    auto condition = step->conditions;
-    while (condition != NULL) {
-        auto next_condition = condition->next;
-        quest_destroy_condition(condition);
-        condition = next_condition;
+    while (!step->conditions.empty()) {
+        quest_destroy_condition(step->conditions.back());
+        step->conditions.pop_back();
     }
-    free(step);
-}
-
-void quest_destroy_steps(quest_step_definition *step) {
-    while (step) {
-        auto next_step = step->next;
-        quest_destroy_step(step);
-        step = next_step;
-    }
+    delete step;
 }
 
 void quest_clear(quest_definition *quest) {
@@ -95,12 +85,16 @@ void quest_clear(quest_definition *quest) {
     FREE_AND_CLEAR_STR_IF(quest->quest_description);
     FREE_AND_CLEAR_STR_IF(quest->quest_title);
     FREE_AND_CLEAR_STR_IF(quest->quest_comment);
-    quest_destroy_steps(quest->steps);
+    while (!quest->steps.empty()) {
+        quest_destroy_step(quest->steps.back());
+        quest->steps.pop_back();
+    }
+    quest->steps.clear();
 }
 
 void quest_destroy(quest_definition *quest) {
     quest_clear(quest);
-    free(quest);
+    delete quest;
 }
 
 int quest_condition_from_string(quest_condition *condition, const char *buffer) {
