@@ -30,7 +30,6 @@
 
 #include <map>
 #include <string>
-#include <algorithm>
 
 /**
  * Gets a region by name.

@@ -18,8 +18,6 @@
 #include "global.h"
 
 #include <stdlib.h>
-#include <vector>
-#include <algorithm>
 
 /** List of all friendly objects, object and its count. */
 static std::vector<std::pair<object *, tag_t>> friends;

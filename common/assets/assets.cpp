@@ -37,10 +37,8 @@
 #include "Faces.h"
 #include <string.h>
 
-#include <vector>
 #include <string>
 #include <set>
-#include <algorithm>
 #include <map>
 #include <memory>
 

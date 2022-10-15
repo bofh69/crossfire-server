@@ -156,7 +156,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <time.h>
-#include <algorithm>
 
 #include "global.h"
 #include "sproto.h"

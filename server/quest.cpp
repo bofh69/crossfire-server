@@ -30,7 +30,6 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include <algorithm>
 
 #include "output_file.h"
 #include "sproto.h"

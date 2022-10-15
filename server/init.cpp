@@ -22,7 +22,6 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
-#include <algorithm>
 
 /* Needed for strcasecmp(). */
 #ifndef WIN32

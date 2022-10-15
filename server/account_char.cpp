@@ -49,7 +49,6 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
-#include <algorithm>
 
 #include "account_char.h"
 #include "object.h"

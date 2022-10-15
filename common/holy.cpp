@@ -27,8 +27,6 @@
 #include "spells.h"
 
 #include "assets.h"
-#include <vector>
-#include <algorithm>
 
 static std::vector<object *> gods;
 

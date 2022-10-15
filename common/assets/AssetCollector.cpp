@@ -25,7 +25,6 @@
 #include "microtar.h"
 
 #include "PngLoader.h"
-#include <algorithm>
 
 AssetCollector::AssetCollector() {
     m_reader = bufferreader_create();

@@ -32,7 +32,6 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include <algorithm>
 
 #include "plugin.h"
 #include "shop.h"
