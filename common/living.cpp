@@ -2574,24 +2574,14 @@ static int load_table_float(float **bonuses, FILE *fp, char *bonus_name)
 
 /**
  * This loads statistic bonus/penalties from the stat_bonus file.
- * If reload is false (eg, this is initial start time load),
- * then any error becomes fatal, as system needs working
- * bonuses.
- *
- * @param reload
- * If set, this is reloading new values - this can be useful for
- * real time adjustment of stat bonuses - however, it also has some
- * more restraints - in particular, max_stat can not decrease (that could
- * be made to work but is more work) and also errors are not fatal - it
- * will just use the old stat bonus tables in the case of any errors.
- * TODO: add code that uses reload
+ * Any error is fatal, as system needs working bonuses.
  *
  * @note
  * will call exit() if file is invalid or not found.
  */
-void init_stats(int reload) {
+void init_stats() {
     char buf[MAX_BUF], *cp;
-    int error=0, i, oldmax = settings.max_stat;
+    int error=0, i;
     FILE *fp;
     float *new_float_bonuses[NUM_FLOAT_BONUSES];
     int *new_int_bonuses[NUM_INT_BONUSES];
@@ -2603,8 +2593,7 @@ void init_stats(int reload) {
 
     if ((fp = fopen(buf, "r")) == NULL) {
         LOG(llevError, "Fatal error: could not open experience table (%s)\n", buf);
-        if (reload) return;
-        else exit(1);
+        exit(1);
     }
     while (fgets(buf, MAX_BUF-1, fp) != NULL) {
         if (buf[0] == '#')
@@ -2637,8 +2626,7 @@ void init_stats(int reload) {
             if (newmax < MIN_STAT || newmax < settings.max_stat) {
                 LOG(llevError, "Got invalid max_stat (%d) from stat_bonus file\n", newmax);
                 fclose(fp);
-                if (reload) return;
-                else exit(1);
+                exit(1);
             }
             settings.max_stat = newmax;
             continue;
@@ -2650,12 +2638,7 @@ void init_stats(int reload) {
             LOG(llevError, "Got bonus line or otherwise unknown value before max stat! (%s)\n",
                 buf);
             fclose(fp);
-
-            if (reload) {
-                return;
-            } else {
-                exit(1);
-            }
+            exit(1);
         }
 
         for (i=0; i<NUM_INT_BONUSES; i++) {
@@ -2708,16 +2691,7 @@ void init_stats(int reload) {
     if (error) {
         if (error==1)
             LOG(llevError,"Got error reading stat_bonus: %s\n", buf);
-
-        if (reload) {
-            for (i=0; i<NUM_INT_BONUSES; i++)
-                if (new_int_bonuses[i]) FREE_AND_CLEAR(new_int_bonuses[i]);
-            for (i=0; i<NUM_FLOAT_BONUSES; i++)
-                if (new_float_bonuses[i]) FREE_AND_CLEAR(new_float_bonuses[i]);
-            settings.max_stat = oldmax;
-        } else {
-            exit(1);
-        }
+        exit(1);
     } else {
         /* Everything check out - now copy the data into
          * the live arrays.

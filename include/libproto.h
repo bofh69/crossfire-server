@@ -173,7 +173,7 @@ extern int get_turn_bonus(int stat);
 extern int get_dam_bonus(int stat);
 extern float get_speed_bonus(int stat);
 extern int get_fear_bonus(int stat);
-extern void init_stats(int reload);
+extern void init_stats();
 /* logger.cpp */
 extern void LOG(LogLevel logLevel, const char *format, ...) PRINTF_ARGS(2, 3);
 /* los.cpp */

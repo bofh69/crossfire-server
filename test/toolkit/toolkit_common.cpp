@@ -84,7 +84,7 @@ void cctk_init_std_archetypes(void) {
     CCTK_ASSERT((STATUS_LOGDIR|STATUS_DATADIR));
     init_globals();
     init_hash_table();
-    init_stats(FALSE);
+    init_stats();
     assets_init();
 
     init_objects();
