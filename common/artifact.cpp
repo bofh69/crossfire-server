@@ -35,11 +35,10 @@
  * will fatal() if memory error.
  */
 artifactlist *get_empty_artifactlist(void) {
-    artifactlist *tl = (artifactlist *)malloc(sizeof(artifactlist));
+    artifactlist *tl = new artifactlist();
     if (tl == NULL)
         fatal(OUT_OF_MEMORY);
     tl->next = NULL;
-    tl->items = NULL;
     tl->total_chance = 0;
     return tl;
 }
@@ -54,19 +53,15 @@ artifactlist *get_empty_artifactlist(void) {
  * will fatal() if memory error.
  */
 artifact *get_empty_artifact(void) {
-    artifact *t = (artifact *)malloc(sizeof(artifact));
+    artifact *t = new artifact();
     if (t == NULL)
         fatal(OUT_OF_MEMORY);
     t->item = NULL;
-    t->next = NULL;
     t->chance = 0;
     t->difficulty = 0;
-    t->allowed = NULL;
-    t->allowed_size = 0;
     return t;
 }
 
-#ifdef MEMORY_DEBUG
 /**
  * Totally frees an artifact, its next items, and such.
  *
@@ -79,10 +74,8 @@ artifact *get_empty_artifact(void) {
 static void free_artifact(artifact *at) {
     object *next;
 
-    if (at->next)
-        free_artifact(at->next);
-    if (at->allowed)
-        free_charlinks(at->allowed);
+    for (auto allowed : at->allowed)
+        free_string(allowed);
     while (at->item) {
         next = at->item->next;
         if (at->item->name)
@@ -97,7 +90,7 @@ static void free_artifact(artifact *at) {
         free(at->item);
         at->item = next;
     }
-    free(at);
+    delete at;
 }
 
 /**
@@ -111,10 +104,10 @@ static void free_artifactlist(artifactlist *al) {
 
     for (; al != NULL; al = nextal) {
         nextal = al->next;
-        if (al->items) {
-            free_artifact(al->items);
+        for (auto art : al->items) {
+            free_artifact(art);
         }
-        free(al);
+        delete al;
     }
 }
 
@@ -125,7 +118,6 @@ void free_all_artifacts(void) {
     free_artifactlist(first_artifactlist);
     first_artifactlist = NULL;
 }
-#endif
 
 /** Give 1 re-roll attempt per artifact */
 #define ARTIFACT_TRIES 2
@@ -147,12 +139,10 @@ void artifact_compute_chance_for_item(const object *op, const artifact *art, int
     }
 
     int chance_of_invalid_item = 0;
-    artifact *check = list->items;
-    while (check) {
+    for (auto check : list->items) {
         if (!legal_artifact_combination(op, check)) {
             chance_of_invalid_item += check->chance;
         }
-        check = check->next;
     }
 
     /*
@@ -198,10 +188,12 @@ void generate_artifact(object *op, int difficulty) {
     for (i = 0; i < ARTIFACT_TRIES; i++) {
         int roll = RANDOM()%al->total_chance;
 
-        for (art = al->items; art != NULL; art = art->next) {
-            roll -= art->chance;
-            if (roll < 0)
+        for (auto r : al->items) {
+            roll -= r->chance;
+            if (roll < 0) {
+                art = r;
                 break;
+            }
         }
 
         if (art == NULL || roll >= 0) {
@@ -259,20 +251,19 @@ void give_artifact_abilities(object *op, const object *artifact) {
  */
 int legal_artifact_combination(const object *op, const artifact *art) {
     int neg, success = 0;
-    linked_char *tmp;
     const char *name;
 
-    if (art->allowed == (linked_char *)NULL)
+    if (art->allowed.empty())
         return 1; /* Ie, "all" */
-    for (tmp = art->allowed; tmp; tmp = tmp->next) {
+    for (auto tmp :  art->allowed) {
 #ifdef TREASURE_VERBOSE
         LOG(llevDebug, "legal_art: %s\n", tmp->name);
 #endif
-        if (*tmp->name == '!') {
-            name = tmp->name+1;
+        if (*tmp == '!') {
+            name = tmp+1;
             neg = 1;
         } else {
-            name = tmp->name;
+            name = tmp;
             neg = 0;
         }
 
@@ -589,7 +580,6 @@ artifactlist *find_artifactlist(int type) {
  */
 const artifact *find_artifact(const object *op, const char *name) {
     artifactlist *list;
-    artifact *at;
     sstring sname = find_string(name);
 
     if (sname == NULL)
@@ -599,7 +589,7 @@ const artifact *find_artifact(const object *op, const char *name) {
     if (list == NULL)
         return NULL;
 
-    for (at = list->items; at != NULL; at = at->next) {
+    for (const auto at : list->items) {
         if (at->item->name == sname && legal_artifact_combination(op, at))
             return at;
     }
@@ -615,18 +605,16 @@ const artifact *find_artifact(const object *op, const char *name) {
  */
 void dump_artifacts(void) {
     artifactlist *al;
-    artifact *art;
-    linked_char *next;
 
     fprintf(logfile, "\n");
     for (al = first_artifactlist; al != NULL; al = al->next) {
         fprintf(logfile, "Artifact has type %d, total_chance=%d\n", al->type, al->total_chance);
-        for (art = al->items; art != NULL; art = art->next) {
+        for (const auto art : al->items) {
             fprintf(logfile, "Artifact %-30s Difficulty %3d Chance %5d\n", art->item->name, art->difficulty, art->chance);
-            if (art->allowed != NULL) {
+            if (!art->allowed.empty()) {
                 fprintf(logfile, "\tAllowed combinations:");
-                for (next = art->allowed; next != NULL; next = next->next)
-                    fprintf(logfile, "%s,", next->name);
+                for (auto allowed : art->allowed)
+                    fprintf(logfile, "%s,", allowed);
                 fprintf(logfile, "\n");
             }
         }
@@ -645,17 +633,13 @@ uint16_t artifact_get_face(const artifact *art) {
 
     archetype *arch = get_next_archetype(NULL);
 
-    if (art->allowed_size > 0) {
-        if (art->allowed->name[0] == '!') {
-            linked_char *allowed;
+    if (!art->allowed.empty()) {
+        if (*art->allowed[0] == '!') {
             while (arch) {
                 if (!arch->head && arch->clone.type == art->item->type) {
-                    for (allowed = art->allowed; allowed != NULL; allowed = allowed->next) {
-                        if (strcmp(arch->name, allowed->name + 1) == 0) {
-                            break;
-                        }
-                    }
-                    if (allowed == NULL && arch->clone.face != NULL) {
+                    bool allowed = std::none_of(art->allowed.cbegin(), art->allowed.cend(),
+                            [&] (const auto name) { return strcmp(arch->name, name + 1) == 0; });
+                    if (allowed && arch->clone.face != NULL) {
                         return arch->clone.face->number;
                     }
                 }
@@ -663,9 +647,9 @@ uint16_t artifact_get_face(const artifact *art) {
             }
             return (uint16_t)-1;
         } else {
-            const archetype *arch = try_find_archetype(art->allowed->name);
+            const archetype *arch = try_find_archetype(art->allowed[0]);
             if (arch == NULL) {
-                arch = find_archetype_by_object_name(art->allowed->name);
+                arch = find_archetype_by_object_name(art->allowed[0]);
             }
             if (arch != NULL)
                 return arch->clone.face->number;

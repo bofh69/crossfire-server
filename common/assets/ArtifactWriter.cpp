@@ -20,10 +20,14 @@
 
 void ArtifactWriter::write(const artifact *item, StringBuffer *buf) {
     stringbuffer_append_string(buf, "Allowed");
-    if (!item->allowed) {
+    if (item->allowed.empty()) {
         stringbuffer_append_string(buf, " all");
     } else {
-        Utils::writeLinkedChar(item->allowed, buf);
+        char sep = ' ';
+        for (const auto allowed : item->allowed) {
+            stringbuffer_append_printf(buf, "%c%s", sep, allowed);
+            sep = ',';
+        }
     }
     stringbuffer_append_string(buf, "\n");
 

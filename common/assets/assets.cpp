@@ -343,10 +343,8 @@ static void pack_artifacts(StringBuffer *buf) {
     ArtifactWriter writer;
     artifactlist *list = first_artifactlist;
     while (list) {
-        auto item = list->items;
-        while (item) {
+        for (const auto item : list->items) {
             writer.write(item, buf);
-            item = item->next;
         }
         list = list->next;
     }

@@ -43,13 +43,10 @@ static void teardown(void) {
 /** Ensure there is a face available for each artifact */
 START_TEST(test_face_for_each_artifact) {
     const artifactlist *al;
-    const artifact *art;
     al = first_artifactlist;
     while (al) {
-        art = al->items;
-        while (art) {
+        for (auto art : al->items) {
             fail_unless(artifact_get_face(art) != (uint16_t)-1, "failed to find a face for %s", art->item->name);
-            art = art->next;
         }
         al = al->next;
     }

@@ -24,7 +24,6 @@ bool ArtifactLoader::willLoad(const std::string &filename) {
 void ArtifactLoader::load(BufferReader *reader, const std::string &filename) {
     char *buf, *cp, *next;
     artifact *art = NULL;
-    linked_char *tmp;
     int value;
     artifactlist *al;
     archetype dummy_archetype;
@@ -59,11 +58,7 @@ void ArtifactLoader::load(BufferReader *reader, const std::string &filename) {
                 nrofallowedstr++;
                 if ((next = strchr(cp, ',')) != NULL)
                     *(next++) = '\0';
-                tmp = (linked_char *)malloc(sizeof(linked_char));
-                tmp->name = add_string(cp);
-                tmp->next = art->allowed;
-                art->allowed = tmp;
-                art->allowed_size++;
+                art->allowed.push_back(add_string(cp));
             } while ((cp = next) != NULL);
         } else if (sscanf(cp, "chance %d", &value) && art)
             art->chance = (uint16_t)value;
@@ -88,8 +83,7 @@ void ArtifactLoader::load(BufferReader *reader, const std::string &filename) {
                 al->next = first_artifactlist;
                 first_artifactlist = al;
             }
-            art->next = al->items;
-            al->items = art;
+            al->items.push_back(art);
             if (myTracker) {
                 myTracker->assetDefined(art, filename);
             }
@@ -100,7 +94,7 @@ void ArtifactLoader::load(BufferReader *reader, const std::string &filename) {
 
     for (al = first_artifactlist; al != NULL; al = al->next) {
         al->total_chance = 0;
-        for (art = al->items; art != NULL; art = art->next) {
+        for (auto art : al->items) {
             if (!art->chance)
                 LOG(llevDebug, "Artifact with no chance: %s\n", art->item->name);
             else

@@ -68,14 +68,12 @@ protected:
         if (mySpecificItem) {
             auto list = find_artifactlist(mySpecificItem->type);
             if (list) {
-                auto art = list->items;
-                while (art) {
+                for (auto art : list->items) {
                     if (legal_artifact_combination(mySpecificItem, art)) {
                         auto wrap = new ArtifactWrapper(this, art, myResources);
                         wrap->setSpecificItem(mySpecificItem);
                         artifacts.push_back(wrap);
                     }
-                    art = art->next;
                 }
             }
         }

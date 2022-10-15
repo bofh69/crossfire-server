@@ -467,10 +467,9 @@ void CREMainWindow::onReportDuplicate()
 
     // list faces and animations for artifacts
     artifactlist* list;
-    artifact* art;
     for (list = first_artifactlist; list != NULL; list = list->next)
     {
-        for (art = list->items; art != NULL; art = art->next)
+        for (auto art : list->items)
         {
           if (art->item->animation == 0)
           {

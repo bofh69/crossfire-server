@@ -38,6 +38,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <memory>
 
 #include "object.h"
 #include "assets.h"
@@ -530,7 +531,7 @@ static long recipe_find_ingredient_cost(const char *name) {
                 /* find the first artifact derived from that archetype (same type) */
                 for (auto al = first_artifactlist; al != NULL; al = al->next) {
                     if (al->type == at->clone.type) {
-                        for (auto art = al->items; art != NULL; art = art->next) {
+                        for (const auto art : al->items) {
                             if (!strcasecmp(art->item->name, part2)) {
                                 value = at->clone.value * art->item->value;
                                 found = true;
@@ -729,21 +730,18 @@ int strtoint(const char *buf) {
  * artifact, or NULL if not found.
  */
 const artifact *locate_recipe_artifact(const recipe *rp, size_t idx) {
-    object *item = create_archetype(rp->arch_name[idx]);
+    std::unique_ptr<object, void(*)(object *)> item(create_archetype(rp->arch_name[idx]), object_free_drop_inventory);
     const artifactlist *at = NULL;
-    const artifact *art = NULL;
 
     if (!item)
         return (artifact *)NULL;
 
     if ((at = find_artifactlist(item->type)))
-        for (art = at->items; art; art = art->next)
-            if (!strcmp(art->item->name, rp->title) && legal_artifact_combination(item, art))
-                break;
+        for (auto art : at->items)
+            if (!strcmp(art->item->name, rp->title) && legal_artifact_combination(item.get(), art))
+                return art;
 
-    object_free_drop_inventory(item);
-
-    return art;
+    return nullptr;
 }
 
 /**

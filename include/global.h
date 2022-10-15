@@ -38,6 +38,7 @@
 #include <time.h>
 #include <vector>
 #include <stdarg.h>
+#include <algorithm>
 
 /** Used for printf-like functions, mostly LOG and draw_ext_info_format */
 #define PRINTF_ARGS(x, y) __attribute__ ((format (printf, x, y)))

@@ -1441,33 +1441,21 @@ static StringBuffer *artifact_describe(const artifact *art, const artifactlist *
         stringbuffer_append_string(desc, "---\n");
 
     /* Name */
-    if (art->allowed != NULL) {
+    if (!art->allowed.empty()) {
         archetype *arch;
-        linked_char *temp = art->allowed;
-        int inv = 0, w;
+        auto name = art->allowed[RANDOM() % art->allowed.size()];
+        int inv = 0;
 
-        assert(art->allowed_size > 0);
-        if (art->allowed_size > 1)
-            w = 1 + RANDOM() % art->allowed_size;
-        else
-            w = 1;
-
-        while (w > 1) {
-            assert(temp);
-            temp = temp->next;
-            w--;
-        }
-
-        if (temp->name[0] == '!')
+        if (name[0] == '!')
             inv = 1;
 
         /** @todo check archetype when loading archetypes, not here */
-        arch = try_find_archetype(temp->name + inv);
+        arch = try_find_archetype(name + inv);
         if (!arch)
-            arch = find_archetype_by_object_name(temp->name + inv);
+            arch = find_archetype_by_object_name(name + inv);
 
         if (!arch)
-            LOG(llevError, "artifact_msg: missing archetype %s for artifact %s (type %d)\n", temp->name + inv, art->item->name, art->item->type);
+            LOG(llevError, "artifact_msg: missing archetype %s for artifact %s (type %d)\n", name + inv, art->item->name, art->item->type);
         else {
             if (inv)
                 stringbuffer_append_printf(desc, " A %s (excepted %s) of %s", art_name_array[art_name].name, arch->clone.name_pl, art->item->name);
@@ -1558,11 +1546,11 @@ static StringBuffer *artifact_msg(unsigned int level, size_t booksize) {
 
     /* There is no reason to start on the artifact list at the beginning. Lets
      * take our starting position randomly... */
-    art = al->items;
+    auto iart = al->items.cbegin();
     for (i = RANDOM()%level+RANDOM()%2+1; i > 0; i--) {
-        if (art == NULL)
-            art = al->items; /* hmm, out of stuff, loop back around */
-        art = art->next;
+        if (iart == al->items.cend())
+            iart = al->items.cbegin(); /* hmm, out of stuff, loop back around */
+        ++iart;
     }
 
     /* Ok, lets print out the contents */
@@ -1574,8 +1562,9 @@ static StringBuffer *artifact_msg(unsigned int level, size_t booksize) {
      */
     while (book_entries > 0) {
         int with_message;
-        if (art == NULL)
-            art = al->items;
+        if (iart == al->items.cend())
+            iart = al->items.cbegin();
+        art = *iart;
         with_message = (art->item->msg && RANDOM()%4+1 < level) ? 1 : 0;
 
         desc = artifact_describe(art, al, with_message, index, i++);
@@ -1588,7 +1577,7 @@ static StringBuffer *artifact_msg(unsigned int level, size_t booksize) {
         stringbuffer_append_stringbuffer(message, desc);
         stringbuffer_delete(desc);
 
-        art = art->next;
+        ++iart;
         book_entries--;
     }
 

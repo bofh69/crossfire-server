@@ -543,19 +543,16 @@ int cast_create_missile(object *op, object *caster, object *spell, int dir, cons
     if (stringarg) {
         /* If it starts with a letter, presume it is a description */
         if (isalpha(*stringarg)) {
-            artifact *al = find_artifactlist(missile->type)->items;
-
-            for (; al != NULL; al = al->next)
-                if (!strcasecmp(al->item->name, stringarg))
-                    break;
-
-            if (!al) {
+            auto items = find_artifactlist(missile->type)->items;
+            auto ial = std::find_if(items.cbegin(), items.cend(), [&] (const auto al) { return !strcasecmp(al->item->name, stringarg); });
+            if (ial == items.cend()) {
                 object_free(missile, FREE_OBJ_NO_DESTROY_CALLBACK);
                 draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_SPELL, MSG_TYPE_SPELL_ERROR,
                                      "No such object %ss of %s",
                                      missile_name, stringarg);
                 return 0;
             }
+            artifact *al = *ial;
             if (al->item->slaying) {
                 object_free(missile, FREE_OBJ_NO_DESTROY_CALLBACK);
                 draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_SPELL, MSG_TYPE_SPELL_ERROR,

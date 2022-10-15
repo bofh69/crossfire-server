@@ -74,12 +74,8 @@ int ArtifactWrapper::difficulty() const {
 
 QStringList ArtifactWrapper::allowed() const {
     QStringList allowed;
-    linked_char* a = myWrappedItem->allowed;
-
-    while (a) {
-        allowed.append(a->name);
-        a = a->next;
-    }
+    for (const auto a : myWrappedItem->allowed)
+        allowed.append(a);
     return allowed;
 }
 

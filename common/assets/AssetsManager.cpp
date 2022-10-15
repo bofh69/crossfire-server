@@ -32,12 +32,8 @@ AssetsManager::~AssetsManager() {
 void AssetsManager::archetypeUpdated(archetype *, archetype *update) {
     auto artifacts = first_artifactlist;
     while (artifacts != NULL) {
-        auto items = artifacts->items;
-        while (items != NULL) {
-            if (items->item) {
-                Archetypes::recursive_update(items->item->inv, update);
-            }
-            items = items->next;
+        for (auto item : artifacts->items) {
+            Archetypes::recursive_update(item->item->inv, update);
         }
         artifacts = artifacts->next;
     }

@@ -20,32 +20,22 @@ ArtifactListWrapper::ArtifactListWrapper(AssetWrapper *parent, artifactlist *lis
 }
 
 int ArtifactListWrapper::childrenCount() const {
-    int count = 0;
-    auto item = myWrappedItem->items;
-    while (item) {
-        count++;
-        item = item->next;
-    }
-    return count;
+    return myWrappedItem->items.size();
 }
 
 AssetWrapper *ArtifactListWrapper::child(int index) {
-    auto item = myWrappedItem->items;
-    while (index > 0) {
-        index--;
-        item = item->next;
+    if (index < 0 || index >= static_cast<int>(myWrappedItem->items.size())) {
+        return nullptr;
     }
-    return myResourcesManager->wrap(item, this);
+    return myResourcesManager->wrap(myWrappedItem->items[index], this);
 }
 
 int ArtifactListWrapper::childIndex(AssetWrapper *child) {
-    auto item = myWrappedItem->items;
     int index = 0;
-    while (item) {
+    for (auto item : myWrappedItem->items) {
         if (myResourcesManager->wrap(item, this) == child) {
             return index;
         }
-        item = item->next;
         index++;
     }
     return -1;
@@ -61,10 +51,8 @@ AssetWrapper::PossibleUse ArtifactListWrapper::uses(const AssetWrapper *asset, s
 void ArtifactListWrapper::wasModified(AssetWrapper *asset, ChangeType type, int extra) {
     if (childIndex(asset) != -1 && type == AssetUpdated) {
         myWrappedItem->total_chance = 0;
-        auto item = myWrappedItem->items;
-        while (item) {
+        for (auto item : myWrappedItem->items) {
             myWrappedItem->total_chance += item->chance;
-            item = item->next;
         }
         markModified(AssetUpdated, 1);
         return;

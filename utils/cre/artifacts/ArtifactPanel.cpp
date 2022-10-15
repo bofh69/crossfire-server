@@ -90,7 +90,7 @@ void ArtifactPanel::computeMadeViaAlchemy(const artifact* artifact) const
         myViaAlchemy->setText(tr("Can't be made via alchemy."));
     else
     {
-        if (possible.size() == artifact->allowed_size)
+        if (possible.size() == static_cast<int>(artifact->allowed.size()))
             myViaAlchemy->setText(tr("Can be made via alchemy."));
         else
         {
@@ -143,9 +143,9 @@ void ArtifactPanel::updateItem()
     myInstance->clear();
 
     /* 'allowed' is either the archetype name or the item's name, so check all archetypes for each word */
-    for (const linked_char* allowed = myItem->allowed; allowed; allowed = allowed->next) {
-        auto name = allowed->name;
+    for (const auto allowed : myItem->allowed) {
         bool check = true;
+        auto name = allowed;
         if (name[0] == '!') {
             name = name + 1;
             check = false;
@@ -155,7 +155,7 @@ void ArtifactPanel::updateItem()
     }
 
     /* all items are allowed, so add them */
-    if (myItem->allowed == NULL) {
+    if (myItem->allowed.empty()) {
         addArchetypes(myItem, NULL, true, myArchetypes);
     }
 
