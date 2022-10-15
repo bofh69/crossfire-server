@@ -139,10 +139,9 @@ static void add_book(title *book, int type, const char *fname, int lineno);
 static titlelist *booklist = NULL;
 
 /** Information on monsters. */
-static objectlink *first_mon_info = NULL;
+static std::vector<object *> monsters;
 
-static int nrofmon = 0, /**< Number of monsters in the ::first_mon_info list. */
-    need_to_write_bookarchive = 0; /**< If set then we have information to save. */
+static int need_to_write_bookarchive = 0; /**< If set then we have information to save. */
 
 /**
  * Spellpath information.
@@ -866,16 +865,7 @@ static void do_monster(archetype *at) {
     if (QUERY_FLAG(&at->clone, FLAG_MONSTER) && (!at->head)
     && (object_get_value(&at->clone, MONSTER_EXCLUDE_FROM_READABLE_KEY) == NULL)
     && (!QUERY_FLAG(&at->clone, FLAG_CHANGING) || QUERY_FLAG(&at->clone, FLAG_UNAGGRESSIVE))) {
-        objectlink *mon = (objectlink *)malloc(sizeof(objectlink));
-        if (!mon) {
-            LOG(llevError, "init_mon_info: malloc failed!\n");
-            abort();
-        }
-        mon->ob = &at->clone;
-        mon->id = nrofmon;
-        mon->next = first_mon_info;
-        first_mon_info = mon;
-        nrofmon++;
+        monsters.push_back(&at->clone);
     }
 }
 
@@ -892,7 +882,7 @@ static void init_mon_info(void) {
 
     archetypes_for_each(do_monster);
 
-    LOG(llevDebug, "init_mon_info() got %d monsters\n", nrofmon);
+    LOG(llevDebug, "init_mon_info() got %zu monsters\n", monsters.size());
 }
 
 /**
@@ -1267,57 +1257,23 @@ static void change_book(object *book, int msgtype) {
  * random monster, or NULL if failure.
  */
 object *get_random_mon(int level) {
-    objectlink *mon;
-    int i, monnr;
 
     /* safety check.  Problem w/ init_mon_info list? */
-    if (!nrofmon || !first_mon_info)
+    if (monsters.empty())
         return (object *)NULL;
 
     if (!level) {
-        /* lets get a random monster from the mon_info linked list */
-        monnr = RANDOM()%nrofmon;
-
-        for (mon = first_mon_info, i = 0; mon; mon = mon->next, i++)
-            if (i == monnr)
-                break;
-
-        if (!mon) {
-            LOG(llevError, "get_random_mon: Didn't find a monster when we should have\n");
-            return NULL;
-        }
-        return mon->ob;
+        return monsters[RANDOM() % monsters.size()];
     }
 
-    /* Case where we are searching by level.  Redone 971225 to be clearer
-     * and more random.  Before, it looks like it took a random monster from
-     * the list, and then returned the first monster after that which was
-     * appropriate level.  This wasn't very random because if you had a
-     * bunch of low level monsters and then a high level one, if the random
-     * determine took one of the low level ones, it would just forward to the
-     * high level one and return that.  Thus, monsters that immediately followed
-     * a bunch of low level monsters would be more heavily returned.  It also
-     * means some of the dragons would be poorly represented, since they
-     * are a group of high level monsters all around each other.
-     */
+    std::vector<object *> select;
+    std::copy_if(monsters.cbegin(), monsters.cend(), std::back_inserter(select), [&] (auto ob) { return ob->level >= level; });
 
-    /* First count number of monsters meeting level criteria */
-    for (mon = first_mon_info, i = 0; mon; mon = mon->next)
-        if (mon->ob->level >= level)
-            i++;
-
-    if (i == 0) {
+    if (select.empty()) {
         LOG(llevError, "get_random_mon() couldn't return monster for level %d\n", level);
         return NULL;
     }
-
-    monnr = RANDOM()%i;
-    for (mon = first_mon_info; mon; mon = mon->next)
-        if (mon->ob->level >= level && monnr-- == 0)
-            return mon->ob;
-
-    LOG(llevError, "get_random_mon(): didn't find a monster when we should have\n");
-    return NULL;
+    return select[RANDOM() % select.size()];
 }
 
 /**
@@ -1348,19 +1304,14 @@ static StringBuffer *mon_desc(const object *mon) {
  * list is considered circular, asking for the next of the last element will return the first one.
  */
 static object *get_next_mon(const object *tmp) {
-    objectlink *mon;
+    auto it = std::find(monsters.begin(), monsters.end(), tmp);
+    if (it == monsters.end())
+        return nullptr;
+    ++it;
+    if (it == monsters.end())
+        it = monsters.begin();
 
-    for (mon = first_mon_info; mon; mon = mon->next)
-        if (mon->ob == tmp)
-            break;
-
-    /* didn't find a match */
-    if (!mon)
-        return NULL;
-    if (mon->next)
-        return mon->next->ob;
-    else
-        return first_mon_info->ob;
+    return *it;
 }
 
 /**
@@ -2000,7 +1951,6 @@ void tailor_readable_ob(object *book, int msg_type) {
 void free_all_readable(void) {
     titlelist *tlist, *tnext;
     title *title1, *titlenext;
-    objectlink *monlink, *nextmon;
 
     LOG(llevDebug, "freeing all book information\n");
 
@@ -2017,10 +1967,6 @@ void free_all_readable(void) {
             free(title1);
         }
         free(tlist);
-    }
-    for (monlink = first_mon_info; monlink; monlink = nextmon) {
-        nextmon = monlink->next;
-        free(monlink);
     }
 }
 
