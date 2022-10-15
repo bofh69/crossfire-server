@@ -1996,7 +1996,7 @@ void send_account_players(socket_struct *ns)
     SockList_Init(&sl);
     SockList_AddString(&sl, "accountplayers ");
 
-    SockList_AddChar(&sl, static_cast<char>(ns->account_chars->chars.size()));
+    SockList_AddChar(&sl, static_cast<char>(ns->account_chars->chars.size() + num_chars));
 
     /* Now add real character data */
     for (auto acn : ns->account_chars->chars) {
