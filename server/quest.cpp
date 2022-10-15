@@ -576,7 +576,6 @@ static void quest_info(player *pl, player* who, quest_state *qs, int level) {
     quest_definition *quest, *child;
     quest_state *state;
     quest_player *pq = get_or_create_quest(who);
-    quest_step_definition *step;
     const char *prefix;
 
     if (!qs) {
@@ -599,7 +598,7 @@ static void quest_info(player *pl, player* who, quest_state *qs, int level) {
     }
     draw_ext_info_format(NDI_UNIQUE, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_QUESTS, TAG_START "Description:" TAG_END " %s", quest->quest_description);
 
-    step = quest_get_step(quest, qs->state);
+    quest_step_definition *step = quest_get_step(quest, qs->state);
     if (qs->state == QC_CAN_RESTART || qs->is_complete) {
         const char *restart = "";
         if (quest->quest_restart)
