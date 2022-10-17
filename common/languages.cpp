@@ -35,10 +35,8 @@ typedef struct i18n_file {
     struct i18n_message *messages;   /**< Available messages for this language. */
 } i18n_file;
 
-/** Number of defined languages. */
-static int i18n_count = 0;
 /** Defined languages. */
-static struct i18n_file *i18n_files = NULL;
+static std::vector<i18n_file *> i18n_files;
 /** "English" language. */
 static i18n_file *i18n_default = nullptr;
 
@@ -76,10 +74,9 @@ const char *i18n(const object *who, const char *code) {
  * @return index, -1 if not found.
  */
 language_t i18n_find_language_by_code(const char *code) {
-    int index;
-    for (index = 0; index < i18n_count; index++) {
-        if (strcmp(code, i18n_files[index].code) == 0)
-            return static_cast<language_t>(&i18n_files[index]);
+    for (auto language : i18n_files) {
+        if (strcmp(code, language->code) == 0)
+            return language;
     }
 
     return nullptr;
@@ -113,12 +110,11 @@ sstring i18n_get_language_code(language_t language) {
  * @param who who to display languages for.
  */
 void i18n_list_languages(object *who) {
-    int index;
-    for (index = 0; index < i18n_count; index++) {
+    for (auto language : i18n_files) {
         draw_ext_info_format(NDI_UNIQUE, 0, who, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
             "[fixed]%s: %s",
-            i18n_files[index].code,
-            i18n_files[index].name
+            language->code,
+            language->name
             );
     }
 }
@@ -175,50 +171,49 @@ void i18n_init(void) {
         if (!br) {
             fatal(SEE_LAST_ERROR);
         }
+        i18n_file *language = static_cast<i18n_file *>(calloc(1, sizeof(i18n_file)));
+        i18n_files.push_back(language);
 
-        i18n_files = static_cast<i18n_file *>(realloc(i18n_files, (i18n_count + 1) * sizeof(i18n_file)));
-        if (!i18n_files) {
+        if (!language) {
             LOG(llevError, "i18n: couldn't allocate memory!\n");
             fatal(OUT_OF_MEMORY);
         }
-        i18n_files[i18n_count].code = add_string(file->d_name + 9);
-        i18n_files[i18n_count].count = 0;
-        i18n_files[i18n_count].messages = NULL;
+        language->code = add_string(file->d_name + 9);
+        language->count = 0;
+        language->messages = NULL;
 
         while ((line = bufferreader_next_line(br)) != NULL) {
             if (line[0] != '#' && line[0] != '\0') {
-                i18n_files[i18n_count].messages = static_cast<i18n_message *>(realloc(i18n_files[i18n_count].messages, (i18n_files[i18n_count].count + 1) * sizeof(i18n_message)));
+                language->messages = static_cast<i18n_message *>(realloc(language->messages, (language->count + 1) * sizeof(i18n_message)));
 
                 token = strtok(line, "|");
                 convert_newline(token);
-                i18n_files[i18n_count].messages[i18n_files[i18n_count].count].code = add_string(token);
+                language->messages[language->count].code = add_string(token);
                 token = strtok(NULL, "|");
                 if (token != NULL) {
                     convert_newline(token);
-                    i18n_files[i18n_count].messages[i18n_files[i18n_count].count].message = add_string(token);
+                    language->messages[language->count].message = add_string(token);
                 } else {
-                    i18n_files[i18n_count].messages[i18n_files[i18n_count].count].message = add_refcount(i18n_files[i18n_count].messages[i18n_files[i18n_count].count].code);
+                    language->messages[language->count].message = add_refcount(language->messages[language->count].code);
                 }
-                i18n_files[i18n_count].count++;
+                language->count++;
             }
         }
         bufferreader_destroy(br);
 
-        qsort(i18n_files[i18n_count].messages, i18n_files[i18n_count].count, sizeof(i18n_message), (int (*)(const void *, const void *))i18n_message_compare_code);
-        found = static_cast<i18n_message *>(bsearch(&code, i18n_files[i18n_count].messages, i18n_files[i18n_count].count, sizeof(i18n_message), (int (*)(const void *, const void *))i18n_message_compare_code));
+        qsort(language->messages, language->count, sizeof(i18n_message), (int (*)(const void *, const void *))i18n_message_compare_code);
+        found = static_cast<i18n_message *>(bsearch(&code, language->messages, language->count, sizeof(i18n_message), (int (*)(const void *, const void *))i18n_message_compare_code));
         if (found == NULL) {
             LOG(llevError, "i18n: no language set in %s\n", filename);
             fatal(SEE_LAST_ERROR);
         }
 
-        i18n_files[i18n_count].name = found->message;
+        language->name = found->message;
         LOG(llevDebug, "i18n: %d strings for %s\n",
-                i18n_files[i18n_count].count, found->message);
+                language->count, found->message);
 
-        if (strcmp(i18n_files[i18n_count].code, "en") == 0)
-            i18n_default = &i18n_files[i18n_count];
-
-        i18n_count++;
+        if (strcmp(language->code, "en") == 0)
+            i18n_default = language;
     }
     closedir(dir);
 
@@ -234,17 +229,15 @@ void i18n_init(void) {
  * Clears all i18n-related data.
  */
 void i18n_free(void) {
-  int file, message;
+  int message;
 
-  for (file = 0; file < i18n_count; file++) {
-      free_string(i18n_files[file].code); /* name is a copy of a message */
-      for (message = 0; message < i18n_files[file].count; message++) {
-          free_string(i18n_files[file].messages[message].code);
-          free_string(i18n_files[file].messages[message].message);
+  for (auto language : i18n_files) {
+      free_string(language->code); /* name is a copy of a message */
+      for (message = 0; message < language->count; message++) {
+          free_string(language->messages[message].code);
+          free_string(language->messages[message].message);
       }
-      free(i18n_files[file].messages);
+      free(language->messages);
   }
-  free(i18n_files);
-  i18n_files = NULL;
-  i18n_count = 0;
+  i18n_files.clear();
 }
