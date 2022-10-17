@@ -130,7 +130,7 @@ static void map_info(object *op, const char *search) {
  * optional language code ("en", "fr", etc.)
  */
 void command_language(object *op, const char *params) {
-    int language = -1;
+    language_t language = nullptr;
 
     if (!op->contr)
         return;
@@ -147,7 +147,7 @@ void command_language(object *op, const char *params) {
     language = i18n_find_language_by_code(params);
 
     /* Error out if unknown language. */
-    if (language == -1) {
+    if (language == nullptr) {
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_SUBTYPE_NONE,
                       "Unknown language.");
         return;

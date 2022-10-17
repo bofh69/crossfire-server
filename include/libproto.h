@@ -126,9 +126,9 @@ extern void object_give_identified_properties(object *op);
 extern object *identify(object *op);
 /* languages.cpp */
 extern const char *i18n(const object *who, const char *code);
-extern int i18n_find_language_by_code(const char *code);
-extern int i18n_get_language_by_code(const char *code);
-extern sstring i18n_get_language_code(int language);
+extern language_t i18n_find_language_by_code(const char *code);
+extern language_t i18n_get_language_by_code(const char *code);
+extern sstring i18n_get_language_code(language_t language);
 extern void i18n_list_languages(object *who);
 extern void i18n_init(void);
 extern void i18n_free(void);

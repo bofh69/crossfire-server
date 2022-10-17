@@ -216,7 +216,7 @@ typedef struct pl {
     tag_t       *stack_items;        /**< Item stack for patch/dump/... commands. */
     sstring     followed_player;     /**< Player the DM is following. */
     int         stack_position;      /**< Current stack position, 0 for no item. */
-    int         language;            /**< The language the player wishes to use. */
+    language_t  language;            /**< The language the player wishes to use. */
     const char  *unarmed_skill;      /**< Prefered skill to use in unarmed combat */
     uint32_t      ticks_played;        /**< How many ticks this player has played */
 

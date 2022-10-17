@@ -63,6 +63,9 @@ typedef const char *sstring;
 
 #include "skills.h"
 
+/* Opaque handle to a player-selectable language */
+typedef void *language_t;
+
 /* This defines the Account_Char structure which is used in the socket */
 #include "account_char.h"
 

@@ -39,8 +39,8 @@ typedef struct i18n_file {
 static int i18n_count = 0;
 /** Defined languages. */
 static struct i18n_file *i18n_files = NULL;
-/** Index of "English" in the i18nfiles array. */
-static int i18n_default = -1;
+/** "English" language. */
+static i18n_file *i18n_default = nullptr;
 
 static int i18n_message_compare_code(const i18n_message *a, const i18n_message *b) {
     return strcmp(a->code, b->code);
@@ -55,15 +55,12 @@ static int i18n_message_compare_code(const i18n_message *a, const i18n_message *
 const char *i18n(const object *who, const char *code) {
     i18n_message search, *found;
 
-    if (!who || !who->contr)
-        return code;
-
-    if (who->contr->language < 0 || who->contr->language >= i18n_count)
+    if (!who || !who->contr || !who->contr->language)
         return code;
 
     search.code = add_string(code);
 
-    found = static_cast<i18n_message *>(bsearch(&search, i18n_files[who->contr->language].messages, i18n_files[who->contr->language].count, sizeof(i18n_message), (int (*)(const void *, const void *))i18n_message_compare_code));
+    found = static_cast<i18n_message *>(bsearch(&search, static_cast<i18n_file *>(who->contr->language)->messages, static_cast<i18n_file *>(who->contr->language)->count, sizeof(i18n_message), (int (*)(const void *, const void *))i18n_message_compare_code));
 
     free_string(search.code);
 
@@ -78,14 +75,14 @@ const char *i18n(const object *who, const char *code) {
  * @param code language code.
  * @return index, -1 if not found.
  */
-int i18n_find_language_by_code(const char *code) {
+language_t i18n_find_language_by_code(const char *code) {
     int index;
     for (index = 0; index < i18n_count; index++) {
         if (strcmp(code, i18n_files[index].code) == 0)
-            return index;
+            return static_cast<language_t>(&i18n_files[index]);
     }
 
-    return -1;
+    return nullptr;
 }
 
 /**
@@ -93,9 +90,9 @@ int i18n_find_language_by_code(const char *code) {
  * @param code language's code.
  * @return language's code, or the default language if code is invalid.
  */
-int i18n_get_language_by_code(const char *code) {
-    int found = i18n_find_language_by_code(code);
-    if (found != -1)
+language_t i18n_get_language_by_code(const char *code) {
+    language_t found = i18n_find_language_by_code(code);
+    if (found)
         return found;
     return i18n_default;
 }
@@ -105,10 +102,10 @@ int i18n_get_language_by_code(const char *code) {
  * @param language identifier of the language.
  * @return language's code, or default language's code if identifier is invalid.
  */
-sstring i18n_get_language_code(int language) {
-    if (language < 0 || language >= i18n_count)
-        return i18n_files[i18n_default].code;
-    return i18n_files[language].code;
+sstring i18n_get_language_code(language_t language) {
+    if (!language)
+        return i18n_default->code;
+    return static_cast<i18n_file *>(language)->code;
 }
 
 /**
@@ -219,7 +216,7 @@ void i18n_init(void) {
                 i18n_files[i18n_count].count, found->message);
 
         if (strcmp(i18n_files[i18n_count].code, "en") == 0)
-            i18n_default = i18n_count;
+            i18n_default = &i18n_files[i18n_count];
 
         i18n_count++;
     }
@@ -227,7 +224,7 @@ void i18n_init(void) {
 
     free_string(code.code);
 
-    if (i18n_default == -1) {
+    if (i18n_default == nullptr) {
         LOG(llevError, "i18n: couldn't find default language (en)\n");
         fatal(SEE_LAST_ERROR);
     }
