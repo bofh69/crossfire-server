@@ -16,33 +16,22 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
-
-/**
- * One message.
- */
-typedef struct i18n_message {
-    sstring code;       /**< Message code, usually the English version. */
-    sstring message;    /**< Message to display. */
-} i18n_message;
+#include <map>
+#include <memory>
 
 /**
  * One available language.
  */
 typedef struct i18n_file {
-    sstring code;                   /**< Language code, "message." extension. */
-    sstring name;                   /**< Language's name, in its native version. */
-    int count;                      /**< How many items in messages. */
-    struct i18n_message *messages;   /**< Available messages for this language. */
+    sstring code;                           /**< Language code, "message." extension. */
+    sstring name;                           /**< Language's name, in its native version. */
+    std::map<sstring, sstring> messages;    /**< Available messages for this language. */
 } i18n_file;
 
 /** Defined languages. */
 static std::vector<i18n_file *> i18n_files;
 /** "English" language. */
 static i18n_file *i18n_default = nullptr;
-
-static int i18n_message_compare_code(const i18n_message *a, const i18n_message *b) {
-    return strcmp(a->code, b->code);
-}
 
 /**
  * Translate a message in the appropriate language.
@@ -51,21 +40,15 @@ static int i18n_message_compare_code(const i18n_message *a, const i18n_message *
  * @return translated message, or code if not found or who's language is invalid.
  */
 const char *i18n(const object *who, const char *code) {
-    i18n_message search, *found;
-
     if (!who || !who->contr || !who->contr->language)
         return code;
 
-    search.code = add_string(code);
+    sstring scode = add_string(code);
+    i18n_file *file = static_cast<i18n_file *>(who->contr->language);
+    auto found = file->messages.find(scode);
+    free_string(scode);
 
-    found = static_cast<i18n_message *>(bsearch(&search, static_cast<i18n_file *>(who->contr->language)->messages, static_cast<i18n_file *>(who->contr->language)->count, sizeof(i18n_message), (int (*)(const void *, const void *))i18n_message_compare_code));
-
-    free_string(search.code);
-
-    if (found)
-        return found->message;
-
-    return code;
+    return found == file->messages.end() ? code : found->second;
 }
 
 /**
@@ -150,7 +133,6 @@ void i18n_init(void) {
     char *token;
     DIR *dir;
     struct dirent *file;
-    i18n_message code, *found;
 
     snprintf(dirname, sizeof(dirname), "%s/i18n/", settings.datadir);
 
@@ -160,7 +142,7 @@ void i18n_init(void) {
         fatal(SEE_LAST_ERROR);
     }
 
-    code.code = add_string("LN");
+    sstring code = add_string("LN");
 
     while ((file = readdir(dir)) != NULL) {
         if (strncmp(file->d_name, "messages.", 9) != 0)
@@ -171,53 +153,49 @@ void i18n_init(void) {
         if (!br) {
             fatal(SEE_LAST_ERROR);
         }
-        i18n_file *language = static_cast<i18n_file *>(calloc(1, sizeof(i18n_file)));
-        i18n_files.push_back(language);
+        i18n_file *language = new i18n_file();
 
         if (!language) {
             LOG(llevError, "i18n: couldn't allocate memory!\n");
             fatal(OUT_OF_MEMORY);
         }
         language->code = add_string(file->d_name + 9);
-        language->count = 0;
-        language->messages = NULL;
+        i18n_files.push_back(language);
 
         while ((line = bufferreader_next_line(br)) != NULL) {
             if (line[0] != '#' && line[0] != '\0') {
-                language->messages = static_cast<i18n_message *>(realloc(language->messages, (language->count + 1) * sizeof(i18n_message)));
 
                 token = strtok(line, "|");
                 convert_newline(token);
-                language->messages[language->count].code = add_string(token);
+                sstring scode = add_string(token), smessage;
                 token = strtok(NULL, "|");
                 if (token != NULL) {
                     convert_newline(token);
-                    language->messages[language->count].message = add_string(token);
+                    smessage = add_string(token);
                 } else {
-                    language->messages[language->count].message = add_refcount(language->messages[language->count].code);
+                    smessage = add_refcount(scode);
                 }
-                language->count++;
+                language->messages[scode] = smessage;
             }
         }
         bufferreader_destroy(br);
 
-        qsort(language->messages, language->count, sizeof(i18n_message), (int (*)(const void *, const void *))i18n_message_compare_code);
-        found = static_cast<i18n_message *>(bsearch(&code, language->messages, language->count, sizeof(i18n_message), (int (*)(const void *, const void *))i18n_message_compare_code));
-        if (found == NULL) {
+        auto found = language->messages.find(code);
+        if (found == language->messages.end()) {
             LOG(llevError, "i18n: no language set in %s\n", filename);
             fatal(SEE_LAST_ERROR);
         }
 
-        language->name = found->message;
-        LOG(llevDebug, "i18n: %d strings for %s\n",
-                language->count, found->message);
+        language->name = found->second;
+        LOG(llevDebug, "i18n: %zu strings for %s\n",
+                language->messages.size(), language->name);
 
         if (strcmp(language->code, "en") == 0)
             i18n_default = language;
     }
     closedir(dir);
 
-    free_string(code.code);
+    free_string(code);
 
     if (i18n_default == nullptr) {
         LOG(llevError, "i18n: couldn't find default language (en)\n");
@@ -229,15 +207,13 @@ void i18n_init(void) {
  * Clears all i18n-related data.
  */
 void i18n_free(void) {
-  int message;
-
   for (auto language : i18n_files) {
       free_string(language->code); /* name is a copy of a message */
-      for (message = 0; message < language->count; message++) {
-          free_string(language->messages[message].code);
-          free_string(language->messages[message].message);
+      for (auto message : language->messages) {
+          free_string(message.first);
+          free_string(message.second);
       }
-      free(language->messages);
+      delete language;
   }
   i18n_files.clear();
 }
