@@ -1778,7 +1778,7 @@ void CREMainWindow::onReportResetGroups()
   }
 
   report += "</html>";
-  CREReportDisplay show(report, "Licenses checks");
+  CREReportDisplay show(report, "Map reset groups");
   QApplication::restoreOverrideCursor();
   show.exec();
 }
