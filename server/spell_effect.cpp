@@ -279,7 +279,7 @@ static void polymorph_melt(object *who, object *op) {
  */
 static void polymorph_item(object *who, object *op, int level) {
     archetype *at;
-    int max_value, difficulty, tries = 0, choice, charges = op->stats.food, numat = 0;
+    int max_value, difficulty, tries = 0, choice, charges = op->stats.food;
     object *new_ob;
     mapstruct *m;
     int16_t x, y;
@@ -289,21 +289,23 @@ static void polymorph_item(object *who, object *op, int level) {
     if (max_value > 2000*(level/10))
         max_value = 2000*(level/10)+(max_value-2000*(level/10))/3;
 
+    std::vector<archetype *> candidates;
+
     /* Look through and try to find matching items.  Can't turn into something
      * invisible.  Also, if the value is too high now, it would almost
      * certainly be too high below.
      */
-    for (at = get_next_archetype(NULL); at != NULL; at = get_next_archetype(at)) {
+    getManager()->archetypes()->each([&] (auto at) {
         if (at->clone.type == op->type
         && !at->clone.invisible
         && at->clone.value > 0
         && at->clone.value < max_value
         && !QUERY_FLAG(&at->clone, FLAG_NO_DROP)
         && !QUERY_FLAG(&at->clone, FLAG_STARTEQUIP))
-            numat++;
-    }
+            candidates.push_back(at);
+    });
 
-    if (!numat)
+    if (candidates.empty())
         return;
 
     difficulty = op->magic*5;
@@ -311,20 +313,8 @@ static void polymorph_item(object *who, object *op, int level) {
         difficulty = 0;
     new_ob = object_new();
     do {
-        choice = rndm(0, numat-1);
-        for (at = get_next_archetype(NULL); at != NULL; at = get_next_archetype(at)) {
-            if (at->clone.type == op->type
-            && !at->clone.invisible
-            && at->clone.value > 0
-            && at->clone.value < max_value
-            && !QUERY_FLAG(&at->clone, FLAG_NO_DROP)
-            && !QUERY_FLAG(&at->clone, FLAG_STARTEQUIP)) {
-                if (!choice)
-                    break;
-                else
-                    choice--;
-            }
-        }
+        choice = rndm(0, candidates.size() - 1);
+        at = candidates[choice];
 
         object_copy(&(at->clone), new_ob);
         fix_generated_item(new_ob, op, difficulty, FABS(op->magic), GT_ENVIRONMENT);
