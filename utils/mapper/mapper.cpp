@@ -183,11 +183,7 @@ typedef struct struct_npc_info {
 } struct_npc_info;
 
 /** List of NPCs with a custom message. */
-typedef struct struct_npc_list {
-    struct_npc_info **npc;
-    size_t count;
-    size_t allocated;
-} struct_npc_list;
+typedef std::vector<struct_npc_info *> npc_list;
 
 /** Collection of races. */
 typedef struct struct_race_list {
@@ -227,8 +223,8 @@ typedef struct struct_map_info {
 
     struct_race_list monsters;
 
-    struct_npc_list npcs;
-    struct_npc_list readable;
+    npc_list *npcs;
+    npc_list *readable;
 
     struct struct_map_info *tiled_group;
     int height, width;
@@ -1126,17 +1122,6 @@ NPC-related stuff
 ********/
 
 /**
- * Initialise a list of NPCs.
- * @param list
- * list to initialise.
- */
-static void init_npc_list(struct_npc_list *list) {
-    list->allocated = 0;
-    list->count = 0;
-    list->npc = NULL;
-}
-
-/**
  * Create the struct_npc_info from the specified NPC. It must have a name and message.
  * @param npc
  * NPC to gather info for.
@@ -1161,14 +1146,8 @@ static struct_npc_info *create_npc_info(const object *npc) {
  * @param npc
  * NPC to add. Must have a name and message.
  */
-static void add_npc_to_map(struct_npc_list *list, const object *npc) {
-    if (list->count == list->allocated) {
-        list->allocated += 50;
-        list->npc = (struct_npc_info **)realloc(list->npc, list->allocated*sizeof(struct_npc_info *));
-    }
-
-    list->npc[list->count] = create_npc_info(npc);
-    list->count++;
+static void add_npc_to_map(npc_list *list, const object *npc) {
+    list->push_back(create_npc_info(npc));
 }
 /* end of NPC stuff */
 
@@ -1213,8 +1192,8 @@ static struct_map_info *create_map_info(void) {
     init_map_list(&add->tiled_maps);
     init_struct_map_in_quest_list(&add->quests);
     init_race_list(&add->monsters);
-    init_npc_list(&add->npcs);
-    init_npc_list(&add->readable);
+    add->npcs = new npc_list();
+    add->readable = new npc_list();
     add->tiled_group = NULL;
 
     return add;
@@ -1711,9 +1690,9 @@ static void process_map(struct_map_info *info) {
 
                     add_monster(item, info);
                     if (arch != NULL && (QUERY_FLAG(item, FLAG_UNAGGRESSIVE) || QUERY_FLAG(item, FLAG_FRIENDLY)) && (item->msg != arch->clone.msg) && (item->msg != NULL))
-                        add_npc_to_map(&info->npcs, item);
+                        add_npc_to_map(info->npcs, item);
                 } else if ((item->type == SIGN || item->type == BOOK) && (item->msg != item->arch->clone.msg) && (item->msg != NULL)) {
-                    add_npc_to_map(&info->readable, item);
+                    add_npc_to_map(info->readable, item);
                 }
 
                 if (item->invisible)
@@ -2235,10 +2214,10 @@ static nlohmann::json create_maps_array(struct_map_list &maps) {
  * @param list items to return the JSON of.
  * @return array.
  */
-static nlohmann::json create_npc_array(struct_npc_list &list) {
+static nlohmann::json create_npc_array(npc_list &list) {
     nlohmann::json result;
-    for (size_t n = 0; n < list.count; n++) {
-        auto npc = list.npc[n];
+    for (size_t n = 0; n < list.size(); n++) {
+        auto npc = list[n];
         result.push_back({
             { "name", npc->name },
             { "x", npc->x },
@@ -2305,8 +2284,8 @@ static nlohmann::json create_map_object(struct_map_info *map, const std::string 
         { "lore", map->lore && map->lore[0] ? map->lore : "" },
         { "exits_to", create_maps_array(map->exits_to) },
         { "exits_from", create_maps_array(map->exits_from) },
-        { "npcs", create_npc_array(map->npcs) },
-        { "readables", create_npc_array(map->readable) },
+        { "npcs", create_npc_array(*map->npcs) },
+        { "readables", create_npc_array(*map->readable) },
         { "monsters", create_race_array(map->monsters) },
         { "quests", create_map_in_quest_array(map->quests) },
     };
