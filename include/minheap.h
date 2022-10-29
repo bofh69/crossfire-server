@@ -13,7 +13,7 @@
  *
  * If you think you know better than the algorithm, you probably don't. There's a test suite for a reason.
  */
-typedef struct {
+struct MinHeap {
     /** The heap array. */
     void **arr;
     /** The in-use length of the min-heap. */
@@ -27,7 +27,7 @@ typedef struct {
      * Can do nothing, which allows for us to store primitive data types,
      * stack-allocated data, or data that is still in use. */
     void (*element_cleanup)(void *);
-} MinHeap;
+};
 
 MinHeap *minheap_init(int amt, int (*measure_func)(const void *), void (*cleanup_func)(void *));
 void minheap_init_static(MinHeap *heap, void **arr, int amt, int (*measure_func)(const void *));

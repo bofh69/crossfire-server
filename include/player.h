@@ -25,7 +25,7 @@
  * Wand/rod/horn rolled into range_misc.  They all use the same body location
  * anyways.
  */
-typedef enum rangetype {
+enum rangetype {
     range_bottom    = -1, /**< Minimum, exclusive, value. */
     range_none      = 0,  /**< No range selected. */
     range_bow       = 1,  /**< Bow. */
@@ -35,10 +35,10 @@ typedef enum rangetype {
     range_skill     = 5,  /**< Use skill. */
     range_builder   = 6,  /**< Map builder. */
     range_size      = 7   /**< Maximum, exclusive, value. */
-} rangetype;
+};
 
 /** Bow firing mode.*/
-typedef enum _bowtype {
+enum bowtype_t {
     bow_normal = 0, /**< Standard mode, one random arrow. */
     bow_threewide = 1,  /**< Fire three arrows in the same direction. */
     bow_spreadshot = 2, /**< Fire three arrows in a cone. */
@@ -51,59 +51,59 @@ typedef enum _bowtype {
     bow_w = 9,          /**< Fire west whatever the facing direction. */
     bow_nw = 10,        /**< Fire north-west whatever the facing direction. */
     bow_bestarrow = 11  /**< Try to find an arrow matching the target. */
-} bowtype_t;
+};
 
 /** Petmode. */
-typedef enum _petmode {
+enum petmode_t {
     pet_normal = 0, /**< Standard mode/ */
     pet_sad = 1,    /**< Try to find enemies. */
     pet_defend = 2, /**< Stay close to the owner. */
     pet_arena = 3   /**< Attack other players in arena. */
-} petmode_t;
+};
 
 /** How to use keys. */
-typedef enum usekeytype {
+enum usekeytype {
     key_inventory = 0,  /**< Only use keys in inventory. */
     keyrings = 1,       /**< Use keys in inventory and active key rings. */
     containers = 2      /**< Use keys in inventory and active containers. */
-} usekeytype;
+};
 
 /**
  * This is used to control what to do when we need to unapply
  * an object before we can apply another one.
  */
-typedef enum unapplymode {
+enum unapplymode {
     unapply_nochoice = 0,   /**< Will unapply objects when there no choice to unapply. */
     unapply_never = 1,      /**< Will not unapply objects automatically. */
     unapply_always = 2      /**< Will unapply whatever is necessary - this goes beyond
                              * no choice - if there are multiple ojbect of the same type
                              * that need to be unapplied, there is no way for the player
                              * to control which of these will be unapplied. */
-} unapplymode;
+};
 
 /**
  * This stores, for a spell a player knows, the last sp/gr/dam information sent to client.
  */
-typedef struct client_spell {
+struct client_spell {
     object *spell;              /**< Spell object this structure is about. */
     int16_t last_sp;             /**< Last spell cost. */
     int16_t last_grace;          /**< Last grace cost. */
     int16_t last_dam;            /**< Last damage. */
     struct client_spell *next;  /**< Next spell information. */
-} client_spell;
+};
 
 /**
  * Whether to rejoin party at login or not.
  */
-typedef enum party_rejoin_mode {
+enum party_rejoin_mode {
     party_rejoin_no = 0,        /**< Don't rejoin. */
     party_rejoin_if_exists = 1, /**< Rejoin if party exists. */
     party_rejoin_always = 2     /**< If party doesn't exist, form it. */
-} party_rejoin_mode;
+};
 
 /** One player. */
-typedef struct pl {
-    struct pl   *next;                  /**< Pointer to next player, NULL if this is last. */
+struct player {
+    player   *next;                  /**< Pointer to next player, NULL if this is last. */
     socket_struct *socket;              /**< Socket information for this player.  See the page on
                                          * @ref page_connection "the login process" for a description of its use. */
     char        maplevel[MAX_BUF];      /**< On which level is the player? */
@@ -204,7 +204,7 @@ typedef struct pl {
                                       * but we will have to get password first
                                       * so we have to remember which party to
                                       * join. */
-    struct obj *last_exit;           /**< Last exit used by player or NULL */
+    object *last_exit;           /**< Last exit used by player or NULL */
 
     party_rejoin_mode rejoin_party;  /**< Whether to rejoin or not party at login. */
     char        search_str[MAX_BUF]; /**< Item we are looking for. */
@@ -223,7 +223,7 @@ typedef struct pl {
     uint8_t delayed_buffers_allocated;  /**< Number of items in delayed_buffers_used. */
     uint8_t delayed_buffers_used;       /**< Used items in delayed_buffers_used. */
     SockList **delayed_buffers;         /**< Buffers which will be sent after the player's tick completes. */
-} player;
+};
 
 /**
  * @defgroup FIND_PLAYER_xxx Flags to search players through find_player().

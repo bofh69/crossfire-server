@@ -93,10 +93,10 @@ typedef void *language_t;
  * So far only used when dealing with artifacts.
  * (now used by alchemy and other code too. Nov 95 b.t).
  */
-typedef struct linked_char {
+struct linked_char {
     const char *name;
     struct linked_char *next;
-} linked_char;
+};
 
 
 /* Pull in artifacts */
@@ -241,7 +241,7 @@ typedef void(*logHook)(LogLevel, const char *, va_list);
 /**
  * Server settings.
  */
-typedef struct Settings {
+struct Settings {
     const char *logfilename;    /**< Logfile to use */
     uint16_t  csport;             /**< Port for new client/server */
     LogLevel debug;             /**< Default debugging level */
@@ -345,7 +345,7 @@ typedef struct Settings {
         hooks [hooks_count] = hook;
         ++hooks_count;
     }
-} Settings;
+};
 
 /**
  * Server settings.
@@ -362,11 +362,11 @@ extern Settings settings;
  * it only contains integer values, very easy to initialize/clear it -
  * just a memset.
  */
-typedef struct Statistics {
+struct Statistics {
     uint64_t spell_merges;        /**< Number of spell merges done */
     uint64_t spell_hash_full;     /**< Number of times spell hash was full*/
     uint64_t spell_suppressions;  /**< Number of times ok_to_put_more() returned FALSE*/
-} Statistics;
+};
 
 /**
  * Merged spell statistics.

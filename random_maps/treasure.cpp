@@ -568,11 +568,11 @@ object *find_monster_in_room(mapstruct *map, int x, int y, RMParms *RP)
 }
 
 /** Datastructure needed by find_spot_in_room() and find_spot_in_room_recursive() */
-typedef struct free_spots_struct {
+struct free_spots_struct {
     int *room_free_spots_x;             /**< Positions. */
     int *room_free_spots_y;             /**< Positions. */
     int number_of_free_spots_in_room;   /**< Number of positions. */
-} free_spots_struct;
+};
 
 /**
  * the workhorse routine, which finds the free spots in a room:

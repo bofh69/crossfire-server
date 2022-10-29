@@ -86,13 +86,13 @@ enum fatal_error {
 /*@}*/
 
 /** Link an object type with skill needed to identify, and general name. */
-typedef struct typedata {
+struct typedata {
     int number;         /**< Type. */
     const char *name;   /**< Object name. */
     const char *name_pl;/**< Plural name. */
     int identifyskill;  /**< Skill used to identify this object class. */
     int identifyskill2; /**< Second skill used to identify this object class. */
-} typedata;
+};
 
 
 /**

@@ -93,7 +93,7 @@ void CREMapPanel::updateItem()
             {
                 QTreeWidgetItem* child = new QTreeWidgetItem(QStringList(QString("%1 [%2, %3], %4, %5, %6").arg(hook->itemName()).arg(hook->x()).arg(hook->y()).arg(hook->eventName()).arg(hook->pluginName()).arg(script->path())));
 
-                archt* arch = events[hook->eventName().toLower()];
+                archetype* arch = events[hook->eventName().toLower()];
                 if (arch != NULL && arch->clone.face != NULL)
                 {
                     child->setIcon(0, CREPixmap::getIcon(arch->clone.face->number));

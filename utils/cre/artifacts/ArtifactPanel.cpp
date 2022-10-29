@@ -174,7 +174,7 @@ void ArtifactPanel::artifactChanged(QTreeWidgetItem* current, QTreeWidgetItem*)
     if (!current || current->data(0, Qt::UserRole).toString().isEmpty()) {
         return;
     }
-    archt* arch = getManager()->archetypes()->find(current->data(0, Qt::UserRole).toString().toUtf8().constData());
+    archetype* arch = getManager()->archetypes()->find(current->data(0, Qt::UserRole).toString().toUtf8().constData());
     if (!arch) {
         return;
     }

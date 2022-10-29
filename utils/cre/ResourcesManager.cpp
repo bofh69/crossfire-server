@@ -101,8 +101,8 @@ void ResourcesManager::load()
         if (!list)
             break;
 
-        QHash<QString, recipestruct*> recipes;
-        for (recipestruct* rec = list->items; rec; rec = rec->next)
+        QHash<QString, recipe*> recipes;
+        for (recipe* rec = list->items; rec; rec = rec->next)
         {
             key = QString("%1_%2").arg(rec->arch_name[0], rec->title);
             recipes[key] = rec;
@@ -134,10 +134,10 @@ const recipe* ResourcesManager::getRecipe(int ingredients, const QString& name) 
     return myRecipes[ingredients - 1][name];
 }
 
-void ResourcesManager::archetypeUse(const archt* item, CREMapInformationManager* store, AssetUseCallback callback)
+void ResourcesManager::archetypeUse(const archetype* item, CREMapInformationManager* store, AssetUseCallback callback)
 {
     bool goOn = true;
-    getManager()->archetypes()->each([&item, &callback, &goOn] (archt *arch) {
+    getManager()->archetypes()->each([&item, &callback, &goOn] (archetype *arch) {
         if (!goOn)
             return;
 
@@ -194,7 +194,7 @@ void ResourcesManager::archetypeUse(const archt* item, CREMapInformationManager*
     {
         if (!goOn)
             break;
-        recipestruct* rec = list->items;
+        recipe* rec = list->items;
         while (goOn && rec)
         {
             for (size_t ing = 0; ing < rec->arch_names; ing++)

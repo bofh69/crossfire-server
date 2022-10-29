@@ -17,7 +17,6 @@
 
 class ArchetypesModel;
 class ResourcesManager;
-struct archt;
 
 /**
  * Display a grid of all monsters and allow edition of various fields.

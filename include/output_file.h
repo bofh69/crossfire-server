@@ -38,7 +38,7 @@
 #include <stdio.h>
 
 
-typedef struct
+struct OutputFile
 {
     /**
      * The original output file that is written.
@@ -55,7 +55,7 @@ typedef struct
      * The file pointer for fname_tmp.
      */
     FILE *file;
-} OutputFile;
+};
 
 
 /**

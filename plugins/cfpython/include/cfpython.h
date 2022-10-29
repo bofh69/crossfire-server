@@ -88,8 +88,8 @@
 #include <cfpython_party.h>
 #include <cfpython_region.h>
 
-typedef struct _cfpcontext {
-    struct _cfpcontext *down;
+struct CFPContext {
+    CFPContext *down;
     PyObject   *who;
     PyObject   *activator;
     PyObject   *third;
@@ -100,7 +100,7 @@ typedef struct _cfpcontext {
     char        options[1024];
     int         returnvalue;
     struct talk_info    *talk;
-} CFPContext;
+};
 
 typedef struct {
     const char *name;

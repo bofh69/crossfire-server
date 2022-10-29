@@ -86,7 +86,7 @@ struct listen_info {
 /**
  * Socket structure, represents a client-server connection.
  */
-typedef struct socket_struct {
+struct socket_struct {
     enum Sock_Status status;
     int         fd;
     struct listen_info  *listen;
@@ -128,7 +128,7 @@ typedef struct socket_struct {
     uint8_t login_method;   /**< Login method this client is using */
     uint16_t notifications; /**< Notifications this client wants to get. */
     uint32_t last_tick;     /**< Number of ticks since last communication. */
-} socket_struct;
+};
 
 /**
  * Bitmask for the faces_sent[] array - what
@@ -138,11 +138,11 @@ typedef struct socket_struct {
 #define NS_FACESENT_SMOOTH      0x2
 
 /** Holds some system-related information. */
-typedef struct Socket_Info {
+struct Socket_Info {
     struct timeval timeout;     /**< Timeout for select. */
     int     max_filedescriptor; /**< max filedescriptor on the system. */
     int     allocated_sockets;  /**< Number of allocated items in ::init_sockets. */
-} Socket_Info;
+};
 
 extern Socket_Info socket_info;
 

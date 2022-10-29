@@ -72,7 +72,7 @@ enum ArchetypeUse {
   ALCHEMY_PRODUCT,
 };
 
-typedef std::function<bool(ArchetypeUse use, const archt*, const treasurelist*, const CREMapInformation*, recipe*)> AssetUseCallback;
+typedef std::function<bool(ArchetypeUse use, const archetype*, const treasurelist*, const CREMapInformation*, recipe*)> AssetUseCallback;
 
 /**
  * Class managing all assets, tracking in which file they are, which are modified, and such.
@@ -96,22 +96,22 @@ class ResourcesManager : public QObject, AssetsTracker
 
         int recipeMaxIngredients() const;
         QStringList recipes(int count) const;
-        const recipestruct* getRecipe(int ingredients, const QString& name) const;
+        const recipe* getRecipe(int ingredients, const QString& name) const;
 
-        virtual void assetDefined(const archt *arch, const std::string &filename) override { myArchetypes.assetDefined(arch, filename); }
+        virtual void assetDefined(const archetype *arch, const std::string &filename) override { myArchetypes.assetDefined(arch, filename); }
         virtual void assetDefined(const quest_definition *asset, const std::string &filename) override { myQuests.assetDefined(asset, filename); }
         virtual void assetDefined(const treasurelist *asset, const std::string &filename) override { myTreasures.assetDefined(asset, filename); }
         virtual void assetDefined(const GeneralMessage *asset, const std::string &filename) override { myGeneralMessages.assetDefined(asset, filename); }
         virtual void assetDefined(const artifact *asset, const std::string &filename) override { myArtifacts.assetDefined(asset, filename); }
 
-        const std::map<std::string, std::set<const archt*> >& origins() const { return myArchetypes.origins(); }
-        std::string originOf(const archt *arch) const { return myArchetypes.originOf(arch); }
+        const std::map<std::string, std::set<const archetype*> >& origins() const { return myArchetypes.origins(); }
+        std::string originOf(const archetype *arch) const { return myArchetypes.originOf(arch); }
 
         const std::map<std::string, std::set<const quest_definition*> >& questOrigins() const { return myQuests.origins(); }
         std::string originOfQuest(const quest_definition *quest) const { return myQuests.originOf(quest); }
         std::vector<std::string> questFiles() const { return myQuests.files(); }
 
-        static void archetypeUse(const archt* item, CREMapInformationManager* store, AssetUseCallback callback);
+        static void archetypeUse(const archetype* item, CREMapInformationManager* store, AssetUseCallback callback);
 
         bool hasPendingChanges() const {
             return
@@ -123,7 +123,7 @@ class ResourcesManager : public QObject, AssetsTracker
                     ;
         }
 
-        ArchetypeWrapper *wrap(archt *arch, AssetWrapper *parent) { return myWrappedArchetypes.wrap(arch, parent, this); }
+        ArchetypeWrapper *wrap(archetype *arch, AssetWrapper *parent) { return myWrappedArchetypes.wrap(arch, parent, this); }
         ObjectWrapper *wrap(object *ob, AssetWrapper *parent) { return myWrappedObjects.wrap(ob, parent, this); }
         AssetWrapper *wrap(Face *face, AssetWrapper *parent) { return myWrappedFaces.wrap(face, parent, this); }
         AssetWrapper *wrap(Animations *anim, AssetWrapper *parent) { return myWrappedAnimations.wrap(anim, parent, this); }
@@ -159,13 +159,13 @@ class ResourcesManager : public QObject, AssetsTracker
 
     protected:
         CREMapInformationManager *myMapInformationManager;
-        QList<QHash<QString, recipestruct*> > myRecipes;
+        QList<QHash<QString, recipe*> > myRecipes;
         ModifiedAssetsManager<archetype> myArchetypes;
         ModifiedAssetsManager<quest_definition> myQuests;
         ModifiedAssetsManager<treasurelist> myTreasures;
         ModifiedAssetsManager<GeneralMessage> myGeneralMessages;
         ModifiedAssetsManager<artifact> myArtifacts;
-        AssetWrapperManager<archt, ArchetypeWrapper> myWrappedArchetypes;
+        AssetWrapperManager<archetype, ArchetypeWrapper> myWrappedArchetypes;
         AssetWrapperManager<object, ObjectWrapper> myWrappedObjects;
         AssetWrapperManager<Face, FaceWrapper> myWrappedFaces;
         AssetWrapperManager<Animations, AnimationWrapper> myWrappedAnimations;

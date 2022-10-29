@@ -31,10 +31,10 @@
  */
 #define SPACE_BLOCK 0.5
 
-typedef struct blstr {
+struct blocks {
     int x[4], y[4];
     int index;
-} blocks;
+};
 
 static blocks block[MAP_CLIENT_X][MAP_CLIENT_Y];
 

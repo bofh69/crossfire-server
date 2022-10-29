@@ -94,7 +94,7 @@ QString RecipeWrapper::displayName() const {
 
 QIcon RecipeWrapper::displayIcon() const {
     const Face *face = recipe_get_face(myWrappedItem);
-    const archt* base = NULL;
+    const archetype* base = NULL;
     if (myWrappedItem->arch_names > 0) {
         base = find_archetype(myWrappedItem->arch_name[0]);
     }

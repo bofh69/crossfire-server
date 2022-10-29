@@ -45,7 +45,7 @@
  * @return
  * 0 if new_item can't be built on the spot, 1 if it can be built.
  */
-static int can_build_over(struct mapdef *map, object *new_item, short x, short y) {
+static int can_build_over(mapstruct *map, object *new_item, short x, short y) {
     FOR_MAP_PREPARE(map, x, y, tmp) {
         object *ob;
 
@@ -139,7 +139,7 @@ static object *get_msg_book(object *pl, short x, short y) {
  * @todo isn't there a similar function somewhere? put this in a common library?
  * investigate possible merge with retrofit_joined_wall() used for random maps
  */
-static object *get_wall(struct mapdef *map, int x, int y) {
+static object *get_wall(mapstruct *map, int x, int y) {
     FOR_MAP_PREPARE(map, x, y, wall)
         if (wall->type == WALL)
             return wall;
@@ -155,7 +155,7 @@ static object *get_wall(struct mapdef *map, int x, int y) {
  * @param y
  * coordinates to erase runes at.
  */
-static void remove_marking_runes(struct mapdef *map, short x, short y) {
+static void remove_marking_runes(mapstruct *map, short x, short y) {
     FOR_MAP_PREPARE(map, x, y, rune) {
         if ((rune->type == SIGN) && (!strcmp(rune->arch->name, "rune_mark"))) {
             object_remove(rune);
@@ -231,7 +231,7 @@ static int adjust_sign_msg(object *pl, short x, short y, object *tmp) {
  * @return
  * 'connected' value with no item, or -1 if failure.
  */
-static int find_unused_connected_value(struct mapdef *map) {
+static int find_unused_connected_value(mapstruct *map) {
     int connected = 0;
     int itest = 0;
     oblinkpt *obp;
@@ -333,13 +333,13 @@ static int find_or_create_connection_for_map(object *pl, short x, short y, objec
  * @todo
  * investigate possible merge with retrofit_joined_wall() used for random maps
  */
-static void fix_walls(struct mapdef *map, int x, int y) {
+static void fix_walls(mapstruct *map, int x, int y) {
     int connect;
     object *wall;
     char archetype[MAX_BUF];
     char *underscore;
     uint32_t old_flags[4];
-    struct archt *new_arch;
+    struct archetype *new_arch;
     int flag;
     int len;
     int has_window;
@@ -507,7 +507,7 @@ static void fix_walls(struct mapdef *map, int x, int y) {
 static int apply_builder_floor(object *pl, object *new_floor, short x, short y) {
     object *above_floor; /* Item above floor, if any */
     object *floor;       /* Floor which would be removed if required */
-    struct archt *new_wall;
+    struct archetype *new_wall;
     int i, xt, yt, wall_removed;
     char message[MAX_BUF];
 
@@ -707,7 +707,7 @@ static int apply_builder_wall(object *pl, object *new_wall, short x, short y) {
 static int apply_builder_window(object *pl, object *new_wall_win, short x, short y) {
     object *current_wall;
     char archetype[MAX_BUF];
-    struct archt *new_arch;
+    struct archetype *new_arch;
     object *window;
     uint32_t old_flags[4];
     int flag;
@@ -1020,7 +1020,7 @@ void apply_map_builder(object *pl, int dir) {
 
     if (builder->subtype == ST_BD_BUILD) {
         object *material;
-        struct archt *new_arch;
+        struct archetype *new_arch;
         object *new_item;
         int built = 0;
 

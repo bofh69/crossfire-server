@@ -22,11 +22,11 @@
 /**
  * One available language.
  */
-typedef struct i18n_file {
+struct i18n_file {
     sstring code;                           /**< Language code, "message." extension. */
     sstring name;                           /**< Language's name, in its native version. */
     std::map<sstring, sstring> messages;    /**< Available messages for this language. */
-} i18n_file;
+};
 
 /** Defined languages. */
 static std::vector<i18n_file *> i18n_files;

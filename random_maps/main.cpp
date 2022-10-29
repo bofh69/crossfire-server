@@ -81,10 +81,10 @@ static void print_map(char **layout, int width, int height) {
     }
 }
 
-typedef struct {
+struct layout {
     const char *name;
     char **(*func)(int, int, int, int);
-} layout;
+};
 
 static layout layout_list[NROFLAYOUTS] = {
     // Most of these need to be cast to silence warnings.

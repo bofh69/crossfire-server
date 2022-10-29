@@ -100,7 +100,7 @@ typedef int (*knowledge_is_valid_item)(const char *code);
  * @param type pointer of the handler type.
  * @return count of actually added items.
  */
-typedef int (*knowledge_add_item)(struct knowledge_player *current, const char *item, const struct knowledge_type *type);
+typedef int (*knowledge_add_item)(knowledge_player *current, const char *item, const knowledge_type *type);
 
 /**
  * Check if an item can be used for a recipe, and fill the return buffer if it's the case.
@@ -126,10 +126,10 @@ struct knowledge_item;
  * @param pl who attempts the recipe.
  * @param item item to attempt, must not be NULL.
  */
-typedef void (*knowledge_attempt)(player *pl, const struct knowledge_item *item);
+typedef void (*knowledge_attempt)(player *pl, const knowledge_item *item);
 
 /** One item type that may be known to the player. */
-typedef struct knowledge_type {
+struct knowledge_type {
     const char *type;                   /**< Type internal code, musn't have a double dot, must be unique ingame. */
     knowledge_summary summary;          /**< Display the short description. */
     knowledge_detail detail;            /**< Display the detailed description. */
@@ -140,25 +140,25 @@ typedef struct knowledge_type {
     knowledge_attempt attempt_alchemy;
     const char *face;                   /**< Face for the type, as a basename. */
     knowledge_face item_face;           /**< Face for an item, if not defined the face it used. */
-} knowledge_type;
+};
 
 
 /** One known item for a player. */
-typedef struct knowledge_item {
+struct knowledge_item {
     sstring item;                   /**< Internal item code. */
     const knowledge_type* handler;  /**< How to handle this item. */
-} knowledge_item;
+};
 
 /** Information about a player. */
-typedef struct knowledge_player {
+struct knowledge_player {
     sstring player_name;            /**< Player's name. */
-    struct knowledge_item **items;  /**< Known knowledge. */
+    knowledge_item **items;         /**< Known knowledge. */
     int item_count;                 /**< How many items this players knows. */
     int item_allocated;             /**< How many items are allocated for items. */
     int sent_up_to;                 /**< Largest index that was sent to the client with notifications,
                                      * -1 means the client doesn't want this information. */
-    struct knowledge_player *next;  /**< Next player on the list. */
-} knowledge_player;
+    knowledge_player *next;         /**< Next player on the list. */
+};
 
 /** All known loaded knowledge for a player. */
 static knowledge_player *knowledge_global = NULL;

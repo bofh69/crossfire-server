@@ -33,15 +33,15 @@
 /**
  * Struct to store the message_type and message_subtype for signs and books used by the player.
  */
-typedef struct {
+struct readable_message_type {
     uint8_t message_type;     /**< Message type to be sent to the client. */
     uint8_t message_subtype;  /**< Message subtype to be sent to the client. */
-} readable_message_type;
+};
 
 /**
  * One general message, from the lib/messages file.
  */
-typedef struct GeneralMessage {
+struct GeneralMessage {
     int chance;             /**< Relative chance of the message appearing
                               randomly. If 0 will never appear. */
     sstring identifier;     /**< Message identifier, can be NULL. */
@@ -49,6 +49,6 @@ typedef struct GeneralMessage {
     sstring message;        /**< The message's body. */
     sstring quest_code;     /**< Optional quest code and state this message will start. */
     const Face *face;   /**< Face the message displays at in the knowledge dialog, NULL if no face defined. */
-} GeneralMessage;
+};
 
 #endif /* BOOK_H */

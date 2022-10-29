@@ -114,7 +114,7 @@ static std::vector<std::string> metaservers;
  * want to pass this information to other functions (like plugin
  * or something)
  */
-typedef struct _LocalMeta2Info {
+struct LocalMeta2Info {
     int     notification;  /**< If true, do updates to metaservers. */
     char    *hostname;     /**< Hostname of this server. */
     int     portnumber;    /**< Portnumber of this server. */
@@ -124,7 +124,7 @@ typedef struct _LocalMeta2Info {
     char    *mapbase;      /**< and server. */
     char    *codebase;
     char    *flags;        /**< Short flags to send to metaserver. */
-} LocalMeta2Info;
+};
 
 /** Non volatile information on the server. */
 static LocalMeta2Info local_info;

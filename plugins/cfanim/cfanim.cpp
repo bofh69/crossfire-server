@@ -68,7 +68,7 @@ static int get_dir_from_name(const char *name) {
     return -1;
 }
 
-static long int initmovement(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initmovement(const char *name, char *parameters, CFmovement *move_entity) {
     int dir;
     (void)parameters;
 
@@ -77,7 +77,7 @@ static long int initmovement(const char *name, char *parameters, struct CFmoveme
     return dir;
 }
 
-static anim_move_result runmovement(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runmovement(CFanimation *animation, long int id, void *parameters) {
     object *op = animation->victim;
     int dir = id;
     (void)parameters;
@@ -91,7 +91,7 @@ static anim_move_result runmovement(struct CFanimation_struct *animation, long i
     return mr_finished;
 }
 
-static long int initfire(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initfire(const char *name, char *parameters, CFmovement *move_entity) {
     int dir;
     (void)parameters;
 
@@ -101,14 +101,14 @@ static long int initfire(const char *name, char *parameters, struct CFmovement_s
 }
 
 /** @todo fix */
-static anim_move_result runfire(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runfire(CFanimation *animation, long int id, void *parameters) {
     (void)parameters;
     if (animation->verbose)
         cf_log(llevDebug, "CFAnim: Firing in direction %ld\n", id);
     return mr_finished;
 }
 
-static long int initturn(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initturn(const char *name, char *parameters, CFmovement *move_entity) {
     int dir;
     (void)parameters;
 
@@ -117,7 +117,7 @@ static long int initturn(const char *name, char *parameters, struct CFmovement_s
     return dir;
 }
 
-static anim_move_result runturn(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runturn(CFanimation *animation, long int id, void *parameters) {
     object *op = animation->victim;
     int dir = id;
     (void)parameters;
@@ -131,7 +131,7 @@ static anim_move_result runturn(struct CFanimation_struct *animation, long int i
     return mr_finished;
 }
 
-static long int initcamera(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initcamera(const char *name, char *parameters, CFmovement *move_entity) {
     int dir;
     (void)parameters;
 
@@ -141,7 +141,7 @@ static long int initcamera(const char *name, char *parameters, struct CFmovement
 }
 
 /** @todo fix */
-static anim_move_result runcamera(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runcamera(CFanimation *animation, long int id, void *parameters) {
     (void)parameters;
     if (animation->verbose)
         cf_log(llevDebug, "CFAnim: Moving the camera in direction %ld\n", id);
@@ -153,7 +153,7 @@ static anim_move_result runcamera(struct CFanimation_struct *animation, long int
     return 1;*/
 }
 
-static long int initvisible(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initvisible(const char *name, char *parameters, CFmovement *move_entity) {
     int result;
     (void)name;
     (void)move_entity;
@@ -164,7 +164,7 @@ static long int initvisible(const char *name, char *parameters, struct CFmovemen
     return -1;
 }
 
-static anim_move_result runvisible(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runvisible(CFanimation *animation, long int id, void *parameters) {
     (void)parameters;
     if (id == -1)
         return mr_finished;
@@ -172,7 +172,7 @@ static anim_move_result runvisible(struct CFanimation_struct *animation, long in
     return mr_finished;
 }
 
-static long int initwizard(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initwizard(const char *name, char *parameters, CFmovement *move_entity) {
     int result;
     (void)name;
     (void)move_entity;
@@ -183,7 +183,7 @@ static long int initwizard(const char *name, char *parameters, struct CFmovement
     return mr_finished;
 }
 
-static anim_move_result runwizard(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runwizard(CFanimation *animation, long int id, void *parameters) {
     (void)parameters;
     if (id == -1)
         return mr_finished;
@@ -191,7 +191,7 @@ static anim_move_result runwizard(struct CFanimation_struct *animation, long int
     return mr_finished;
 }
 
-static long int initsay(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initsay(const char *name, char *parameters, CFmovement *move_entity) {
     (void)name;
     if (parameters)
         move_entity->parameters = cf_strdup_local(parameters);
@@ -202,7 +202,7 @@ static long int initsay(const char *name, char *parameters, struct CFmovement_st
     return 1;
 }
 
-static anim_move_result runsay(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runsay(CFanimation *animation, long int id, void *parameters) {
     (void)id;
     if (parameters) {
         cf_object_say(animation->victim, static_cast<const char *>(parameters));
@@ -212,14 +212,14 @@ static anim_move_result runsay(struct CFanimation_struct *animation, long int id
     return mr_finished;
 }
 
-static long int initapply(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initapply(const char *name, char *parameters, CFmovement *move_entity) {
     (void)name;
     (void)parameters;
     (void)move_entity;
     return 1;
 }
 
-static anim_move_result runapply(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runapply(CFanimation *animation, long int id, void *parameters) {
     object *current_container;
     (void)id;
     (void)parameters;
@@ -233,13 +233,13 @@ static anim_move_result runapply(struct CFanimation_struct *animation, long int 
     return mr_finished;
 }
 
-static long int initapplyobject(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initapplyobject(const char *name, char *parameters, CFmovement *move_entity) {
     (void)name;
     move_entity->parameters = parameters ? (void*)cf_add_string(static_cast<sstring>(parameters)) : NULL;
     return 1;
 }
 
-static anim_move_result runapplyobject(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runapplyobject(CFanimation *animation, long int id, void *parameters) {
     object *current;
     int aflag;
     (void)id;
@@ -264,14 +264,14 @@ static anim_move_result runapplyobject(struct CFanimation_struct *animation, lon
     return mr_finished;
 }
 
-static long int initdropobject(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initdropobject(const char *name, char *parameters, CFmovement *move_entity) {
     (void)name;
     move_entity->parameters = parameters ?
         (void *)cf_add_string(static_cast<sstring>(parameters)) : NULL;
     return 1;
 }
 
-static anim_move_result rundropobject(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result rundropobject(CFanimation *animation, long int id, void *parameters) {
     object *what;
     (void)id;
     if (!parameters)
@@ -283,14 +283,14 @@ static anim_move_result rundropobject(struct CFanimation_struct *animation, long
     return mr_finished;
 }
 
-static long int initpickup(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initpickup(const char *name, char *parameters, CFmovement *move_entity) {
     (void)name;
     (void)parameters;
     (void)move_entity;
     return 1;
 }
 
-static anim_move_result runpickup(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runpickup(CFanimation *animation, long int id, void *parameters) {
     object *current;
     (void)id;
     (void)parameters;
@@ -302,13 +302,13 @@ static anim_move_result runpickup(struct CFanimation_struct *animation, long int
     return mr_finished;
 }
 
-static long int initpickupobject(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initpickupobject(const char *name, char *parameters, CFmovement *move_entity) {
     (void)name;
     move_entity->parameters = parameters ? (void*)cf_add_string(static_cast<sstring>(parameters)) : NULL;
     return 1;
 }
 
-static anim_move_result runpickupobject(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runpickupobject(CFanimation *animation, long int id, void *parameters) {
     (void)id;
     if (!parameters)
         return mr_finished;
@@ -322,7 +322,7 @@ static anim_move_result runpickupobject(struct CFanimation_struct *animation, lo
     return mr_finished;
 }
 
-static long int initghosted(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initghosted(const char *name, char *parameters, CFmovement *move_entity) {
     int result;
     (void)name;
     (void)move_entity;
@@ -333,7 +333,7 @@ static long int initghosted(const char *name, char *parameters, struct CFmovemen
     return -1;
 }
 
-static anim_move_result runghosted(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runghosted(CFanimation *animation, long int id, void *parameters) {
     object *corpse;
 
     if ((id && animation->ghosted)
@@ -363,13 +363,13 @@ static anim_move_result runghosted(struct CFanimation_struct *animation, long in
     return mr_finished;
 }
 
-typedef struct {
+struct teleport_params {
     char *mapname;
     int mapx;
     int mapy;
-} teleport_params;
+};
 
-static long int initteleport(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initteleport(const char *name, char *parameters, CFmovement *move_entity) {
     char *mapname;
     int mapx;
     int mapy;
@@ -409,7 +409,7 @@ static long int initteleport(const char *name, char *parameters, struct CFmoveme
     return 1;
 }
 
-static anim_move_result runteleport(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runteleport(CFanimation *animation, long int id, void *parameters) {
     teleport_params *teleport = (teleport_params *)parameters;
     (void)id;
 
@@ -420,12 +420,12 @@ static anim_move_result runteleport(struct CFanimation_struct *animation, long i
     return mr_finished;
 }
 
-static long int initnotice(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initnotice(const char *name, char *parameters, CFmovement *move_entity) {
     (void)name;
     move_entity->parameters = parameters ? cf_strdup_local(parameters) : NULL;
     return 1;
 }
-static  anim_move_result runnotice(struct CFanimation_struct *animation, long int id, void *parameters) {
+static  anim_move_result runnotice(CFanimation *animation, long int id, void *parameters) {
     int val;
     (void)id;
 
@@ -435,7 +435,7 @@ static  anim_move_result runnotice(struct CFanimation_struct *animation, long in
     return mr_finished;
 }
 
-static long int initstop(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initstop(const char *name, char *parameters, CFmovement *move_entity) {
     (void)name;
     (void)parameters;
     (void)move_entity;
@@ -443,7 +443,7 @@ static long int initstop(const char *name, char *parameters, struct CFmovement_s
 }
 
 /** @todo fix */
-static anim_move_result runstop(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runstop(CFanimation *animation, long int id, void *parameters) {
     (void)id;
     (void)parameters;
     if (animation->verbose)
@@ -452,11 +452,11 @@ static anim_move_result runstop(struct CFanimation_struct *animation, long int i
 }
 
 /** Destination for moveto command. */
-typedef struct {
+struct param_moveto {
     int x, y;   /**< Coordinates. */
-} param_moveto;
+};
 
-static long int initmoveto(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initmoveto(const char *name, char *parameters, CFmovement *move_entity) {
     param_moveto *moveto;
     int x, y;
     (void)name;
@@ -472,7 +472,7 @@ static long int initmoveto(const char *name, char *parameters, struct CFmovement
     return 1;
 }
 
-static anim_move_result runmoveto(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runmoveto(CFanimation *animation, long int id, void *parameters) {
     int move;
     param_moveto *dest = (param_moveto *)parameters;
     (void)id;
@@ -493,7 +493,7 @@ static anim_move_result runmoveto(struct CFanimation_struct *animation, long int
     return mr_finished;
 }
 
-static long int initmessage(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int initmessage(const char *name, char *parameters, CFmovement *move_entity) {
     (void)name;
     if (parameters)
         move_entity->parameters = strdup(parameters);
@@ -502,7 +502,7 @@ static long int initmessage(const char *name, char *parameters, struct CFmovemen
     return 1;
 }
 
-static anim_move_result runmessage(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runmessage(CFanimation *animation, long int id, void *parameters) {
     (void)id;
     if (parameters && animation->victim->map) {
         cf_map_message(animation->victim->map, (const char *)parameters, NDI_UNIQUE|NDI_GREEN);
@@ -512,7 +512,7 @@ static anim_move_result runmessage(struct CFanimation_struct *animation, long in
     return mr_finished;
 }
 
-static long int inittrigger(const char *name, char *parameters, struct CFmovement_struct *move_entity) {
+static long int inittrigger(const char *name, char *parameters, CFmovement *move_entity) {
     long int connection;
     (void)name;
 
@@ -524,7 +524,7 @@ static long int inittrigger(const char *name, char *parameters, struct CFmovemen
     return connection;
 }
 
-static anim_move_result runtrigger(struct CFanimation_struct *animation, long int id, void *parameters) {
+static anim_move_result runtrigger(CFanimation *animation, long int id, void *parameters) {
     oblinkpt *olp;
     mapstruct *map;
     objectlink *ol = NULL;

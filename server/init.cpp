@@ -42,13 +42,13 @@ static void init_startup(void);
 /** If set after command line argument parsing, then the server will exit. */
 static int should_exit = 0;
 
-typedef struct module_information {
+struct module_information {
     const char *name;           /**< Module name, without space. */
     char const *description;    /**< Module long description. */
     bool enabled;               /**< Whether the module is enabled or not. */
     void (*init)(Settings *);   /**< Initialisation function. */
     void (*close)();            /**< Cleanup function. */
-} module_information;
+};
 
 /** All built modules. */
 static module_information modules[] = {

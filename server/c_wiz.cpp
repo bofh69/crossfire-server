@@ -466,7 +466,7 @@ void command_setgod(object *op, const char *params) {
  * player to kick. Must be a full name match.
  */
 static void command_kick2(object *op, const char *params) {
-    struct pl *pl;
+    struct player *pl;
 
     for (pl = first_player; pl != NULL; pl = pl->next) {
         if ((*params == '\0' || !strcmp(pl->ob->name, params)) && pl->ob != op) {

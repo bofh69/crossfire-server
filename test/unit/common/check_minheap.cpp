@@ -99,10 +99,10 @@ START_TEST(test_minheap_insert_remove) {
 END_TEST
 
 // Now let's do a test that does a struct.
-typedef struct {
+struct Pos {
     int x;
     int y;
-} Pos;
+};
 
 int measure_pos_distance(const void *ob) {
     const Pos *p = static_cast<const Pos *>(ob);

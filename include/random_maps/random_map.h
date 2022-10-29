@@ -11,7 +11,7 @@
 /**
  * Random map parameters.
  */
-typedef struct RMParms {
+struct RMParms {
     /**
      * Name of the wall style file, in /styles/wallstyles, can be an empty
      * string in which case a random one is chosen, or "none".
@@ -93,7 +93,7 @@ typedef struct RMParms {
     long unsigned int total_map_hp;
     int treasureoptions;
     int symmetry_used;
-    struct regiondef *region;
+    struct region *region;
     /**
      * If non zero, then the map will have multiple floors, else only one
      * floor will be used.
@@ -101,7 +101,7 @@ typedef struct RMParms {
     int multiple_floors;
     int darkness; /**< Map darkness. */
     int outdoor;  /**< Whether generated map is outdoor or not. */
-} RMParms;
+};
 
 int load_parameters(FILE *fp, int bufstate, RMParms *RP);
 

@@ -199,7 +199,7 @@ int is_old_wraith_pl(object *op) {
  * @param skin_resist
  * the dragon's skin resistance for attack
  */
-void player_set_dragon_title(struct pl *pl, int level, const char *attack, int skin_resist) {
+void player_set_dragon_title(player *pl, int level, const char *attack, int skin_resist) {
     if (level == 0)
         snprintf(pl->title, sizeof(pl->title), "%s hatchling", attack);
     else if (level == 1)
@@ -229,7 +229,7 @@ void player_set_dragon_title(struct pl *pl, int level, const char *attack, int s
  * @param bufsize
  * the size of buf in byte
  */
-void player_get_title(const struct pl *pl, char *buf, size_t bufsize) {
+void player_get_title(const player *pl, char *buf, size_t bufsize) {
     if (pl->own_title[0] == '\0')
         snprintf(buf, bufsize, "the %s", pl->title);
     else
@@ -244,7 +244,7 @@ void player_get_title(const struct pl *pl, char *buf, size_t bufsize) {
  * @return
  * whether the player has a custom title
  */
-int player_has_own_title(const struct pl *pl) {
+int player_has_own_title(const struct player *pl) {
     return pl->own_title[0] != '\0';
 }
 
@@ -257,7 +257,7 @@ int player_has_own_title(const struct pl *pl) {
  * @return
  * the own title
  */
-const char *player_get_own_title(const struct pl *pl) {
+const char *player_get_own_title(const struct player *pl) {
     return pl->own_title;
 }
 
@@ -269,7 +269,7 @@ const char *player_get_own_title(const struct pl *pl) {
  * @param title
  * the new title to set; empty string to unset
  */
-void player_set_own_title(struct pl *pl, const char *title) {
+void player_set_own_title(struct player *pl, const char *title) {
     strlcpy(pl->own_title, title, sizeof(pl->own_title));
     replace_unprintable_chars(pl->own_title);
 }

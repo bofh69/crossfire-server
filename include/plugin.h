@@ -92,14 +92,14 @@ typedef void *(*f_plug_property)(int *type, ...);
 #endif
 
 /** One loaded plugin. */
-typedef struct _crossfire_plugin {
+struct crossfire_plugin {
     f_plug_property propfunc;           /**< Plugin getProperty function       */
     f_plug_postinit closefunc;          /**< Plugin Termination function       */
     LIBPTRTYPE      libptr;             /**< Pointer to the plugin library     */
     char            id[MAX_BUF];        /**< Plugin identification string      */
     char            fullname[MAX_BUF];  /**< Plugin full name                  */
     event_registration  global_registration[NR_EVENTS]; /**< Global event registration identifiers. */
-} crossfire_plugin;
+} ;
 
 #ifdef WIN32
 
@@ -304,10 +304,10 @@ extern MODULEAPI CFParm *triggerEvent(CFParm *PParm);
 */
 
 /** One function the server exposes to plugins. */
-typedef struct _hook_entry {
+struct hook_entry {
     f_plug_api func;        /**< Function itself. */
     int fid;                /**< Function identifier. */
     const char fname[256];  /**< Function name. */
-} hook_entry;
+};
 
 #endif /* PLUGIN_H */

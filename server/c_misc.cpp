@@ -519,10 +519,10 @@ void command_whereabouts(object *op, const char *params) {
 }
 
 /** Utility structure for the 'who' command. */
-typedef struct {
+struct chars_names {
     char namebuf[MAX_BUF];
     int login_order;
-} chars_names;
+};
 
 /**
  * Local function for qsort comparison.

@@ -48,11 +48,11 @@ enum {
  * @todo
  * is this still used somewhere in the maps/code??
  */
-typedef struct _change_arch {
+struct _change_arch {
     const char *name;              /**< If != NULL, copy this over the original arch name */
     const char *title;             /**< If != NULL, copy this over the original arch title */
     const char *slaying;           /**< If != NULL, copy this over the original arch slaying */
-} _change_arch;
+};
 
 /**
  * treasure is one element in a linked list, which together consist of a
@@ -60,15 +60,15 @@ typedef struct _change_arch {
  * to get generated standard treasure when an archetype of that type
  * is generated (from a generator)
 */
-typedef struct treasurestruct {
-    struct archt *item;                 /**< Which item this link can be */
+struct treasure {
+    struct archetype *item;                 /**< Which item this link can be */
     sstring artifact;                   /**< If not null, the name of the artifact to apply to item */
     sstring name;                       /**< If non null, name of list to use instead */
     int8_t list_magic_adjustment;       /**< Adjust difficulty when generating the list pointed by name, ignored if list_magic_value is non zero */
     uint8_t list_magic_value;           /**< Set difficulty when generating the list pointed by name */
-    struct treasurestruct *next;        /**< Next treasure-item in a linked list */
-    struct treasurestruct *next_yes;    /**< If this item was generated, use this link instead of ->next */
-    struct treasurestruct *next_no;     /**< If this item was not generated, then continue here */
+    treasure *next;                     /**< Next treasure-item in a linked list */
+    treasure *next_yes;                 /**< If this item was generated, use this link instead of ->next */
+    treasure *next_no;                  /**< If this item was not generated, then continue here */
     struct _change_arch change_arch;    /**< Override default arch values if set in treasure list */
     uint8_t chance;                       /**< Percent chance for this item */
     uint8_t magic;                        /**< Max magic bonus to item
@@ -77,19 +77,19 @@ typedef struct treasurestruct {
                                          * required to go to the new list
                                          */
     uint16_t nrof;                        /**< Random 1 to nrof items are generated */
-} treasure;
+};
 
 /**
- * treasureliststruct represents one logical group of items to be generated together.
+ * treasurelist represents one logical group of items to be generated together.
  */
-typedef struct treasureliststruct {
+struct treasurelist {
     sstring name;                        /**< Usually monster-name/combination */
     int16_t total_chance;                /**< If non-zero, only 1 item on this
                                          * list should be generated.  The
                                          * total_chance contains the sum of
                                          * the chance for this list.
                                          */
-    struct treasurestruct *items;       /**< Items in this list, linked */
-} treasurelist;
+    treasure *items;                    /**< Items in this list, linked */
+};
 
 #endif /* TREASURE_H */

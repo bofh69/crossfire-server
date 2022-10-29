@@ -105,30 +105,30 @@
  * Information on one title.
  * 'title' and 'titlelist' are used by the readable code
  */
-typedef struct titlestruct {
+struct title {
     const char *name;      /**< the name of the book */
     const char *authour;   /**< the name of the book authour */
     const char *archname;  /**< the archetype name of the book */
     unsigned int level;    /**< level of difficulty of this message */
     size_t size;           /**< size of the book message */
     int msg_index;         /**< an index value derived from book message */
-    struct titlestruct *next;   /**< next item in the list */
-} title;
+    title *next;           /**< next item in the list */
+};
 
 /**
  * Titles for one message type.
  */
-typedef struct titleliststruct {
+struct titlelist {
     int number;       /**< number of items in the list */
-    struct titlestruct *first_book;     /**< pointer to first book in this list */
-    struct titleliststruct *next;  /**< pointer to next book list */
-} titlelist;
+    title *first_book;      /**< pointer to first book in this list */
+    titlelist *next;        /**< pointer to next book list */
+};
 
 /** special structure, used only by art_name_array[] */
-typedef struct namebytype {
+struct arttypename {
     const char *name;  /**< generic name to call artifacts of this type */
     int type;          /**< matching type */
-} arttypename;
+};
 
 static void add_book(title *book, int type, const char *fname, int lineno);
 

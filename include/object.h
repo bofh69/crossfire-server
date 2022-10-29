@@ -17,11 +17,11 @@ typedef uint32_t tag_t;
  * One body location.
  * See common/item.c.
  */
-typedef struct body_locations_struct {
+struct body_locations_struct {
     const char *save_name;      /**< Name used to load/save it to disk */
     const char *use_name;       /**< Name used when describing an item we can use */
     const char *nonuse_name;    /**< Name to describe objects we can't use */
-} body_locations_struct;
+};
 
 extern body_locations_struct body_locations[NUM_BODY_LOCATIONS];
 
@@ -37,11 +37,11 @@ extern const char *const move_name[];
  * accessing the list directly.
  * Exception is if you want to walk this list for some reason.
  */
-typedef struct _key_value {
+struct key_value {
     const char *key;          /**< Name of the key. */
     const char *value;        /**< Key's value. */
-    struct _key_value *next;  /**< Next key in the list. */
-} key_value;
+    key_value  *next;  /**< Next key in the list. */
+};
 
 /**
  * @defgroup WILL_APPLY_xxx What monsters apply
@@ -277,33 +277,33 @@ typedef uint32_t ob_flags[4];
  *
  * See the @ref page_object "documentation page" for more details.
  */
-typedef struct obj {
+struct object {
     /* These variables are not changed by object_copy() */
-    struct pl   *contr;         /**< Pointer to the player which control this object */
-    struct obj  *next;          /**< Pointer to the next object in the free/used list */
-    struct obj  *prev;          /**< Pointer to the previous object in the free/used list*/
-    struct obj  *active_next;   /**< Next object in the 'active' list
+    struct player   *contr;         /**< Pointer to the player which control this object */
+    object  *next;          /**< Pointer to the next object in the free/used list */
+    object  *prev;          /**< Pointer to the previous object in the free/used list*/
+    object  *active_next;   /**< Next object in the 'active' list
                                  * This is used in process_events
                                  * so that the entire object list does not
                                  * need to be gone through.*/
-    struct obj  *active_prev;   /**< Previous object in the 'active list
+    object  *active_prev;   /**< Previous object in the 'active list
                                  * This is used in process_events
                                  * so that the entire object list does not
                                  * need to be gone through. */
-    struct obj  *below;         /**< Pointer to the object stacked below this one */
-    struct obj  *above;         /**< Pointer to the object stacked above this one */
+    object  *below;         /**< Pointer to the object stacked below this one */
+    object  *above;         /**< Pointer to the object stacked above this one */
                                 /* Note: stacked in the *same *environment*/
-    struct obj  *inv;           /**< Pointer to the first object in the inventory */
-    struct obj  *container;     /**< Current container being used.  I think this
+    object  *inv;           /**< Pointer to the first object in the inventory */
+    object  *container;     /**< Current container being used.  I think this
                                  * is only used by the player right now. */
-    struct obj  *env;           /**< Pointer to the object which is the environment.
+    object  *env;           /**< Pointer to the object which is the environment.
                                  * This is typically the container that the object is in. */
-    struct obj  *more;          /**< Pointer to the rest of a large body of objects */
-    struct obj  *head;          /**< Points to the main object of a large body */
-    struct mapdef *map;         /**< Pointer to the map in which this object is present */
+    object  *more;          /**< Pointer to the rest of a large body of objects */
+    object  *head;          /**< Points to the main object of a large body */
+    struct mapstruct *map;      /**< Pointer to the map in which this object is present */
 
     tag_t       count;          /**< Unique object number for this object */
-    struct struct_dialog_information *dialog_information; /**< Parsed dialog information for this object.
+    struct_dialog_information *dialog_information; /**< Parsed dialog information for this object.
                                                            * Valid if FLAG_DIALOG_PARSED is set (but can be NULL). */
 
     /* These get an extra add_refcount(), after having been copied by memcpy().
@@ -375,23 +375,23 @@ typedef struct obj {
     int32_t      carrying;       /**< How much weight this object contains */
     living       stats;          /**< Str, Con, Dex, etc */
     int64_t      total_exp;      /**< All exp ever earned (used to calc perm_exp) */
-    struct obj  *current_weapon; /**< Pointer to the weapon currently used */
+    object  *current_weapon; /**< Pointer to the weapon currently used */
     uint32_t      weapontype;     /**< Type of weapon */
     int8_t       body_info[NUM_BODY_LOCATIONS];  /**< Body info as loaded from the file */
     int8_t       body_used[NUM_BODY_LOCATIONS];  /**< Calculated value based on items equipped */
                                 /* See the doc/Developers/objects for more info about body locations */
 
     /* Following mostly refers to fields only used for monsters */
-    struct obj  *owner;         /**< Pointer to the object which controls this one.
+    object  *owner;         /**< Pointer to the object which controls this one.
                                  * Owner should not be referred to directly -
                                  * object_get_owner() should be used instead. */
     tag_t       ownercount;     /**< What count the owner had (in case owner has been freed) */
-    struct obj  *enemy;         /**< Monster/player to follow even if not closest */
-    struct obj  *attacked_by;   /**< This object start to attack us! only player & monster */
+    object  *enemy;         /**< Monster/player to follow even if not closest */
+    object  *attacked_by;   /**< This object start to attack us! only player & monster */
     tag_t       attacked_by_count; /**< The tag of attacker, so we can be sure */
     uint8_t       run_away;          /**< Monster runs away if it's hp goes below this percentage. */
-    struct treasureliststruct *randomitems; /**< Items to be generated */
-    struct obj  *chosen_skill;  /**< The skill chosen to use */
+    struct treasurelist *randomitems; /**< Items to be generated */
+    object  *chosen_skill;  /**< The skill chosen to use */
     uint8_t      hide;           /**< The object is hidden, not invisible */
     /* changes made by kholland@sunlab.cit.cornell.edu */
     /* allows different movement patterns for attackers */
@@ -399,7 +399,7 @@ typedef struct obj {
     uint16_t      attack_movement;/**< What kind of attack movement */
     uint8_t       will_apply;     /**< See crossfire.doc and @ref WILL_APPLY_xxx */
     uint8_t       sound_chance;   /**< Ignored. Probability, 0 to 100, of the object emitting a sound. */
-    struct obj  *spellitem;     /**< Spell ability monster is choosing to use */
+    object  *spellitem;     /**< Spell ability monster is choosing to use */
     double      expmul;         /**< needed experience = (calc_exp*expmul) - means some
                                  * races/classes can need less/more exp to gain levels */
 
@@ -413,12 +413,12 @@ typedef struct obj {
     int8_t       range;          /**< Range of the spell */
     uint8_t       range_modifier; /**< How going up in level affects range  */
     uint8_t       dam_modifier;   /**< How going up in level affects damage */
-    struct obj  *spell;         /**< Spell that was being cast */
+    object  *spell;         /**< Spell that was being cast */
     char        *spellarg;      /**< Optional argument when casting obj::spell. */
 
     /* Following are values used by any object */
-    struct archt *arch;         /**< Pointer to archetype */
-    struct archt *other_arch;   /**< Pointer used for various things - mostly used for what
+    struct archetype *arch;         /**< Pointer to archetype */
+    struct archetype *other_arch;   /**< Pointer used for various things - mostly used for what
                                  * this objects turns into or what this object creates */
     ob_flags    flags;             /**< Various flags */
     const Animations *animation;   /**< Animation of this item, NULL if not animated. */
@@ -441,25 +441,25 @@ typedef struct obj {
 
     tag_t       *spell_tags;      /**< Tags used for spell effect merging. */
     uint64_t    event_bitmask;  /**< Bitmask of events this object has a handler for, see events.h */
-} object;
+};
 
 /**
  * Used to link together several objects
  */
-typedef struct oblnk {
+struct objectlink {
     object *ob;         /**< Item to link to. */
-    struct oblnk *next; /**< Next item to link to. */
+    objectlink *next; /**< Next item to link to. */
     tag_t id;           /**< ob's tag, in case it is removed. */
-} objectlink;
+};
 
 /**
  * Used to link together several object links
  */
-typedef struct oblinkpt {
-    struct oblnk *link;   /**< Items for this value. */
+struct oblinkpt {
+    objectlink *link;          /**< Items for this value. */
     long value;           /**< Used as connected value in buttons/gates */
-    struct oblinkpt *next;/**< Next value in the list. */
-} oblinkpt;
+    oblinkpt *next;       /**< Next value in the list. */
+};
 
 /**
  * The archetype structure is a set of rules on how to generate and manipulate
@@ -469,15 +469,15 @@ typedef struct oblinkpt {
  * object and pointers.  This structure should get removed, and just replaced
  * by the object structure
  */
-typedef struct archt {
+struct archetype {
     sstring name;           /**< More definite name, like "generate_kobold" */
-    struct archt *head;     /**< The main part of a linked object */
-    struct archt *more;     /**< Next part of a linked object */
+    archetype *head;     /**< The main part of a linked object */
+    archetype *more;     /**< Next part of a linked object */
     object clone;           /**< An object from which to do object_copy() */
     int8_t tail_x, tail_y;   /**< Where the lower right most portion of the object is
                              * in comparison to the head. */
     int reference_count;    /**< How many times this temporary archetype is used. If 0, "permanent" archetype. */
-} archetype;
+};
 
 extern object *objects;
 extern object *active_objects;

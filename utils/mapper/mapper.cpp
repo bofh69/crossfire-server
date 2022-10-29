@@ -176,38 +176,38 @@ extern "C" {
 static gdImagePtr *gdfaces;
 
 /** Information about a NPC with a custom message. */
-typedef struct struct_npc_info {
+struct struct_npc_info {
     const char *name;       /**< NPC's name. */
     const char *message;    /**< NPC's message. */
     int x, y;               /**< Coordinates in the map. */
-} struct_npc_info;
+};
 
 /** List of NPCs with a custom message. */
 typedef std::vector<struct_npc_info *> npc_list;
 
 /** Collection of races. */
-typedef struct struct_race_list {
+struct struct_race_list {
     struct struct_race **races; /**< Races on the list. */
     size_t count;                  /**< Number of races. */
     size_t allocated;              /**< Allocated space. */
-} struct_race_list;
+};
 
 /** Utility structure to group map-quest link structure. */
-typedef struct {
+struct struct_map_in_quest_list {
     struct struct_map_in_quest **list;
     size_t count;
     size_t allocated;
-} struct_map_in_quest_list;
+};
 
 /** List of maps. */
-typedef struct {
+struct struct_map_list {
     struct struct_map_info **maps;
     size_t count;
     size_t allocated;
-} struct_map_list;
+};
 
 /** Map information. */
-typedef struct struct_map_info {
+struct struct_map_info {
     char *path;                                         /**< Full path of the map from the start directory. */
     char *name;                                         /**< Map's name as defined in the map file. */
     char *filename;                                     /**< Filename of the map. */
@@ -230,7 +230,7 @@ typedef struct struct_map_info {
     int height, width;
     int tiled_x_from, tiled_y_from, processed;
     struct struct_map_info *tiles[4];
-} struct_map_info;
+};
 
 /** Maps to process or found. */
 static struct_map_list maps_list;
@@ -239,23 +239,23 @@ static struct_map_list maps_list;
 static struct_map_list tiled_map_list;
 
 /** One special item (weapon, shield, ...). */
-typedef struct struct_equipment {
+struct struct_equipment {
     char *name;             /**< Item's name. */
     int power;              /**< Item power as declared by the item itself. */
     int calc_power;         /**< Item power calculated via calc_item_power(). */
     char *diff;             /**< Result of get_ob_diff() with the item's clone. */
     struct_map_list origin; /**< Map(s) this item is found in. */
-} struct_equipment;
+};
 
 static std::vector<struct_equipment *> special_equipment;     /**< Special equipment list. */
 
 
 /** One monster race in the maps. */
-typedef struct struct_race {
+struct struct_race {
     char *name;             /**< Monster's name. */
     int count;              /**< Number found on map. */
     struct_map_list origin; /**< Maps to find said monster. */
-} struct_race;
+};
 
 static struct_race_list races;     /**< Monsters found in maps. */
 
@@ -351,12 +351,12 @@ static int rawmaps = 0;
 static int warn_no_path = 0;
 
 /** Region information. */
-typedef struct struct_region_info {
+struct struct_region_info {
     region *reg;                /**< Region. */
     struct_map_list maps_list;  /**< Maps in the region. */
     int sum_x, sum_y, sum;      /**< Sum of locations, to compute name position. */
     int is_world;               /**< If set, this region has at least one map part of the world, thus region name should be written. */
-} struct_region_info;
+};
 
 static struct struct_region_info **regions = NULL; /**< Found regions. */
 static size_t region_count = 0;         /**< Count of regions. */
@@ -391,10 +391,10 @@ static std::map<region *, std::set<region *>> region_links;
 #define S_MAX       5
 
 /** slaying information. */
-typedef struct {
+struct struct_slaying_info {
     char *slaying;          /**< Slaying value. */
     struct_map_list maps[S_MAX];
-} struct_slaying_info;
+};
 
 static struct_slaying_info **slaying_info = NULL;  /**< Found slaying fields. */
 static size_t slaying_count = 0;                      /**< Count of items in slaying_info. */
@@ -872,20 +872,20 @@ static int sort_region(const void *left, const void *right) {
 ************************************/
 
 /** Link between a quest and a map. */
-typedef struct struct_map_in_quest {
+struct struct_map_in_quest {
     struct_map_info *map;   /**< Linked map. */
     char *description;      /**< Description associated with the map for the quest. */
     struct struct_quest *quest;    /**< Point back to the quest. */
-} struct_map_in_quest;
+};
 
 /** One quest. */
-typedef struct struct_quest {
+struct struct_quest {
     char *name;                     /**< Quest's name. */
     char *description;              /**< Description, from the main map's lore. */
     int number;                     /**< Unique quest identifier. */
     struct_map_info *mainmap;       /**< Map defining the quest. Can be NULL if quest has no definition or map not processed. */
     struct_map_in_quest_list maps;  /**< Maps part of this quest. */
-} struct_quest;
+};
 
 static struct_quest **quests = NULL;   /**< All quests in the game. */
 

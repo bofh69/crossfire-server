@@ -7,10 +7,10 @@
 #define PARTY_H
 
 /** One party. First item is ::firstparty. */
-typedef struct party_struct {
+struct partylist {
     char *partyleader;          /**< Who is the leader. */
     char passwd[9];             /**< Party password. */
-    struct party_struct *next;  /**< Next party in list. */
+    partylist *next;            /**< Next party in list. */
     char *partyname;            /**< Party name. */
 
 #ifdef PARTY_KILL_LOG
@@ -21,6 +21,6 @@ typedef struct party_struct {
     int64_t total_exp;
     uint32_t  kills;
 #endif
-} partylist;
+};
 
 #endif

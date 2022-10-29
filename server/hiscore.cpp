@@ -32,7 +32,7 @@
 /**
  * The score structure is used when treating new high-scores.
  */
-typedef struct scr {
+struct score {
     char name[BIG_NAME];      /**< Name.  */
     char title[BIG_NAME];     /**< Title. */
     char killer[BIG_NAME];    /**< Name (+ title) or "left". */
@@ -42,16 +42,16 @@ typedef struct scr {
         maxsp,      /**< Max sp when killed. */
         maxgrace;   /**< Max grace when killed. */
     int position;   /**< Position in the highscore list. */
-} score;
+};
 
 /**
  * A highscore table.
  */
-typedef struct {
+struct score_table {
     char fname[MAX_BUF];      /**< Filename of the backing file. */
     char skill_name[MAX_BUF]; /**< The name of the skill or "Overall". */
     score entry[HIGHSCORE_LENGTH]; /**< The entries in decreasing exp order. */
-} score_table;
+};
 
 /**
  * The highscore table. Unused entries are set to zero (except for position).

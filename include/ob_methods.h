@@ -27,28 +27,26 @@ typedef char method_ret;
  * typedef method_ret (apply_func)(ob_methods *context, object *ob);
  */
 
-/**
- * @struct ob_methods
- * This struct stores function pointers for actions that can be done to objects.
- * It is currently just used for type-specific object code. Add new function
- * pointers here when moving type specific code into the server/types/ *.c area.
- * When adding function pointers here, be sure to add to init_ob_methods() in
- * ob_types.c as necessary.
- */
-typedef struct ob_methods ob_methods;
 typedef method_ret (*apply_func)(object *, object *, int);
 typedef method_ret (*process_func)(object *);
 typedef void (*describe_func)(const object *, const object *, int use_media_tags, char *buf, size_t size);
 typedef method_ret (*move_on_func)(object *, object *, object *);
 typedef method_ret (*trigger_func)(object *, object *, int);
 
+/**
+ * This struct stores function pointers for actions that can be done to objects.
+ * It is currently just used for type-specific object code. Add new function
+ * pointers here when moving type specific code into the server/types/ *.c area.
+ * When adding function pointers here, be sure to add to init_ob_methods() in
+ * ob_types.c as necessary.
+ */
 struct ob_methods {
     apply_func      apply;          /**< The apply method */
     process_func    process;        /**< The process method */
     describe_func   describe;       /**< The describe method */
     move_on_func    move_on;        /**< The move_on method */
     trigger_func    trigger;        /**< When something is triggered via a button. */
-    struct ob_methods *fallback;    /**< ob_method structure to fallback to */
+    ob_methods     *fallback;    /**< ob_method structure to fallback to */
     /* Example:
      * apply_func *apply;
      */

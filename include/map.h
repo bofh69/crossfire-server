@@ -124,7 +124,7 @@ extern const char *const map_layer_name[MAP_LAYERS];
 /*@}*/
 
 /**
- * @defgroup IN_MEMORY_xxx Values for mapdef->in_memory field.
+ * @defgroup IN_MEMORY_xxx Values for mapstruct->in_memory field.
  * @todo rename to IM_xxx ?
  */
 /*@{*/
@@ -254,7 +254,7 @@ extern const char *const map_layer_name[MAP_LAYERS];
 /**
  * This structure contains all information related to one map square.
  */
-typedef struct MapSpace {
+struct MapSpace {
     object      *bottom;        /**< Lowest object on this space. */
     object      *top;           /**< Highest object on this space. */
     object      *faces_obj[MAP_LAYERS]; /**< Face objects for the layers. */
@@ -265,16 +265,16 @@ typedef struct MapSpace {
     MoveType    move_on;        /**< What movement types are activated. */
     MoveType    move_off;       /**< What movement types are activated. */
     object      *pl;            /**< Player who is on this space, may be NULL. */
-} MapSpace;
+};
 
 /**
  * This is a game region.
  * Each map is in a given region of the game world and links to a region definiton, so
- * they have to appear here in the headers, before the mapdef
+ * they have to appear here in the headers, before the mapstruct
  */
-typedef struct regiondef {
+struct region {
     char  *name;                 /**< Shortend name of the region as maps refer to it */
-    struct regiondef *parent;   /**<
+    region *parent;              /**<
                                   * Pointer to the region that is a parent of the current
                                   * region, if a value isn't defined in the current region
                                   * we traverse this series of pointers until it is.
@@ -287,20 +287,20 @@ typedef struct regiondef {
                                   * this should be the one we fall back on as the default. */
     char        *jailmap;        /**< Where a player that is arrested in this region should be imprisoned. */
     int16_t      jailx, jaily;    /**< The coodinates in jailmap to which the player should be sent. */
-} region;
+};
 
 /**
  * Shop-related information for a map. This is one item type the shop will deal in, and
  * the price-chance.
  */
-typedef struct shopitem {
+struct shopitems {
     const char *name;     /**< Name of the item in question, null if it is the default item. */
     const char *name_pl;  /**< Plural name. */
     int typenum;    /**< Itemtype number we need to match, -1 if it is the default price. */
     int8_t strength; /**< The degree of specialisation the shop has in this item,
                      * as a percentage from -100 to 100. */
     int index;      /**< Being the size of the shopitems array.*/
-} shopitems;
+};
 
 /**
  * This is a game-map.
@@ -313,11 +313,11 @@ typedef struct shopitem {
  * (or even through the macros), but doing so will completely
  * break map tiling.
  */
-typedef struct mapdef {
-    struct mapdef *next;        /**< Next map, linked list. */
+struct mapstruct {
+    mapstruct *next;            /**< Next map, linked list. */
     char    *tmpname;           /**< Name of temporary file. */
     char    *name;              /**< Name of map as given by its creator. */
-    struct regiondef *region;   /**< What jurisdiction in the game world this map is ruled by
+    struct region *region;             /**< What jurisdiction in the game world this map is ruled by
                                  * points to the struct containing all the properties of
                                  * the region. */
     uint32_t  reset_time;         /**< When this map should reset. */
@@ -345,7 +345,7 @@ typedef struct mapdef {
                                  *   at enter_x,enter_y when they arrive.    */
     oblinkpt *buttons;          /**< Linked list of linked lists of buttons. */
     MapSpace *spaces;           /**< Array of spaces on this map. */
-    struct shopitem *shopitems;     /**< List of item-types the map's shop will trade in. */
+    struct shopitems *shopitems;       /**< List of item-types the map's shop will trade in. */
     char    *shoprace;          /**< The preffered race of the local shopkeeper. */
     double  shopgreed;          /**< How much our shopkeeper overcharges. */
     uint64_t  shopmin;            /**< Minimum price a shop will trade for. */
@@ -353,11 +353,11 @@ typedef struct mapdef {
     char    *msg;               /**< Message map creator may have left. */
     char    *maplore;           /**< Map lore information. */
     char    *tile_path[4];      /**< Path to adjoining maps. */
-    struct mapdef *tile_map[4]; /**< Adjoining maps. */
+    mapstruct *tile_map[4];     /**< Adjoining maps. */
     char    path[HUGE_BUF];     /**< Filename of the map. */
     long last_reset_time;       /**< A timestamp of the last original map loading. */
     char    *background_music;  /**< Background music to use for this map. */
-} mapstruct;
+};
 
 /**
  * This is used by get_rangevector to determine where the other
@@ -369,13 +369,13 @@ typedef struct mapdef {
  * monster that is closest.
  * Note: distance should be always >=0. I changed it to UINT. MT
  */
-typedef struct rv_vector {
+struct rv_vector {
     unsigned int distance;  /**< Distance, in squares. */
     int     distance_x;     /**< X delta. */
     int     distance_y;     /**< Y delta. */
     int     direction;      /**< General direction to the targer. */
     object  *part;          /**< Part we found. */
-} rv_vector;
+};
 
 uint32_t map_size(mapstruct *m);
 

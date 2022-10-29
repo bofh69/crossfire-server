@@ -30,7 +30,7 @@
 /**
  * The string buffer state.
  */
-typedef struct StringBuffer StringBuffer;
+struct StringBuffer;
 
 
 /**

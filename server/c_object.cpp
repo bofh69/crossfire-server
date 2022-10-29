@@ -708,7 +708,7 @@ int object_matches_pickup_mode(const object *item, int mode) {
 }
 
 /** Matching parameters. */
-typedef struct {
+struct matcher_params {
     union {
         struct {
             int item_to_pick;   /**< Index of the item to pick, 1-based. */
@@ -719,7 +719,7 @@ typedef struct {
         int pickup_type;        /**< Value in @ref PU_xxx to match against. */
     };
     int missed;                 /**< How many items were missed when matching. */
-} matcher_params;
+};
 
 /**
  * Prototype for a function checking if an object matches some parameters.

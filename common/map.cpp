@@ -48,10 +48,10 @@ const char *const map_layer_name[MAP_LAYERS] = {
 };
 
 /** Information about a layer. */
-typedef struct Map_Layer_Info {
+struct Map_Layer_Info {
     uint8_t high_layer;       /**< Highest layer for this group. */
     uint8_t honor_visibility; /**< If 0 then don't reorder items, else allow. */
-} Map_Layer_Info;
+};
 
 /**
  * the ob->map_layer holds the low layer.  For the update_position()

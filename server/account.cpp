@@ -78,7 +78,7 @@ static std::set<std::string> accounts_logged_in = std::set<std::string>();
  * comparisons/functions should not be used on it.
  */
 
-typedef struct account_struct {
+struct account_struct {
     char  *name;                    /**< Account name */
     char  *password;                /**< Password for this account */
     time_t last_login;              /**< Last time this account was logged in */
@@ -87,7 +87,7 @@ typedef struct account_struct {
     char  **character_names;        /**< Character names associated with this account,
                                      +1 added to allow for NULL termination */
     time_t  created;                /**< When character was created */
-} account_struct;
+};
 
 /**
  * list of all accounts.

@@ -38,12 +38,12 @@ void init_type_shop_inventory(void) {
 /**
  * One item to list on the sign.
  */
-typedef struct shopinv {
+struct shopinv {
     char        *item_sort;     /**< Singular name. */
     char        *item_real;     /**< Plural name. */
     uint16_t      type;           /**< Item type. */
     uint32_t      nrof;           /**< Count of this items. */
-} shopinv;
+};
 
 /**
  * Sort routine for shopinv.

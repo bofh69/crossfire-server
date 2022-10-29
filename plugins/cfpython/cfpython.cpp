@@ -74,12 +74,12 @@ CF_PLUGIN char SvnRevPlugin[] = SVN_REV;
 /**
  * One compiled script, cached in memory.
  */
-typedef struct {
+struct pycode_cache_entry {
     sstring file;                   /**< Script full path. */
     PyCodeObject *code;             /**< Compiled code, NULL if there was an error. */
     time_t cached_time,             /**< Time this cache entry was created. */
             used_time;              /**< Last use of this cache entry. */
-} pycode_cache_entry;
+};
 
 #define MAX_COMMANDS    1024
 static command_registration registered_commands[MAX_COMMANDS];

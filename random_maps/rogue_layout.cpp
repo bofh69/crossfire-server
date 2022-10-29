@@ -24,7 +24,7 @@
 
 #include "random_map.h"
 
-typedef struct {
+struct Room {
     /** Coordinates of room centers */
     int x, y;
 
@@ -36,7 +36,7 @@ typedef struct {
 
     /* Room type (circular or rectangular) */
     int rtype;
-} Room;
+};
 
 static int rn2(int x) {
     return RANDOM()%x;

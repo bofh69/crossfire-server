@@ -51,8 +51,8 @@
 #include <plugin_common.h>
 #include <plugin_template.h>
 
-typedef struct _cfpcontext {
-    struct _cfpcontext *down;
+struct CFPContext {
+    CFPContext *down;
     object     *who;
     object     *activator;
     object     *third;
@@ -63,7 +63,7 @@ typedef struct _cfpcontext {
     char        options[1024];
     int         returnvalue;
     int         parms[5];
-} CFPContext;
+};
 
 extern f_plug_api  gethook;
 

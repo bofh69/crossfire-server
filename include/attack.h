@@ -115,17 +115,17 @@
  */
 
 /** Attack messages structure. */
-typedef struct attackmess {
+struct attackmess_t {
     int level;
     char *buf1;
     char *buf2;
     char *buf3;
-} attackmess_t;
+};
 
-typedef struct {
+struct Chaos_Attacks {
     int attacktype;
     int face;
-} Chaos_Attacks;
+};
 
 /** Attack messages the player gets when hitting/getting hit. */
 EXTERN attackmess_t attack_mess[NROFATTACKMESS][MAXATTACKMESS];

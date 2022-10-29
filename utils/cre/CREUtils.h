@@ -21,7 +21,7 @@
 class CREUtils
 {
     public:
-        static QTreeWidgetItem* archetypeNode(const archt* arch, QTreeWidgetItem* parent);
+        static QTreeWidgetItem* archetypeNode(const archetype* arch, QTreeWidgetItem* parent);
 
         static QTreeWidgetItem* objectNode(const object* op, QTreeWidgetItem* parent);
 

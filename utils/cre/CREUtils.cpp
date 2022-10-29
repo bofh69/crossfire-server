@@ -21,7 +21,7 @@
 #include "recipe.h"
 #include "libproto.h"
 
-QTreeWidgetItem* CREUtils::archetypeNode(const archt* arch, QTreeWidgetItem* parent)
+QTreeWidgetItem* CREUtils::archetypeNode(const archetype* arch, QTreeWidgetItem* parent)
 {
     QTreeWidgetItem* item = new QTreeWidgetItem(parent, QStringList(arch->name));
     item->setIcon(0, CREPixmap::getIcon(arch->clone.face ? arch->clone.face->number : 0));

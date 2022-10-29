@@ -32,7 +32,7 @@ extern const char *const lose_msg[NUM_STATS];
 /**
  * Various statistics of objects.
  */
-typedef struct liv {
+struct living {
     int8_t         Str, Dex, Con, Wis, Cha, Int, Pow;
     int8_t         wc;         /**< Weapon Class, how skilled, the lower the better. */
     int8_t         ac;         /**< Armour Class, how hard to hit, the lower the better. */
@@ -46,7 +46,7 @@ typedef struct liv {
     int16_t        dam;        /**< How much damage this object does when hitting */
     int64_t        exp;        /**< Experience.  Killers gain 1/10. */
     int32_t        food;       /**< How much food in stomach.  0 = starved. */
-} living;
+};
 
 int get_cha_bonus(int stat);
 int get_dex_bonus(int stat);

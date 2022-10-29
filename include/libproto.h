@@ -344,11 +344,11 @@ extern int is_dragon_pl(const object *op);
 extern client_spell *get_client_spell_state(player *pl, object *spell);
 extern int is_wraith_pl(object *op);
 extern int is_old_wraith_pl(object *op);
-extern void player_set_dragon_title(struct pl *pl, int level, const char *attack, int skin_resist);
-extern void player_get_title(const struct pl *pl, char *buf, size_t bufsize);
-extern int player_has_own_title(const struct pl *pl);
-extern const char *player_get_own_title(const struct pl *pl);
-extern void player_set_own_title(struct pl *pl, const char *title);
+extern void player_set_dragon_title(struct player *pl, int level, const char *attack, int skin_resist);
+extern void player_get_title(const struct player *pl, char *buf, size_t bufsize);
+extern int player_has_own_title(const struct player *pl);
+extern const char *player_get_own_title(const struct player *pl);
+extern void player_set_own_title(struct player *pl, const char *title);
 extern void link_player_skills(object *op);
 /* re-cmp.cpp */
 extern const char *re_cmp(const char *str, const char *regexp);

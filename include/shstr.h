@@ -67,12 +67,12 @@ static struct statistics {
 /**
  * One actual shared string.
  */
-typedef struct _shared_string {
+struct shared_string {
     union {
-        struct _shared_string **array;
-        struct _shared_string *previous;
+        shared_string **array;
+        shared_string *previous;
     } u;
-    struct _shared_string *next;
+    shared_string *next;
     /* The top bit of "refcount" is used to signify that "u.array" points
      * at the array entry.
      */
@@ -82,6 +82,6 @@ typedef struct _shared_string {
      * sizeof(long) is a good boundary.
      */
     char string[PADDING];
-} shared_string;
+};
 
 #endif /* SHSTR_H */

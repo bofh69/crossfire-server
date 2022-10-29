@@ -907,7 +907,7 @@ void CREMainWindow::onReportSpells()
 {
     QStringList skills;
 
-    getManager()->archetypes()->each([&skills] (const archt *arch)
+    getManager()->archetypes()->each([&skills] (const archetype *arch)
     {
         if (arch->clone.type == SKILL)
             skills.append(arch->clone.name);
@@ -1616,7 +1616,7 @@ void CREMainWindow::onReportArchetypes()
   report += "<table>";
   report += "<tr><th>Image</th><th>Archetype name</th><th>Item name</th><th>Type</th></tr>";
 
-  getManager()->archetypes()->each([this, &report] (const archt* arch)
+  getManager()->archetypes()->each([this, &report] (const archetype* arch)
   {
       if (arch->head || arch->clone.type == PLAYER || arch->clone.type == MAP || arch->clone.type == EVENT_CONNECTOR)
           return;
@@ -1625,7 +1625,7 @@ void CREMainWindow::onReportArchetypes()
 
       bool used = false;
       ResourcesManager::archetypeUse(arch, myMapManager, [&used]
-        (ArchetypeUse, const archt*, const treasurelist*, const CREMapInformation*, const recipe*) -> bool
+        (ArchetypeUse, const archetype*, const treasurelist*, const CREMapInformation*, const recipe*) -> bool
       {
           used = true;
           return false;

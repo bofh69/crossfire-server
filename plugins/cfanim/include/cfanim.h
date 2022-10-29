@@ -42,30 +42,30 @@ enum time_enum {
 };
 
 /** Result of one animation move. */
-typedef enum anim_move_result {
+enum anim_move_result {
     mr_finished,        /**< Move completed. */
     mr_again            /**< Move should continue next time. */
-} anim_move_result;
+};
 
-struct CFanimation_struct;
-struct CFmovement_struct;
+struct CFanimation;
+struct CFmovement;
 
-typedef anim_move_result (*CFAnimRunFunc)(struct CFanimation_struct *animation, long int id, void *parameters);
+typedef anim_move_result (*CFAnimRunFunc)(struct CFanimation *animation, long int id, void *parameters);
 
-typedef long int (*CFAnimInitFunc)(const char *name, char *parameters, struct CFmovement_struct *);
+typedef long int (*CFAnimInitFunc)(const char *name, char *parameters, struct CFmovement *);
 
 /** One move in an animation. */
-typedef struct CFmovement_struct {
-    struct CFanimation_struct *parent;  /**< Animation this move is linked to. */
+struct CFmovement {
+    struct CFanimation *parent;  /**< Animation this move is linked to. */
     CFAnimRunFunc func;                 /**< Function to run for this move. */
     void *parameters;                   /**< Parameters to the function. */
     long int id;                        /**< Identifier, used for various things. */
     int tick;                           /**< Move duration, units depending on parent's time_representation. */
-    struct CFmovement_struct *next;     /**< Next move in the animation. */
-} CFmovement;
+    CFmovement *next;                   /**< Next move in the animation. */
+};
 
 /** One full animation. */
-typedef struct CFanimation_struct {
+struct CFanimation {
     char *name;
     object *victim;
     object *event;
@@ -80,16 +80,16 @@ typedef struct CFanimation_struct {
     object *corpse;
     long int tick_left;
     enum time_enum time_representation;
-    struct CFmovement_struct *nextmovement;
-    struct CFanimation_struct *nextanimation;
-} CFanimation;
+    CFmovement *nextmovement;
+    CFanimation *nextanimation;
+};
 
 /** Available animation move. */
-typedef struct {
+struct CFanimationHook {
     const char *name;           /**< Name as it appears in the animation file. */
     CFAnimInitFunc funcinit;    /**< Function to process the parameters of the move. */
     CFAnimRunFunc funcrun;      /**< Function to run the move. */
-} CFanimationHook;
+};
 
 extern CFanimationHook animationbox[];
 

@@ -28,12 +28,12 @@
  */
 
 /** Structure containing information sent to the metaserver2 */
-typedef struct _MetaServer2_UpdateInfo {
+struct MetaServer2_UpdateInfo {
     int     num_players;        /**< Number of players */
     int     in_bytes;           /**< Number of bytes received */
     int     out_bytes;          /**< Number of bytes sent */
     time_t  uptime;             /**< How long server has been up */
-} MetaServer2_UpdateInfo;
+};
 
 extern MetaServer2_UpdateInfo metaserver2_updateinfo;
 

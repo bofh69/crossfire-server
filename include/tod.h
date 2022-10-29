@@ -35,7 +35,7 @@ extern unsigned long todtick;
 /**
  * Represents the ingame time.
  */
-typedef struct _timeofday {
+struct timeofday_t {
     int year;
     int month;
     int day;
@@ -45,7 +45,7 @@ typedef struct _timeofday {
     int weekofmonth;
     int season;
     int periodofday;
-} timeofday_t;
+};
 
 /* from common/time.c */
 extern void get_tod(timeofday_t *tod);

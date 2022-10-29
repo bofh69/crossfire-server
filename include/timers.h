@@ -51,11 +51,11 @@
 /**
  * One timer.
  */
-typedef struct _cftimer {
+struct cftimer {
     int     mode;   /**< Timer mode. */
     long    delay;  /**< Either server ticks before trigger, or trigger time. */
     tag_t   ob_tag; /**< Object associated to the timer. */
-} cftimer;
+};
 
 /** Maximum number of timers. */
 #define MAX_TIMERS 1000

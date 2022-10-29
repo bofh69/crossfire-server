@@ -63,18 +63,18 @@
 /**
  * Point from which a NPC can come when the map is loaded.
  */
-typedef struct {
+struct spawn_point {
     int x;
     int y;
-} spawn_point;
+};
 
 /**
  * Zone in which to add NPCs when the map was just loaded.
  * NPC will be added in [sx, ex[ and [sy, ey[.
  */
-typedef struct {
+struct spawn_zone {
     int sx, sy, ex, ey;
-} spawn_zone;
+};
 
 /**
  * Options for a map.

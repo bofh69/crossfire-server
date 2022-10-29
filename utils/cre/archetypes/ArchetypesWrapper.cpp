@@ -18,7 +18,7 @@
 
 ArchetypesWrapper::ArchetypesWrapper(AssetWrapper *parent, ResourcesManager *resourcesManager)
  : AssetWrapper(parent), myResourcesManager(resourcesManager) {
-    getManager()->archetypes()->each([&] (archt *arch) {
+    getManager()->archetypes()->each([&] (archetype *arch) {
         if (!arch->head) {
             myArch.append(myResourcesManager->wrap(arch, this));
         }

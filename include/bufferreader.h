@@ -43,7 +43,7 @@
 /**
  * The reader state.
  */
-typedef struct BufferReader BufferReader;
+struct BufferReader;
 
 /**
  * Create a new BufferReader.

@@ -41,10 +41,10 @@
 #include "sproto.h"
 
 /** Link between a map and the exits to generate for it. */
-typedef struct house_zone_struct {
+struct house_zone_struct {
     const char *mappath;        /**< Full map path. */
     const char *monsterstyle;   /**< Style of monsters. */
-} house_zone_struct;
+};
 
 /** Maps we work on. */
 static const house_zone_struct zones[] = {

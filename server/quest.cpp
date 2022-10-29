@@ -45,21 +45,21 @@
 #define QC_CAN_RESTART -1
 
 /** Information about a quest for a player. */
-typedef struct quest_state {
+struct quest_state {
     sstring code;               /**< Quest internal code. */
     int state;                  /**< State for the player. */
     int was_completed;          /**< Whether the quest was completed once or not, indepandently of the state. */
     int is_complete;            /**< Whether the quest is complete in the current playthrough */
     int sent_to_client;         /**< Whether this state was sent to the client or not. */
-    struct quest_state *next;   /**< Next quest on the list. */
-} quest_state;
+    quest_state *next;          /**< Next quest on the list. */
+};
 
 /** Information about a player. */
-typedef struct quest_player {
+struct quest_player {
     sstring player_name;        /**< Player's name. */
-    struct quest_state *quests; /**< Quests done or in progress. */
-    struct quest_player *next;  /**< Next player on the list. */
-} quest_player;
+    quest_state *quests;        /**< Quests done or in progress. */
+    quest_player *next;         /**< Next player on the list. */
+};
 
 /** Player quest state. */
 static quest_player *player_states = NULL;
@@ -844,10 +844,10 @@ void command_quest(object *op, const char *params) {
 }
 
 /** Structure used when dumping quests to stdout. */
-typedef struct {
+struct dump {
     const quest_definition *parent; /**< Parent to dump from. */
     int level;                      /**< Indentation level. */
-} dump;
+};
 /**
  * Dump one quest on the logfile, then its children. Will call itself through quest_for_each().
  * @param quest quest to dump.

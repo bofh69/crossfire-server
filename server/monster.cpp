@@ -412,14 +412,14 @@ static int monster_move_randomly(object *op) {
 /**
  * Structure to store data so we can use a minheap.
  */
-typedef struct {
+struct path_data {
     int16_t x;
     int16_t y;
     uint16_t distance;
     uint16_t heuristic_dist;
     // This way we only have to calculate penalties once per tile per pathing calculation.
     int16_t movement_penalty;
-} path_data;
+};
 
 /**
  * Function to retrieve the measurement the minheap will organize by.
