@@ -71,11 +71,15 @@ static void cancellation(object *op) {
 }
 
 static void object_get_materialtype(object* op, materialtype_t** mt) {
+    set_materialname(op);
     if (op->materialname == NULL) {
-        for (*mt = materialt; *mt != NULL && (*mt)->next != NULL; *mt = (*mt)->next) {
-            if (op->material & (*mt)->material)
-                break;
+        for (auto material : materials) {
+            *mt = material;
+            if (op->material & (*mt)->material) {
+                return;
+            }
         }
+        *mt = nullptr;
     } else
         *mt = name_to_material(op->materialname);
 }

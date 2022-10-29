@@ -242,20 +242,16 @@ void decay_objects(mapstruct *m) {
 /**
  * Convert materialname to materialtype_t
  *
- * @todo
- * why use a break?
+ * @param name material name to get.
+ * @return matching material, nullptr if none matched.
  */
 materialtype_t *name_to_material(const char *name) {
-    materialtype_t *mt, *nmt;
-
-    mt = NULL;
-    for (nmt = materialt; nmt != NULL && nmt->next != NULL; nmt = nmt->next) {
-        if (strcmp(name, nmt->name) == 0) {
-            mt = nmt;
-            break;
+    for (auto material : materials) {
+        if (strcmp(name, material->name) == 0) {
+            return material;
         }
     }
-    return mt;
+    return nullptr;
 }
 
 /**
@@ -299,20 +295,14 @@ void transmute_materialname(object *op, const object *change) {
  * @param op item to set the material for.
  */
 void set_materialname(object *op) {
-    materialtype_t *mt;
-
     if (op->materialname != NULL)
         return;
 
-    for (mt = materialt; mt != NULL; mt = mt->next) {
-        if (op->material&mt->material) {
-            break;
+    for (auto material : materials) {
+        if (op->material & material->material) {
+            op->materialname = add_string(material->name);
+            return;
         }
-    }
-
-    if (mt != NULL) {
-        op->materialname = add_string(mt->name);
-        return;
     }
 }
 

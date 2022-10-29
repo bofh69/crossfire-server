@@ -126,7 +126,7 @@ archetype *ring_arch, *amulet_arch, *crown_arch;
 const char *undead_name; /* Used in hit_player() in main.c */
 sstring blocks_prayer;   /**< For update_position() mostly. */
 
-materialtype_t *materialt;
+std::vector<materialtype_t *> materials;
 
 static void init_environ(void);
 static void init_defaults(void);

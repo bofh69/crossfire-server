@@ -1568,10 +1568,8 @@ void CREMainWindow::onReportMaterials()
 
   report += "<h1>Materials</h1>";
   report += "<table><tr><th>Name</th><th>Description</th></tr>";
-  auto mat = materialt;
-  while (mat) {
+  for (const auto &mat : materials) {
       report += tr("<tr><td>%1</td><td>%2</td></tr>").arg(mat->name, mat->description);
-      mat = mat->next;
   }
   report += "</table>";
 
@@ -1585,15 +1583,13 @@ void CREMainWindow::onReportMaterials()
         }
         report += "</tr>";
 
-        mat = materialt;
-        while (mat) {
+        for (auto const &mat : materials) {
             report += tr("<tr><td>%1</td>").arg(mat->name);
               for (int r = 0; r < NROFATTACKS; r++) {
                   int8_t val = (s == 0 ? mat->save[r] : mat->mod[r]);
                   report += tr("<td>%1</td>").arg(val == 0 ? QString() : QString::number(val));
               }
             report += "</tr>";
-            mat = mat->next;
         }
       report += "</table>";
   }

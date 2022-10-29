@@ -35,10 +35,9 @@ struct materialtype_t {
     int         material;         /**< What basic type(s) it is linked to. */
     int8_t       save[NROFATTACKS];/**< Save chances for the attacks. */
     int8_t       mod[NROFATTACKS]; /**< Modification to resistances. */
-    materialtype_t *next;           /**< Next item on the list. */
 };
 
 /** Material types. */
-EXTERN materialtype_t *materialt;
+EXTERN std::vector<materialtype_t *> materials;
 
 #endif  /* MATERIAL_H */

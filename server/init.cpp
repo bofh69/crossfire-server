@@ -509,7 +509,6 @@ static materialtype_t *get_empty_mat(void) {
         mt->save[i] = 0;
         mt->mod[i] = 0;
     }
-    mt->next = NULL;
     return mt;
 }
 
@@ -523,17 +522,6 @@ static void load_materials(BufferReader *reader, const char *filename) {
     int i, value;
     (void)filename;
 
-    mt = get_empty_mat();
-    if (!materialt) {
-        materialt = mt;
-    } else {
-        materialtype_t *a = materialt;
-        while (a->next != NULL) {
-            a = a->next;
-        }
-        a->next = mt;
-    }
-
     while ((buf = bufferreader_next_line(reader)) != NULL) {
         if (*buf == '#')
             continue;
@@ -541,16 +529,12 @@ static void load_materials(BufferReader *reader, const char *filename) {
         while (*cp == ' ') /* Skip blanks */
             cp++;
         if (!strncmp(cp, "name", 4)) {
-            /* clean up the previous entry */
-            if (mt->next != NULL) {
-                if (mt->description == NULL)
-                    mt->description = add_string(mt->name);
-                mt = mt->next;
-            }
-            mt->next = get_empty_mat();
+            mt = get_empty_mat();
+            materials.push_back(mt);
             mt->name = add_string(strchr(cp, ' ')+1);
+            mt->description = add_refcount(mt->name);
         } else if (!strncmp(cp, "description", 11)) {
-            mt->description = add_string(strchr(cp, ' ')+1);
+            FREE_AND_COPY_IF(mt->description, strchr(cp, ' ')+1);
         } else if (sscanf(cp, "material %d", &value)) {
             mt->material = value;
         } else if (!strncmp(cp, "saves", 5)) {
@@ -581,23 +565,17 @@ static void load_materials(BufferReader *reader, const char *filename) {
             }
         }
     }
-    free(mt->next);
-    mt->next = NULL;
-    LOG(llevDebug, "loaded material type data\n");
+    LOG(llevDebug, "loaded %d material type data\n", static_cast<int>(materials.size()));
 }
 
 /**
  * Frees all memory allocated to materials.
  */
 static void free_materials(void) {
-    materialtype_t *next;
-
-    while (materialt) {
-        next = materialt->next;
-        free(materialt);
-        materialt = next;
+    for (auto material : materials) {
+        free(material);
     }
-    materialt = NULL;
+    materials.clear();
 }
 
 /**
