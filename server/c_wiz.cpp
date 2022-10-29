@@ -29,6 +29,7 @@
 #include "treasure.h"
 #include "skills.h"
 #include "assets.h"
+#include "AssetsManager.h"
 
 /* Defines for DM item stack **/
 #define STACK_SIZE         50   /**< Stack size, static */
@@ -2211,7 +2212,6 @@ void command_invisible(object *op, const char *params) {
  * @todo remove the spelldirect_xxx test?
  */
 static object *get_spell_by_name(object *op, const char *spell_name) {
-    archetype *ar;
     archetype *found;
     int conflict_found;
     size_t spell_name_length;
@@ -2219,15 +2219,15 @@ static object *get_spell_by_name(object *op, const char *spell_name) {
     /* First check for full name matches. */
     conflict_found = 0;
     found = NULL;
-    for (ar = get_next_archetype(NULL); ar != NULL; ar = get_next_archetype(ar)) {
+    getManager()->archetypes()->each([&] (auto ar) {
         if (ar->clone.type != SPELL)
-            continue;
+            return;
 
         if (strncmp(ar->name, "spelldirect_", 12) == 0)
-            continue;
+            return;
 
         if (strcmp(ar->clone.name, spell_name) != 0)
-            continue;
+            return;
 
         if (found != NULL) {
             if (!conflict_found) {
@@ -2242,11 +2242,11 @@ static object *get_spell_by_name(object *op, const char *spell_name) {
             draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
                                  "- %s",
                                  ar->name);
-            continue;
+            return;
         }
 
         found = ar;
-    }
+    });
 
     /* No match if more more than one archetype matches. */
     if (conflict_found)
@@ -2261,15 +2261,15 @@ static object *get_spell_by_name(object *op, const char *spell_name) {
     conflict_found = 0;
     found = NULL;
 
-    for (ar = get_next_archetype(NULL); ar != NULL; ar = get_next_archetype(ar)) {
+    getManager()->archetypes()->each([&] (auto ar) {
         if (ar->clone.type != SPELL)
-            continue;
+            return;
 
         if (strncmp(ar->name, "spelldirect_", 12) == 0)
-            continue;
+            return;
 
         if (strncmp(ar->clone.name, spell_name, spell_name_length) != 0)
-            continue;
+            return;
 
         if (found != NULL) {
             if (!conflict_found) {
@@ -2284,11 +2284,11 @@ static object *get_spell_by_name(object *op, const char *spell_name) {
             draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
                                  "- %s",
                                  ar->clone.name);
-            continue;
+            return;
         }
 
         found = ar;
-    }
+    });
 
     /* No match if more more than one archetype matches. */
     if (conflict_found)
