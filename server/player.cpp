@@ -39,6 +39,8 @@
 #include "sounds.h"
 #include "spells.h"
 #include "sproto.h"
+#include "assets.h"
+#include "AssetsManager.h"
 
 static archetype *get_player_archetype(archetype *at);
 
@@ -493,20 +495,31 @@ player *add_player(socket_struct *ns, int flags) {
  * next player archetype available.
  */
 static archetype *get_player_archetype(archetype *at) {
-    archetype *start = at;
-
-    for (;;) {
-        at = get_next_archetype(at);
-        if (at == NULL) {
-            at = get_next_archetype(at);
-        }
-        if (at->clone.type == PLAYER)
-            return at;
-        if (at == start) {
+    static std::vector<archetype *> players;
+    if (players.empty()) {
+        getManager()->archetypes()->each([&] (const auto &at) {
+            if (at->clone.type == PLAYER) {
+                players.push_back(at);
+            }
+        });
+        if (players.empty()) {
             LOG(llevError, "No Player archetypes\n");
-            exit(-1);
+            fatal(SEE_LAST_ERROR);
         }
     }
+
+    if (!at) {
+        return players.front();
+    }
+    auto pos = std::find(players.cbegin(), players.cend(), at);
+    if (pos == players.cend()) {
+        return nullptr;
+    }
+    ++pos;
+    if (pos == players.cend()) {
+        return players.front();
+    }
+    return *pos;
 }
 
 /**
