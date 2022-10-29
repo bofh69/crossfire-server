@@ -21,8 +21,7 @@
 
 #include <ctype.h>
 #include <pthread.h>
-#include <stdlib.h>
-#include <string.h>
+#include <string>
 
 #ifndef WIN32 /* ---win32 exclude unix header files */
 #include <sys/types.h>
@@ -104,17 +103,8 @@ void metaserver_update(void) {
  * is needed.
  */
 
-/**
- * This is a linked list of all the metaservers -
- * never really know how many we have.
- */
-typedef struct _MetaServer2 {
-    char *hostname;             /**< Hostname to contact. */
-    struct _MetaServer2 *next;  /**< Next element in the list. */
-} MetaServer2;
-
-/** Metaservers to send information to. */
-static MetaServer2 *metaserver2;
+/** Metaservers to send information to, list of hostnames. */
+static std::vector<std::string> metaservers;
 
 /**
  * LocalMeta2Info basically holds all the non server metaserver2 information
@@ -143,18 +133,6 @@ static LocalMeta2Info local_info;
 MetaServer2_UpdateInfo metaserver2_updateinfo;
 
 /**
- * This frees any data associated with the MetaServer2 info,
- * including the pointer itself.  Caller is responsible for updating
- * pointers (ms->next) - really only used when wanting to free
- * all data.
- * @param ms data to free, pointer becomes invalid.
- */
-static void free_metaserver2(MetaServer2 *ms) {
-    free(ms->hostname);
-    free(ms);
-}
-
-/**
  * This initializes the metaserver2 logic - it reads
  * the metaserver2 file, storing the values
  * away.  Note that it may be possible/desirable for the
@@ -172,7 +150,6 @@ int metaserver2_init(void) {
     static int has_init = 0;
     FILE *fp;
     char buf[MAX_BUF], *cp, dummy[1];
-    MetaServer2 *ms2, *msnext;
     pthread_t thread_id;
 
     dummy[0] = '\0';
@@ -183,7 +160,6 @@ int metaserver2_init(void) {
         memset(&metaserver2_updateinfo, 0, sizeof(MetaServer2_UpdateInfo));
 
         local_info.portnumber = settings.csport;
-        metaserver2 = NULL;
         pthread_mutex_init(&ms2_info_mutex, NULL);
         curl_global_init(CURL_GLOBAL_ALL);
     } else {
@@ -202,11 +178,7 @@ int metaserver2_init(void) {
             FREE_AND_CLEAR(local_info.codebase);
         if (local_info.flags)
             FREE_AND_CLEAR(local_info.flags);
-        for (ms2 = metaserver2; ms2; ms2 = msnext) {
-            msnext = ms2->next;
-            free_metaserver2(ms2);
-        }
-        metaserver2 = NULL;
+        metaservers.clear();
     }
 #endif
 
@@ -250,10 +222,7 @@ int metaserver2_init(void) {
             }
         } else if (!strcasecmp(buf, "metaserver2_server")) {
             if (*cp != 0) {
-                ms2 = static_cast<MetaServer2 *>(calloc(1, sizeof(MetaServer2)));
-                ms2->hostname = strdup(cp);
-                ms2->next = metaserver2;
-                metaserver2 = ms2;
+                metaservers.push_back(cp);
             } else {
                 LOG(llevError, "metaserver2: metaserver2_server must have a value.\n");
             }
@@ -467,11 +436,11 @@ static void metaserver2_updates(void) {
     struct curl_httppost *formpost = NULL;
     metaserver2_build_form(&formpost);
 
-    for (MetaServer2 *ms2 = metaserver2; ms2; ms2 = ms2->next) {
+    for (auto hostname : metaservers) {
         CURL *curl = curl_easy_init();
         if (curl) {
             /* what URL that receives this POST */
-            curl_easy_setopt(curl, CURLOPT_URL, ms2->hostname);
+            curl_easy_setopt(curl, CURLOPT_URL, hostname.c_str());
             curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
 
             /* Almost always, we will get HTTP data returned
