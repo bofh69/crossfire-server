@@ -1589,7 +1589,8 @@ void CREMainWindow::onReportMaterials()
         while (mat) {
             report += tr("<tr><td>%1</td>").arg(mat->name);
               for (int r = 0; r < NROFATTACKS; r++) {
-                  report += tr("<td>%1</td>").arg(s == 0 ? mat->save[r] : mat->mod[r]);
+                  int8_t val = (s == 0 ? mat->save[r] : mat->mod[r]);
+                  report += tr("<td>%1</td>").arg(val == 0 ? QString() : QString::number(val));
               }
             report += "</tr>";
             mat = mat->next;
