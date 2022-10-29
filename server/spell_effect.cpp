@@ -34,6 +34,7 @@
 #include "spells.h"
 #include "sproto.h"
 #include "assets.h"
+#include "AssetsManager.h"
 
 /**
  * This is really used mostly for spell fumbles and the like.
@@ -159,8 +160,7 @@ int recharge(object *op, object *caster, object *spell_ob) {
  * level of the polymorph spell.
  */
 static void polymorph_living(object *op, int level) {
-    archetype *at;
-    int x = op->x, y = op->y, numat = 0, choice, friendly, pos;
+    int x = op->x, y = op->y, choice, friendly;
     mapstruct *map = op->map;
     object *owner, *replacing;
 
@@ -176,27 +176,25 @@ static void polymorph_living(object *op, int level) {
 
     object_remove(op);
 
-    /* First, count up the number of legal matches */
-    for (at = get_next_archetype(NULL); at != NULL; at = get_next_archetype(at))
-        if ((!at->head) && (QUERY_FLAG((&at->clone), FLAG_MONSTER) == QUERY_FLAG(op, FLAG_MONSTER))
-        && (object_find_first_free_spot(&at->clone, map, x, y) != -1)) {
-            numat++;
-        }
+    std::vector<std::pair<archetype *, int>> candidates;
 
-    if (!numat) {
+    getManager()->archetypes()->each([&] (auto at) {
+        int pos;
+        if ((!at->head) && (QUERY_FLAG((&at->clone), FLAG_MONSTER) == QUERY_FLAG(op, FLAG_MONSTER))
+        && ((pos = object_find_first_free_spot(&at->clone, map, x, y)) != -1)) {
+            candidates.push_back(std::make_pair(at, pos));
+        }
+    });
+
+    if (candidates.empty()) {
         object_insert_in_map_at(op, map, NULL, 0, x, y);
         return; /* no valid matches? if so, return */
     }
 
     /* Next make a choice, and loop through until we get to it */
-    choice = rndm(0, numat-1);
-    for (at = get_next_archetype(NULL); at != NULL; at = get_next_archetype(at))
-        if ((!at->head) && (QUERY_FLAG((&at->clone), FLAG_MONSTER) == QUERY_FLAG(op, FLAG_MONSTER)) && ((pos = object_find_first_free_spot(&at->clone, map, x, y)) != -1)) {
-            if (!choice)
-                break;
-            else
-                choice--;
-        }
+    choice = rndm(0, candidates.size() - 1);
+    auto at = candidates[choice].first;
+    int pos = candidates[choice].second;
 
     /* Look through the monster.  Unapply anything they have applied,
      * and remove any spells.  Note that if this is extended
