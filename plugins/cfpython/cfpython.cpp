@@ -427,45 +427,42 @@ static PyObject *getMaps(PyObject *self, PyObject *args) {
 
 static PyObject *getParties(PyObject *self, PyObject *args) {
     PyObject *list;
-    partylist *party;
+    std::vector<partylist *> parties;
     (void)self;
     (void)args;
 
+    cf_system_get_party_vector(CFAPI_SYSTEM_PARTIES, &parties);
     list = PyList_New(0);
-    party = cf_party_get_first();
-    while (party) {
+    for (auto party : parties) {
         PyList_Append(list, Crossfire_Party_wrap(party));
-        party = cf_party_get_next(party);
     }
     return list;
 }
 
 static PyObject *getRegions(PyObject *self, PyObject *args) {
     PyObject *list;
-    region *reg;
+    std::vector<region *> regions;
     (void)self;
     (void)args;
 
+    cf_system_get_region_vector(CFAPI_SYSTEM_REGIONS, &regions);
     list = PyList_New(0);
-    reg = cf_region_get_first();
-    while (reg) {
+    for (auto reg : regions) {
         PyList_Append(list, Crossfire_Region_wrap(reg));
-        reg = cf_region_get_next(reg);
    }
    return list;
 }
 
 static PyObject *getFriendlyList(PyObject *self, PyObject *args) {
     PyObject *list;
-    object *ob;
+    std::vector<object *> friends;
     (void)self;
     (void)args;
 
+    cf_system_get_object_vector(CFAPI_SYSTEM_FRIENDLY_LIST, &friends);
     list = PyList_New(0);
-    ob = cf_friendlylist_get_first();
-    while (ob) {
+    for (auto ob : friends) {
         PyList_Append(list, Crossfire_Object_wrap(ob));
-        ob = cf_friendlylist_get_next(ob);
    }
    return list;
 }

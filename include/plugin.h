@@ -72,6 +72,8 @@
 #define CFAPI_OBJECT_VECTOR 19  /**< Pointer to a std::vector<object *> */
 #define CFAPI_MAP_VECTOR    20  /**< Pointer to a std::vector<mapstruct *> */
 #define CFAPI_ARCHETYPE_VECTOR  21  /**< Pointer to a std::vector<archetype *> */
+#define CFAPI_REGION_VECTOR 22  /**< Pointer to a std::vector<region *> */
+#define CFAPI_PARTY_VECTOR  23  /**< Pointer to a std::vector<partylist *> */
 
 /** General API function. */
 typedef void (*f_plug_api)(int *type, ...);
@@ -282,6 +284,9 @@ typedef struct _crossfire_plugin {
 #define CFAPI_SYSTEM_MAPS       200
 #define CFAPI_SYSTEM_PLAYERS    201
 #define CFAPI_SYSTEM_ARCHETYPES 202
+#define CFAPI_SYSTEM_REGIONS    203
+#define CFAPI_SYSTEM_PARTIES    204
+#define CFAPI_SYSTEM_FRIENDLY_LIST  205
 
 /*****************************************************************************/
 /* Exportable functions. Any plugin should define all those.                 */

@@ -145,6 +145,8 @@ static void cfapi_unregister_command(int *type, ...);
 static void cfapi_system_get_object_vector(int *type, ...);
 static void cfapi_system_get_map_vector(int *type, ...);
 static void cfapi_system_get_archetype_vector(int *type, ...);
+static void cfapi_system_get_party_vector(int *type, ...);
+static void cfapi_system_get_region_vector(int *type, ...);
 
 /**
  * All hooked functions plugins can call.
@@ -247,6 +249,8 @@ static const hook_entry plug_hooks[] = {
     { cfapi_system_get_object_vector,   99, "cfapi_get_object_vector" },
     { cfapi_system_get_map_vector,   100, "cfapi_get_map_vector" },
     { cfapi_system_get_archetype_vector,   101, "cfapi_get_archetype_vector" },
+    { cfapi_system_get_party_vector,    102, "cfapi_get_party_vector" },
+    { cfapi_system_get_region_vector,   103, "cfapi_get_region_vector" },
 };
 
 /** List of loaded plugins. */
@@ -632,6 +636,14 @@ static void cfapi_system_get_object_vector(int *type, ...) {
                 list->push_back(pl->ob);
             }
             break;
+        case CFAPI_SYSTEM_FRIENDLY_LIST: {
+            auto f = get_next_friend(nullptr);
+            while (f) {
+                list->push_back(f);
+                f = get_next_friend(f);
+            }
+            break;
+        }
         default:
             assert(0);
     }
@@ -664,6 +676,42 @@ static void cfapi_system_get_archetype_vector(int *type, ...) {
     *type = CFAPI_ARCHETYPE_VECTOR;
     if (property == CFAPI_SYSTEM_ARCHETYPES) {
         getManager()->archetypes()->each([&] (const auto &arch) { list->push_back(arch); });
+    }
+
+    va_end(args);
+}
+
+static void cfapi_system_get_region_vector(int *type, ...) {
+    va_list args;
+    va_start(args, type);
+    int property = va_arg(args, int);
+    std::vector<region *> *list = va_arg(args, std::vector<region *> *);
+
+    *type = CFAPI_REGION_VECTOR;
+    if (property == CFAPI_SYSTEM_REGIONS) {
+        region *first = region_get_next(nullptr);
+        while (first) {
+            list->push_back(first);
+            first = region_get_next(first);
+        }
+    }
+
+    va_end(args);
+}
+
+static void cfapi_system_get_party_vector(int *type, ...) {
+    va_list args;
+    va_start(args, type);
+    int property = va_arg(args, int);
+    std::vector<partylist *> *list = va_arg(args, std::vector<partylist *> *);
+
+    *type = CFAPI_PARTY_VECTOR;
+    if (property == CFAPI_SYSTEM_PARTIES) {
+        auto party = party_get_first();
+        while (party) {
+            list->push_back(party);
+            party = party_get_next(party);
+        }
     }
 
     va_end(args);
