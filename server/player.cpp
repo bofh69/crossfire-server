@@ -376,6 +376,12 @@ player *get_player(player *p) {
     }
     p->last_stats.exp = -1;
     p->last_weight = (uint32_t)-1;
+    /* Set stats to invalid values so they are sent at first tick */
+    p->last_applied_stats.Str = p->last_applied_stats.Int
+            = p->last_applied_stats.Pow = p->last_applied_stats.Wis
+            = p->last_applied_stats.Dex = p->last_applied_stats.Con
+            = p->last_applied_stats.Cha = -1;
+    p->last_character_flags = 0xFFFF;
     return p;
 }
 
