@@ -33,11 +33,18 @@
 
 static method_ret director_type_move_on(object *trap, object *victim, object *originator);
 
+static method_ret director_process(object *op) {
+    if (op->stats.maxsp)
+        animate_turning(op);
+    return METHOD_OK;
+}
+
 /**
  * Initializer for the DIRECTOR object type.
  */
 void init_type_director(void) {
     register_move_on(DIRECTOR, director_type_move_on);
+    register_process(DIRECTOR, director_process);
 }
 
 /**

@@ -75,11 +75,6 @@ method_ret legacy_ob_process(object *op) {
         legacy_animate_trigger(op);
         return METHOD_OK;
 
-    case DIRECTOR:
-        if (op->stats.maxsp)
-            animate_turning(op);
-        return METHOD_OK;
-
     case HOLE:
         legacy_move_hole(op);
         return METHOD_OK;
