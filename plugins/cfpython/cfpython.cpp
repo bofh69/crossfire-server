@@ -383,45 +383,44 @@ static PyObject *getSharedDictionary(PyObject *self, PyObject *args) {
 
 static PyObject *getArchetypes(PyObject *self, PyObject *args) {
     PyObject *list;
-    archetype *arch;
+    std::vector<archetype *> archs;
     (void)self;
     (void)args;
 
+    cf_system_get_archetype_vector(CFAPI_SYSTEM_ARCHETYPES, &archs);
     list = PyList_New(0);
-    arch = cf_archetype_get_first();
-    while (arch) {
+    for (auto arch : archs) {
         PyList_Append(list, Crossfire_Archetype_wrap(arch));
-        arch = cf_archetype_get_next(arch);
     }
     return list;
 }
 
 static PyObject *getPlayers(PyObject *self, PyObject *args) {
     PyObject *list;
-    object *pl;
+    std::vector<object *> players;
     (void)self;
     (void)args;
 
+    cf_system_get_object_vector(CFAPI_SYSTEM_PLAYERS, &players);
+
     list = PyList_New(0);
-    pl = cf_object_get_object_property(NULL, CFAPI_PLAYER_PROP_NEXT);
-    while (pl) {
+    for (auto pl : players) {
         PyList_Append(list, Crossfire_Object_wrap(pl));
-        pl = cf_object_get_object_property(pl, CFAPI_PLAYER_PROP_NEXT);
     }
     return list;
 }
 
 static PyObject *getMaps(PyObject *self, PyObject *args) {
     PyObject *list;
-    mapstruct *map;
+    std::vector<mapstruct *> maps;
     (void)self;
     (void)args;
 
+    cf_system_get_map_vector(CFAPI_SYSTEM_MAPS, &maps);
+
     list = PyList_New(0);
-    map = cf_map_get_first();
-    while (map) {
+    for (auto map : maps) {
         PyList_Append(list, Crossfire_Map_wrap(map));
-        map = cf_map_get_map_property(map, CFAPI_MAP_PROP_NEXT);
     }
     return list;
 }

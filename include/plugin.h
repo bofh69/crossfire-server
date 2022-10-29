@@ -69,6 +69,9 @@
 #define CFAPI_SINT64  16
 #define CFAPI_SSTRING 17 /* Shared string that shouldn't be changed, or const char* */
 #define CFAPI_MOVETYPE 18 /* MoveType */
+#define CFAPI_OBJECT_VECTOR 19  /**< Pointer to a std::vector<object *> */
+#define CFAPI_MAP_VECTOR    20  /**< Pointer to a std::vector<mapstruct *> */
+#define CFAPI_ARCHETYPE_VECTOR  21  /**< Pointer to a std::vector<archetype *> */
 
 /** General API function. */
 typedef void (*f_plug_api)(int *type, ...);
@@ -275,6 +278,10 @@ typedef struct _crossfire_plugin {
 #define CFAPI_REGION_PROP_JAIL_X            5
 #define CFAPI_REGION_PROP_JAIL_Y            6
 #define CFAPI_REGION_PROP_JAIL_PATH         7
+
+#define CFAPI_SYSTEM_MAPS       200
+#define CFAPI_SYSTEM_PLAYERS    201
+#define CFAPI_SYSTEM_ARCHETYPES 202
 
 /*****************************************************************************/
 /* Exportable functions. Any plugin should define all those.                 */

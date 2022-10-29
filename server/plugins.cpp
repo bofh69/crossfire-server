@@ -38,6 +38,8 @@
 #include "sproto.h"
 #include "svnversion.h"
 #include "timers.h"
+#include "assets.h"
+#include "AssetsManager.h"
 
 #ifdef WIN32
 #include "libloaderapi.h"
@@ -140,6 +142,9 @@ static void cfapi_player_quest(int *type, ...);
 static void cfapi_object_perm_exp(int *type, ...);
 static void cfapi_register_command(int *type, ...);
 static void cfapi_unregister_command(int *type, ...);
+static void cfapi_system_get_object_vector(int *type, ...);
+static void cfapi_system_get_map_vector(int *type, ...);
+static void cfapi_system_get_archetype_vector(int *type, ...);
 
 /**
  * All hooked functions plugins can call.
@@ -239,6 +244,9 @@ static const hook_entry plug_hooks[] = {
     { cfapi_object_perm_exp,         96, "cfapi_object_perm_exp" },
     { cfapi_register_command,        97, "cfapi_register_command" },
     { cfapi_unregister_command,      98, "cfapi_unregister_command" },
+    { cfapi_system_get_object_vector,   99, "cfapi_get_object_vector" },
+    { cfapi_system_get_map_vector,   100, "cfapi_get_map_vector" },
+    { cfapi_system_get_archetype_vector,   101, "cfapi_get_archetype_vector" },
 };
 
 /** List of loaded plugins. */
@@ -609,6 +617,56 @@ static void cfapi_system_unregister_global_event(int *type, ...) {
         events_unregister_global_handler(eventcode, cp->global_registration[eventcode]);
         cp->global_registration[eventcode] = 0;
     }
+}
+
+static void cfapi_system_get_object_vector(int *type, ...) {
+    va_list args;
+    va_start(args, type);
+    int property = va_arg(args, int);
+    std::vector<object *> *list = va_arg(args, std::vector<object *> *);
+
+    *type = CFAPI_OBJECT_VECTOR;
+    switch (property) {
+        case CFAPI_SYSTEM_PLAYERS:
+            for (auto pl = first_player; pl ; pl = pl->next) {
+                list->push_back(pl->ob);
+            }
+            break;
+        default:
+            assert(0);
+    }
+
+    va_end(args);
+}
+
+static void cfapi_system_get_map_vector(int *type, ...) {
+    va_list args;
+    va_start(args, type);
+    int property = va_arg(args, int);
+    std::vector<mapstruct *> *list = va_arg(args, std::vector<mapstruct *> *);
+
+    *type = CFAPI_MAP_VECTOR;
+    if (property == CFAPI_SYSTEM_MAPS) {
+        for (auto map = first_map; map ; map = map->next) {
+            list->push_back(map);
+        }
+    }
+
+    va_end(args);
+}
+
+static void cfapi_system_get_archetype_vector(int *type, ...) {
+    va_list args;
+    va_start(args, type);
+    int property = va_arg(args, int);
+    std::vector<archetype *> *list = va_arg(args, std::vector<archetype *> *);
+
+    *type = CFAPI_ARCHETYPE_VECTOR;
+    if (property == CFAPI_SYSTEM_ARCHETYPES) {
+        getManager()->archetypes()->each([&] (const auto &arch) { list->push_back(arch); });
+    }
+
+    va_end(args);
 }
 
 /**

@@ -70,6 +70,9 @@ extern const char  *cf_get_month_name(int index);
 extern const char  *cf_get_weekday_name(int index);
 extern const char  *cf_get_periodofday_name(int index);
 extern void         cf_cost_string_from_value(uint64_t cost, int largest_coin, char *buffer, int length);
+extern void         cf_system_get_object_vector(int property, std::vector<object *> *list);
+extern void         cf_system_get_map_vector(int property, std::vector<mapstruct *> *list);
+extern void         cf_system_get_archetype_vector(int property, std::vector<archetype *> *list);
 
 /* Objects */
 extern void         cf_object_set_int_property(object *op, int propcode, int value);
