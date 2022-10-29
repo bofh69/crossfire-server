@@ -1227,7 +1227,7 @@ int is_magical(const object *op) {
      * values, it means they are magical.
      */
     if ((op->type == AMULET || op->type == RING)
-    && (op->stats.ac || op->stats.food || op->stats.exp || op->stats.dam || op->stats.wc || op->stats.sp || op->stats.hp || op->stats.luck))
+    && (op->stats.ac || op->stats.food || op->stats.exp || op->stats.dam || op->stats.wc || op->stats.grace || op->stats.sp || op->stats.hp || op->stats.luck))
         return 1;
 
     /* Check for stealty, speed, flying, or just plain magic in the boots */

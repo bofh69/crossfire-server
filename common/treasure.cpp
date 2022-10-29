@@ -784,6 +784,11 @@ static void set_ring_bonus(object *op, int bonus) {
         break;
 
     case 22:
+        op->stats.grace += bonus; /* regenerate grace */
+        op->value *= 5;
+        break;
+
+    case 23:
         op->stats.exp += bonus; /* Speed! */
         op->value = (op->value*2)/3;
         break;

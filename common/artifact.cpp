@@ -462,6 +462,14 @@ void add_abilities(object *op, const object *change) {
         op->stats.maxsp = -change->stats.maxsp;
     else
         op->stats.maxsp += change->stats.maxsp;
+    if (change->stats.grace < 0)
+        op->stats.grace = -change->stats.grace;
+    else
+        op->stats.grace += change->stats.grace;
+    if (change->stats.maxgrace < 0)
+        op->stats.maxgrace = -change->stats.maxgrace;
+    else
+        op->stats.maxgrace += change->stats.maxgrace;
     if (change->stats.food < 0)
         op->stats.food = -(change->stats.food);
     else
