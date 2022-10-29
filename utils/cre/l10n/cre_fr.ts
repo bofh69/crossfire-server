@@ -2314,7 +2314,7 @@ mais les données peuvent être recréées si besoin.</translation>
     <message>
         <location filename="../treasures/TreasureWrapper.cpp" line="45"/>
         <source>%1 (%2)</source>
-        <translation type="unfinished">%1 (%2)</translation>
+        <translation>%1 (%2)</translation>
     </message>
     <message>
         <location filename="../treasures/TreasureWrapper.cpp" line="56"/>
@@ -2330,7 +2330,7 @@ mais les données peuvent être recréées si besoin.</translation>
     <message>
         <location filename="../treasures/TreasureWrapper.cpp" line="63"/>
         <source>%1 (%2%3%)</source>
-        <translation>%1 (%2%3)</translation>
+        <translation>%1 (%2%3%)</translation>
     </message>
     <message>
         <location filename="../treasures/TreasureWrapper.cpp" line="299"/>
