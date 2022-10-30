@@ -490,6 +490,8 @@ player *add_player(socket_struct *ns, int flags) {
     return p;
 }
 
+std::vector<archetype *> players;
+
 /**
  * Get next player archetype from archetype list.
  * Not very efficient routine, but used only creating new players.
@@ -501,9 +503,8 @@ player *add_player(socket_struct *ns, int flags) {
  * next player archetype available.
  */
 static archetype *get_player_archetype(archetype *at) {
-    static std::vector<archetype *> players;
     if (players.empty()) {
-        getManager()->archetypes()->each([&] (const auto &at) {
+        getManager()->archetypes()->each([] (const auto &at) {
             if (at->clone.type == PLAYER) {
                 players.push_back(at);
             }
