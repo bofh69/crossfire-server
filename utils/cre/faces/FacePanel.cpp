@@ -30,13 +30,13 @@ CREFacePanel::CREFacePanel(QWidget* parent, AssetModel *model, ResourcesManager 
 
     myLicenses = new QTreeWidget(this);
     myLicenses->setColumnCount(2);
-    myLicenses->setHeaderLabels(QStringList(tr("License field")) << "Value");
+    myLicenses->setHeaderLabels(QStringList(tr("License field")) << tr("Value"));
     myLicenses->setIconSize(QSize(32, 32));
     myLicenses->setRootIsDecorated(false);
     myLayout->addWidget(myLicenses, 1, 3, 3, 2);
 
     myColor = new QComboBox(this);
-    myLayout->addWidget(new QLabel("Magicmap color: "), 4, 1);
+    myLayout->addWidget(new QLabel(tr("Magicmap color: ")), 4, 1);
     myLayout->addWidget(myColor, 4, 2, 1, 3);
 
     const char *name;

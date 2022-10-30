@@ -36,7 +36,7 @@ ArtifactPanel::ArtifactPanel(QWidget* parent) : AssetTWrapperPanel(parent)
 
     myArchetypes = new QTreeWidget(this);
     myLayout->addWidget(myArchetypes, 7, 0, 3, 1);
-    myArchetypes->setHeaderLabel("Allowed/forbidden archetypes");
+    myArchetypes->setHeaderLabel(tr("Allowed/forbidden archetypes"));
     myArchetypes->setIconSize(QSize(32, 32));
     myArchetypes->setRootIsDecorated(false);
     connect(myArchetypes, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(artifactChanged(QTreeWidgetItem*, QTreeWidgetItem*)));

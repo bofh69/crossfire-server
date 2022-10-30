@@ -22,6 +22,11 @@
 <context>
     <name>AnimationPanel</name>
     <message>
+        <location filename="../animations/AnimationPanel.cpp" line="32"/>
+        <source>Used by</source>
+        <translation>Utilisé par</translation>
+    </message>
+    <message>
         <location filename="../animations/AnimationPanel.cpp" line="36"/>
         <source>Faces</source>
         <translation>Images</translation>
@@ -50,6 +55,11 @@
 </context>
 <context>
     <name>ArchetypePanel</name>
+    <message>
+        <location filename="../archetypes/ArchetypePanel.cpp" line="16"/>
+        <source>Raw archetype:</source>
+        <translation>Archétype brut :</translation>
+    </message>
     <message>
         <location filename="../archetypes/ArchetypePanel.cpp" line="17"/>
         <source>Used by</source>
@@ -98,6 +108,11 @@
         <location filename="../artifacts/ArtifactPanel.cpp" line="32"/>
         <source>Values:</source>
         <translation>Valeurs :</translation>
+    </message>
+    <message>
+        <location filename="../artifacts/ArtifactPanel.cpp" line="39"/>
+        <source>Allowed/forbidden archetypes</source>
+        <translation>Archétypes autorisés / interdits</translation>
     </message>
     <message>
         <location filename="../artifacts/ArtifactPanel.cpp" line="44"/>
@@ -365,6 +380,21 @@ Confirmez-vous vouloir utiliser de fichier ?</translation>
         <translation>Champ de licence</translation>
     </message>
     <message>
+        <location filename="../faces/FacePanel.cpp" line="33"/>
+        <source>Value</source>
+        <translation>Valeur</translation>
+    </message>
+    <message>
+        <location filename="../faces/FacePanel.cpp" line="39"/>
+        <source>Magicmap color: </source>
+        <translation>Couleur sur la carte magique :</translation>
+    </message>
+    <message>
+        <location filename="../faces/FacePanel.cpp" line="48"/>
+        <source>Face file: </source>
+        <translation>Fichier de définition :</translation>
+    </message>
+    <message>
         <location filename="../faces/FacePanel.cpp" line="51"/>
         <source>Save face</source>
         <translation>Sauvegarder l&apos;image</translation>
@@ -588,7 +618,7 @@ Confirmez-vous ?</translation>
     <message>
         <location filename="../CREMainWindow.cpp" line="85"/>
         <location filename="../CREMainWindow.cpp" line="296"/>
-        <location filename="../CREMainWindow.cpp" line="1820"/>
+        <location filename="../CREMainWindow.cpp" line="1816"/>
         <source>Crossfire Resource Editor</source>
         <translation>Éditeur de Ressources Crossfire</translation>
     </message>
@@ -1039,123 +1069,123 @@ Confirmez-vous ?</translation>
         <translation>Analyse des cartes terminées.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="616"/>
+        <location filename="../CREMainWindow.cpp" line="615"/>
         <source>%1 [%2]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="764"/>
+        <location filename="../CREMainWindow.cpp" line="763"/>
         <source>&lt;h1&gt;Formulae with chance of 0&lt;/h1&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="790"/>
+        <location filename="../CREMainWindow.cpp" line="789"/>
         <source>Destination file</source>
         <translation>Fichier de destination</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="790"/>
+        <location filename="../CREMainWindow.cpp" line="789"/>
         <source>Dot files (*.dot);;All files (*.*)</source>
         <translation>Fichiers dot (*.dot);;Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="797"/>
+        <location filename="../CREMainWindow.cpp" line="796"/>
         <source>Unable to write to %1</source>
         <translation>Erreur lors de l&apos;écriture de %1</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="823"/>
+        <location filename="../CREMainWindow.cpp" line="822"/>
         <source>%1 of %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="845"/>
-        <location filename="../CREMainWindow.cpp" line="850"/>
+        <location filename="../CREMainWindow.cpp" line="844"/>
+        <location filename="../CREMainWindow.cpp" line="849"/>
         <source>alchemy_%1 [label=&quot;%2&quot;]
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="853"/>
+        <location filename="../CREMainWindow.cpp" line="852"/>
         <source>alchemy_%1 -&gt; alchemy_%2
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="867"/>
+        <location filename="../CREMainWindow.cpp" line="866"/>
         <source> (%1 formulae not displayed)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1193"/>
+        <location filename="../CREMainWindow.cpp" line="1192"/>
         <source>&lt;h1&gt;Player vs monsters&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;fv&lt;/strong&gt; is the level at which the first victory happened, &lt;strong&gt;hv&lt;/strong&gt; is the level at which at least 50% of fights were victorious.&lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1290"/>
+        <location filename="../CREMainWindow.cpp" line="1289"/>
         <source>&lt;h1&gt;Summoned pet statistics&lt;/h1&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1405"/>
+        <location filename="../CREMainWindow.cpp" line="1404"/>
         <source>&lt;h1&gt;Shop information&lt;/h1&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1538"/>
+        <location filename="../CREMainWindow.cpp" line="1537"/>
         <source>%1 completed out of %2 (%3%)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1574"/>
+        <location filename="../CREMainWindow.cpp" line="1572"/>
         <source>&lt;tr&gt;&lt;td&gt;%1&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1581"/>
+        <location filename="../CREMainWindow.cpp" line="1578"/>
         <source>&lt;h1&gt;%1&lt;/h1&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1582"/>
+        <location filename="../CREMainWindow.cpp" line="1579"/>
         <source>&lt;tr&gt;&lt;th rowspan=&apos;2&apos;&gt;Name&lt;/th&gt;&lt;th colspan=&apos;%1&apos;&gt;%2&lt;/th&gt;&lt;/tr&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1591"/>
+        <location filename="../CREMainWindow.cpp" line="1587"/>
         <source>&lt;tr&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1593"/>
+        <location filename="../CREMainWindow.cpp" line="1590"/>
         <source>&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1643"/>
+        <location filename="../CREMainWindow.cpp" line="1639"/>
         <source>&lt;tr&gt;&lt;td&gt;&lt;img src=&apos;data:image/png;base64,%1&apos;&gt;&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1644"/>
+        <location filename="../CREMainWindow.cpp" line="1640"/>
         <source>unknown: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1775"/>
+        <location filename="../CREMainWindow.cpp" line="1771"/>
         <source>&lt;li&gt;%1 (%2)&lt;/li&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1872"/>
+        <location filename="../CREMainWindow.cpp" line="1868"/>
         <source>&amp;%1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1874"/>
+        <location filename="../CREMainWindow.cpp" line="1870"/>
         <source>%1 %2</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1334,27 +1364,27 @@ Confirmez-vous ?</translation>
 <context>
     <name>CREPrePostPanel</name>
     <message>
-        <location filename="../CREPrePostPanel.cpp" line="430"/>
+        <location filename="../CREPrePostPanel.cpp" line="431"/>
         <source>Message pre-condition</source>
         <translation>Pré-condition du message</translation>
     </message>
     <message>
-        <location filename="../CREPrePostPanel.cpp" line="433"/>
+        <location filename="../CREPrePostPanel.cpp" line="434"/>
         <source>Message post-condition</source>
         <translation>Post-condition du message</translation>
     </message>
     <message>
-        <location filename="../CREPrePostPanel.cpp" line="436"/>
+        <location filename="../CREPrePostPanel.cpp" line="437"/>
         <source>Step set when</source>
         <translation>Étape définie lorsque</translation>
     </message>
     <message>
-        <location filename="../CREPrePostPanel.cpp" line="442"/>
+        <location filename="../CREPrePostPanel.cpp" line="443"/>
         <source>Script:</source>
         <translation>Script :</translation>
     </message>
     <message>
-        <location filename="../CREPrePostPanel.cpp" line="462"/>
+        <location filename="../CREPrePostPanel.cpp" line="463"/>
         <source>reset changes</source>
         <translation>abandonner les modifications</translation>
     </message>
@@ -1803,25 +1833,25 @@ mais les données peuvent être recréées si besoin.</translation>
         <translation>Nouvelle étape :</translation>
     </message>
     <message>
-        <location filename="../CREPrePostPanel.cpp" line="285"/>
+        <location filename="../CREPrePostPanel.cpp" line="286"/>
         <source>%1 (%2)</source>
-        <translation type="unfinished">%1 (%2)</translation>
+        <translation>%1 (%2)</translation>
     </message>
 </context>
 <context>
     <name>CRESubItemToken</name>
     <message>
-        <location filename="../CREPrePostPanel.cpp" line="355"/>
+        <location filename="../CREPrePostPanel.cpp" line="356"/>
         <source>Token:</source>
         <translation>Jeton :</translation>
     </message>
     <message>
-        <location filename="../CREPrePostPanel.cpp" line="362"/>
+        <location filename="../CREPrePostPanel.cpp" line="363"/>
         <source>Values the token can be (one per line):</source>
         <translation>Valeurs que le jeton peut avoir (une par ligne) :</translation>
     </message>
     <message>
-        <location filename="../CREPrePostPanel.cpp" line="371"/>
+        <location filename="../CREPrePostPanel.cpp" line="372"/>
         <source>Value to set for the token:</source>
         <translation>Valeur à définir pour le jeton :</translation>
     </message>
@@ -1832,6 +1862,16 @@ mais les données peuvent être recréées si besoin.</translation>
         <location filename="../treasures/TreasureListPanel.cpp" line="30"/>
         <source>Single item</source>
         <translation>Élément unique</translation>
+    </message>
+    <message>
+        <location filename="../treasures/TreasureListPanel.cpp" line="32"/>
+        <source>Difficulty:</source>
+        <translation>Difficulté :</translation>
+    </message>
+    <message>
+        <location filename="../treasures/TreasureListPanel.cpp" line="36"/>
+        <source>generate</source>
+        <translation>générer</translation>
     </message>
     <message>
         <location filename="../treasures/TreasureListPanel.cpp" line="40"/>
@@ -1933,6 +1973,16 @@ mais les données peuvent être recréées si besoin.</translation>
         <source>License information:</source>
         <translation>Informations de licence :</translation>
     </message>
+    <message>
+        <location filename="../faces/FacesetsPanel.cpp" line="49"/>
+        <source>%1 out of %2 (%3%)</source>
+        <translation>%1 sur %2 (%3%)</translation>
+    </message>
+    <message>
+        <location filename="../faces/FacesetsPanel.cpp" line="54"/>
+        <source>%1 faces have license information out of %2 (%3%)</source>
+        <translation>%1 images ont des informations de licence parmi %2 (%3%)</translation>
+    </message>
 </context>
 <context>
     <name>GeneralMessageWrapper</name>
@@ -2020,7 +2070,7 @@ mais les données peuvent être recréées si besoin.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../cre.cpp" line="43"/>
+        <location filename="../cre.cpp" line="45"/>
         <source>Initializing CRE...</source>
         <translation>Initialisation de CRE...</translation>
     </message>
@@ -2072,7 +2122,7 @@ mais les données peuvent être recréées si besoin.</translation>
 <context>
     <name>QuestWrapper</name>
     <message>
-        <location filename="../quests/QuestWrapper.cpp" line="175"/>
+        <location filename="../quests/QuestWrapper.cpp" line="141"/>
         <source>Add step</source>
         <translation>Ajouter une étape</translation>
     </message>

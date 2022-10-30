@@ -29,7 +29,7 @@
 #include "animations/AnimationWrapper.h"
 
 AnimationPanel::AnimationPanel(QWidget* parent, AssetModel *assets) : AssetTWrapperPanel(parent) {
-    addAssetUseTree("Used by", assets, "self");
+    addAssetUseTree(tr("Used by"), assets, "self");
 
     myFaces = addWidget("", new QTreeWidget(this), false, nullptr, nullptr);
     myFaces->setColumnCount(1);

@@ -46,10 +46,10 @@ void FacesetsPanel::updateItem() {
     if (percent == 100 && count < total)
         percent = 99;
 
-    myImages->setText(QString("%1 out of %2 (%3%)").arg(count).arg(total).arg(percent));
+    myImages->setText(QString(tr("%1 out of %2 (%3%)")).arg(count).arg(total).arg(percent));
 
     percent = licenses * 100 / count;
     if (percent == 100 && licenses < count)
         percent = 99;
-    myLicenses->setText(QString("%1 faces have license information out of %2 (%3%)").arg(licenses).arg(count).arg(percent));
+    myLicenses->setText(QString(tr("%1 faces have license information out of %2 (%3%)")).arg(licenses).arg(count).arg(percent));
 }

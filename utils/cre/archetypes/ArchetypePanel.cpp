@@ -13,6 +13,6 @@
 #include "ArchetypePanel.h"
 
 ArchetypePanel::ArchetypePanel(AssetModel *model, QWidget* parent) : AssetWrapperPanel(parent) {
-    addTextEdit("Raw archetype:", "raw", false);
+    addTextEdit(tr("Raw archetype:"), "raw", false);
     addAssetUseTree(tr("Used by"), model, "self");
 }

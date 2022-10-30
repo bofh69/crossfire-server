@@ -29,11 +29,11 @@ CRETreasurePanel::CRETreasurePanel(AssetModel* model, QWidget* parent) : AssetTW
 
     addCheckBox(tr("Single item"), "isSingleItem", false);
 
-    myLayout->addWidget(new QLabel("Difficulty:"), 2, 0);
+    myLayout->addWidget(new QLabel(tr("Difficulty:")), 2, 0);
     myLayout->addWidget(myDifficulty = new QSpinBox(this), 2, 1);
     myDifficulty->setRange(0, 150);
     myDifficulty->setValue(150);
-    QPushButton* generate = new QPushButton("generate", this);
+    QPushButton* generate = new QPushButton(tr("generate"), this);
     connect(generate, SIGNAL(clicked(bool)), this, SLOT(onGenerate(bool)));
     myLayout->addWidget(generate, 2, 2);
     myLayout->addWidget(myGenerated = new QTreeWidget(this), 3, 0, 1, 3);
