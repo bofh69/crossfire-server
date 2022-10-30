@@ -45,7 +45,7 @@ CREFacePanel::CREFacePanel(QWidget* parent, AssetModel *model, ResourcesManager 
 
     myFile = new QLineEdit(this);
     myFile->setReadOnly(true);
-    myLayout->addWidget(new QLabel("Original file: "), 5, 1);
+    myLayout->addWidget(new QLabel(tr("Face file: ")), 5, 1);
     myLayout->addWidget(myFile, 5, 2, 1, 3);
 
     mySave = new QPushButton(tr("Save face"));
