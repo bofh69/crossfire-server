@@ -201,7 +201,7 @@ uint64_t shop_price_buy(const object *tmp, object *who) {
         LOG(llevDebug, "price_buy %s %lu*adj(%.2f)/E(%.2f) = %.2f\n",
                 tmp->arch->name, val, adj, E, adj_val);
     }
-    if (isfinite(adj_val)) {
+    if (std::isfinite(adj_val)) {
         return adj_val;
     } else {
         return UINT64_MAX;
