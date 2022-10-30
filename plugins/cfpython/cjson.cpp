@@ -7,11 +7,12 @@
  */
 
 #include <cfpython.h>
-#include <Python.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <math.h>
+
+using namespace std;
 
 typedef struct JSONData {
     char *str; /* the actual json string */
