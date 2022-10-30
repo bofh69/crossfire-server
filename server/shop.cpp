@@ -21,7 +21,7 @@
 #include "global.h"
 
 #include <assert.h>
-#include <math.h>
+#include <cmath>
 #include <stdlib.h>
 #include <string.h>
 
