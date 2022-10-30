@@ -13,13 +13,14 @@
 #include "FaceLoader.h"
 #include "Faces.h"
 #include "Animations.h"
+#include "AssetsTracker.h"
 
 #include "global.h"
 #include "compat.h"
 #include "string.h"
 
-FaceLoader::FaceLoader(Faces *faces, AllAnimations *animations)
-    : m_faces(faces), m_animations(animations)
+FaceLoader::FaceLoader(Faces *faces, AllAnimations *animations, AssetsTracker *tracker)
+    : m_faces(faces), m_animations(animations), m_tracker(tracker)
 {
 }
 
@@ -56,6 +57,9 @@ void FaceLoader::loadAnimationBlock(BufferReader *reader, const std::string &ful
                         anim->facings, full_path.c_str());
             }
             m_animations->define(anim->name, anim);
+            if (m_tracker) {
+                m_tracker->assetDefined(anim, full_path);
+            }
             return;
         } else if (!strncmp(buf, "facings", 7)) {
             if (!(anim->facings = atoi(buf+7))) {
@@ -79,7 +83,10 @@ void FaceLoader::load(BufferReader *buffer, const std::string& filename) {
             continue;
         if (!strncmp(buf, "end", 3)) {
             if (on_face) {
-                m_faces->define(on_face->name, on_face);
+                on_face = m_faces->define(on_face->name, on_face);
+                if (m_tracker) {
+                    m_tracker->assetDefined(on_face, filename);
+                }
                 on_face = NULL;
             }
             continue;

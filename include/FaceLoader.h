@@ -18,10 +18,11 @@
 
 class Faces;
 class AllAnimations;
+class AssetsTracker;
 
 class FaceLoader : public AssetLoader {
 public:
-    FaceLoader(Faces *faces, AllAnimations *animations);
+    FaceLoader(Faces *faces, AllAnimations *animations, AssetsTracker *tracker);
 
     virtual bool willLoad(const std::string &filename) override {
         return Utils::endsWith(filename, ".face");
@@ -32,6 +33,7 @@ public:
 private:
     Faces *m_faces;
     AllAnimations *m_animations;
+    AssetsTracker *m_tracker;
 
     void loadAnimationBlock(BufferReader *reader, const std::string &full_path, const char *animation_name);
 };

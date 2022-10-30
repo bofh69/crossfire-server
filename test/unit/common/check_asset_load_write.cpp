@@ -160,7 +160,7 @@ START_TEST(test_animation) {
     Animations *anim = generate_animation(faces);
 
     AnimationWriter writer;
-    FaceLoader loader(&faces, &anims);
+    FaceLoader loader(&faces, &anims, nullptr);
 
     write_load(anim, writer, loader);
 
@@ -202,7 +202,7 @@ START_TEST(test_face) {
     Faces faces;
     AllAnimations anims;
     FaceWriter writer;
-    FaceLoader loader(&faces, &anims);
+    FaceLoader loader(&faces, &anims, nullptr);
 
     Face *face = generate_face(faces);
     write_load(face, writer, loader);

@@ -77,6 +77,7 @@ void CREFacePanel::updateItem()
         wi->setExpanded(true);
     }
 
+    myFile->setText(QString::fromStdString(myResources->originOf(myItem)));
 }
 void CREFacePanel::saveClicked(bool)
 {

@@ -103,6 +103,8 @@ class ResourcesManager : public QObject, AssetsTracker
         virtual void assetDefined(const treasurelist *asset, const std::string &filename) override { myTreasures.assetDefined(asset, filename); }
         virtual void assetDefined(const GeneralMessage *asset, const std::string &filename) override { myGeneralMessages.assetDefined(asset, filename); }
         virtual void assetDefined(const artifact *asset, const std::string &filename) override { myArtifacts.assetDefined(asset, filename); }
+        virtual void assetDefined(const Face *asset, const std::string &filename) override { myFaces.assetDefined(asset, filename); }
+        virtual void assetDefined(const Animations *asset, const std::string &filename) override { myAnimations.assetDefined(asset, filename); }
 
         const std::map<std::string, std::set<const archetype*> >& origins() const { return myArchetypes.origins(); }
         std::string originOf(const archetype *arch) const { return myArchetypes.originOf(arch); }
@@ -112,6 +114,8 @@ class ResourcesManager : public QObject, AssetsTracker
         std::vector<std::string> questFiles() const { return myQuests.files(); }
 
         static void archetypeUse(const archetype* item, CREMapInformationManager* store, AssetUseCallback callback);
+
+        std::string originOf(const Face *face) const { return myFaces.originOf(face); }
 
         bool hasPendingChanges() const {
             return
@@ -165,6 +169,8 @@ class ResourcesManager : public QObject, AssetsTracker
         ModifiedAssetsManager<treasurelist> myTreasures;
         ModifiedAssetsManager<GeneralMessage> myGeneralMessages;
         ModifiedAssetsManager<artifact> myArtifacts;
+        ModifiedAssetsManager<Face> myFaces;
+        ModifiedAssetsManager<Animations> myAnimations;
         AssetWrapperManager<archetype, ArchetypeWrapper> myWrappedArchetypes;
         AssetWrapperManager<object, ObjectWrapper> myWrappedObjects;
         AssetWrapperManager<Face, FaceWrapper> myWrappedFaces;

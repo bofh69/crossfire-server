@@ -123,7 +123,7 @@ void assets_collect(const char* datadir, int what) {
     if (what & ASSETS_FACESETS)
         collector.addLoader(new FacesetLoader(manager->facesets()));
     if (what & ASSETS_FACES)
-        collector.addLoader(new FaceLoader(manager->faces(), manager->animations()));
+        collector.addLoader(new FaceLoader(manager->faces(), manager->animations(), settings.archetypes_tracker));
     if (what & ASSETS_MESSAGES)
         collector.addLoader(new MessageLoader(manager->messages(), settings.archetypes_tracker));
     if (what & ASSETS_ARTIFACTS) {

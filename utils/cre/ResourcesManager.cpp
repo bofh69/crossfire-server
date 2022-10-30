@@ -41,7 +41,7 @@
 #include "assets/AssetOriginAndCreationDialog.h"
 
 ResourcesManager::ResourcesManager() : myMapInformationManager(nullptr), myArchetypes(new ArchetypeWriter()), myQuests(new QuestWriter()), myTreasures(new TreasureWriter()),
-        myGeneralMessages(new MessageWriter()), myArtifacts(new ArtifactWriter())
+        myGeneralMessages(new MessageWriter()), myArtifacts(new ArtifactWriter()), myFaces(nullptr), myAnimations(nullptr)
 {
 }
 
