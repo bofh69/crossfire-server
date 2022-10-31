@@ -26,6 +26,7 @@ class AssetWrapper : public QObject {
     Q_OBJECT
 
     Q_PROPERTY(AssetWrapper *self READ self)
+    Q_PROPERTY(QString displayName READ displayName)
 
 public:
     enum PossibleUse { Uses, ChildrenMayUse, DoesntUse };

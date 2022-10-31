@@ -36,7 +36,7 @@ public:
 
     virtual void setAsset(AssetWrapper *item);
 
-    QLabel *addLabel(const QString &label, const char *property);
+    QLabel *addLabel(const QString &label, const char *property, bool wrapText = false);
     QLineEdit *addLineEdit(const QString &label, const char *property, bool readOnly = true);
     QTextEdit *addTextEdit(const QString &label, const char *property, bool readOnly = true);
     QCheckBox *addCheckBox(const QString &label, const char *property, bool readOnly = true);

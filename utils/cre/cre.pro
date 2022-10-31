@@ -86,6 +86,15 @@ CREPixmap.cpp \
  scripts/ScriptFile.cpp \
  scripts/ScriptFileManager.cpp \
  scripts/ScriptFilePanel.cpp \
+ sounds/GameSound.cpp \
+ sounds/GameSoundPanel.cpp \
+ sounds/GameSounds.cpp \
+ sounds/GameSoundsPanel.cpp \
+ sounds/SoundFile.cpp \
+ sounds/SoundFilePanel.cpp \
+ sounds/SoundFilesPanel.cpp \
+ sounds/SoundFiles.cpp \
+ sounds/SoundsDialog.cpp \
  treasures/TreasureListComboBox.cpp \
  treasures/TreasureListPanel.cpp \
  treasures/TreasureListWrapper.cpp \
@@ -184,6 +193,15 @@ CREPixmap.h \
  scripts/ScriptFile.cpp \
  scripts/ScriptFileManager.h \
  scripts/ScriptFilePanel.h \
+ sounds/GameSound.h \
+ sounds/GameSoundPanel.h \
+ sounds/GameSounds.h \
+ sounds/GameSoundsPanel.h \
+ sounds/SoundFile.h \
+ sounds/SoundFilePanel.h \
+ sounds/SoundFilesPanel.h \
+ sounds/SoundFiles.h \
+ sounds/SoundsDialog.h \
  treasures/TreasureListComboBox.h \
  treasures/TreasureListPanel.h \
  treasures/TreasureListWrapper.h \

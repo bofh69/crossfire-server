@@ -22,6 +22,7 @@
 #include "treasures/TreasureListWrapper.h"
 #include "MimeUtils.h"
 #include "assets/AssetWrapperPanel.h"
+#include "sounds/SoundFile.h"
 
 ArchetypeWrapper::ArchetypeWrapper(AssetWrapper *parent, archetype *arch, ResourcesManager *resourcesManager)
  : AssetWithArtifacts<archetype>(parent, "Archetype", arch, resourcesManager) {
@@ -185,6 +186,16 @@ AssetWrapper::PossibleUse ArchetypeWrapper::uses(const AssetWrapper *asset, std:
             hint = "death animation";
             return Uses;
         }
+    }
+    auto sound = dynamic_cast<const SoundFile *>(asset);
+    if (sound) {
+        if (myWrappedItem->clone.type != SKILL && myWrappedItem->clone.type != SPELL && myWrappedItem->clone.type != SPELL_EFFECT) {
+            return DoesntUse;
+        }
+        bool uses = std::any_of(sound->events().cbegin(), sound->events().cend(), [this] (const std::string &event) {
+            return event == myWrappedItem->name || event == myWrappedItem->clone.name;
+        });
+        return uses ? Uses : DoesntUse;
     }
     return DoesntUse;
 }

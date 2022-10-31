@@ -33,6 +33,8 @@
 #include "general_messages/GeneralMessagesWrapper.h"
 #include "attack_messages/AttackMessagesWrapper.h"
 #include "treasures/TreasuresWrapper.h"
+#include "sounds/SoundFiles.h"
+#include "sounds/GameSounds.h"
 
 AllAssets::AllAssets(ResourcesManager *resources, ScriptFileManager *scripts, MessageManager *messages) : AssetWrapper(nullptr, QString()) {
 
@@ -50,4 +52,6 @@ AllAssets::AllAssets(ResourcesManager *resources, ScriptFileManager *scripts, Me
     myAssets.append(messages);
     myAssets.append(myRandomMaps = new RandomMaps(this, resources->getMapInformationManager()));
     myAssets.append(new AttackMessagesWrapper(this));
+    myAssets.append(mySounds = new SoundFiles(this));
+    myAssets.append(new GameSounds(this));
 }

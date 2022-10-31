@@ -65,6 +65,8 @@ public:
    */
   static std::string licenseNameFromFaceName(const std::string &face);
 
+  static void parseLicenseFile(BufferReader *reader, const char *filename, std::vector<LicenseItem> &items);
+
 private:
   std::map<std::string, LicenseItems> m_licenses; /**< License information for all faces. */
 };

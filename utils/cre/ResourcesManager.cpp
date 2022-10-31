@@ -39,6 +39,7 @@
 #include "faces/FaceWrapper.h"
 #include "animations/AnimationWrapper.h"
 #include "assets/AssetOriginAndCreationDialog.h"
+#include "sounds/SoundFiles.h"
 
 ResourcesManager::ResourcesManager() : myMapInformationManager(nullptr), myArchetypes(new ArchetypeWriter()), myQuests(new QuestWriter()), myTreasures(new TreasureWriter()),
         myGeneralMessages(new MessageWriter()), myArtifacts(new ArtifactWriter()), myFaces(nullptr), myAnimations(nullptr)

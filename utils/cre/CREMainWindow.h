@@ -111,6 +111,7 @@ class CREMainWindow : public QMainWindow
         void onToolFaceset(QAction* action);
         void onToolFacesetUseFallback();
         void onToolReloadAssets();
+        void onToolSounds();
         void onWindowsShowing();
         void browsingMap(const QString& path);
         void browsingFinished();

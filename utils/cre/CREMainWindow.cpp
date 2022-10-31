@@ -43,6 +43,7 @@
 #include "ChangesDock.h"
 #include "HelpManager.h"
 #include "MonsterResistances.h"
+#include "sounds/SoundsDialog.h"
 
 const char *AssetWrapper::tipProperty = "_cre_internal";
 
@@ -262,6 +263,7 @@ void CREMainWindow::createMenus()
     myToolsMenu->addAction(createAction(tr("Generate face variants"), tr("Generate faces by changing colors of existing faces."), this, SLOT(onToolFaceMaker())));
     myToolsMenu->addAction(myClearMapCache);
     myToolsMenu->addAction(createAction(tr("Reload assets"), tr("Reload all assets from the data directory."), this, SLOT(onToolReloadAssets())));
+    myToolsMenu->addAction(createAction(tr("Sounds"), tr("Display defined sounds and associated files."), this, SLOT(onToolSounds())));
 
     CRESettings set;
 
@@ -1843,6 +1845,17 @@ void CREMainWindow::onToolReloadAssets()
     CREPixmap::clearFaceCache();
     QApplication::restoreOverrideCursor();
     QMessageBox::information(this, "Reload complete", "Assets reload complete, you may need to change the selected item to see updated versions.");
+}
+
+void CREMainWindow::onToolSounds()
+{
+    CRESettings settings;
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Please select the 'sounds' directory"), settings.soundsDirectory());
+    if (dir.isEmpty())
+        return;
+    settings.setSoundsDirectory(dir);
+    SoundsDialog dlg(dir, this);
+    dlg.exec();
 }
 
 void CREMainWindow::onWindowsShowing() {

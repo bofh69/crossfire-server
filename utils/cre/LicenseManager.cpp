@@ -23,7 +23,7 @@ LicenseManager::~LicenseManager() {
 }
 
 void LicenseManager::readLicense(BufferReader *reader, const char *filename) {
-    char *line, *c;
+    char *c;
     std::unique_ptr<char, void(*)(void*)> dup(strdup(filename), free);
 
     c = strrchr(dup.get(), '.');
@@ -50,8 +50,12 @@ void LicenseManager::readLicense(BufferReader *reader, const char *filename) {
     c++;
 
     auto &licenses = m_licenses[c];
-    auto &item = licenses[faceset];
+    auto &items = licenses[faceset];
+    parseLicenseFile(reader, filename, items);
+}
 
+void LicenseManager::parseLicenseFile(BufferReader *reader, const char *filename, std::vector<LicenseItem> &items) {
+    char *line, *c;
     while ((line = bufferreader_next_line(reader)) != nullptr) {
         if (line[0] == '\0')
             continue;
@@ -64,7 +68,7 @@ void LicenseManager::readLicense(BufferReader *reader, const char *filename) {
         (*c) = '\0';
         c++;
 
-        item.push_back(std::make_pair(line, c));
+        items.push_back(std::make_pair(line, c));
     }
 }
 

@@ -65,8 +65,10 @@ void AssetWrapperPanel::itemChanged() {
     }
 }
 
-QLabel *AssetWrapperPanel::addLabel(const QString &label, const char *property) {
-    return addWidget(label, new QLabel(this), !label.isEmpty(), property, "text");
+QLabel *AssetWrapperPanel::addLabel(const QString &label, const char *property, bool wrapText) {
+    auto widget = addWidget(label, new QLabel(this), !label.isEmpty(), property, "text");
+    widget->setWordWrap(wrapText);
+    return widget;
 }
 
 QLineEdit *AssetWrapperPanel::addLineEdit(const QString &label, const char *property, bool readOnly) {

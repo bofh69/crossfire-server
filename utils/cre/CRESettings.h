@@ -58,6 +58,9 @@ class CRESettings : protected QSettings
 
         QByteArray subWindowPosition(int subWindow) const;
         void setSubWindowPosition(int subWindow, const QByteArray &data);
+
+        QString soundsDirectory() const;
+        void setSoundsDirectory(const QString &dir);
 };
 
 #endif // CLASS_CRE_SETTINGS_H

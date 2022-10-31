@@ -64,6 +64,10 @@
 #include "ResourcesManager.h"
 #include "assets/AssetModel.h"
 #include "faces/FacePanel.h"
+#include "sounds/SoundFilesPanel.h"
+#include "sounds/SoundFilePanel.h"
+#include "sounds/GameSoundsPanel.h"
+#include "sounds/GameSoundPanel.h"
 
 CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageManager* messages, ResourcesManager* resources, ScriptFileManager* scripts, AssetModel *model, const QModelIndex &root, QWidget* parent) : QWidget(parent)
 {
@@ -153,6 +157,10 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     addPanel("Message", new CREMessagePanel(myMessages, this));
     addPanel("RandomMap", new CRERandomMapPanel(this));
     addPanel("AttackMessage", new AttackMessagePanel(this));
+    addPanel("SoundFiles", new SoundFilesPanel(this));
+    addPanel("SoundFile", new SoundFilePanel(this, model));
+    addPanel("GameSounds", new GameSoundsPanel(this));
+    addPanel("GameSound", new GameSoundPanel(this));
 
     splitter->setSizes({5000, 5000});
 

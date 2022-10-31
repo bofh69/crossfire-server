@@ -18,6 +18,7 @@
 class ResourcesManager;
 class ScriptFileManager;
 class MessageManager;
+class SoundFiles;
 
 class AllAssets : public AssetWrapper {
     Q_OBJECT
@@ -32,11 +33,13 @@ public:
 
     AssetWrapper *regions() { return myRegions; }
     AssetWrapper *randomMaps() { return myRandomMaps; }
+    SoundFiles *sounds() const { return mySounds; }
 
 protected:
     QVector<AssetWrapper *> myAssets;
     AssetWrapper *myRegions;
     AssetWrapper *myRandomMaps;
+    SoundFiles *mySounds;
 };
 
 #endif /* ALL_ASSETS_H */

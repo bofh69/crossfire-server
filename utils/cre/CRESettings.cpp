@@ -158,3 +158,13 @@ QByteArray CRESettings::subWindowPosition(int subWindow) const {
 void CRESettings::setSubWindowPosition(int subWindow, const QByteArray &data) {
     setValue(QString("subWindows/win_%1/position").arg(subWindow), data);
 }
+
+QString CRESettings::soundsDirectory() const
+{
+    return value("soundsDirectory").toString();
+}
+
+void CRESettings::setSoundsDirectory(const QString &dir)
+{
+    setValue("soundsDirectory", dir);
+}
