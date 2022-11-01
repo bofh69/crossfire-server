@@ -584,7 +584,6 @@ static void check_equipment(object *item, struct_map_info *map) {
  * true if l is before r, false else
  */
 static bool sort_equipment(const struct_equipment *l, const struct_equipment *r) {
-    printf("sort %s %s\n", l->name, r->name);
     if (l->power < r->power)
         return true;
     return strcasecmp(l->name, r->name) < 0;
