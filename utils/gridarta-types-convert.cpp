@@ -3,7 +3,7 @@
  * This small program will extract information from Gridarta's types.xml file to generate documentation about types and fields.
  * Files are placed in developer's documentation subdirs by default.
  *
- * To build: <pre>gcc -g -pg -O0 -Wall -pedantic gridarta-types-convert.c -I../include -o gridarta-types-convert</pre>
+ * To build: <pre>gcc -g -pg -O0 -Wall -pedantic gridarta-types-convert.cpp -I../include -o gridarta-types-convert</pre>
  * To run: <pre>./gridarta-types-convert ../../gridarta/src/crossfire/src/main/resources/resource/conf/types.xml</pre>
  * (adjust the path according to your setup)
  *
@@ -322,7 +322,7 @@ static type_name type_names[] = {
 };
 
 type_attribute *duplicate_attribute(type_attribute *attr) {
-    type_attribute *ret = calloc(1, sizeof(type_attribute));
+    type_attribute *ret = static_cast<type_attribute *>(calloc(1, sizeof(type_attribute)));
     ret->field = strdup(attr->field);
     ret->name = strdup(attr->name);
     ret->description = strdup(attr->description);
@@ -356,11 +356,11 @@ type_attribute *get_attribute_for_type(type_definition *type, const char *attrib
             return ret;
         }
     }
-    ret = calloc(1, sizeof(type_attribute));
+    ret = static_cast<type_attribute *>(calloc(1, sizeof(type_attribute)));
     ret->field = strdup(attribute);
 
     type->attribute_count++;
-    type->attributes = realloc(type->attributes, type->attribute_count*sizeof(type_attribute *));
+    type->attributes = static_cast<type_attribute **>(realloc(type->attributes, type->attribute_count*sizeof(type_attribute *)));
     type->attributes[type->attribute_count-1] = ret;
 
     return ret;
@@ -392,7 +392,7 @@ void copy_default_attributes(type_definition *type) {
  * Returns a new type_definition having the default attributes.
  */
 type_definition *get_type_definition(void) {
-    type_definition *ret = calloc(1, sizeof(type_definition));
+    type_definition *ret = static_cast<type_definition *>(calloc(1, sizeof(type_definition)));
 
     ret->attribute_count = 0;
     ret->attributes = NULL;
@@ -483,12 +483,12 @@ void add_required_parameter(type_definition *type, const char *buf) {
         /* the "Misc" type has dummy requirements, don't take that into account. */
         return;
 
-    sn = strstr(buf, "arch");
+    sn = strstr(const_cast<char *>(buf), "arch");
     if (!sn)
         return;
     sn = strchr(sn, '"');
     en = strchr(sn+1, '"');
-    sv = strstr(buf, "value");
+    sv = strstr(const_cast<char *>(buf), "value");
     sv = strchr(sv, '"');
     ev = strchr(sv+1, '"');
 
@@ -498,7 +498,7 @@ void add_required_parameter(type_definition *type, const char *buf) {
     strncpy(value, sv+1, ev-sv-1);
 
     type->require_count++;
-    type->required = realloc(type->required, type->require_count*sizeof(char *));
+    type->required = static_cast<char **>(realloc(type->required, type->require_count*sizeof(char *)));
 
     flag = find_flag(name);
     if (flag)
@@ -526,7 +526,7 @@ void read_type(type_definition *type, FILE *file, const char *block_end) {
                     break;
 
                 if (type->description) {
-                    type->description = realloc(type->description, strlen(type->description)+strlen(buf)+1);
+                    type->description = static_cast<char *>(realloc(type->description, strlen(type->description)+strlen(buf)+1));
                     strcat(type->description, buf);
                 }
                 else
@@ -642,7 +642,7 @@ void read_type(type_definition *type, FILE *file, const char *block_end) {
                     if (strstr(buf, "</attribute>") != NULL)
                         break;
                     if (attr->description) {
-                        attr->description = realloc(attr->description, strlen(attr->description)+strlen(buf)+1);
+                        attr->description = static_cast<char *>(realloc(attr->description, strlen(attr->description)+strlen(buf)+1));
                         strcat(attr->description, buf);
                     }
                     else
@@ -688,9 +688,9 @@ attribute_definition *get_attribute(const char *name) {
             return attributes[attr];
     }
 
-    ret = calloc(1, sizeof(attribute_definition));
+    ret = static_cast<attribute_definition *>(calloc(1, sizeof(attribute_definition)));
     attribute_count++;
-    attributes = realloc(attributes, attribute_count*sizeof(attribute_definition *));
+    attributes = static_cast<attribute_definition **>(realloc(attributes, attribute_count*sizeof(attribute_definition *)));
     attributes[attribute_count-1] = ret;
 
     ret->field = strdup(name);
@@ -710,9 +710,9 @@ attribute_type *get_description_for_attribute(attribute_definition *attribute, c
             return attribute->types[desc];
     }
 
-    add = calloc(1, sizeof(attribute_type));
+    add = static_cast<attribute_type *>(calloc(1, sizeof(attribute_type)));
     attribute->type_count++;
-    attribute->types = realloc(attribute->types, attribute->type_count*sizeof(attribute_type));
+    attribute->types = static_cast<attribute_type **>(realloc(attribute->types, attribute->type_count*sizeof(attribute_type)));
     attribute->types[attribute->type_count-1] = add;
 
     if (description)
@@ -726,8 +726,8 @@ void add_type_to_attribute(attribute_definition *attribute, type_definition *typ
 
     att = get_description_for_attribute(attribute, type->attributes[attr]->description);
     att->count++;
-    att->type = realloc(att->type, att->count*sizeof(const char *));
-    att->number = realloc(att->number, att->count*sizeof(int));
+    att->type = static_cast<char **>(realloc(att->type, att->count*sizeof(const char *)));
+    att->number = static_cast<int *>(realloc(att->number, att->count*sizeof(int)));
     att->type[att->count-1] = strdup(type->name);
     att->number[att->count-1] = type->number;
 }
@@ -739,9 +739,9 @@ void read_ignore_list(const char *name, FILE *file) {
     ignore_list *list;
 
     /*printf("il %s:", name);*/
-    list = calloc(1, sizeof(ignore_list));
+    list = static_cast<ignore_list *>(calloc(1, sizeof(ignore_list)));
     list_count++;
-    lists = realloc(lists, list_count*sizeof(ignore_list *));
+    lists = static_cast<ignore_list **>(realloc(lists, list_count*sizeof(ignore_list *)));
     lists[list_count-1] = list;
     list->name = strdup(name);
 
@@ -765,7 +765,7 @@ void read_ignore_list(const char *name, FILE *file) {
         /*printf(" %s", tmp);*/
 
         list->count++;
-        list->fields = realloc(list->fields, list->count*sizeof(char *));
+        list->fields = static_cast<char **>(realloc(list->fields, list->count*sizeof(char *)));
         list->fields[list->count-1] = strdup(tmp);
     }
 }
@@ -864,7 +864,7 @@ void write_attribute_reference(const char *attribute, FILE *file) {
     }
     for (val = 0; in_living[val] != NULL; val++) {
         if (!strcmp(in_living[val], attribute)) {
-            fprintf(file, "liv::%s", attribute);
+            fprintf(file, "living::%s", attribute);
             return;
         }
     }
@@ -873,14 +873,14 @@ void write_attribute_reference(const char *attribute, FILE *file) {
         return;
         }
     if (strstr(attribute, "resist_")) {
-        fprintf(file, "obj::resist");
+        fprintf(file, "object::resist");
         return;
     }
     if (!strcmp(attribute, "connected")) {
         fprintf(file, "page_connected \"connection value\"");
         return;
     }
-    fprintf(file, "obj::%s", attribute);
+    fprintf(file, "object::%s", attribute);
 }
 
 /** Write a type definition file. */
@@ -993,7 +993,7 @@ void write_attribute_file(attribute_definition *attribute) {
         write_attribute_reference(attribute->field, file);
     }
 
-    /* resistances are special, they'll be merged in the obj::resist paragraph, so specify the name. */
+    /* resistances are special, they'll be merged in the object::resist paragraph, so specify the name. */
     if (strstr(attribute->field, "resist_"))
         fprintf(file, "\n@section %s %s resistance\n", attribute->field, attribute->field+7);
     else
@@ -1091,7 +1091,7 @@ int main(int argc, char **argv) {
                     number = dummy++;
                 type = get_type_definition();
                 type_count++;
-                types = realloc(types, type_count*sizeof(type_definition *));
+                types = static_cast<type_definition **>(realloc(types, type_count*sizeof(type_definition *)));
                 types[type_count-1] = type;
             }
 
