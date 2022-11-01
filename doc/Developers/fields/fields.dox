@@ -3,17 +3,17 @@
 This page lists all attributes.
 
 - @ref page_custom_attribute_accept_alive "accept_alive"
-- @ref obj::artifact
+- @ref object::artifact
 - @ref FLAG_BLOCKSVIEW
-- @ref obj::move_block
+- @ref object::move_block
 - @ref page_custom_attribute_blocks_prayer "blocks_prayer"
 - @ref FLAG_CHANGING
 - @ref FLAG_CLIENT_ANIM_RANDOM
 - @ref FLAG_CLIENT_ANIM_SYNC
 - @ref page_connected "connection value"
-- @ref liv::food
+- @ref living::food
 - @ref page_custom_attribute_elevation "elevation"
-- @ref obj::glow_radius
+- @ref object::glow_radius
 - @ref FLAG_IDENTIFIED
 - @ref page_custom_attribute_identified_animation "identified_animation"
 - @ref page_custom_attribute_identified_anim_speed "identified_anim_speed"
@@ -21,108 +21,108 @@ This page lists all attributes.
 - @ref page_custom_attribute_identified_anim_random "identified_anim_random"
 - @ref page_custom_attribute_identified_name "identified_name"
 - @ref page_custom_attribute_identified_name_pl "identified_name_pl"
-- @ref obj::face
-- @ref obj::invisible
+- @ref object::face
+- @ref object::invisible
 - @ref FLAG_IS_USED_UP
-- @ref obj::slaying
-- @ref obj::material
-- @ref obj::msg
-- @ref obj::name
+- @ref object::slaying
+- @ref object::material
+- @ref object::msg
+- @ref object::name
 - @ref FLAG_NO_PICK
-- @ref obj::nrof
-- @ref obj::name_pl
+- @ref object::nrof
+- @ref object::name_pl
 - @ref page_custom_attribute_price_adjustment "price_adjustment"
 - @ref page_custom_attribute_price_adjustment_buy "price_adjustment_buy"
 - @ref page_custom_attribute_price_adjustment_sell "price_adjustment_sell"
-- @ref obj::smoothlevel
+- @ref object::smoothlevel
 - @ref FLAG_SPLITTING
-- @ref obj::title
+- @ref object::title
 - @ref FLAG_UNPAID
-- @ref obj::value
-- @ref obj::weight
-- @ref obj::last_sp
-- @ref liv::exp
-- @ref liv::ac
-- @ref obj::path_attuned
-- @ref liv::Cha
-- @ref liv::Con
+- @ref object::value
+- @ref object::weight
+- @ref object::last_sp
+- @ref living::exp
+- @ref living::ac
+- @ref object::path_attuned
+- @ref living::Cha
+- @ref living::Con
 - @ref FLAG_CURSED
 - @ref FLAG_DAMNED
-- @ref obj::path_denied
-- @ref liv::Dex
+- @ref object::path_denied
+- @ref living::Dex
 - @ref FLAG_STARTEQUIP
-- @ref liv::grace
-- @ref obj::move_type
-- @ref liv::hp
-- @ref liv::Int
+- @ref living::grace
+- @ref object::move_type
+- @ref living::hp
+- @ref living::Int
 - @ref FLAG_APPLIED
-- @ref obj::item_power
-- @ref liv::luck
-- @ref liv::sp
-- @ref liv::Pow
+- @ref object::item_power
+- @ref living::luck
+- @ref living::sp
+- @ref living::Pow
 - @ref page_custom_attribute_race_restriction "race_restriction"
 - @ref FLAG_REFL_MISSILE
 - @ref FLAG_REFL_SPELL
-- @ref obj::path_repelled
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
-- @ref obj::resist
+- @ref object::path_repelled
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
+- @ref object::resist
 - @ref FLAG_LIFESAVE
 - @ref FLAG_STEALTH
-- @ref liv::Str
+- @ref living::Str
 - @ref FLAG_UNIQUE
-- @ref liv::wc
-- @ref liv::Wis
+- @ref living::wc
+- @ref living::Wis
 - @ref FLAG_XRAYS
-- @ref obj::level
-- @ref obj::magic
-- @ref obj::last_heal
-- @ref obj::anim_suffix
-- @ref obj::subtype
-- @ref obj::randomitems
+- @ref object::level
+- @ref object::magic
+- @ref object::last_heal
+- @ref object::anim_suffix
+- @ref object::subtype
+- @ref object::randomitems
 - @ref FLAG_IS_CAULDRON
-- @ref obj::other_arch
-- @ref obj::race
-- @ref obj::container
+- @ref object::other_arch
+- @ref object::race
+- @ref object::container
 - @ref page_custom_attribute_face_opened "face_opened"
-- @ref obj::speed
-- @ref obj::move_on
-- @ref obj::attacktype
-- @ref obj::last_grace
-- @ref liv::maxgrace
-- @ref liv::dam
-- @ref obj::last_eat
-- @ref liv::maxsp
-- @ref liv::maxhp
+- @ref object::speed
+- @ref object::move_on
+- @ref object::attacktype
+- @ref object::last_grace
+- @ref living::maxgrace
+- @ref living::dam
+- @ref object::last_eat
+- @ref living::maxsp
+- @ref living::maxhp
 - @ref FLAG_NO_DAMAGE
 - @ref page_custom_attribute_on_use_yield "on_use_yield"
 - @ref FLAG_IS_HILLY
 - @ref FLAG_NO_MAGIC
-- @ref obj::move_slow
-- @ref obj::move_slow_penalty
+- @ref object::move_slow
+- @ref object::move_slow_penalty
 - @ref FLAG_IS_WOODED
-- @ref obj::direction
+- @ref object::direction
 - @ref FLAG_ALIVE
-- @ref obj::resist
+- @ref object::resist
 - @ref FLAG_SLEEP
-- @ref obj::attack_movement
+- @ref object::attack_movement
 - @ref FLAG_CAST_SPELL
 - @ref FLAG_USE_ARMOUR
 - @ref FLAG_USE_BOW
@@ -132,11 +132,11 @@ This page lists all attributes.
 - @ref FLAG_USE_SHIELD
 - @ref FLAG_CAN_USE_SKILL
 - @ref FLAG_USE_WEAPON
-- @ref obj::carrying
+- @ref object::carrying
 - @ref page_custom_attribute_death_animation "death_animation"
 - @ref FLAG_FRIENDLY
 - @ref FLAG_HITBACK
-- @ref obj::will_apply
+- @ref object::will_apply
 - @ref FLAG_MONSTER
 - @ref FLAG_GENERATOR
 - @ref page_custom_attribute_generator_limit "generator_limit"
@@ -145,7 +145,7 @@ This page lists all attributes.
 - @ref page_custom_attribute_generator_radius "generator_radius"
 - @ref page_custom_attribute_no_mood_change "no_mood_change"
 - @ref FLAG_ONE_HIT
-- @ref obj::pick_up
+- @ref object::pick_up
 - @ref FLAG_RANDOM_MOVE
 - @ref FLAG_RUN_AWAY
 - @ref FLAG_SEE_IN_DARK
@@ -157,20 +157,20 @@ This page lists all attributes.
 - @ref FLAG_NO_DROP
 - @ref FLAG_NO_STRENGTH
 - @ref FLAG_AUTO_APPLY
-- @ref obj::expmul
+- @ref object::expmul
 - @ref page_custom_attribute_wc_increase_rate "wc_increase_rate"
-- @ref obj::skill
-- @ref obj::casting_time
+- @ref object::skill
+- @ref object::casting_time
 - @ref page_custom_attribute_casting_requirements "casting_requirements"
-- @ref obj::duration
+- @ref object::duration
 - @ref page_custom_attribute_immunity_chance "immunity_chance"
 - @ref page_custom_attribute_anim_full "anim_full"
 - @ref page_custom_attribute_base_speed "base_speed"
 - @ref page_custom_attribute_face_full "face_full"
-- @ref obj::move_allow
+- @ref object::move_allow
 - @ref page_custom_attribute_passenger_limit "passenger_limit"
 - @ref page_custom_attribute_weight_speed_ratio "weight_speed_ratio"
 - @ref FLAG_BLESSED
 - @ref FLAG_CAN_ROLL
-- @ref obj::weapontype
+- @ref object::weapontype
 */

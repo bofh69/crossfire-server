@@ -1,5 +1,5 @@
 /**
-@fn obj::last_heal
+@fn object::last_heal
 @section sec_last_heal Use
 <table>
 	<tr>

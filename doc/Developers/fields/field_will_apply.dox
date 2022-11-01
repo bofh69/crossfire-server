@@ -1,5 +1,5 @@
 /**
-@fn obj::will_apply
+@fn object::will_apply
 @section sec_will_apply Use
 <table>
 	<tr>

@@ -1,5 +1,5 @@
 /**
-@fn obj::glow_radius
+@fn object::glow_radius
 @section sec_glow_radius Use
 <table>
 	<tr>

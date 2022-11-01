@@ -1,5 +1,5 @@
 /**
-@fn obj::pick_up
+@fn object::pick_up
 @section sec_pick_up Use
 <table>
 	<tr>

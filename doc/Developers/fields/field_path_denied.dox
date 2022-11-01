@@ -1,5 +1,5 @@
 /**
-@fn obj::path_denied
+@fn object::path_denied
 @section sec_path_denied Use
 <table>
 	<tr>

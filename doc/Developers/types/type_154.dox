@@ -36,13 +36,13 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>artifact</td>
-		<td>@ref obj::artifact</td>
+		<td>@ref object::artifact</td>
 		<td>            If defined, refers to an artifact to get values from.
 		</td>
 	</tr>
 	<tr>
 		<td>attack type</td>
-		<td>@ref obj::attacktype</td>
+		<td>@ref object::attacktype</td>
 		<td>            If there isn't any spell (and &lt;summon monster&gt; is unset), this
             attribute defines what attack type to use for direct damage when the
             rune detonates.
@@ -87,7 +87,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>detonation text</td>
-		<td>@ref obj::msg</td>
+		<td>@ref object::msg</td>
 		<td>            When the rune detonates, this text is displayed to the victim. For
             especially powerful runes, create an appropriate thrilling
             description. ;)
@@ -95,7 +95,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>direct damage</td>
-		<td>@ref liv::dam</td>
+		<td>@ref living::dam</td>
 		<td>            &lt;direct damage&gt; specifies how much damage is done by the rune,
             if it doesn't contain a spell. This should be set in reasonable
             relation to the rune's level.
@@ -103,7 +103,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>direction</td>
-		<td>@ref obj::direction</td>
+		<td>@ref object::direction</td>
 		<td>                If set, the rune will cast its containing spell (if any) in
                 this &lt;direction&gt;. If a direction is set, the rune will not
                 hit the space it is located on.
@@ -121,7 +121,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>glow radius</td>
-		<td>@ref obj::glow_radius</td>
+		<td>@ref object::glow_radius</td>
 		<td>            If &lt;glow radius&gt; is set to a value greater zero, the object
             appears lit up on dark maps. &lt;glow radius&gt; can be a value
             between 0 and 4, the higher, the more light does the object emit.
@@ -176,14 +176,14 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>image</td>
-		<td>@ref obj::face</td>
+		<td>@ref object::face</td>
 		<td>            The image-name defines what image is displayed for this object
             in-game.
 		</td>
 	</tr>
 	<tr>
 		<td>invisible</td>
-		<td>@ref obj::invisible</td>
+		<td>@ref object::invisible</td>
 		<td>            Generally makes the object invisible. Depending on the object-type,
             some can be made visible by the show_invisible spell. If in doubt,
             test it. Putting an invisible object under the floor always prevents
@@ -199,13 +199,13 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>name</td>
-		<td>@ref obj::name</td>
+		<td>@ref object::name</td>
 		<td>            This is the name of the object, displayed to the player.
 		</td>
 	</tr>
 	<tr>
 		<td>number</td>
-		<td>@ref obj::nrof</td>
+		<td>@ref object::nrof</td>
 		<td>            This value determines the number of objects in one stack (for
             example: 100 gold coins =&gt; "number = 100"). You should set this
             at least to one, for any pickable object - otherwise it won't be
@@ -214,7 +214,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>number of charges</td>
-		<td>@ref liv::hp</td>
+		<td>@ref living::hp</td>
 		<td>            The rune will detonate &lt;number of charges&gt; times before
             disappearing.
 
@@ -244,7 +244,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>rune level</td>
-		<td>@ref obj::level</td>
+		<td>@ref object::level</td>
 		<td>            This value sets the level the rune will cast the spell it contains
             at, if applicable. A level 99 rune casts a very, very mean spell of
             whatever. (&lt;rune level&gt; 0 runes won't detonate at all!)
@@ -257,7 +257,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>smooth level</td>
-		<td>@ref obj::smoothlevel</td>
+		<td>@ref object::smoothlevel</td>
 		<td>            If &lt;smooth level&gt; is set to a value greater zero, the object
             will be drawn partially over adjacent squares having a lower &lt;smooth
             level&gt; value. The value must be between 0 and 255 (inclusive); 0
@@ -266,7 +266,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>spell arch</td>
-		<td>@ref obj::other_arch</td>
+		<td>@ref object::other_arch</td>
 		<td>                This string defines the spell in the rune, if any. &lt;spell
                 arch&gt; is optional, but if present, overrides the &lt;spell&gt;
                 setting. You can choose any of the existing arches.
@@ -274,7 +274,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>spell name</td>
-		<td>@ref obj::slaying</td>
+		<td>@ref object::slaying</td>
 		<td>                Name of the spell in the rune, if any. &lt;spell name&gt; is
                 optional, but if present, overrides the &lt;spell&gt; setting.
 		</td>
@@ -291,14 +291,14 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>summon amount</td>
-		<td>@ref liv::maxhp</td>
+		<td>@ref living::maxhp</td>
 		<td>                This should only be set to a summoning rune. It will then summon
                 that many creatures of the kind &lt;summon monster&gt;.
 		</td>
 	</tr>
 	<tr>
 		<td>summon monster</td>
-		<td>@ref obj::race</td>
+		<td>@ref object::race</td>
 		<td>                If this is set to the arch name of any monster, together with
                 &lt;spell name&gt; "summon evil monster", the rune will summon a
                 bunch of those on detonation. (dam and attack type will still be
@@ -316,7 +316,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>visibility</td>
-		<td>@ref liv::Cha</td>
+		<td>@ref living::Cha</td>
 		<td>            This value determines what fraction of the time the rune is visible:
             It'll be randomly visible 1/&lt;visibility&gt; of the time. Also
             effects how easily the rune may be found.

@@ -1,5 +1,5 @@
 /**
-@fn obj::resist
+@fn object::resist
 @section resist_chaos chaos resistance
 <table>
 	<tr>

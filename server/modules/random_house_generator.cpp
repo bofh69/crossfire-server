@@ -16,8 +16,8 @@
  * The random map parameters vary based on the map it is in, but each exit will always use
  * the same random seed to have the same layout and content.
  *
- * Exits will only point to a random map if both their @ref obj::slaying "slaying" and
- * @ref obj::msg "msg" fields are empty.
+ * Exits will only point to a random map if both their @ref object::slaying "slaying" and
+ * @ref object::msg "msg" fields are empty.
  *
  * @todo
  * - make more parameters vary based on maps

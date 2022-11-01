@@ -1,5 +1,5 @@
 /**
-@fn obj::last_eat
+@fn object::last_eat
 @section sec_last_eat Use
 <table>
 	<tr>

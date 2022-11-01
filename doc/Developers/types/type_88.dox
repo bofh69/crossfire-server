@@ -24,13 +24,13 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>artifact</td>
-		<td>@ref obj::artifact</td>
+		<td>@ref object::artifact</td>
 		<td>            If defined, refers to an artifact to get values from.
 		</td>
 	</tr>
 	<tr>
 		<td>attack level</td>
-		<td>@ref obj::level</td>
+		<td>@ref object::level</td>
 		<td>            I guess this value is supposed to work similar to monster levels.
             But in fact, it does not seem to have an effect. Set any non-zero
             value to be on the safe side.
@@ -38,7 +38,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>attack type</td>
-		<td>@ref obj::attacktype</td>
+		<td>@ref object::attacktype</td>
 		<td>            This attribute specifies the attack types that this floor uses to
             damage it's victims. Attack types are: physical, fire, cold, etc.
             If you want a real tough hazard floor, add more than just one attack
@@ -47,7 +47,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>base damage</td>
-		<td>@ref liv::dam</td>
+		<td>@ref living::dam</td>
 		<td>            The &lt;base damage&gt; defines how much damage is inflicted to the
             victim per hit. The final damage is influenced by several other
             factors like the victim's resistance and level.
@@ -62,7 +62,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>blocked movement</td>
-		<td>@ref obj::move_block</td>
+		<td>@ref object::move_block</td>
 		<td>            If set, the object cannot be passed by players nor monsters.
 		</td>
 	</tr>
@@ -108,7 +108,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>glow radius</td>
-		<td>@ref obj::glow_radius</td>
+		<td>@ref object::glow_radius</td>
 		<td>            If &lt;glow radius&gt; is set to a value greater zero, the object
             appears lit up on dark maps. &lt;glow radius&gt; can be a value
             between 0 and 4, the higher, the more light does the object emit.
@@ -170,14 +170,14 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>image</td>
-		<td>@ref obj::face</td>
+		<td>@ref object::face</td>
 		<td>            The image-name defines what image is displayed for this object
             in-game.
 		</td>
 	</tr>
 	<tr>
 		<td>invisible</td>
-		<td>@ref obj::invisible</td>
+		<td>@ref object::invisible</td>
 		<td>            Generally makes the object invisible. Depending on the object-type,
             some can be made visible by the show_invisible spell. If in doubt,
             test it. Putting an invisible object under the floor always prevents
@@ -193,7 +193,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>material</td>
-		<td>@ref obj::material</td>
+		<td>@ref object::material</td>
 		<td>            This bitmask-value informs the player of which material(s) the
             object consists. Material does also affect how likely the object can
             be destroyed by hazardous spell-effects.
@@ -201,7 +201,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>name</td>
-		<td>@ref obj::name</td>
+		<td>@ref object::name</td>
 		<td>            This is the name of the object, displayed to the player.
 		</td>
 	</tr>
@@ -228,7 +228,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>number</td>
-		<td>@ref obj::nrof</td>
+		<td>@ref object::nrof</td>
 		<td>            This value determines the number of objects in one stack (for
             example: 100 gold coins =&gt; "number = 100"). You should set this
             at least to one, for any pickable object - otherwise it won't be
@@ -237,7 +237,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>plural name</td>
-		<td>@ref obj::name_pl</td>
+		<td>@ref object::name_pl</td>
 		<td>            This is the plural name of the object. A plural name must be set for
             all items that can be picked up and collected by the player.
 		</td>
@@ -265,13 +265,13 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>slow movement</td>
-		<td>@ref obj::move_slow</td>
+		<td>@ref object::move_slow</td>
 		<td>                The movement types that are affected by &lt;slow penalty&gt;.
 		</td>
 	</tr>
 	<tr>
 		<td>slow penalty</td>
-		<td>@ref obj::move_slow_penalty</td>
+		<td>@ref object::move_slow_penalty</td>
 		<td>                If &lt;slow movement&gt; is set to a value greater zero, all
                 creatures moving over this spot will be slower than normal.
                 <ul>
@@ -284,7 +284,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>smooth level</td>
-		<td>@ref obj::smoothlevel</td>
+		<td>@ref object::smoothlevel</td>
 		<td>            If &lt;smooth level&gt; is set to a value greater zero, the object
             will be drawn partially over adjacent squares having a lower &lt;smooth
             level&gt; value. The value must be between 0 and 255 (inclusive); 0
@@ -303,7 +303,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>title</td>
-		<td>@ref obj::title</td>
+		<td>@ref object::title</td>
 		<td>            This is the object's title. Once an object is identified the title
             is attached to the name. Typical titles are "of Mostrai", "of xray
             vision" etc.
@@ -327,7 +327,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>value</td>
-		<td>@ref obj::value</td>
+		<td>@ref object::value</td>
 		<td>            Adds a certain value to the object: It will be worth that many times
             the default value from it's archetype (E.g. "value = 3" means three
             times worth the default value). Value for buying/selling will be
@@ -337,7 +337,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>weapon class</td>
-		<td>@ref liv::wc</td>
+		<td>@ref living::wc</td>
 		<td>            &lt;weapon class&gt; improves the chance of hitting the victim.
             Lower values are better. Usually, hazard floors like lava are
             supposed to hit the victim all the time. Therefore, &lt;weapon class&gt;
@@ -346,7 +346,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>weight</td>
-		<td>@ref obj::weight</td>
+		<td>@ref object::weight</td>
 		<td>            This value defines the object's weight in grams (1000g is 1kg).
             Objects with zero weight are not pickable for players. Still, set
             the "non-pickable"-flag for explicitly non-pickable objects (hey,

@@ -1,5 +1,5 @@
 /**
-@fn obj::attacktype
+@fn object::attacktype
 @section sec_attacktype Use
 <table>
 	<tr>

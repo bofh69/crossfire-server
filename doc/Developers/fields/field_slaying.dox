@@ -1,5 +1,5 @@
 /**
-@fn obj::slaying
+@fn object::slaying
 @section sec_slaying Use
 <table>
 	<tr>

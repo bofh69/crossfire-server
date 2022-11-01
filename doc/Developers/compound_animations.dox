@@ -9,7 +9,7 @@ The basic principle is:
 - if the animation exists, it replaces the object's animation for one iteration
 - if no suffix is defined, no animation is applied.
 
-Animation suffixes are stored in objects in their obj::anim_suffix 's field.
+Animation suffixes are stored in objects in their object::anim_suffix 's field.
 
 It is defined in archetypes with 'anim_suffix name'.
 

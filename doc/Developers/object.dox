@@ -6,7 +6,7 @@
 
 Objects are one of the main structures in Crossfire. They represent every item the player can interact with, including skills, experience, spells and their effects, monsters, walls, including the player as a character in the map...
 
-Objects in Crossfire are represented by the ::obj structure. One important field is object::type, which defines the object type (wall, monster, exit, ...). Another important field is object::flags "the flags", that indicate some special properties of the object.
+Objects in Crossfire are represented by the ::object structure. One important field is object::type, which defines the object type (wall, monster, exit, ...). Another important field is object::flags "the flags", that indicate some special properties of the object.
 @todo link to types, flags, ...
 
 This structure should not be created directly, but managed through suitable functions (see @ref sec_obj_functions below).
@@ -72,9 +72,9 @@ Various functions exist to manipulate objects. They should be used instead of mo
 
 @section sec_special_objects Special objects
 
-There are special objects that, even if they use the ::obj structure, should not be manipulated through the usual functions.
+There are special objects that, even if they use the ::object structure, should not be manipulated through the usual functions.
 
-@ref page_archetype "Archetypes" have a archetype::clone field that is an ::obj structure. This object is never on any list, even if active.
+@ref page_archetype "Archetypes" have a archetype::clone field that is an ::object structure. This object is never on any list, even if active.
 
 @ref page_artifact "Artifacts" have a malloc()'d artifact::item object structure, that isn't on any list either. Those objects should never be manipulated directly.
 

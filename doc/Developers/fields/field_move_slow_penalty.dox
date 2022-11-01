@@ -1,5 +1,5 @@
 /**
-@fn obj::move_slow_penalty
+@fn object::move_slow_penalty
 @section sec_move_slow_penalty Use
 <table>
 	<tr>

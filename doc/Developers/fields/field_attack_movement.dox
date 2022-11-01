@@ -1,5 +1,5 @@
 /**
-@fn obj::attack_movement
+@fn object::attack_movement
 @section sec_attack_movement Use
 <table>
 	<tr>

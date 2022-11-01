@@ -3,9 +3,9 @@
 @page page_dialog Dialog system
 
 The dialog system used by NPCs and magic ear works in the following way:
-- the message is stored in the obj::msg field
+- the message is stored in the object::msg field
 - the first time the NPC is talked to, this structure is parsed to the
-obj::dialog_information field
+object::dialog_information field
 - this field contains all information needed to know what words the NPC reacts too.
 
 The core dialog is in communicate().
@@ -17,7 +17,7 @@ do_talk_npc() based on the reply
 
 This enables special things like 'Player asks: What is this?'.
 
-The following tags can be used in the obj::msg field:
+The following tags can be used in the object::msg field:
 - <code>\@match xxx</code> introduces a dialog message. <code>xxx</code> can be either '*' or a regexp,
 with | to separate alternatives
 - <code>\@reply value text</code> is one possible reply the player can give to the message. <code>value</code>

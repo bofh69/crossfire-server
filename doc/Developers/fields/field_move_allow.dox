@@ -1,5 +1,5 @@
 /**
-@fn obj::move_allow
+@fn object::move_allow
 @section sec_move_allow Use
 <table>
 	<tr>
