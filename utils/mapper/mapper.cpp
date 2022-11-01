@@ -3139,7 +3139,7 @@ int main(int argc, char **argv) {
     qsort(quests, quests_count, sizeof(struct_quest *), sort_struct_quest);
 
     quest_for_each(&quest_callback, NULL);
-    std::sort(system_quests.begin(), system_quests.end(), [] (const auto &left, const auto &right) { return strcmp(left->quest_code, right->quest_code); });
+    std::sort(system_quests.begin(), system_quests.end(), [] (const auto &left, const auto &right) { return strcmp(left->quest_code, right->quest_code) < 0; });
 
     init_renderer_env();
 
