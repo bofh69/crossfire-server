@@ -350,7 +350,9 @@ Confirmez-vous vouloir utiliser de fichier ?</translation>
         <source>Draw: %1 fights
 %2 victories: %3 (max hp: %4, min hp: %5)
 %6 victories: %7 (max hp: %8, min hp: %9)</source>
-        <translation>Matchs nuls : %1 combats↵%2 victoires : %3 (points de vie maximum : %4, points de vie minimum : %5)↵%6 victoires : %7 (points de vie maximum : %8, points de vie minimum : %9)</translation>
+        <translation>Matchs nuls : %1 combats
+%2 victoires : %3 (points de vie maximum : %4, points de vie minimum : %5)
+%6 victoires : %7 (points de vie maximum : %8, points de vie minimum : %9)</translation>
     </message>
 </context>
 <context>
