@@ -37,6 +37,7 @@ static std::vector<const char *> types({
 });
 
 AttackMessagesWrapper::AttackMessagesWrapper(AssetWrapper *parent) : AssetWrapper(parent) {
+    setProperty(tipProperty, tr("Display all attack messages."));
     for (uint8_t type = 0; type < types.size(); type++) {
         myChildren.push_back(new SingleAttackWrapper(this, type, types[type]));
     }

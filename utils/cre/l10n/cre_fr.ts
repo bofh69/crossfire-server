@@ -312,6 +312,11 @@ Confirmez-vous vouloir utiliser de fichier ?</translation>
         <source>Attack messages</source>
         <translation>Messages d&apos;attaque</translation>
     </message>
+    <message>
+        <location filename="../attack_messages/AttackMessagesWrapper.cpp" line="40"/>
+        <source>Display all attack messages.</source>
+        <translation>Affiche tous les messages d&apos;attaque.</translation>
+    </message>
 </context>
 <context>
     <name>CRECombatSimulator</name>
