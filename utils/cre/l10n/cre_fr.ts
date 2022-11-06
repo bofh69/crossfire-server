@@ -1570,7 +1570,7 @@ Confirmez-vous ?</translation>
     <message>
         <location filename="../CREResourcesWindow.cpp" line="128"/>
         <source>No details available.</source>
-        <translation>Aucune détail disponible.</translation>
+        <translation>Aucun détail disponible.</translation>
     </message>
     <message>
         <location filename="../CREResourcesWindow.cpp" line="228"/>
