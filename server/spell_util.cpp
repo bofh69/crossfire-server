@@ -1221,6 +1221,9 @@ static void transmute_item_to_flower(object *op) {
 
     if (QUERY_FLAG(item, FLAG_APPLIED))
         apply_manual(op, item, AP_NOPRINT|AP_IGNORE_CURSE|AP_UNAPPLY);
+    if (QUERY_FLAG(item, FLAG_STARTEQUIP)) {
+        SET_FLAG(flower, FLAG_STARTEQUIP);
+    }
     object_remove(item);
     flower->weight = item->nrof ? ((int32_t)item->nrof)*item->weight : item->weight;
     item->weight = 0;
