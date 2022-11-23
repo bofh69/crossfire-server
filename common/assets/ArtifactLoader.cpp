@@ -17,8 +17,8 @@
 
 bool ArtifactLoader::willLoad(const std::string &filename) {
     return
-            Utils::endsWith(filename, "/artifacts")
-            || Utils::endsWith(filename, ".artifacts");
+            Utils::endsWith(filename.c_str(), "/artifacts")
+            || Utils::endsWith(filename.c_str(), ".artifacts");
 }
 
 void ArtifactLoader::load(BufferReader *reader, const std::string &filename) {

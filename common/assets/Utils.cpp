@@ -13,10 +13,10 @@
 #include "Utils.h"
 #include <vector>
 
-bool Utils::endsWith(const std::string& str, const std::string& with) {
+bool Utils::endsWith(const char * const str, const char * const with) {
     return
-            str.length() >= with.length() &&
-            str.rfind(with) == str.length() - with.length();
+            strlen(str) >= strlen(with) &&
+            strcmp(&str[strlen(str) - strlen(with)], with) == 0;
 }
 
 void Utils::writeLinkedChar(const linked_char* list, StringBuffer* buf) {

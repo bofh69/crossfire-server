@@ -36,7 +36,7 @@ public:
     };
 
     virtual bool willLoad(const std::string &filename) override {
-        return Utils::endsWith(filename, m_name);
+        return Utils::endsWith(filename.c_str(), m_name.c_str());
     }
 
     virtual void load(BufferReader *reader, const std::string &filename) override {

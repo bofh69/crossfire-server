@@ -25,7 +25,7 @@ public:
      * @param with string to check at the end of str.
      * @return true if 'str' ends with 'with', false else.
      */
-    static bool endsWith(const std::string& str, const std::string& with);
+    static bool endsWith(const char * const str, const char * const with);
 
     /**
      * Write a list of strings as ' a,b,c' (leading space).
