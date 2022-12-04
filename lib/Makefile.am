@@ -3,7 +3,6 @@ pkgconfdir = @pkgconfdir@
 
 dist_noinst_SCRIPTS = collect util.pl
 dist_pkgdata_DATA = \
-	arch/artifacts \
 	arch/attackmess \
 	arch/formulae \
 	arch/image_info \
@@ -14,7 +13,8 @@ dist_pkgdata_DATA = \
 	crossfire.arc \
 	crossfire.trs \
 	crossfire.face \
-	crossfire.tar
+	crossfire.tar \
+	crossfire.artifacts
 
 CONF_FILES = \
 	config/ban_file \
@@ -46,7 +46,7 @@ dist_i18n_DATA = $(srcdir)/i18n/messages.en \
 	$(srcdir)/i18n/messages.pt
 
 MAINTAINERCLEANFILES = .collect-stamp \
-	crossfire.arc crossfire.trs crossfire.face crossfire.tar
+	crossfire.arc crossfire.trs crossfire.face crossfire.tar crossfire.artifacts
 
 PERL = @PERL@
 
@@ -68,13 +68,16 @@ crossfire.arc: .collect-stamp
 	  -pack-assets archs crossfire.arc \
 	  -pack-assets faces crossfire.face \
 	  -pack-assets treasures crossfire.trs \
-	  -pack-assets images crossfire.tar
+	  -pack-assets images crossfire.tar \
+	  -pack-assets artifacts crossfire.artifacts
 
 crossfire.trs: crossfire.arc
 
 crossfire.face: crossfire.arc
 
 crossfire.tar: crossfire.arc
+
+crossfire.artifacts: crossfire.arc
 
 install-data-local: util.pl
 	@$(NORMAL_INSTALL)
