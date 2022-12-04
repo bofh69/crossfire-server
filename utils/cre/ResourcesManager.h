@@ -116,6 +116,7 @@ class ResourcesManager : public QObject, AssetsTracker
         static void archetypeUse(const archetype* item, CREMapInformationManager* store, AssetUseCallback callback);
 
         std::string originOf(const Face *face) const { return myFaces.originOf(face); }
+        std::string originOf(const artifact *art) const { return myArtifacts.originOf(art); }
 
         bool hasPendingChanges() const {
             return

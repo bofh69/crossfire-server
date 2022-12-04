@@ -21,6 +21,8 @@
 #include "global.h"
 #include "artifact.h"
 
+class ResourcesManager;
+
 /**
  * Display details about an artifact definition.
  */
@@ -29,10 +31,11 @@ class ArtifactPanel : public AssetTWrapperPanel<artifact>
     Q_OBJECT
 
     public:
-        ArtifactPanel(QWidget* parent);
+        ArtifactPanel(QWidget* parent, ResourcesManager *resources);
         virtual void updateItem() override;
 
     protected:
+        ResourcesManager *myResources;
         QLineEdit* myName;
         QLineEdit* myChance;
         QLineEdit* myType;
@@ -42,6 +45,7 @@ class ArtifactPanel : public AssetTWrapperPanel<artifact>
         QTextEdit* myInstance;
         AnimationControl* myAnimation;
         AnimationWidget* myFace;
+        QLabel* myOrigin;
 
         void computeMadeViaAlchemy(const artifact* artifact) const;
 

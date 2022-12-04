@@ -90,52 +90,57 @@
 <context>
     <name>ArtifactPanel</name>
     <message>
-        <location filename="../artifacts/ArtifactPanel.cpp" line="25"/>
+        <location filename="../artifacts/ArtifactPanel.cpp" line="27"/>
         <source>Name:</source>
         <translation>Nom :</translation>
     </message>
     <message>
-        <location filename="../artifacts/ArtifactPanel.cpp" line="26"/>
+        <location filename="../artifacts/ArtifactPanel.cpp" line="28"/>
         <source>Chance:</source>
         <translation>Chance :</translation>
     </message>
     <message>
-        <location filename="../artifacts/ArtifactPanel.cpp" line="27"/>
+        <location filename="../artifacts/ArtifactPanel.cpp" line="29"/>
         <source>Type:</source>
         <translation>Type :</translation>
     </message>
     <message>
-        <location filename="../artifacts/ArtifactPanel.cpp" line="32"/>
+        <location filename="../artifacts/ArtifactPanel.cpp" line="30"/>
+        <source>File:</source>
+        <translation>Fichier :</translation>
+    </message>
+    <message>
+        <location filename="../artifacts/ArtifactPanel.cpp" line="35"/>
         <source>Values:</source>
         <translation>Valeurs :</translation>
     </message>
     <message>
-        <location filename="../artifacts/ArtifactPanel.cpp" line="39"/>
+        <location filename="../artifacts/ArtifactPanel.cpp" line="38"/>
         <source>Allowed/forbidden archetypes</source>
         <translation>Archétypes autorisés / interdits</translation>
     </message>
     <message>
-        <location filename="../artifacts/ArtifactPanel.cpp" line="44"/>
+        <location filename="../artifacts/ArtifactPanel.cpp" line="43"/>
         <source>Result:</source>
         <translation>Résultat :</translation>
     </message>
     <message>
-        <location filename="../artifacts/ArtifactPanel.cpp" line="90"/>
+        <location filename="../artifacts/ArtifactPanel.cpp" line="86"/>
         <source>Can&apos;t be made via alchemy.</source>
         <translation>Ne peut être généré par alchimie.</translation>
     </message>
     <message>
-        <location filename="../artifacts/ArtifactPanel.cpp" line="94"/>
+        <location filename="../artifacts/ArtifactPanel.cpp" line="90"/>
         <source>Can be made via alchemy.</source>
         <translation>Peut être généré par alchimie.</translation>
     </message>
     <message>
-        <location filename="../artifacts/ArtifactPanel.cpp" line="98"/>
+        <location filename="../artifacts/ArtifactPanel.cpp" line="94"/>
         <source>The following archetypes can be used via alchemy: %1</source>
         <translation>Les archétypes suivants peuvent être utilisé pour de l&apos;alchimie : %1</translation>
     </message>
     <message>
-        <location filename="../artifacts/ArtifactPanel.cpp" line="98"/>
+        <location filename="../artifacts/ArtifactPanel.cpp" line="94"/>
         <source>, </source>
         <translation></translation>
     </message>
@@ -2018,117 +2023,117 @@ mais les données peuvent être recréées si besoin.</translation>
 <context>
     <name>GameSounds</name>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="18"/>
+        <location filename="../sounds/GameSounds.cpp" line="19"/>
         <source>player learns a spell</source>
         <translation>le joueur apprend un sort</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="19"/>
+        <location filename="../sounds/GameSounds.cpp" line="20"/>
         <source>player applies an item</source>
         <translation>le joueur utilise ou équipe un object</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="21"/>
+        <location filename="../sounds/GameSounds.cpp" line="22"/>
         <source>someone applies an item that is only available to DM; an item is destroyed to save the player&apos;s life</source>
         <translation>quelqu&apos;un utilise un objet qui n&apos;est disponible que pour les Maîtres de Jeu ; un objet est détruit pour sauver la vie du joueur</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="22"/>
+        <location filename="../sounds/GameSounds.cpp" line="23"/>
         <source>player (or pet) hits a living creature</source>
         <translation>un joueur (ou un familier) cause des dégâts à une créature vivante</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="23"/>
+        <location filename="../sounds/GameSounds.cpp" line="24"/>
         <source>player fails hitting a living creature</source>
         <translation>le joueur échoue à causer des dégâts à une créature vivante</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="24"/>
+        <location filename="../sounds/GameSounds.cpp" line="25"/>
         <source>player is killed</source>
         <translation>le joueur est tué</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="25"/>
+        <location filename="../sounds/GameSounds.cpp" line="26"/>
         <source>player is walking</source>
         <translation>le joueur marche</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="26"/>
+        <location filename="../sounds/GameSounds.cpp" line="27"/>
         <source>player fires a bow or crossbow</source>
         <translation>le joueur tire à l&apos;arc ou à l&apos;arbalète</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="27"/>
+        <location filename="../sounds/GameSounds.cpp" line="28"/>
         <source>player attempts to use a rod or wand without enough sp or charges</source>
         <translation>le joueur tente d&apos;utiliser un bâton ou une baguette qui n&apos;a pas assez de points de magie ou de charges</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="28"/>
+        <location filename="../sounds/GameSounds.cpp" line="29"/>
         <source>player opens a door with a key</source>
         <translation>le joueur ouvre une porte avec une clé</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="29"/>
+        <location filename="../sounds/GameSounds.cpp" line="30"/>
         <source>a living creature is pushed</source>
         <translation>une créature vivante est poussée</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="30"/>
+        <location filename="../sounds/GameSounds.cpp" line="31"/>
         <source>player dies</source>
         <translation>le joueur meurt</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="31"/>
+        <location filename="../sounds/GameSounds.cpp" line="32"/>
         <source>a wand explodes when an attempt to recharged it is made</source>
         <translation>une baguette explose lors d&apos;une tentative de la recharger</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="32"/>
+        <location filename="../sounds/GameSounds.cpp" line="33"/>
         <source>player fails casting a praying spell; player fails to learn a spell</source>
         <translation>le joueur échoue à lancer un sort divin ; le joueur échoue à apprendre un sort</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="33"/>
+        <location filename="../sounds/GameSounds.cpp" line="34"/>
         <source>a button is walked on</source>
         <translation>quelqu&apos;un marche sur un bouton</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="34"/>
+        <location filename="../sounds/GameSounds.cpp" line="35"/>
         <source>a handle is applied</source>
         <translation>quelqu&apos;un actionne un levier</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="35"/>
+        <location filename="../sounds/GameSounds.cpp" line="36"/>
         <source>player applies a clock</source>
         <translation>le joueur utilise une pendule</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="36"/>
+        <location filename="../sounds/GameSounds.cpp" line="37"/>
         <source>someone drinks an item</source>
         <translation>quelqu&apos;un boit quelque chose</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="37"/>
+        <location filename="../sounds/GameSounds.cpp" line="38"/>
         <source>a gate is opening or closing</source>
         <translation>une porte s&apos;ouvre ou se ferme</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="38"/>
+        <location filename="../sounds/GameSounds.cpp" line="39"/>
         <source>someone falls in a hole</source>
         <translation>quelqu&apos;un tombe dans un trou</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="39"/>
+        <location filename="../sounds/GameSounds.cpp" line="40"/>
         <source>player applies a poisoned food or drink</source>
         <translation>le joueur mange ou boit un aliment empoisonné</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="43"/>
+        <location filename="../sounds/GameSounds.cpp" line="44"/>
         <source>Display all game internal sounds.</source>
         <translation>Affiche tous les sons du serveur.</translation>
     </message>
     <message>
-        <location filename="../sounds/GameSounds.cpp" line="54"/>
+        <location filename="../sounds/GameSounds.cpp" line="55"/>
         <source>All sound names defined in the server and sent to the client</source>
         <translation>Tous les noms de sons définis dans le code du serveur et envoyés au client</translation>
     </message>
@@ -2501,22 +2506,22 @@ mais les données peuvent être recréées si besoin.</translation>
 <context>
     <name>SoundFiles</name>
     <message>
-        <location filename="../sounds/SoundFiles.cpp" line="18"/>
+        <location filename="../sounds/SoundFiles.cpp" line="23"/>
         <source>Display all sound files.</source>
         <translation>Affiche tous les fichiers sons.</translation>
     </message>
     <message>
-        <location filename="../sounds/SoundFiles.cpp" line="56"/>
+        <location filename="../sounds/SoundFiles.cpp" line="61"/>
         <source>Unable to open sound configuration file %1/sounds.conf</source>
         <translation>Erreur lors de l&apos;ouverture du fichier de configuration des sons %1/sounds.conf</translation>
     </message>
     <message>
-        <location filename="../sounds/SoundFiles.cpp" line="103"/>
+        <location filename="../sounds/SoundFiles.cpp" line="108"/>
         <source>No sound file found</source>
         <translation>Aucun fichier de son n&apos;a été trouvé</translation>
     </message>
     <message>
-        <location filename="../sounds/SoundFiles.cpp" line="115"/>
+        <location filename="../sounds/SoundFiles.cpp" line="120"/>
         <source>%1 sound files with license information on %2 (%3%)</source>
         <translation>%1 fichiers de son avec une information de licence sur %2 (%3%)</translation>
     </message>
@@ -2529,52 +2534,52 @@ mais les données peuvent être recréées si besoin.</translation>
 <context>
     <name>SoundsDialog</name>
     <message>
-        <location filename="../sounds/SoundsDialog.cpp" line="32"/>
+        <location filename="../sounds/SoundsDialog.cpp" line="37"/>
         <source>skill use</source>
         <translation>utilisation de compétence</translation>
     </message>
     <message>
-        <location filename="../sounds/SoundsDialog.cpp" line="34"/>
+        <location filename="../sounds/SoundsDialog.cpp" line="39"/>
         <source>spell cast</source>
         <translation>invocation de sort</translation>
     </message>
     <message>
-        <location filename="../sounds/SoundsDialog.cpp" line="36"/>
+        <location filename="../sounds/SoundsDialog.cpp" line="41"/>
         <source>spell effect</source>
         <translation>effet de sort</translation>
     </message>
     <message>
-        <location filename="../sounds/SoundsDialog.cpp" line="38"/>
+        <location filename="../sounds/SoundsDialog.cpp" line="43"/>
         <source>unknown type</source>
         <translation>type inconnu</translation>
     </message>
     <message>
-        <location filename="../sounds/SoundsDialog.cpp" line="41"/>
+        <location filename="../sounds/SoundsDialog.cpp" line="46"/>
         <source>unknown</source>
         <translation>inconnu</translation>
     </message>
     <message>
-        <location filename="../sounds/SoundsDialog.cpp" line="46"/>
+        <location filename="../sounds/SoundsDialog.cpp" line="51"/>
         <source>Sound information</source>
         <translation>Information sur les sons</translation>
     </message>
     <message>
-        <location filename="../sounds/SoundsDialog.cpp" line="53"/>
+        <location filename="../sounds/SoundsDialog.cpp" line="58"/>
         <source>Event</source>
         <translation>Événement</translation>
     </message>
     <message>
-        <location filename="../sounds/SoundsDialog.cpp" line="53"/>
+        <location filename="../sounds/SoundsDialog.cpp" line="58"/>
         <source>Volume</source>
         <translation>Volume</translation>
     </message>
     <message>
-        <location filename="../sounds/SoundsDialog.cpp" line="53"/>
+        <location filename="../sounds/SoundsDialog.cpp" line="58"/>
         <source>File</source>
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="../sounds/SoundsDialog.cpp" line="53"/>
+        <location filename="../sounds/SoundsDialog.cpp" line="58"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>

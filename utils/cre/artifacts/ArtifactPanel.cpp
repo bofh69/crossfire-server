@@ -19,35 +19,31 @@
 #include "Archetypes.h"
 #include "assets/AssetWrapper.h"
 #include "artifacts/ArtifactWrapper.h"
+#include "ResourcesManager.h"
 
-ArtifactPanel::ArtifactPanel(QWidget* parent) : AssetTWrapperPanel(parent)
+ArtifactPanel::ArtifactPanel(QWidget* parent, ResourcesManager *resources)
+ : AssetTWrapperPanel(parent), myResources(resources)
 {
     addLineEdit(tr("Name:"), "name");
     addSpinBox(tr("Chance:"), "chance", 0, 65535, false);
     myType = addLineEdit(tr("Type:"), nullptr, true);
+    myOrigin = addLabel(tr("File:"), nullptr, true);
 
     myViaAlchemy = addWidget(QString(), new QLabel(this), false, nullptr, nullptr);
     myViaAlchemy->setWordWrap(true);
 
-    myLayout->addWidget(new QLabel(tr("Values:"), this), 5, 0, 1, 2);
-    myValues = new QTextEdit(this);
-    myLayout->addWidget(myValues, 6, 0, 1, 2);
-    myValues->setReadOnly(true);
+    myValues = addTextEdit(tr("Values:"), nullptr, true);
 
-    myArchetypes = new QTreeWidget(this);
-    myLayout->addWidget(myArchetypes, 7, 0, 3, 1);
+    myArchetypes = addWidget(QString(), new QTreeWidget(this), false, nullptr, nullptr);
     myArchetypes->setHeaderLabel(tr("Allowed/forbidden archetypes"));
     myArchetypes->setIconSize(QSize(32, 32));
     myArchetypes->setRootIsDecorated(false);
     connect(myArchetypes, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(artifactChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
 
-    myLayout->addWidget(new QLabel(tr("Result:"), this), 7, 1);
-    myInstance = new QTextEdit(this);
-    myLayout->addWidget(myInstance, 8, 1);
-    myInstance->setReadOnly(true);
+    myInstance = addTextEdit(tr("Result:"), nullptr, true);
 
-    myLayout->addWidget(myAnimation = new AnimationControl(this), 9, 1);
-    myLayout->addWidget(myFace = new AnimationWidget(this), 9, 1);
+    myAnimation = addWidget(QString(), new AnimationControl(this), false, nullptr, nullptr);
+    myFace = addWidget(QString(), new AnimationWidget(this), false, nullptr, nullptr);
 }
 
 void ArtifactPanel::computeMadeViaAlchemy(const artifact* artifact) const
@@ -136,6 +132,7 @@ static void addArchetypes(const artifact* artifact, const char* name, bool check
 void ArtifactPanel::updateItem()
 {
     myType->setText(QString::number(myItem->item->type));
+    myOrigin->setText(QString::fromStdString(myResources->originOf(myItem)));
 
     computeMadeViaAlchemy(myItem);
 
