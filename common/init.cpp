@@ -122,7 +122,6 @@ char first_map_ext_path[MAX_BUF]; /**< Path used for per-race start maps. */
 
 long ob_count;
 
-archetype *ring_arch, *amulet_arch, *crown_arch;
 const char *undead_name; /* Used in hit_player() in main.c */
 sstring blocks_prayer;   /**< For update_position() mostly. */
 
@@ -420,8 +419,6 @@ void init_globals(void) {
     *first_map_ext_path = 0;
     nrofartifacts = 0;
     nrofallowedstr = 0;
-    ring_arch = NULL;
-    amulet_arch = NULL;
     undead_name = add_string("undead");
     blocks_prayer = add_string("blocks_prayer");
     trying_emergency_save = 0;

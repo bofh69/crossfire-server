@@ -44,6 +44,11 @@ static int resist_table[] = {
     ATNR_LIFE_STEALING, ATNR_DISEASE
 };
 
+/**
+ * Arches for rings, amulets and crowns.
+ */
+static archetype *ring_arch = NULL, *amulet_arch = NULL, *crown_arch = NULL;
+
 /** Number of items in ::resist_table. */
 #define num_resist_table 19
 

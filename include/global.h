@@ -153,10 +153,6 @@ EXTERN long ob_count;
 extern const char *const spell_mapping[SPELL_MAPPINGS];
 /*@}*/
 
-/*
- * Used in treasure.c
- */
-EXTERN archetype *ring_arch, *amulet_arch, *crown_arch;
 EXTERN const char *undead_name; /* Used in hit_player() in main.c */
 EXTERN sstring blocks_prayer;   /**< For update_position() mostly. */
 
