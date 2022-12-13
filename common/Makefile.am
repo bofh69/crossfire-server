@@ -73,7 +73,7 @@ libcross_a_SOURCES = \
 	utils.cpp
 
 loader.cpp: loader.l
-	$(LEX) -i -o loader.cpp $(top_srcdir)/common/loader.l
+	$(LEX) $(AM_LFLAGS) -o loader.cpp $(top_srcdir)/common/loader.l
 
 EXTRA_DIST = README is_valid_types_gen.py
 AM_CPPFLAGS = -I$(top_srcdir)/include -DDATADIR=\"$(pkgdatadir)\" -DCONFDIR=\"$(pkgconfdir)\" \
