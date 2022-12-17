@@ -1339,7 +1339,7 @@ void fix_object(object *op) {
                     speed_reduce_from_disease = (float)tmp->last_sp/100.0;
             }
 
-            /* Pos. and neg. protections are counted seperate (-> pro/vuln).
+            /* Pos. and neg. protections are counted separate (-> pro/vuln).
              * (Negative protections are calculated extactly like positive.)
              * Resistance from potions are treated special as well. If there's
              * more than one potion-effect, the bigger prot.-value is taken.

@@ -4514,7 +4514,7 @@ int object_set_value(object *op, const char *key, const char *value, int add_key
 }
 
 /** This is a subset of the parse_id command.  Basically, name can be
- * a string seperated lists of things to match, with certain keywords.
+ * a string separated lists of things to match, with certain keywords.
  * pl is the player (only needed to set count properly)
  * op is the item we are trying to match.  Calling function takes care
  * of what action might need to be done and if it is valid

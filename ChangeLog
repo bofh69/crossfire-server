@@ -3381,12 +3381,12 @@ Nicolas Weeger 2010-01-09
 Add account handling code.  This is work in progress - the checked in
 piece is the backend piece.  Protocol updates and client interface are
 next steps to do.  As part of this, split_string() was modified to take
-as an argument the seperator - this is useful because the account code
+as an argument the separator - this is useful because the account code
 stores the player names in a semicolon separated list.
 MSW 2010-01-07
 ---
 common/image.c: Update call to split_string()
-common/utils.c: Modify split_string() to take as an argument the seperator -
+common/utils.c: Modify split_string() to take as an argument the separator -
 	this makes it more useful/general purpose.
 include/libproto.h: Update split_string() prototype
 include/sproto.h: Add prototypes for account.c
@@ -14377,7 +14377,7 @@ doc/Developers/spells: Update type on casting_time - include suggested value
   for times so that results are hopefully more coherent.
 lib/archetypes, treasures.bld: rebuilt.
 lib/treasures: Change some of the 'spelldirect' types to just the actual spells,
-   so that two seperate archs don't have to be maintained.
+   so that two separate archs don't have to be maintained.
 server/c_wiz.c: Add some basic sanity checking to command_remove() so that
    we don't unnecessarily crash.
 server/skills.c: write_scroll() - have it reset value of the scroll so that
@@ -16008,7 +16008,7 @@ common/loader.c, common/loader.l: Remove the variable_const information - no
     elements.  Add set_body_info() - parses the string from the load file and
     sets the appropriate array element.  Add check_loaded_object() - does
     sanity checking for an object after finished loading - replaces need for
-    long processing directive in the actual rules by having seperate function.
+    long processing directive in the actual rules by having separate function.
     Remove unused flags from load directives (apply_once, no_pretext,
     can_apply), add some new ones (item_power, gen_sp_armour), update others
     to can_use_range.  Replace flag_links with simple array that contains the
@@ -18426,7 +18426,7 @@ the maps dist. is the thing to use.  --PeterM
 
 common/living.c, server/skill_util.c:  Patches by Garth Denley:
 Fixes divide by zero crash, sets up perm exp when a new player is loaded,
-seperates permanent exp code/calculations into another function.
+separates permanent exp code/calculations into another function.
 checked in by MSW, 8/24/2000
 
 lib/crossfire.png: ground/sea*png - remove transperancies from png images
@@ -19534,7 +19534,7 @@ then overflow into top-level inventory
 
 server/skills.c:
 - minor bugfix in throwing
-- writing in one of a stack of books seperates one book out first
+- writing in one of a stack of books separates one book out first
 
 server/spell_effect.c:
 - generalized staff_to_snake to animate_weapon
@@ -20789,7 +20789,7 @@ or second item on the space - teleporter can be any object on the space.
 Internally, apply and apply_special have been changed to take one more option
 which is this flag.
 
-Applied rings will not be merged - instead they will remain seperate.  Fixes
+Applied rings will not be merged - instead they will remain separate.  Fixes
 problems with getting full bonuses, and also makes it easier to apply/unapply
 one item.
 
@@ -20876,7 +20876,7 @@ Added yield to water of diamond, fixed typo for dust of frost recipe.
 If a recipe doesn't have a yield, recipe should still be properly
 generated.
 
-Hiscore savefile now stores maxgrace and seperates player title from
+Hiscore savefile now stores maxgrace and separates player title from
 player name.
 
 Option added to only swap out maps when MAX_OBJECTS is exceeded
@@ -20898,7 +20898,7 @@ Improved set_owner which can fix getting into endless loops.
 Change insert_ob_in_map_simple so it doesn't call check_walk_on.  fixes
 player being slowed way down when dropping objects on slow move space.
 
-Animations moved out of archetype and into seperate array.  This is necessary
+Animations moved out of archetype and into separate array.  This is necessary
 for the client as it makes a unique referance number for each animations.
 Also, in future, this would make it easier to be able to change aminations
 in objects/maps.
@@ -21330,7 +21330,7 @@ When a container is applied, make sure it is a player applying it before
 checking for new client/server information - otherwise an invalid pointer
 is dereference.
 
-Complex keybindings added - thus, you can bind several commands seperated
+Complex keybindings added - thus, you can bind several commands separated
 with semicolons to one key.
 
 Fix in encounter.c so if compiled with RANDOM_ENCOUNTERS, the new
@@ -21388,7 +21388,7 @@ as the exp award.
 
 Items will now be merged with other items even if one has been inventory
 locked.  This way, if you have some torches that are locked and you pick up
-some more, they will merge in instead of showing up seperately.
+some more, they will merge in instead of showing up separately.
 
 Bug fix for saving throw on objects hit by cold.  There could be cases
 where an object being processed is no longer on the map and would cause
@@ -21405,7 +21405,7 @@ flags in high 4 (right now, only floor bit is used, since drawing may
 differ on bw systems with that value.)  magicmap filed is now supported
 in .arc and faces file.  collect.pl modified to automaticaly put
 magicmap into the faces file, will also copy is_floor into faces file.
-magicmap takes a color name.  This seperation allows magic map colors
+magicmap takes a color name.  This separation allows magic map colors
 to be set independant of foreground and background colors, and simplifies
 the code a good deal.  Also, it makes new client magic map support easier.
 Now all the archetypes need to be updated (I have already done the armour,
@@ -21596,7 +21596,7 @@ Make sure all skills are unapplied when changing the class.
 When generating a spell listing (cast with no options), display the
 level of the spell (or den if it is denied.)  Also, display mage spells
 in one batch, priest spels in another group - I think this is more
-relevant now since these are seperate exp objects and draw on different
+relevant now since these are separate exp objects and draw on different
 power sources.  Still no pause key (doing those is a real pain) - that
 is really a client issue or we should just add a scrollbar to the text
 window.
@@ -21760,7 +21760,7 @@ them drop to the ground instead.
 
 --
 Made more general object matching routines.  item_matched_string sees if
-an object matches a string (which can be comma seperated list of many
+an object matches a string (which can be comma separated list of many
 things.)  find_best_object_match finds the best match in the players
 inventory.
 
@@ -22133,7 +22133,7 @@ teardown state - makes working with some maps much easier.
 New client updated to support Power and Grace stats.
 
 Magic system broken into 2 forms of magic - clerical and mage (they are
-now seperate).  Power stat also added to the game - plays into mage
+now separate).  Power stat also added to the game - plays into mage
 spellpoint (mana) total.  Grace also added - used for cleric spell casting.
 
 Skill system greatly expanded - different experience types with skills

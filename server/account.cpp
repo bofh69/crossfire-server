@@ -64,7 +64,7 @@ static std::set<std::string> accounts_logged_in = std::set<std::string>();
 
 #include "output_file.h"
 
-/** Number of fields in the accounts file.  These are colon seperated */
+/** Number of fields in the accounts file.  These are colon separated */
 #define NUM_ACCOUNT_FIELDS 6
 
 /**
@@ -198,8 +198,8 @@ void accounts_load(void) {
         /* If this is a blank field, nothing to do */
         if (tmp[3][0]) {
             /* count up how many semicolons - this is the character
-             * seperator.  We start at one, because these are seperators,
-             * so there will be one more name than seperators.
+             * separator.  We start at one, because these are separators,
+             * so there will be one more name than separators.
              */
             ac->num_characters=1;
             for (cp = tmp[3]; *cp != '\0'; cp++) {

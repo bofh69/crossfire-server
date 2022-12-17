@@ -352,7 +352,7 @@ void replace(const char *src, const char *key, const char *replacement, char *re
 /**
  * Taking a string as an argument, mutate it into a string that looks like a list.
  *
- * A 'list' for the purposes here is a string of items, seperated by commas, except
+ * A 'list' for the purposes here is a string of items, separated by commas, except
  * for the last entry, which has an 'and' before it, and a full stop (period) after it.
  *
  * This function will also strip all trailing non alphanumeric characters.
@@ -465,7 +465,7 @@ void replace_unprintable_chars(char *buf) {
  * the number of elements in array; if <code>str</code> contains more fields
  * excess fields are not split but included into the last element
  * @param sep
- * seperator to use.
+ * separator to use.
  * @return
  * the number of elements found; always less or equal to
  * <code>array_size</code>

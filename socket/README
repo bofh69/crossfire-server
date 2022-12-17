@@ -19,7 +19,7 @@ be (commands to move the player primary function is to do just that - move
 the player.  updating the players view is the result of that move).  So
 it probably makes sense to keep all those commands clustered there.
 
- The commands where moved out because I wanted a cleaner seperation of
+ The commands where moved out because I wanted a cleaner separation of
 the client/server protocol area and the actual server functions - this
 makes it easier to find code that your are looking for and reduces
 the number of files in the server directory.  Down the road, I see

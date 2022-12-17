@@ -45,7 +45,7 @@ struct shutdown_s shutdown_state;
 
 /**
  * Enough of the DM functions seem to need this that I broke
- * it out to a seperate function.  name is the person
+ * it out to a separate function.  name is the person
  * being saught, op is who is looking for them.  This
  * prints diagnostics messages, and returns the
  * other player, or NULL otherwise.

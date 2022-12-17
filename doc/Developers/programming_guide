@@ -198,7 +198,7 @@ Section 3 - Submitting Patches:
     Note that this will then mean that those formatting changes will then be
     lost.
 
-7)  There is no need to make a seperate diff file for each file different (ie,
+7)  There is no need to make a separate diff file for each file different (ie,
     treasure.diff, player.diff, etc).  Assuming you follow steps 1-6, all the
     diffs can be contained in one file, and patch will deal with it just fine.
 

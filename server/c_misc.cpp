@@ -406,7 +406,7 @@ static void malloc_info(object *op) {
  */
 static void current_region_info(object *op) {
     /*
-     * Ok I /suppose/ I should write a seperate function for this, but it isn't
+     * Ok I /suppose/ I should write a separate function for this, but it isn't
      * going to be /that/ slow, and won't get called much
      */
     region *r = get_region_by_name(get_name_of_region_for_map(op->map));

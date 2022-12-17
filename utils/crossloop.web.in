@@ -28,7 +28,7 @@ bindir="@bindir@"
 
 CROSSFIRE="$bindir/crossfire-server"
 
-# This can include multiple people, just seperate them by commas.
+# This can include multiple people, just separate them by commas.
 MAILTO="master@hugin"
 
 # This is the program used to send out the mail message.  It needs

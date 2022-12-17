@@ -461,7 +461,7 @@ int blocked_link(object *ob, mapstruct *m, int16_t sx, int16_t sy) {
  * This function has been used to deprecate arch_out_of_map -
  * this function also does that check, and since in most cases,
  * a call to one would follow the other, doesn't make a lot of sense to
- * have two seperate functions for this.
+ * have two separate functions for this.
  *
  * This returns nonzero if this arch can not go on the space provided,
  * 0 otherwise.  the return value will contain the P_.. value

@@ -85,7 +85,7 @@ GENERAL NOTE:
 The playbook and spoiler could probably be stored in the same directory, and
 this would increase recreation time (since they share the same version.)
 This goes for the latex versions (store together) and the html version (store
-together).  However, I think keeping them seperate at least helps out on
+together).  However, I think keeping them separate at least helps out on
 maintaining them.  But if you are putting them on a web page, storing them
 together is probably a good thing.
 

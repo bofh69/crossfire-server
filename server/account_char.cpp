@@ -56,7 +56,7 @@
 #include "sproto.h"
 #include "player.h"
 
-/** Number of fields in the accounts file.  These are colon seperated */
+/** Number of fields in the accounts file.  These are colon separated */
 #define NUM_ACCOUNT_CHAR_FIELDS 8
 
 /**
