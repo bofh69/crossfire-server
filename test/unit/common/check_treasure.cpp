@@ -126,7 +126,6 @@ START_TEST(test_create_treasure_all) {
         "ring",
         "plate mail",
         "long sword",
-        "kobold's finger",
         "use magic item",
         NULL,
     };
