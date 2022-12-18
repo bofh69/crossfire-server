@@ -36,14 +36,27 @@ class ObjectWrapper : public AssetTWrapper<object> {
     Q_PROPERTY(bool isMonster READ isMonster)
     Q_PROPERTY(bool isAlive READ isAlive)
     Q_PROPERTY(bool isGenerator READ isGenerator)
-    ATW_PROP(qint64, experience, stats.exp)
     ATW_RPROP(quint32, attacktype, attacktype)
-    ATW_PROP(int, ac, stats.ac)
-    ATW_PROP(int, con, stats.Con)
+    ATW_PROP(int, str, stats.Str);
+    ATW_PROP(int, dex, stats.Dex);
+    ATW_PROP(int, con, stats.Con);
+    ATW_PROP(int, wis, stats.Wis);
+    ATW_PROP(int, cha, stats.Cha);
+    ATW_PROP(int, intl, stats.Int);
+    ATW_PROP(int, pow, stats.Pow);
     ATW_PROP(int, wc, stats.wc)
-    Q_PROPERTY(QObject* arch READ arch)
-    ATW_PROP(int, damage, stats.dam)
+    ATW_PROP(int, ac, stats.ac)
+    ATW_PROP(int, luck, stats.luck)
     ATW_PROP(int, hp, stats.hp)
+    ATW_PROP(int, maxhp, stats.maxhp)
+    ATW_PROP(int, sp, stats.sp)
+    ATW_PROP(int, maxsp, stats.maxsp)
+    ATW_PROP(int, grace, stats.grace)
+    ATW_PROP(int, maxgrace, stats.maxgrace)
+    ATW_PROP(int, damage, stats.dam)
+    ATW_PROP(qint64, experience, stats.exp)
+    ATW_PROP(int, food, stats.food)
+    Q_PROPERTY(QObject* arch READ arch)
     ATW_PROP(int, weight, weight)
     ATW_RPROP(QString, materialName, materialname)
     Q_PROPERTY(QObject* randomItems READ randomItems)
