@@ -37,16 +37,6 @@ int ObjectWrapper::suggested_level() const {
     return scale_level(hp()*10/100 + regen()*20/100 + dps()*20/100);
 }
 
-bool ObjectWrapper::isMonster() const
-{
-    return QUERY_FLAG(myWrappedItem, FLAG_MONSTER);
-}
-
-bool ObjectWrapper::isAlive() const
-{
-    return QUERY_FLAG(myWrappedItem, FLAG_ALIVE);
-}
-
 float ObjectWrapper::dps() const {
     return damage() * FABS(speed()) / MOVE_PER_SECOND;
 }

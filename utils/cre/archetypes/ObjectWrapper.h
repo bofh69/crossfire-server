@@ -21,6 +21,18 @@
 
 class ResourcesManager;
 
+/**
+ * Macro to add a read-write property for an object flag.
+ * Will generate functions to get and set the property.
+ * @param name_ property name.
+ * @param flag_ flag of the object, FLAG_xxx value.
+ */
+#define OBJ_FLAG(name_, flag_) \
+  public: \
+    bool name_() const { return QUERY_FLAG(myWrappedItem, flag_); } \
+    void name_(bool value) const { if (value) SET_FLAG(myWrappedItem, flag_); else CLEAR_FLAG(myWrappedItem, flag_); } \
+    Q_PROPERTY(bool name_ READ name_ WRITE name_)
+
 class ObjectWrapper : public AssetTWrapper<object> {
     Q_OBJECT
 
@@ -33,9 +45,9 @@ class ObjectWrapper : public AssetTWrapper<object> {
     ATW_RPROP(int, subType, subtype)
     ATW_PROP(int, level, level)
     Q_PROPERTY(int suggested_level READ suggested_level);
-    Q_PROPERTY(bool isMonster READ isMonster)
-    Q_PROPERTY(bool isAlive READ isAlive)
-    Q_PROPERTY(bool isGenerator READ isGenerator)
+    OBJ_FLAG(isMonster, FLAG_MONSTER)
+    OBJ_FLAG(isAlive, FLAG_ALIVE)
+    OBJ_FLAG(isGenerator, FLAG_GENERATOR)
     ATW_RPROP(quint32, attacktype, attacktype)
     ATW_PROP(int, str, stats.Str);
     ATW_PROP(int, dex, stats.Dex);
@@ -74,9 +86,6 @@ class ObjectWrapper : public AssetTWrapper<object> {
 
         AssetWrapper* arch();
         int suggested_level() const;
-        bool isMonster() const;
-        bool isAlive() const;
-        bool isGenerator() const { return QUERY_FLAG(myWrappedItem, FLAG_GENERATOR); }
         AssetWrapper *randomItems();
         const Face *face() const { return myWrappedItem->face; }
         float dps() const;
