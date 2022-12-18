@@ -26,26 +26,6 @@ AssetWrapper* ObjectWrapper::arch()
     return myResourcesManager->wrap(myWrappedItem->arch, this);
 }
 
-QString ObjectWrapper::name() const
-{
-    return myWrappedItem->name;
-}
-
-QString ObjectWrapper::race() const
-{
-    return myWrappedItem->race;
-}
-
-int ObjectWrapper::type() const
-{
-    return myWrappedItem->type;
-}
-
-int ObjectWrapper::level() const
-{
-    return myWrappedItem->level;
-}
-
 double scale_level(double l) {
     if (l < 1) {
         l = 1;
@@ -65,16 +45,6 @@ bool ObjectWrapper::isMonster() const
 bool ObjectWrapper::isAlive() const
 {
     return QUERY_FLAG(myWrappedItem, FLAG_ALIVE);
-}
-
-quint32 ObjectWrapper::attacktype() const
-{
-    return myWrappedItem->attacktype;
-}
-
-QString ObjectWrapper::materialName() const
-{
-  return myWrappedItem->materialname;
 }
 
 float ObjectWrapper::dps() const {

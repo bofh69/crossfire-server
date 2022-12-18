@@ -24,30 +24,30 @@ class ResourcesManager;
 class ObjectWrapper : public AssetTWrapper<object> {
     Q_OBJECT
 
-    Q_PROPERTY(QString name READ name)
-    Q_PROPERTY(QString race READ race)
-    Q_PROPERTY(QString title READ title)
-    Q_PROPERTY(QString slaying READ slaying)
-    Q_PROPERTY(QString skill READ skill)
-    Q_PROPERTY(int type READ type)
-    Q_PROPERTY(int subType READ subType)
-    Q_PROPERTY(int level READ level WRITE setLevel)
+    ATW_RPROP(QString, name, name)
+    ATW_RPROP(QString, race, race)
+    ATW_RPROP(QString, title, title)
+    ATW_RPROP(QString, slaying, slaying)
+    ATW_RPROP(QString, skill, skill)
+    ATW_RPROP(int, type, type)
+    ATW_RPROP(int, subType, subtype)
+    ATW_PROP(int, level, level)
     Q_PROPERTY(int suggested_level READ suggested_level);
     Q_PROPERTY(bool isMonster READ isMonster)
     Q_PROPERTY(bool isAlive READ isAlive)
     Q_PROPERTY(bool isGenerator READ isGenerator)
-    Q_PROPERTY(qint64 experience READ experience WRITE setExperience)
-    Q_PROPERTY(quint32 attacktype READ attacktype)
-    Q_PROPERTY(int ac READ ac WRITE setAc)
-    Q_PROPERTY(int con READ con WRITE setCon)
-    Q_PROPERTY(int wc READ wc WRITE setWc)
+    ATW_PROP(qint64, experience, stats.exp)
+    ATW_RPROP(quint32, attacktype, attacktype)
+    ATW_PROP(int, ac, stats.ac)
+    ATW_PROP(int, con, stats.Con)
+    ATW_PROP(int, wc, stats.wc)
     Q_PROPERTY(QObject* arch READ arch)
-    Q_PROPERTY(int damage READ damage WRITE setDamage)
-    Q_PROPERTY(int hp READ hp WRITE setHp)
-    Q_PROPERTY(int weight READ weight WRITE setWeight)
-    Q_PROPERTY(QString materialName READ materialName)
+    ATW_PROP(int, damage, stats.dam)
+    ATW_PROP(int, hp, stats.hp)
+    ATW_PROP(int, weight, weight)
+    ATW_RPROP(QString, materialName, materialname)
     Q_PROPERTY(QObject* randomItems READ randomItems)
-    Q_PROPERTY(float speed READ speed WRITE setSpeed);
+    ATW_PROP(float, speed, speed);
     Q_PROPERTY(float dps READ dps);
     Q_PROPERTY(float regen READ regen);
 
@@ -60,38 +60,11 @@ class ObjectWrapper : public AssetTWrapper<object> {
         object *getObject() { return myWrappedItem; }
 
         AssetWrapper* arch();
-        QString name() const;
-        QString race() const;
-        QString title() const { return myWrappedItem->title; }
-        QString slaying() const { return myWrappedItem->slaying; }
-        QString skill() const { return myWrappedItem->skill; }
-        int type() const;
-        int subType() const { return myWrappedItem->subtype; }
-        int level() const;
         int suggested_level() const;
-        void setLevel(int level) { myWrappedItem->level = level; }
         bool isMonster() const;
         bool isAlive() const;
         bool isGenerator() const { return QUERY_FLAG(myWrappedItem, FLAG_GENERATOR); }
-        int64_t experience() const { return myWrappedItem->stats.exp; }
-        void setExperience(int64_t experience) { myWrappedItem->stats.exp = experience; }
-        quint32 attacktype() const;
-        int8_t ac() const { return myWrappedItem->stats.ac; }
-        void setAc(int8_t ac) { myWrappedItem->stats.ac = ac; }
-        int8_t wc() const { return myWrappedItem->stats.wc; }
-        void setWc(int8_t wc) { myWrappedItem->stats.wc = wc; }
-        int16_t damage() const { return myWrappedItem->stats.dam; }
-        int8_t con() const { return myWrappedItem->stats.Con; }
-        void setCon(int8_t con) { myWrappedItem->stats.Con = con; }
-        void setDamage(int16_t damage) { myWrappedItem->stats.dam = damage; }
-        int16_t hp() const { return myWrappedItem->stats.hp; }
-        void setHp(int16_t hp) { myWrappedItem->stats.hp = hp; }
-        int32_t weight() const { return myWrappedItem->weight; }
-        void setWeight(int32_t weight) { myWrappedItem->weight = weight; }
-        QString materialName() const;
         AssetWrapper *randomItems();
-        float speed() const { return myWrappedItem->speed; }
-        void setSpeed(float speed) { myWrappedItem->speed = speed; }
         const Face *face() const { return myWrappedItem->face; }
         float dps() const;
         float regen() const;
