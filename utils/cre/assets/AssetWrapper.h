@@ -104,4 +104,29 @@ protected:
     T *myWrappedItem;
 };
 
+/**
+ * Macro to add a read-only property from myWrappedItem.
+ * Will generate a function to get the property.
+ * @param type_ property type.
+ * @param name_ property name.
+ * @param field_ field of myWrappedItem to use.
+ */
+#define ATW_RPROP(type_, name_, field_) \
+  public: \
+    type_ name_() const { return myWrappedItem->field_; } \
+    Q_PROPERTY(type_ name_ READ name_)
+
+/**
+ * Macro to add a read-write property from myWrappedItem.
+ * Will generate functions to get and set the property.
+ * @param type_ property type.
+ * @param name_ property name.
+ * @param field_ field of myWrappedItem to use.
+ */
+#define ATW_PROP(type_, name_, field_) \
+  public: \
+    type_ name_() const { return myWrappedItem->field_; } \
+    void name_(const type_ &val) { myWrappedItem->field_ = val; } \
+    Q_PROPERTY(type_ name_ READ name_ WRITE name_)
+
 #endif /* ASSETWRAPPER_H */
