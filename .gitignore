@@ -14,6 +14,8 @@
 .qmake.stash
 /.dep.inc
 /.git
+/.vs
+/.vscode
 /Crossfire.tag
 /Makefile
 /Makefile.in
