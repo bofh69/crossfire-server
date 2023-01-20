@@ -109,8 +109,8 @@ void init_connection(socket_struct *ns, const char *from_ip) {
     ns->monitor_spells = 0;
     ns->darkness = 1;
     ns->status = Ns_Add;
-    ns->mapx = 11;
-    ns->mapy = 11;
+    ns->mapx = MAP_CLIENT_X_DEFAULT;
+    ns->mapy = MAP_CLIENT_Y_DEFAULT;
     ns->look_position = 0;
     ns->container_position = 0;
     ns->update_look = 0;

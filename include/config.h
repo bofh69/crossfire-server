@@ -222,7 +222,7 @@
  * The server cpu time should be pretty trivial.
  *
  * There may be reasons to keep it smaller for the 'classic' crossfire
- * experience which was 11x11.  Big maps will likely make the same at
+ * experience which was 11x11.  Big maps will likely make the game at
  * least somewhat easier, but client will need to worry about lag
  * more.
  *
@@ -234,8 +234,16 @@
  *
  * MSW 2001-05-28
  */
-#define MAP_CLIENT_X    25
-#define MAP_CLIENT_Y    25
+#define MAP_CLIENT_X          25
+#define MAP_CLIENT_Y          25
+
+/* Default map size */
+#define MAP_CLIENT_X_DEFAULT  11
+#define MAP_CLIENT_Y_DEFAULT  11
+
+/* Minimum map size */
+#define MAP_CLIENT_X_MINIMUM  9
+#define MAP_CLIENT_Y_MINIMUM  9
 
 /**
  * If you feel the game is too fast or too slow, change MAX_TIME.

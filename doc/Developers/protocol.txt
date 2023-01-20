@@ -1419,39 +1419,39 @@ this protocol command or that)
         it as a sanity check for protocol versions, so the server still
         replies. It doesn't do anything with the data
 
-|mapsize x X y|
-	    Sets the map size to x X y. Note the spaces here are only for
-	    clarity - there should be no spaces when actually sent (it
-	    should be 11x11 or 25x25). The default map size unless changed
-            is 11x11. The minimum map size the server will allow is 9x9
-	    (no technical reason this could be smaller, but I don't think
-	    the game would be smaller). The maximum map size supported in the
-	    current protocol is 63x63. However, each server can have its
- 	    maximum map size sent to most any value.
+|mapsize (int x) X (int y)|
+        Sets the map size to x X y. Note the spaces here are only for
+        clarity - there should be no spaces when actually sent (it
+        should be 11x11 or 25x25). The default map size unless changed
+        is 11x11. The minimum map size the server will allow is 9x9
+        (no technical reason this could be smaller, but I don't think
+        the game would be smaller). The maximum map size supported in the
+        current protocol is 63x63. However, each server can have its
+        maximum map size sent to most any value.
 
-	    If the client sends a mapsize command out of valid range, the
-	    server will respond with a mapsize with the maximum size
-            the server supports. Thus, if the client wants to know the maximum
-            map size, it can just do a 'mapsize 0x0' and it will get the
-            maximum size back.
+        If the client sends an invalid mapsize command or a mapsize of 0x0,
+        the server will respond with a mapsize that is the maximum size the
+        server supports. Thus, if the client wants to know the maximum
+        map size, it can just do a 'mapsize 0x0' or 'mapsize' and it will
+        get the maximum size back.
 
-	    The server will only set the mapsize for the client if both x & y values
-	    are valid. For example, if the maximum map size is 25x25, and the
-	    client sends a 31x23 mapsize request, the mapsize will remain at
-	    11x11 (default) and the server will send back a mapsize 25x25
-	    setup command.
+        The server will constrain the provided mapsize x & y to the configured
+        minumum and maximums. For example, if the maximum map size is 25x25,
+        the minimum map size is 9x9, and the client sends a 31x7 mapsize
+        request, the mapsize will be set to 25x9 and the server will send back
+        a mapsize 25x9 setup command.
 
-	    When the values are valid, the server will send back a mapsize
-	    XxY setup command. Note that this is from its parsed values,
-	    so it may not match stringwise with what the client sent, but will
-	    match 0 wise. For example, the client may send a 'mapsize 025X025'
-	    command, in which case the server will respond with a
-	    'mapsize 25x25' command - the data is functionally the same.
+        When the values are valid, the server will send back a mapsize
+        XxY setup command. Note that this is from its parsed values,
+        so it may not match stringwise with what the client sent, but will
+        match 0 wise. For example, the client may send a 'mapsize 025X025'
+        command, in which case the server will respond with a
+        'mapsize 25x25' command - the data is functionally the same.
 
-	    While the server in theory supports non square viewing regions,
-            this has not be tested.
+        While the server in theory supports non square viewing regions,
+        this has not be tested.
 
-            The server will send an updated map view when this command is sent.
+        The server will send an updated map view when this command is sent.
 
 |notifications (int value)|
       Value indicating what notifications the client accepts.

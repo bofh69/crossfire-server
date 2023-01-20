@@ -190,23 +190,41 @@ void set_up_cmd(char *buf, int len, socket_struct *ns) {
             int x, y, n;
 
             if (sscanf(param, "%dx%d%n", &x, &y, &n) != 2 || n != (int)strlen(param)) {
+                /* mapsize command is invalid, return maximum map size */
                 x = 0;
                 y = 0;
             }
-            if (x < 9 || y < 9 || x > MAP_CLIENT_X || y > MAP_CLIENT_Y) {
+
+            /* Return the maximum map size if the requested x/y is 0, as per
+             * protocol.txt. Note this does not actually change the map size.
+             */
+            if ((x <= 0) && (y <= 0)) {
                 SockList_AddPrintf(&sl, "%dx%d", MAP_CLIENT_X, MAP_CLIENT_Y);
             } else {
                 player *pl;
+
+                /* Constrain the provided map size to what is defined in config.h */
+                if (x < MAP_CLIENT_X_MINIMUM)
+                    x = MAP_CLIENT_X_MINIMUM;
+                if (y < MAP_CLIENT_Y_MINIMUM)
+                    y = MAP_CLIENT_Y_MINIMUM;
+                if (x > MAP_CLIENT_X)
+                    x = MAP_CLIENT_X;
+                if (y > MAP_CLIENT_Y)
+                    y = MAP_CLIENT_Y;
+
                 ns->mapx = x;
                 ns->mapy = y;
+
                 /* better to send back what we are really using and not the
                  * param as given to us in case it gets parsed differently.
                  */
                 SockList_AddPrintf(&sl, "%dx%d", x, y);
+
                 /* need to update the los, else the view jumps */
                 pl = find_player_socket(ns);
                 if (pl)
-                  update_los(pl->ob);
+                    update_los(pl->ob);
 
                 /* Client and server need to resynchronize on data - treating it as
                  * a new map is best way to go.
