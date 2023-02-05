@@ -101,11 +101,14 @@ CREPixmap.cpp \
  treasures/TreasurePanel.cpp \
  treasures/TreasureWrapper.cpp \
  AllAssets.cpp \
+ AssetFieldCompleter.cpp \
+ AssetTextEdit.cpp \
  ChangesDock.cpp \
  HelpBrowser.cpp \
  HelpManager.cpp \
  MimeUtils.cpp \
- MonsterResistances.cpp
+ MonsterResistances.cpp \
+ QuickFilterDialog.cpp
 HEADERS += CREMainWindow.h \
 CREPixmap.h \
  CREUtils.h \
@@ -209,10 +212,13 @@ CREPixmap.h \
  treasures/TreasureWrapper.h \
  treasures/TreasuresWrapper.h \
  AllAssets.h \
+ AssetFieldCompleter.h \
+ AssetTextEdit.h \
  ChangesDock.h \
  HelpBrowser.h \
  HelpManager.h \
- MonsterResistances.h
+ MonsterResistances.h \
+ QuickFilterDialog.h
 
 LIBS += ../../server/libserver.a ../../common/libcross.a ../../socket/libsocket.a ../../random_maps/librandom_map.a ../../types/libtypes.a -lcurl
 QMAKE_CXXFLAGS += -Wcast-qual

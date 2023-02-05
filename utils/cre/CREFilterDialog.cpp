@@ -15,6 +15,7 @@
 #include "CREFilterDialog.h"
 #include "CRESettings.h"
 #include "CREFilterDefinition.h"
+#include "AssetTextEdit.h"
 
 CREFilterDialog::CREFilterDialog()
 {
@@ -43,7 +44,7 @@ CREFilterDialog::CREFilterDialog()
 
     layout->addWidget(new QLabel(tr("Filter:"), this), 2, 2, 1, 3);
 
-    myScript = new QTextEdit(this);
+    myScript = new AssetTextEdit(this);
     layout->addWidget(myScript, 3, 2, 1, 3);
 
     QDialogButtonBox* buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Close | QDialogButtonBox::Help, Qt::Horizontal, this);

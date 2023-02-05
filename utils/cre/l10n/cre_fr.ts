@@ -420,64 +420,64 @@ Confirmez-vous vouloir utiliser de fichier ?</translation>
 <context>
     <name>CREFilterDialog</name>
     <message>
-        <location filename="../CREFilterDialog.cpp" line="24"/>
+        <location filename="../CREFilterDialog.cpp" line="25"/>
         <source>Filter parameters</source>
         <translation>Paramètres de filtres</translation>
     </message>
     <message>
-        <location filename="../CREFilterDialog.cpp" line="31"/>
+        <location filename="../CREFilterDialog.cpp" line="32"/>
         <source>Add</source>
         <translation>Ajouter</translation>
     </message>
     <message>
-        <location filename="../CREFilterDialog.cpp" line="35"/>
+        <location filename="../CREFilterDialog.cpp" line="36"/>
         <source>Remove</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../CREFilterDialog.cpp" line="39"/>
+        <location filename="../CREFilterDialog.cpp" line="40"/>
         <source>Name:</source>
         <translation>Nom :</translation>
     </message>
     <message>
-        <location filename="../CREFilterDialog.cpp" line="44"/>
+        <location filename="../CREFilterDialog.cpp" line="45"/>
         <source>Filter:</source>
         <translation>Filtre :</translation>
     </message>
     <message>
-        <location filename="../CREFilterDialog.cpp" line="71"/>
+        <location filename="../CREFilterDialog.cpp" line="72"/>
         <source>Discard changes?</source>
         <translation>Abandonner les modifications ?</translation>
     </message>
     <message>
-        <location filename="../CREFilterDialog.cpp" line="71"/>
+        <location filename="../CREFilterDialog.cpp" line="72"/>
         <source>You are about to discard all changes!
 Are you sure?</source>
         <translation>Vous allez abandonner toutes les modifications !
 Confirmez-vous ?</translation>
     </message>
     <message>
-        <location filename="../CREFilterDialog.cpp" line="79"/>
+        <location filename="../CREFilterDialog.cpp" line="80"/>
         <source>Filter help</source>
         <translation>Aide de filtre</translation>
     </message>
     <message>
-        <location filename="../CREFilterDialog.cpp" line="79"/>
+        <location filename="../CREFilterDialog.cpp" line="80"/>
         <source>Enter the script expression with which to filter items in the view. Current item is &lt;b&gt;item&lt;/b&gt;, and it has the following properties:&lt;br /&gt;&lt;ul&gt;&lt;li&gt;for an archetype: name, clone, head, more&lt;ul&gt;&lt;li&gt;clone has the following properties: name, race, type, level, isMonster, isAlive, experience, attacktype, ac, wc, &lt;/li&gt;&lt;li&gt;head and more are archetypes if not null&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;for a formulae: title, chance, difficulty, archs&lt;/li&gt;&lt;li&gt;for an artifact: item, chance, difficulty, allowed&lt;/li&gt;&lt;/ul&gt;&lt;br /&gt;An item is shown if the expression evaluates to &lt;i&gt;true&lt;/i&gt;. If a property is not defined for the current item, it will not be shown.&lt;br /&gt;&lt;br /&gt;Examples:&lt;ul&gt;&lt;li&gt;archetypes of type 5: &lt;i&gt;item.clone.type == 5&lt;/i&gt;&lt;/li&gt;&lt;li&gt;artifact allowed for all items of the type: &lt;i&gt;item.allowed.length == 0&lt;/i&gt;&lt;/il&gt;&lt;/ul&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../CREFilterDialog.cpp" line="86"/>
+        <location filename="../CREFilterDialog.cpp" line="87"/>
         <source>&lt;new filter&gt;</source>
         <translation>&lt;nouveau filtre&gt;</translation>
     </message>
     <message>
-        <location filename="../CREFilterDialog.cpp" line="98"/>
+        <location filename="../CREFilterDialog.cpp" line="99"/>
         <source>Delete filter?</source>
         <translation>Supprimer le filtre ?</translation>
     </message>
     <message>
-        <location filename="../CREFilterDialog.cpp" line="98"/>
+        <location filename="../CREFilterDialog.cpp" line="99"/>
         <source>Really delete filter &apos;%1&apos;?</source>
         <translation>Souhaitez-vous réellement supprimer le filtre « %1 » ?</translation>
     </message>
@@ -1578,84 +1578,74 @@ Confirmez-vous ?</translation>
 <context>
     <name>CREResourcesWindow</name>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="94"/>
-        <location filename="../CREResourcesWindow.cpp" line="284"/>
+        <location filename="../CREResourcesWindow.cpp" line="95"/>
+        <location filename="../CREResourcesWindow.cpp" line="285"/>
         <source>Filter...</source>
         <translation>Filtrer...</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="99"/>
+        <location filename="../CREResourcesWindow.cpp" line="100"/>
         <source>Report</source>
         <translation>Rapport</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="132"/>
+        <location filename="../CREResourcesWindow.cpp" line="133"/>
         <source>No details available.</source>
         <translation>Aucun détail disponible.</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="236"/>
+        <location filename="../CREResourcesWindow.cpp" line="237"/>
         <source>(none)</source>
         <translation>(aucun)</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="253"/>
+        <location filename="../CREResourcesWindow.cpp" line="254"/>
         <source>Quick filter...</source>
         <translation>Filtre rapide...</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="256"/>
+        <location filename="../CREResourcesWindow.cpp" line="257"/>
         <source>Filters definition...</source>
         <translation>Définition des filtres...</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="272"/>
-        <source>Quick filter</source>
-        <translation>Filtre rapide</translation>
-    </message>
-    <message>
-        <location filename="../CREResourcesWindow.cpp" line="272"/>
-        <source>Filter:</source>
-        <translation>Filtre :</translation>
-    </message>
-    <message>
-        <location filename="../CREResourcesWindow.cpp" line="284"/>
+        <location filename="../CREResourcesWindow.cpp" line="285"/>
         <source>Filter: %1</source>
         <translation>Filtre : %1</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="317"/>
+        <location filename="../CREResourcesWindow.cpp" line="318"/>
         <source>Reports definition...</source>
         <translation>Définition des rapports...</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="330"/>
+        <location filename="../CREResourcesWindow.cpp" line="331"/>
         <source>Generating report...</source>
         <translation>Génération du rapport...</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="330"/>
+        <location filename="../CREResourcesWindow.cpp" line="331"/>
         <source>Abort report</source>
         <translation>Annuler le rapport</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="331"/>
-        <location filename="../CREResourcesWindow.cpp" line="435"/>
+        <location filename="../CREResourcesWindow.cpp" line="332"/>
+        <location filename="../CREResourcesWindow.cpp" line="436"/>
         <source>Report: &apos;%1&apos;</source>
         <translation>Rapport : « %1 »</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="362"/>
+        <location filename="../CREResourcesWindow.cpp" line="363"/>
         <source>Sorting items...</source>
         <translation>Tri des éléments...</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="393"/>
+        <location filename="../CREResourcesWindow.cpp" line="394"/>
         <source>Generating items text...</source>
         <translation>Génération du texte des éléments...</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="464"/>
+        <location filename="../CREResourcesWindow.cpp" line="465"/>
         <source>Quest %1 already exists!</source>
         <translation>La quête « %1 » existe déjà !</translation>
     </message>
@@ -2302,6 +2292,19 @@ mais les données peuvent être recréées si besoin.</translation>
         <location filename="../quests/QuestsWrapper.h" line="26"/>
         <source>Quests</source>
         <translation>Quêtes</translation>
+    </message>
+</context>
+<context>
+    <name>QuickFilterDialog</name>
+    <message>
+        <location filename="../QuickFilterDialog.cpp" line="19"/>
+        <source>Quick filter</source>
+        <translation>Filtre rapide</translation>
+    </message>
+    <message>
+        <location filename="../QuickFilterDialog.cpp" line="22"/>
+        <source>Quick filter:</source>
+        <translation>Filtre rapide :</translation>
     </message>
 </context>
 <context>

@@ -68,6 +68,7 @@
 #include "sounds/SoundFilePanel.h"
 #include "sounds/GameSoundsPanel.h"
 #include "sounds/GameSoundPanel.h"
+#include "QuickFilterDialog.h"
 
 CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageManager* messages, ResourcesManager* resources, ScriptFileManager* scripts, AssetModel *model, const QModelIndex &root, QWidget* parent) : QWidget(parent)
 {
@@ -268,11 +269,11 @@ void CREResourcesWindow::onFilterChange(QObject* object) {
 }
 
 void CREResourcesWindow::onQuickFilter() {
-    bool ok;
-    QString filter = QInputDialog::getText(this, tr("Quick filter"), tr("Filter:"), QLineEdit::Normal, myModel->filter(), &ok);
-    if (!ok)
-        return;
-    setFilter(filter, filter);
+    QuickFilterDialog dlg(this, myModel->filter());
+    if (dlg.exec() != QDialog::Accepted) {
+      return;
+    }
+    setFilter(dlg.filter(), dlg.filter());
 }
 
 void CREResourcesWindow::clearFilter() {

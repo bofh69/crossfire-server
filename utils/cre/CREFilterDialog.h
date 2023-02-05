@@ -15,8 +15,8 @@
 
 #include <QDialog>
 
-class QTextEdit;
 class QLineEdit;
+class AssetTextEdit;
 class QListWidget;
 
 #include "CREFilterDefinitionManager.h"
@@ -31,7 +31,7 @@ class CREFilterDialog : public QDialog
     protected:
         QListWidget* myList;
         QLineEdit* myName;
-        QTextEdit* myScript;
+        AssetTextEdit* myScript;
         CREFilterDefinitionManager myFilters;
         int myFilterIndex;
 

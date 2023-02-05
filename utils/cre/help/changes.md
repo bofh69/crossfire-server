@@ -1,3 +1,7 @@
+# 2023-02-05
+
+Add **auto-completion suggestions** for resource filters, in both quick filter and filter dialog.
+
 # 2022-07-15
 
 **Implement quest creation**, right-click on a quest and select *Add quest*.
