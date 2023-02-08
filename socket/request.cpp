@@ -66,6 +66,8 @@
 #include "sounds.h"
 #include "sproto.h"
 
+#define VALIDCHAR_MSG "The first character must be alphanumeric and the last cannot be a space. None of these characters are allowed: :;/\\["
+
 /**
  * This table translates the attack numbers as used within the
  * program to the value we use when sending STATS command to the
@@ -2284,7 +2286,7 @@ void account_new_cmd(char *buf, int len, socket_struct *ns) {
     status = account_check_string(name);
     if (status == 1) {
         SockList_AddString(&sl,
-                       "failure accountnew That account name contains invalid characters.");
+                       "failure accountnew Choose a different account name. " VALIDCHAR_MSG);
         Send_With_Handling(ns, &sl);
         SockList_Term(&sl);
         return;
@@ -2301,7 +2303,7 @@ void account_new_cmd(char *buf, int len, socket_struct *ns) {
     status = account_check_string(password);
     if (status == 1) {
         SockList_AddString(&sl,
-                       "failure accountnew That password contains invalid characters.");
+                       "failure accountnew Choose a different password. " VALIDCHAR_MSG);
         Send_With_Handling(ns, &sl);
         SockList_Term(&sl);
         return;
@@ -2651,7 +2653,7 @@ void create_player_cmd(char *buf, int len, socket_struct *ns)
      * for player names.
      */
     if (account_check_string(name)) {
-        SockList_AddString(&sl, "failure createplayer The name contains illegal characters");
+        SockList_AddString(&sl, "failure createplayer Choose a different character name. " VALIDCHAR_MSG);
         Send_With_Handling(ns, &sl);
         SockList_Term(&sl);
         return;
@@ -3037,7 +3039,7 @@ void account_password(char *buf, int len, socket_struct *ns) {
     status = account_check_string(change);
     if (status == 1) {
         SockList_AddString(&sl,
-                       "failure accountpw That password contains invalid characters.");
+                       "failure accountpw Choose a different password. " VALIDCHAR_MSG);
         Send_With_Handling(ns, &sl);
         SockList_Term(&sl);
         return;
