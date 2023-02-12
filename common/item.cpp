@@ -715,7 +715,14 @@ void query_base_name(const object *op, int plural, char *buf, size_t size) {
         if (QUERY_FLAG(op, FLAG_IDENTIFIED) || QUERY_FLAG(op, FLAG_BEEN_APPLIED)) {
             if (!op->title && (op->inv)) {
                 safe_strcat(buf, " of ", &len, size);
-                safe_strcat(buf, op->inv->name, &len, size);
+                // If, for some reason, a spell on a scroll were to stop existing as an arch,
+                // we would get here. The scroll will hold an inventory object with no name.
+                // So, to prevent a segfault, only print the spell name if it exists.
+                if (op->inv->name)
+                    safe_strcat(buf, op->inv->name, &len, size);
+                // scroll of nothing seems like a good replacement for when the name does not exist.
+                else
+                    safe_strcat(buf, "nothing", &len, size);
             }
             if (op->type != SPELLBOOK) {
                 snprintf(buf+len, size-len, " (lvl %d)", op->level);
