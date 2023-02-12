@@ -270,8 +270,15 @@ static method_ret converter_type_apply(object *converter, object *applier, int a
         // Handle player weight limits
         int lim = applier->type == PLAYER ? get_weight_limit(applier->stats.Str) - applier->carrying : -1;
         object *conv_res = do_item_conversion(converter, conv_src, lim, &status);
-        if (conv_res != NULL)
-            object_insert_in_ob(conv_res, applier);
+        if (conv_res != NULL) {
+            // If the generated item is unpaid, then do not put it directly into the inventory. Otherwise, put it in the inventory.
+            if (QUERY_FLAG(conv_res, FLAG_UNPAID)) {
+                object_insert_in_map_at(conv_res, converter->map, converter, 0, converter->x, converter->y);
+            }
+            else {
+                object_insert_in_ob(conv_res, applier);
+            }
+        }
     }
     return METHOD_OK;
 }
