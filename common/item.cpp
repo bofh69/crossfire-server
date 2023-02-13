@@ -1014,7 +1014,9 @@ StringBuffer *describe_item(const object *op, const object *owner, int use_media
         if (op->item_power) {
             stringbuffer_append_printf(buf, "(item_power %+d)", op->item_power);
         }
-        ring_desc(op, use_media_tags, buf);
+        if (op->title) {
+            ring_desc(op, use_media_tags, buf);
+        }
         return buf;
 
     default:
