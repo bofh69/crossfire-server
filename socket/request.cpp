@@ -68,6 +68,26 @@
 
 #define VALIDCHAR_MSG "The first character must be alphanumeric and the last cannot be a space. None of these characters are allowed: :;/\\["
 
+static bool map2_coord_valid(int x) {
+    return x >= -MAP2_COORD_OFFSET && x<= 63 - MAP2_COORD_OFFSET;
+}
+
+/**
+ * Encodes a (x, y) pair suitable for map2 parameters. The coordinates must be
+ * between [-MAP2_COORD_OFFSET..63-MAP2_COORD_OFFSET]. The flags value must be
+ * between [0..15].
+ *
+ * @param x the x-coordinate
+ * @param y the y-coordinate
+ * @param flags the flags value
+ */
+static uint16_t MAP2_COORD_ENCODE(int x, int y, int flags) {
+    assert(map2_coord_valid(x));
+    assert(map2_coord_valid(y));
+    assert(flags >= 0 && flags <= 15);
+    return ((x+MAP2_COORD_OFFSET)&0x3f)<<10 | ((y+MAP2_COORD_OFFSET)&0x3f)<<4 | (flags&0x0f);
+}
+
 /**
  * This table translates the attack numbers as used within the
  * program to the value we use when sending STATS command to the
