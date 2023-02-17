@@ -1717,12 +1717,14 @@ int dimension_door(object *op, object *caster, object *spob, int dir) {
     }
 
     /* Actually move the player now */
+    const int dx = freearr_x[dir]*dist;
+    const int dy = freearr_y[dir]*dist;
     object_remove(op);
-    if ((op = object_insert_in_map_at(op, op->map, op, 0, op->x+freearr_x[dir]*dist, op->y+freearr_y[dir]*dist)) == NULL)
+    if ((op = object_insert_in_map_at(op, op->map, op, 0, op->x+dx, op->y+dy)) == NULL)
         return 1;
 
     if (op->type == PLAYER) {
-        map_newmap_cmd(op->contr->socket);
+        esrv_map_scroll(op->contr->socket, dx, dy);
         player_update_bg_music(op);
     }
     op->speed_left = -FABS(op->speed)*5; /* Freeze them for a short while */
