@@ -1,3 +1,12 @@
+2023-02-20  Daniel Hawkins
+  * common/treasure.cpp: Change rod, wand, scroll item level calculation.
+    Previous behavior had the level be, on average, difficulty/2 power steps above level.
+    This caused high level magic items to appear too frequently.
+    New behavior makes the item level be, on average, equal to the map difficulty,
+    roughly distributed normally, and instead uses the power steps as a way to truncate
+    to a level instead of as a multiplier. This makes high-level magic wands/rods/scrolls
+    significantly harder to come by, and lower-level ones more common.
+
 2022-07-06  Nicolas Weeger
   * Fix bug "Items identified in a container on the ground do not get updated",
         see https://sourceforge.net/p/crossfire/bugs/928/

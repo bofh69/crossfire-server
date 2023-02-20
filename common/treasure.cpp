@@ -342,9 +342,15 @@ static int level_for_item(const object *op, int difficulty) {
     if (mult == 0)
         mult = 5;
 
-    olevel = mult*rndm(0, difficulty)+level;
+    // This should give us roughly a normal distribution averaged at difficulty.
+    olevel = rndm(0, difficulty)+rndm(0, difficulty);
+    // Now we truncate to the closest level + n * mult value below.
+    olevel = ((olevel-level)/mult)*mult+level; // This should truncate to a multiple of mult for us.
     if (olevel > MAX_SPELLITEM_LEVEL)
         olevel = MAX_SPELLITEM_LEVEL;
+    // Make sure we hit the minimum spell level, too
+    else if (olevel < level)
+        olevel = level;
 
     return olevel;
 }
