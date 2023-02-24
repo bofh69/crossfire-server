@@ -58,13 +58,12 @@ treasure *TreasureLoader::loadTreasure(BufferReader *reader, const std::string &
             t->item = m_archetypes->get(variable);
         // artifact fields can have one or more words in them, so sscanf does not work.
         } else if (strncmp(cp, "artifact ", 9) == 0) {
-            // Take all the way to the newline.
-            strncpy(variable, cp+9, MAX_BUF);
             if (t->artifact) {
                 LOG(llevError, "treasure: duplicate 'artifact' in %s:%zu\n", filename.c_str(), bufferreader_current_line(reader));
                 free_string(t->artifact);
             }
-            t->artifact = add_string(variable);
+            // Take all the way to the newline
+            t->artifact = add_string(cp+9);
         } else if (sscanf(cp, "list_magic_value %d", &value)) {
             t->list_magic_value = (uint8_t)value;
         } else if (sscanf(cp, "list_magic_adjustment %d", &value)) {
