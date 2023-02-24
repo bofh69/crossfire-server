@@ -497,7 +497,6 @@ void update_los(object *op) {
         expand_sight(op);
 
     if (QUERY_FLAG(op, FLAG_XRAYS)) {
-        int x, y;
         for (x = -2; x <= 2; x++)
             for (y = -2; y <= 2; y++)
                 op->contr->blocked_los[dx+x][dy+y] = LOS_NO_DARKNESS;
