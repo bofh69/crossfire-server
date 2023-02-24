@@ -31,6 +31,13 @@
  */
 #define SPACE_BLOCK 0.5
 
+/**
+ * Special values for the blocked_los array.
+ */
+#define LOS_BLOCKED         100
+#define LOS_NO_DARKNESS     0
+#define LOS_MARKED          -1
+
 struct blocks {
     int x[4], y[4];
     int index;
@@ -191,14 +198,14 @@ static void set_wall(player *pl, int x, int y) {
 
         if (x < 0 || x >= pl->socket->mapx
         || y < 0 || y >= pl->socket->mapy
-        /* If already set to 100, we probably hit this space through recursion already. */
-        || pl->blocked_los[x][y] == 100)
+        /* If already set to LOS_BLOCKED, we probably hit this space through recursion already. */
+        || pl->blocked_los[x][y] == LOS_BLOCKED)
             continue;
         /* we need to adjust to the fact that the socket
          * code wants the los to start from the 0,0
          * and not be relative to middle of los array.
          */
-        pl->blocked_los[x][y] = 100;
+        pl->blocked_los[x][y] = LOS_BLOCKED;
         set_wall(pl, dx, dy);
     }
 }
@@ -234,7 +241,7 @@ static void check_wall(object *op, int x, int y) {
      * whatever has set this space to be blocked has done the work and already
      * done the dependency chain.
      */
-    if (op->contr->blocked_los[ax][ay] == 100)
+    if (op->contr->blocked_los[ax][ay] == LOS_BLOCKED)
         return;
 
 
@@ -255,7 +262,8 @@ void clear_los(player *pl) {
      * the first z spaces may not not cover the spaces we are
      * actually going to use
      */
-    (void)memset((void *)pl->blocked_los, 0, MAP_CLIENT_X*MAP_CLIENT_Y);
+    (void)memset((void *)pl->blocked_los, LOS_NO_DARKNESS,
+        MAP_CLIENT_X*MAP_CLIENT_Y);
 }
 
 /**
@@ -274,16 +282,20 @@ static void expand_sight(object *op) {
 
     for (x = 1; x < op->contr->socket->mapx-1; x++) /* loop over inner squares */
         for (y = 1; y < op->contr->socket->mapy-1; y++) {
-            if (!op->contr->blocked_los[x][y]
-            && !(get_map_flags(op->map, NULL,
+            if (op->contr->blocked_los[x][y] == LOS_NO_DARKNESS) {
+                /* If the tile is does not block view, process surrounding tiles */
+                if (!(get_map_flags(op->map, NULL,
                     op->x-op->contr->socket->mapx/2+x,
                     op->y-op->contr->socket->mapy/2+y,
                     NULL, NULL)&(P_BLOCKSVIEW|P_OUT_OF_MAP))) {
-                for (i = 1; i <= 8; i += 1) { /* mark all directions */
-                    dx = x+freearr_x[i];
-                    dy = y+freearr_y[i];
-                    if (op->contr->blocked_los[dx][dy] > 0) /* for any square blocked */
-                        op->contr->blocked_los[dx][dy] = -1;
+                    for (i = 1; i <= 8; i += 1) { /* mark all directions */
+                        dx = x+freearr_x[i];
+                        dy = y+freearr_y[i];
+
+                        /* Mark any tile with a darkness value */
+                        if (op->contr->blocked_los[dx][dy] > LOS_NO_DARKNESS) /* for any square blocked */
+                            op->contr->blocked_los[dx][dy] = LOS_MARKED;
+                    }
                 }
             }
         }
@@ -295,8 +307,8 @@ static void expand_sight(object *op) {
     /* clear mark squares */
     for (x = 0; x < op->contr->socket->mapx; x++)
         for (y = 0; y < op->contr->socket->mapy; y++)
-            if (op->contr->blocked_los[x][y] < 0)
-                op->contr->blocked_los[x][y] = 0;
+            if (op->contr->blocked_los[x][y] <= LOS_MARKED) /* If marked above, clear */
+                op->contr->blocked_los[x][y] = LOS_NO_DARKNESS;
 }
 
 /**
@@ -327,7 +339,7 @@ int has_carried_lights(const object *op) {
  * player's object for which to compute the light values.
  */
 static void expand_lighted_sight(object *op) {
-    int x, y, darklevel, ax, ay, basex, basey, mflags, light, x1, y1;
+    int x, y, darklevel, ax, ay, basex, basey, mflags, light_radius, x1, y1;
     mapstruct *m = op->map;
     int16_t nx, ny;
 
@@ -355,7 +367,7 @@ static void expand_lighted_sight(object *op) {
     /* First, limit player furthest (unlighted) vision */
     for (x = 0; x < op->contr->socket->mapx; x++)
         for (y = 0; y < op->contr->socket->mapy; y++)
-            if (op->contr->blocked_los[x][y] != 100)
+            if (op->contr->blocked_los[x][y] != LOS_BLOCKED)
                 op->contr->blocked_los[x][y] = MAX_LIGHT_RADII;
 
     /* the spaces[] darkness value contains the information we need.
@@ -380,30 +392,32 @@ static void expand_lighted_sight(object *op) {
             /* This space is providing light, so we need to brighten up the
             * spaces around here.
             */
-            light = GET_MAP_LIGHT(m, nx, ny);
-            if (light != 0) {
-                for (ax = basex-light; ax <= basex+light; ax++) {
+            light_radius = GET_MAP_LIGHT(m, nx, ny);
+            if (light_radius != 0) {
+                for (ax = basex-light_radius; ax <= basex+light_radius; ax++) {
                     if (ax < 0 || ax >= op->contr->socket->mapx)
                         continue;
-                    for (ay = basey-light; ay <= basey+light; ay++) {
+
+                    for (ay = basey-light_radius; ay <= basey+light_radius; ay++) {
                         if (ay < 0 || ay >= op->contr->socket->mapy)
                             continue;
 
-                        /* If the space is fully blocked, do nothing.  Otherwise, we
-                         * brighten the space.  The further the light is away from the
+                        /* If the space is fully blocked, do nothing. */
+                        if (op->contr->blocked_los[ax][ay] == LOS_BLOCKED)
+                            continue;
+
+                        /* Brighten the space.  The further the light is away from the
                          * source (basex-x), the less effect it has.  Though light used
                          * to dim in a square manner, it now dims in a circular manner
                          * using the the pythagorean theorem. glow_radius still
                          * represents the radius
                          */
-                        if (op->contr->blocked_los[ax][ay] != 100) {
-                            x1 = abs(basex-ax)*abs(basex-ax);
-                            y1 = abs(basey-ay)*abs(basey-ay);
-                            if (light > 0)
-                                op->contr->blocked_los[ax][ay] -= MAX((light-isqrt(x1+y1)), 0);
-                            if (light < 0)
-                                op->contr->blocked_los[ax][ay] -= MIN((light+isqrt(x1+y1)), 0);
-                        }
+                        x1 = abs(basex-ax)*abs(basex-ax);
+                        y1 = abs(basey-ay)*abs(basey-ay);
+                        if (light_radius > 0)
+                            op->contr->blocked_los[ax][ay] -= MAX((light_radius-isqrt(x1+y1)), 0);
+                        if (light_radius < 0)
+                            op->contr->blocked_los[ax][ay] -= MIN((light_radius+isqrt(x1+y1)), 0);
                     } /* for ay */
                 } /* for ax */
             } /* if this space is providing light */
@@ -426,7 +440,7 @@ static void expand_lighted_sight(object *op) {
     /*  grant some vision to the player, based on the darklevel */
     for (x = darklevel-MAX_DARKNESS; x < MAX_DARKNESS+1-darklevel; x++)
         for (y = darklevel-MAX_DARKNESS; y < MAX_DARKNESS+1-darklevel; y++)
-            if (!(op->contr->blocked_los[x+op->contr->socket->mapx/2][y+op->contr->socket->mapy/2] == 100))
+            if (!(op->contr->blocked_los[x+op->contr->socket->mapx/2][y+op->contr->socket->mapy/2] == LOS_BLOCKED))
                 op->contr->blocked_los[x+op->contr->socket->mapx/2][y+op->contr->socket->mapy/2] -= MAX(0, 6-darklevel-MAX(abs(x), abs(y)));
 }
 
@@ -444,9 +458,9 @@ static void blinded_sight(player *pl) {
 
     for (x = 0; x < pl->socket->mapx; x++)
         for (y = 0; y <  pl->socket->mapy; y++)
-            pl->blocked_los[x][y] = 100;
+            pl->blocked_los[x][y] = LOS_BLOCKED;
 
-    pl->blocked_los[pl->socket->mapx/2][pl->socket->mapy/2] = 0;
+    pl->blocked_los[pl->socket->mapx/2][pl->socket->mapy/2] = LOS_NO_DARKNESS;
 }
 
 /**
@@ -486,7 +500,7 @@ void update_los(object *op) {
         int x, y;
         for (x = -2; x <= 2; x++)
             for (y = -2; y <= 2; y++)
-                op->contr->blocked_los[dx+x][dy+y] = 0;
+                op->contr->blocked_los[dx+x][dy+y] = LOS_NO_DARKNESS;
     }
 }
 
@@ -616,7 +630,7 @@ void print_los(object *op) {
     for (y = 0; y < op->contr->socket->mapy; y++) {
         snprintf(buf, sizeof(buf), "[fixed]%2d:", y);
         for (x = 0; x < op->contr->socket->mapx; x++) {
-            snprintf(buf2, sizeof(buf2), " %1d", op->contr->blocked_los[x][y] == 100 ? 1 : 0);
+            snprintf(buf2, sizeof(buf2), " %1d", op->contr->blocked_los[x][y] == LOS_BLOCKED ? 1 : 0);
             strncat(buf, buf2, sizeof(buf)-strlen(buf)-1);
         }
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_DEBUG, buf);
@@ -642,7 +656,7 @@ void make_sure_seen(const object *op) {
         && pl->ob->y+pl->socket->mapy/2 >= op->y
         && pl->ob->x-pl->socket->mapx/2 <= op->x
         && pl->ob->x+pl->socket->mapx/2 >= op->x)
-            pl->blocked_los[pl->socket->mapx/2+op->x-pl->ob->x][pl->socket->mapy/2+op->y-pl->ob->y] = 0;
+            pl->blocked_los[pl->socket->mapx/2+op->x-pl->ob->x][pl->socket->mapy/2+op->y-pl->ob->y] = LOS_NO_DARKNESS;
 }
 
 /**

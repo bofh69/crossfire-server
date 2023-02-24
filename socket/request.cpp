@@ -1052,8 +1052,8 @@ void esrv_send_animation(socket_struct *ns, const Animations *anim) {
  ****************************************************************************/
 
 /** Clears a map cell */
-static void map_clearcell(struct map_cell_struct *cell, int face, int count) {
-    cell->darkness = count;
+static void map_clearcell(struct map_cell_struct *cell, int face, int darkness) {
+    cell->darkness = darkness;
     memset(cell->faces, face, sizeof(cell->faces));
 }
 
@@ -1408,7 +1408,7 @@ static void check_space_for_heads(int ax, int ay, SockList *sl, socket_struct *n
 }
 
 static void draw_client_map2(object *pl) {
-    int x, y, ax, ay, d, min_x, max_x, min_y, max_y, oldlen, layer;
+    int x, y, ax, ay, darkness, min_x, max_x, min_y, max_y, oldlen, layer;
     size_t startlen;
     int16_t nx, ny;
     SockList sl;
@@ -1459,14 +1459,14 @@ static void draw_client_map2(object *pl) {
                  * to walls or darkness, it may still not be visible.
                  */
 
-                /* Meaning of d:
-                 * 0 - object is in plain sight, full brightness.
+                /* Meaning of darkness (see defines in LOS_* in los.c):
+                 * LOS_NO_DARKNESS (0) - object is in plain sight, full brightness.
                  * 1 - MAX_DARKNESS - how dark the space is - higher
                  * value is darker space. If level is at max darkness,
                  * you can't see the space (too dark)
-                 * 100 - space is blocked from sight.
+                 * LOS_BLOCKED (100) - space is blocked from sight.
                  */
-                d = plyr->blocked_los[ax][ay];
+                darkness = plyr->blocked_los[ax][ay];
 
                 /* If the coordinates are not valid, or it is too
                  * dark to see, we tell the client as such
@@ -1489,7 +1489,7 @@ static void draw_client_map2(object *pl) {
                         // Reduce dereferences by passing the inner array offset instead of address of value
                         map_clearcell(plyr->socket->lastmap.cells[ax] + ay, 0, 0);
                     }
-                } else if (d >= MAX_LIGHT_RADII) {
+                } else if (darkness >= MAX_LIGHT_RADII) {
                     /* This block deals with spaces that are not
                      * visible due to darkness or walls. Still
                      * need to send the heads for this space.
@@ -1517,12 +1517,12 @@ static void draw_client_map2(object *pl) {
                     SockList_AddShort(&sl, coord);
 
                     /* Darkness changed */
-                    if (plyr->socket->lastmap.cells[ax][ay].darkness != d
+                    if (plyr->socket->lastmap.cells[ax][ay].darkness != darkness
                     && plyr->socket->darkness) {
-                        plyr->socket->lastmap.cells[ax][ay].darkness = d;
+                        plyr->socket->lastmap.cells[ax][ay].darkness = darkness;
                         /* Darkness tag & length*/
                         SockList_AddChar(&sl, MAP2_TYPE_DARKNESS|1<<5);
-                        SockList_AddChar(&sl, 255-d*(256/MAX_LIGHT_RADII));
+                        SockList_AddChar(&sl, 255-darkness*(256/MAX_LIGHT_RADII));
                         have_darkness = 1;
                     }
 

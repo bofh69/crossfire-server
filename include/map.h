@@ -67,11 +67,7 @@ extern const char *const map_layer_name[MAP_LAYERS];
 #define MAP_SWAP_TIME(m)        ((m)->swap_time)
 #define MAP_OUTDOORS(m)         ((m)->outdoor)
 
-/**
- * Map darkness used to enforce the MAX_DARKNESS value.
- * but IMO, if it is beyond max value, that should be fixed
- * on the map or in the code.
- */
+/** Map darkness level (0-MAX_DARKNESS) */
 #define MAP_DARKNESS(m)         (m)->darkness
 
 /** Map width. */
