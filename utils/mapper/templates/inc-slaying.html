@@ -1,7 +1,7 @@
 {% if length(items) %}
 <p>{{ title }}</p>
 <ul>
-{% set m = sort(get_list_by_field(maps, "_key", items), "name") %}{% for map in m %}
+{% set m = sort(get_list_by_field(maps, "_key", items), "name,maps") %}{% for map in m %}
 <li><a href='{{ link_to_page("map.html", map._key) }}'>{{ map.name }}</a></li>
 {% endfor %}
 </ul>

@@ -2,7 +2,7 @@
 {% block title %}Special SIGN and BOOK{% endblock %}
 {% block contents %}
   <h1>This is a list of SIGN and BOOK having a special message.</h1>
-  <ul>{% set mbn = sort(maps, "name") %}
+  <ul>{% set mbn = sort(maps, "name,path") %}
     {% for map in mbn %}
     {% if length(map.readables) %}
     <li><a href='{{ link_to_page("map.html", map._key) }}'>{{ map.name }}</a>

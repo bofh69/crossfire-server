@@ -1,6 +1,6 @@
 {% extends "inc-page.html" %}
 {% block title %}List of all {{ length(maps) }} maps, by alphabetical order{% endblock %}
-{% block contents %}{% set mbn = sort(maps, "name") %}
+{% block contents %}{% set mbn = sort(maps, "name,path") %}
   <h1>List of all {{ length(maps) }} maps, by alphabetical order</h1>
   <ul>{% set letter = "" %}
     {% for map in mbn %}

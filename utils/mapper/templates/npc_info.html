@@ -2,7 +2,7 @@
 {% block title %}NPCs who have a special message{% endblock %}
 {% block contents %}
   <h1>This is a list of NPCs having a special message.</h1>
-  <ul>{% set mbn = sort(maps, "name") %}
+  <ul>{% set mbn = sort(maps, "name,path") %}
     {% for map in mbn %}
     {% if length(map.npcs) %}
     <li><a href='{{ link_to_page("map.html", map._key) }}'>{{ map.name }}</a>
