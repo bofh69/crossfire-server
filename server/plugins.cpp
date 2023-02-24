@@ -4022,14 +4022,14 @@ static void cfapi_player_message(int *type, ...) {
     int flags;
     int pri;
     object *pl;
-    char *buf;
+    const char *buf;
 
     va_start(args, type);
 
     flags = va_arg(args, int);
     pri = va_arg(args, int);
     pl = va_arg(args, object *);
-    buf = va_arg(args, char *);
+    buf = va_arg(args, const char *);
     va_end(args);
 
     draw_ext_info(flags | NDI_DELAYED, pri, pl, MSG_TYPE_MISC, MSG_SUBTYPE_NONE,

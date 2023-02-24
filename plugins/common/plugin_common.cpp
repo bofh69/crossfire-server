@@ -784,7 +784,7 @@ object *cf_object_check_for_spell(object *op, const char *name) {
     return value;
 }
 
-void cf_player_message(object *op, char *txt, int flags) {
+void cf_player_message(object *op, const char *txt, int flags) {
     int type;
 
     cfapiPlayer_message(&type, flags, 0, op, txt);

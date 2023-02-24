@@ -199,7 +199,7 @@ extern sstring      cf_player_get_ip(object *op);
 extern object      *cf_player_get_marked_item(object *op);
 extern void         cf_player_set_marked_item(object *op, object *ob);
 extern player      *cf_player_find(const char *plname);
-extern void         cf_player_message(object *op, char *txt, int flags);
+extern void         cf_player_message(object *op, const char *txt, int flags);
 extern int          cf_player_move(player *pl, int dir);
 extern partylist   *cf_player_get_party(object *op);
 extern void         cf_player_set_party(object *op, partylist *party);
