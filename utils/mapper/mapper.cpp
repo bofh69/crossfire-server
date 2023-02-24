@@ -829,6 +829,11 @@ static int compare_map_info(const struct_map_info *left, const struct_map_info *
     if (right->tiled_group)
         right = right->tiled_group;
 
+    // Shortcut -- if both are the same pointer, return 0.
+    // This occurs when tiled maps of the same set are compared to each other.
+    if (left == right)
+        return 0;
+
     c = strcasecmp(left->name, right->name);
     if (c)
         return c;
