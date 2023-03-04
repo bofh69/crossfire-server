@@ -78,7 +78,7 @@ BufferReader *bufferreader_init_from_file(BufferReader *br, const char *filepath
 
     size_t actual = fread(br->buf, 1, br->buffer_length, file);
     if (actual != br->buffer_length) {
-        LOG(llevError, "Expected to read %ld bytes, only read %ld!\n", br->buffer_length, actual);
+        LOG(llevError, "Expected to read %zu bytes, only read %zu!\n", br->buffer_length, actual);
         br->buffer_length = actual;
     }
     fclose(file);
