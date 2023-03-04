@@ -153,9 +153,7 @@ void create_template_pathname(const char *name, char *buf, size_t size) {
 
 /**
  * This makes absolute path to the itemfile where unique objects
- * will be saved. Converts '/' to '@'. I think it's essier maintain
- * files than full directory structure, but if this is problem it can
- * be changed.
+ * will be saved. Converts '/' to '@'.
  *
  * @param s
  * path of the map for the item.
@@ -358,9 +356,6 @@ int blocked_link(object *ob, mapstruct *m, int16_t sx, int16_t sy) {
     if (ob->type == TRANSPORT && ob->move_type == 0)
         return 0;
 
-    /* Save some cycles - instead of calling get_map_flags(), just get the value
-     * directly.
-     */
     mflags = m->spaces[sx+m->width*sy].flags;
 
     blocked = GET_MAP_MOVE_BLOCK(m, sx, sy);
@@ -479,11 +474,6 @@ int blocked_link(object *ob, mapstruct *m, int16_t sx, int16_t sy) {
  * map and coordinates to check.
  * @return
  * 0 if the object can fit on specified space, non-zero else.
- *
- * @note
- * This used to be arch_blocked, but with new movement
- * code, we need to have actual object to check its move_type
- * against the move_block values.
  */
 int ob_blocked(const object *ob, mapstruct *m, int16_t x, int16_t y) {
     archetype *tmp;
@@ -707,8 +697,7 @@ void load_objects(mapstruct *m, FILE *fp, int mapflags) {
 
 /**
  * This saves all the objects on the map in a non destructive fashion.
- * Modified by MSW 2001-07-01 to do in a single pass - reduces code,
- * and we only save the head of multi part objects - this is needed
+ * We only save the head of multi part objects - this is needed
  * in order to do map tiling properly.
  *
  * @param m
@@ -732,7 +721,7 @@ int save_objects(mapstruct *m, FILE *fp, FILE *fp2, int flag) {
     long serialize_time, write_time;
 
     PROFILE_BEGIN();
-    /* first pass - save one-part objects */
+
     for (i = 0; i < MAP_WIDTH(m); i++) {
         for (j = 0; j < MAP_HEIGHT(m); j++) {
             unique = 0;
@@ -775,9 +764,7 @@ int save_objects(mapstruct *m, FILE *fp, FILE *fp2, int flag) {
 }
 
 /**
- * Allocates, initialises, and returns a pointer to a mapstruct.
- * Modified to no longer take a path option which was not being
- * used anyways.  MSW 2001-07-01
+ * Allocates, initialises, and returns a pointer to a mapstruct, linked through ::first_map.
  *
  * @return
  * new structure.
@@ -791,26 +778,12 @@ mapstruct *get_linked_map(void) {
 
     if (map == NULL)
         fatal(OUT_OF_MEMORY);
-    /*
-     * Nothing in the code appears to require we add new maps to the end of the list.
-     * Why not just add them to the front instead? Its faster.
-     *
-     * SilverNexus 2016-05-18
-     *
-    for (mp = first_map; mp != NULL && mp->next != NULL; mp = mp->next)
-        ;
-    if (mp == NULL)
-        first_map = map;
-    else
-        mp->next = map;
-    */
+
     map->next = first_map;
     first_map = map;
 
     map->in_memory = MAP_SWAPPED;
-    /* The maps used to pick up default x and y values from the
-     * map archetype.  Mimic that behaviour.
-     */
+
     MAP_WIDTH(map) = 16;
     MAP_HEIGHT(map) = 16;
     MAP_RESET_TIMEOUT(map) = 0;
@@ -913,12 +886,8 @@ static shopitems *parse_shop_string(const char *input_string, const mapstruct *m
      * Instead, check for a null and fail more gracefully.
      */
     if (!items)
-	fatal(OUT_OF_MEMORY);
-    /*
-     * calloc() already sets each byte to zero already
-     *
-    memset(items, 0, (sizeof(shopitems)*number_of_entries+1));
-     */
+      fatal(OUT_OF_MEMORY);
+
     for (i = 0; i < number_of_entries; i++) {
         if (!p) {
             LOG(llevError, "parse_shop_string: I seem to have run out of string, that shouldn't happen.\n");
@@ -1008,9 +977,6 @@ static void print_shop_string(mapstruct *m, char *output_string, int size) {
  * object structure were needed, so it just made sense to
  * put all the stuff in the map object so that names actually make
  * sense.
- * This could be done in lex (like the object loader), but I think
- * currently, there are few enough fields this is not a big deal.
- * MSW 2001-07-01
  *
  * @param fp
  * file to read from.
