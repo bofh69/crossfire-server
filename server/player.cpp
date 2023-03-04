@@ -686,7 +686,7 @@ int path_to_player(object *mon, object *pl, unsigned mindiff) {
             /* recalculate direction from last good location.  Possible
              * we were not traversing ideal location before.
              */
-            if (get_rangevector_from_mapcoord(lastmap, lastx, lasty, pl, &rv, 0) && rv.direction != dir) {
+            if (get_rangevector_from_mapcoord(lastmap, lastx, lasty, pl, &rv) && rv.direction != dir) {
                 /* OK - says direction should be different - lets reset the
                  * the values so it will try again.
                  */
@@ -757,7 +757,7 @@ int path_to_player(object *mon, object *pl, unsigned mindiff) {
             /* Recalculate diff (distance) because we may not have actually
              * headed toward player for entire distance.
              */
-            if (!get_rangevector_from_mapcoord(m, x, y, pl, &rv, 0))
+            if (!get_rangevector_from_mapcoord(m, x, y, pl, &rv))
                 return 0;
             diff = MAX(FABS(rv.distance_x), FABS(rv.distance_y));
         }

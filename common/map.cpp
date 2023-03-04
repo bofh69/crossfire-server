@@ -2570,10 +2570,7 @@ int get_rangevector(object *op1, const object *op2, rv_vector *retval, int flags
  * and x,y coordinates - this is used for path to player -
  * since the object is not infact moving but we are trying to traverse
  * the path, we need this.
- * flags has no meaning for this function at this time - I kept it in to
- * be more consistant with the above function and also in case they are needed
- * for something in the future.  Also, since no object is pasted, the best
- * field of the rv_vector is set to NULL.
+ * Since no object is pasted, the best field of the rv_vector is set to NULL.
  *
  * @param m
  * map to consider.
@@ -2584,13 +2581,10 @@ int get_rangevector(object *op1, const object *op2, rv_vector *retval, int flags
  * target object.
  * @param retval
  * vector to get to op2.
- * @param flags
- * unused.
  * @return
  * 1=ok; 0=the objects are not on the same map
  */
-int get_rangevector_from_mapcoord(const mapstruct *m, int x, int y, const object *op2, rv_vector *retval, int flags) {
-    (void)flags; // unused [avoid compiler warning]
+int get_rangevector_from_mapcoord(const mapstruct *m, int x, int y, const object *op2, rv_vector *retval) {
     if (!adjacent_map(m, op2->map, &retval->distance_x, &retval->distance_y)) {
         /* be conservative and fill in _some_ data */
         retval->distance = 100000;

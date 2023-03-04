@@ -214,7 +214,7 @@ extern void set_map_reset_time(mapstruct *map);
 extern int out_of_map(mapstruct *m, int x, int y);
 extern mapstruct *get_map_from_coord(mapstruct *m, int16_t *x, int16_t *y);
 extern int get_rangevector(object *op1, const object *op2, rv_vector *retval, int flags);
-extern int get_rangevector_from_mapcoord(const mapstruct *m, int x, int y, const object *op2, rv_vector *retval, int flags);
+extern int get_rangevector_from_mapcoord(const mapstruct *m, int x, int y, const object *op2, rv_vector *retval);
 extern int on_same_map(const object *op1, const object *op2);
 extern object *map_find_by_flag(mapstruct *map, int x, int y, int flag);
 extern void map_remove_unique_files(const mapstruct *map);
