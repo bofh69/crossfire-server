@@ -689,11 +689,7 @@ static void cfapi_system_get_region_vector(int *type, ...) {
 
     *type = CFAPI_REGION_VECTOR;
     if (property == CFAPI_SYSTEM_REGIONS) {
-        region *first = region_get_next(nullptr);
-        while (first) {
-            list->push_back(first);
-            first = region_get_next(first);
-        }
+        *list = all_regions;
     }
 
     va_end(args);
