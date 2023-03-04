@@ -467,18 +467,3 @@ void init_regions(BufferReader *reader, const char *filename) {
         }
     }
 }
-
-region *region_get_next(region *reg) {
-    if (all_regions.empty()) {
-        return nullptr;
-    }
-    if (!reg) {
-        return all_regions.front();
-    }
-
-    auto r = std::find(all_regions.begin(), all_regions.end(), reg);
-    if (r == all_regions.end() || (++r) == all_regions.end()) {
-        return nullptr;
-    }
-    return *r;
-}

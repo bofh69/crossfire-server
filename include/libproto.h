@@ -392,7 +392,6 @@ extern const char *get_region_msg(const region *r);
 extern object *get_jail_exit(object *op);
 extern void init_regions(BufferReader *reader, const char *filename);
 extern region *get_region_struct(void);
-extern region *region_get_next(region *reg);
 /* shstr.cpp */
 extern void init_hash_table(void);
 extern sstring add_string(const char *str);
