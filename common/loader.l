@@ -129,6 +129,12 @@ static void check_loaded_object(object *op, bool arch_init) {
         LOG(llevError, "Invalid type %d for %s\n", op->type, op->arch ? op->arch->name : op->name);
         op->type = 0;
     }
+    if (arch_init && op->arch && !op->arch->name) {
+      LOG(llevError, "Archetype with no name somewhere\n");
+      char buf[100];
+      snprintf(buf, sizeof(buf), "--unnamed-%d", cf_random());
+      op->arch->name = add_string(buf);
+    }
 
     /* We do some specialized handling to handle legacy cases of name_pl.
      * If the object doesn't have a name_pl, we just use the object name -
