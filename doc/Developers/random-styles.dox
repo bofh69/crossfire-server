@@ -1,4 +1,6 @@
-Random Map Styles
+/**
+
+@page page_random_map_styles Random Map Styles
 
  Some comments are necessary on the various styles.
 
@@ -8,7 +10,7 @@ However, they are treated differently.  So some care is required for what goes i
  Contents of maps/styles:
 
 
-  decorstyles
+@section prms_decor decorstyles
 
    "Decor" are objects which are primarily for atmosphere.  Decor
 is presently placed randomly in the map.  Live objects should
@@ -17,16 +19,16 @@ on the floor, braziers, bushes, craters, trees.  Decor objects are
 not usually placed on top of other objects except floors.
 
 
-  doorstyles
+@section prms_door doorstyles
 
    Doors are needed in the game.  The doorstyles are split into subdirectories:
-hdoors/*, vdoors/*, and 2 other directories which are not used.
+<tt>hdoors/</tt>, <tt>vdoors/</tt>, and 2 other directories which are not used.
 ONLY BREAKABLE DOORS BELONG HERE.  NO DOORS REQUIRING KEYS.  The hdoors
 are doors with horizontal faces, vdoors are vertical.  For each file in
 vdoors there should be an identically named file in hdoors.
 
 
-  exitstyles
+@section prms_exit exitstyles
 
    Exits are how you get from random map to random map, or back out
 of random maps, or into a quest level.  "down" exits are exits which
@@ -36,15 +38,15 @@ style.  The generic exits don't need counterparts.  Which set the
 random map generator picks depends on the orientation of the map:  see
 RandomMaps.doc
 
-  floorstyles
+@section prms_floor floorstyles
 
    Styles of floors.  Right now, one floor is chosen from one style, and
 that is the floor for the whole map.  If you want to specify a specific
 floor, make a style with only that floor in it and tell the random map
 generator
-floorstyle <your_style>
+floorstyle &lt;your_style&gt;
 
-  misc/fountains
+@section prms_mf misc/fountains
 
    This is a special map used by the specials code.  When placing random
 fountains into maps, an object is picked from this map, and made to
@@ -52,7 +54,11 @@ look like a fountain.  Most of them are potions, but some of them are
 traps.  Some potions are good, others bad:  they're mostly beneficial
 at this instant.
 
-  monsterstyles
+@section prms_m_ misc/obscure_exits
+
+   Exit to a map with rasources (gems, alchemy ingredients, and such).
+
+@section prms_monster monsterstyles
 
    Only subdirectories are allowed in this directory.  Each subdirectory
 must contain one or more files of the form filename_#
@@ -60,29 +66,26 @@ where # is a non-negative integer.  The number indicates dungeon level.
 The style file with a # closest to the current dungeon level is used
 for choosing the monsters.
 
-  specialmaps
+@section prms_special specialmaps
 
    These are special maps.  They are NOT styles:  they are small maps
 which are included  verbatim into larger maps.
 SPECIAL MAPS MUST HAVE A 1-square PASSABLE
 BORDER AROUND THEM:  otherwise, they may break the map they're placed in.
 
-  specialstyles
+@section prms_trap trapstyles
 
-   Unused.  Probably misc/fountains belongs in here.  Oh well.
+   Traps that may appear on maps. Difficulty will be adjusted.
 
-  trapstyles
-
-   Unused.  When/if someone get around to putting traps into the generator,
-maybe these will matter.
-
-  treasurestyles
+@section prms_treasure treasurestyles
 
    Styles of treasures.  Treasures are picked randomly from the styles,
 similarly to decor.  Frequency of appearance in the randomly generated map
 is proportional to frequency of appearance in the style map.
 
-  wallstyles
+@section prms_wall wallstyles
 
    The different wall styles.  One wall from one of these files is
 picked for the walls of the entire random map, similar to floors.
+
+*/
