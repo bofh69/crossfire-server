@@ -69,6 +69,9 @@ void place_monsters(mapstruct *map, char *monsterstyle, int difficulty, RMParms 
         if (freeindex != -1) {
             object *new_monster = object_create_arch(this_monster->arch);
             object_copy_with_inv(this_monster, new_monster, true);
+            // If we have the means to spawn artifact monsters, let's try to.
+            if (rndm(0,9))
+                generate_artifact(new_monster, difficulty);
             x += freearr_x[freeindex];
             y += freearr_y[freeindex];
             object_insert_in_map_at(new_monster, map, NULL, INS_NO_MERGE|INS_NO_WALK_ON, x, y);
