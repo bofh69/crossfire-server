@@ -1,19 +1,27 @@
-Random Map Deployment Guide
+/**
 
- Using random maps:
+@page random_maps_page Random map technical information
 
-  Any exit with "/!" as the destination map will generate a random map.
+@section rmp_using Using random maps
+
+Any exit with "/!" as the destination map will generate a random map.
+
 To specify random map parameters, you put parameters in the message field
 for the exit.
+
 To use the standalone random map generator, you do this:
-random_map inputfile <map path>
-where "inputfile" is a plaintext file containing the map parameters, andthat
-<map path> is the destination of the generated map, relative to
+
+<code>
+random_map inputfile &lt;map path&gt;
+</code>
+
+where "inputfile" is a plaintext file containing the map parameters, and
+&lt;map path&gt; is the destination of the generated map, relative to
 LIBDIR/maps.
 
- How styles work:
+@section rmp_s How styles work
 
-  A "style" is usually a small map which contains only objects which
+A "style" is usually a small map which contains only objects which
 define the "style".  For example, a monsterstyle "orc" might be a map
 generated with Gridarta which has six orcs, a kobold, and a troll in it.
 When monsters are placed, the generator will randomly choose monsters from the
@@ -22,21 +30,20 @@ and 1 kobold/troll.  So orcs will be very common, and there'll be occasional
 trolls and kobolds.
 
 
-  In principle, you may put any object in any style map.  However, the map
+In principle, you may put any object in any style map.  However, the map
 generator will do special things with the object depending on which directory
-it is in.  Style maps are located in
-maps/styles/*,
+it is in.  Style maps are located in <tt>maps/styles/</tt>,
 you may use Gridarta to modify the style maps, or create new ones.
 
 
- Style Parameters::
+@subsection rmp_sp Style Parameters
 
-  layoutstyle <style>	(special!) Pick the layout style for the map.  Currently,
+  layoutstyle &lt;style&gt;	(special!) Pick the layout style for the map.  Currently,
 			"rogue", "spiral", "maze", "snake", "onion",
                         and "squarespiral"  are allowed.
                         See below for more detail.
 
-  floorstyle <style>	Load /styles/floorstyles/<style> and pick a random
+  floorstyle &lt;style&gt;	Load /styles/floorstyles/&lt;style&gt; and pick a random
 			floortype from that style map for the random map.
 			The entire map will be tiled with the floortype.
 
@@ -45,43 +52,43 @@ you may use Gridarta to modify the style maps, or create new ones.
 			This only works if there are doors, as the filling
 			uses them to find rooms.
 
-  wallstyle <style>	Load /styles/wallstyles/<style> and pick a random
+  wallstyle &lt;style&gt;	Load /styles/wallstyles/&lt;style&gt; and pick a random
 			walltype from that style for the random map.  All
 			the walls in the map will be of this type.  The walls
 			are modified on insertion so that players cannot go
 			through them:  this is expected for walls, but
-			the random map generator makes sure of it. A <style>
+			the random map generator makes sure of it. A &lt;style&gt;
                         of "none" causes no walls or doors to be generated.
 
-  doorstyle <style>	Load /styles/doorstyles/<style> and pick a random
-			doortype from that style for the random map. A <style>
+  doorstyle &lt;style&gt;	Load /styles/doorstyles/&lt;style&gt; and pick a random
+			doortype from that style for the random map. A &lt;style&gt;
                         of "none" causes no doors to generated.
 
-  exitstyle <style>	Put one or two exits in the map, one leading back
+  exitstyle &lt;style&gt;	Put one or two exits in the map, one leading back
 			to the map where we entered from (origin_map,
 			origin_x, origin_y), and, if appropriate, one leading
 			to another, harder, random map. A style of "none"
                         causes no exits to be generated.
 
-  decorstyle <style>	Load /styles/decorstyles/<style> and pick the decor
+  decorstyle &lt;style&gt;	Load /styles/decorstyles/&lt;style&gt; and pick the decor
 			objects from that style to insert in the map.  Decor
 			objects are modified on insertion so that they do
 			NOT block movement, regardless of the archetype.
 			They are placed randomly. A style of "none" causes no
                         decor objects to be generated.
 
-  monsterstyle <style>  Load /styles/monsterstyles/<style>, if it exists.
+  monsterstyle &lt;style&gt;  Load /styles/monsterstyles/&lt;style&gt;, if it exists.
 			If it doesn't exist, then it will look for a directory
 			of that name.  If it finds a directory, it will choose
 			a style based on dungeon_level.  It will pick the style
-			with the name <name>_# with the # closest to the
+			with the name &lt;name&gt;_# with the # closest to the
 			dungeon_level.  Monster objects are copied from the
 			style map, so you may form style maps with modified
 			monsters which are weaker or stronger than the default
 			archetype.A style of "none" causes no monsters to be
                         generated.
 
-  treasurestyle <style> A style of "none" causes no treasures to be placed.
+  treasurestyle &lt;style&gt; A style of "none" causes no treasures to be placed.
      Any other value causes treasures to be placed.
 
 
@@ -100,7 +107,7 @@ you may use Gridarta to modify the style maps, or create new ones.
                         2x.  Set it to a non-zero integer if this is desired.
 
 
- 'symmetry <sym>'	symmetry of the layout:  You can cause the map generator
+ 'symmetry &lt;sym&gt;'	symmetry of the layout:  You can cause the map generator
 			to generate a symmetrical layout by using this flag.
 			symmetry 0   random symmetry
 			symmetry 1  no symmetry
@@ -132,11 +139,11 @@ will be placed at random in the maze.
 						"onion layers"
 
 
- Map generation parameters:
+@section rmp_mgp Map generation parameters
 
 
   'difficulty'		Set the map difficulty.  Has no relation to the
-			"difficulty" defined in common/*.c.
+			"difficulty" defined in <tt>common/</tt>.
 			If nonzero, this map and its descendants will
 			have the same difficulty.  If zero, it'll be set
 			to the value of dungeon_level and incremented with
@@ -155,7 +162,7 @@ will be placed at random in the maze.
 
   'dungeon_level'	Another way of setting the map difficulty.  This
 			has no relation to the "difficulty" defined in
-			the common/*.c source code.  The effect is to pick
+			the <tt>common/*.c</tt> source code.  The effect is to pick
 			which monsters to use:  for example, if the
 			monsterstyle
 			is "humanoid" and the dungeonlevel is 9, the style
@@ -167,9 +174,9 @@ will be placed at random in the maze.
 
   'dungeon_depth'	The map generated will have an exit to another
 			random map of the same style if
-			dungeon_level < dungeon_depth.  The next random map
+			dungeon_level &lt; dungeon_depth.  The next random map
 			will have dungeon_level incremented.  If dungeon_level
-			>= dungeon_depth, no exit to a more difficult map
+			&gt;= dungeon_depth, no exit to a more difficult map
 			will be made.
 
   'orientation'		How the exits look:
@@ -182,7 +189,7 @@ will be placed at random in the maze.
 					these will be made to make exits to
 					rightward, leftward, north and south.
 
-  'origin_x'		<You shouldn't need to set this>  The exit which
+  'origin_x'		(You shouldn't need to set this)  The exit which
 			leads back from this map will go to this x.
 
   'origin_y'		Like origin_x
@@ -206,13 +213,13 @@ will be placed at random in the maze.
  Misc. Parameters:
 
 
-  'decoroptions' <option>	Currently, ignored.  Possibly in the future it
+  'decoroptions' &lt;option&gt;	Currently, ignored.  Possibly in the future it
 			will cause the decor to be patterned in some way,
-			such as <put decor along walls> or <put decor
-			in center of rooms>
+			such as &lt;put decor along walls&gt; or &lt;put decor
+			in center of rooms&gt;
 
 
-  'treasureoptions' <opt>	Parameterizes how the treasure is placed and protected.
+  'treasureoptions' &lt;opt&gt;	Parameterizes how the treasure is placed and protected.
 		0	choose random treasure options
 		1	concentrate the treasure on the map in a few locations
 		2	hide the treasure behind hidden doors
@@ -234,16 +241,17 @@ will be placed at random in the maze.
 		may be added together:  treasureoptions 3 means treasure
 		optons 1 and 2 are set.
 
- Map Layout styles:
+@section rmp_layout Map Layout styles
 
 
-  Onion Maps:
+@subsection rmp_onion Onion Maps
 
    Onion rooms are like this::
 
     regular			   random
     centered, linear onion:        bottom/right centered, nonlinear:
 
+~~~
     #########################     #########################
     #                       #     #                       #
     # ########  ##########  #     #   #####################
@@ -259,23 +267,25 @@ will be placed at random in the maze.
     # ####################  #     #   #   #  #            #
     #                       #     #   #   #  #    #       #
     #########################     #########################
+~~~
 
-    options:
-    0	Pick random options below
-    1	"centered"
-    2	linear doors (default is nonlinear)
-    4	bottom "centered"
-    8  	bottom-right centered
-    16	outer wall off:  i.e., no outer wall.
-    32	irregularly/randomly spaced layers (default: regular)
+Options:
+- 0	Pick random options below
+- 1	"centered"
+- 2	linear doors (default is nonlinear)
+- 4	bottom "centered"
+- 8  	bottom-right centered
+- 16	outer wall off:  i.e., no outer wall.
+- 32	irregularly/randomly spaced layers (default: regular)
 
 
-  Maze Maps:
+@subsection rmp_maze Maze Maps:
 
    Maze maps are like this:
 
    A "sparse" maze::
 
+~~~
     ########################################
     #   # # # #  #  #  #  #  #  #   #   #  #
     #         #  #  #     #  #  # # # # #  #
@@ -300,9 +310,11 @@ will be placed at random in the maze.
     ##        #  #  #    #   ## # ###      #
     #  # # #  #     # #  # #    #   #  # # #
     ########################################
+~~~
 
    A "full" maze::
 
+~~~
     ########################################
     #   #    # # #                 #       #
     #   # #  #   # # #  # # # # #    #  #  #
@@ -327,12 +339,14 @@ will be placed at random in the maze.
     ### #      ## ##   #    # # ##         #
     #   #  # #    #  #    # # #    # #  #  #
     ########################################
+~~~
 
 
-  Spiral Maps:
+@subsection rmp_spiral Spiral Maps:
 
    A Spiral Map::
 
+~~~
     ###########################
     ###########################
     ########### D    ##########
@@ -356,20 +370,21 @@ will be placed at random in the maze.
     ################# <########
     ###########################
     ###########################
+~~~
 
-    layoutoptions1:
+Layoutoptions1:
 
-    0  pick random options
-    1  Regular spiral:  distance increases constantly with angle
-    2  Fine spiral:  most coils possible are fit in
-    4  Fit Spiral:  scale spiral to fit rectangular region
-      (i.e., the spiral will look elliptical)
+- 0  pick random options
+- 1  Regular spiral:  distance increases constantly with angle
+- 2  Fine spiral:  most coils possible are fit in
+- 4  Fit Spiral:  scale spiral to fit rectangular region (i.e., the spiral will look elliptical)
 
 
-  Rogue-like Maps:
+@subsection rmp_rogue Rogue-like Maps:
 
    A Rogue-like Map::
 
+~~~
     ###############################
     #############       ###########
     #          ##       ###########
@@ -397,21 +412,23 @@ will be placed at random in the maze.
     ########     #####     ########
     ##################     ########
     ###############################
+~~~
 
-    layoutoptions1:
+Layoutoptions1:
 
-    0  pick random room shapes (i.e., mix it up)
-    1  Always use rectangular rooms
-    2  Always use "circular" rooms
+- 0  pick random room shapes (i.e., mix it up)
+- 1  Always use rectangular rooms
+- 2  Always use "circular" rooms
 
 
-  Snake layouts:
+@subsection rmp_snake Snake layouts:
 
    No options are available for snake layouts.
    A player must touch every room to descend deeper in a snake.
 
    This is a basic snake layout::
 
+~~~
     ############################
     #>                         #
     #                          #
@@ -435,9 +452,11 @@ will be placed at random in the maze.
     #                          #
     #                         <#
     ############################
+~~~
 
    This is a roomified, xy-symmetric snake layout::
 
+~~~
     ###################################
     #>       #     #   #     #       >#
     #        #     #   #     #        #
@@ -451,15 +470,17 @@ will be placed at random in the maze.
     #        #     #   #     #        #
     #>       #     #   #     #       >#
     ###################################
+~~~
 
 
-  Square spirals
+@subsection rmp_square Square spirals
 
    No options are available for square spirals
    A player must touch every room to descend in a square spiral.
 
    This is a basic square spiral layout::
 
+~~~
     ###############################
     #   #                         #
     #   D                         #
@@ -488,9 +509,11 @@ will be placed at random in the maze.
     #                       #     #
     #<                      #     #
     ###############################
+~~~
 
    This is an xy-symmetric  square spiral layout::
 
+~~~
     #####################################
     #             #   <   #             #
     ##D##########D#       #D##########D##
@@ -512,10 +535,12 @@ will be placed at random in the maze.
     ##D##########D#       #D##########D##
     #             #   <   #             #
     #####################################
+~~~
 
 
  An example input file::
 
+<code>
   layoutstyle onion
   monsterstyle humanoid
   dungeon_depth 3
@@ -527,9 +552,9 @@ will be placed at random in the maze.
   floorstyle dirt
   wallstyle wooden
   symmetry 1
+</code>
 
-
-Below is the original proposal:
+@section rmp_historical Below is the original proposal, for historical purposes
 
  Random Maps
 
@@ -622,6 +647,7 @@ a maze is generated.
   and a char value of 0 indicating nothing.
   like::
 
+~~~
    ######################
    #       #   #        #
    #       #   #        #
@@ -637,6 +663,7 @@ a maze is generated.
    #                    #
    #       #   #        #
    ######################
+~~~
 
    Some suggested options:
    option:
@@ -663,3 +690,5 @@ a maze is generated.
   Feel free to contact me with any questons.
 
   peterm@langmuir.eecs.berkeley.edu
+
+**/
