@@ -457,6 +457,14 @@ void Send_With_Handling(socket_struct *ns, SockList *sl) {
  ******************************************************************************/
 
 #ifdef CS_LOGSTATS
+
+static int count_all_players() {
+    int players = 0;
+    player *pl;
+    for (pl = first_player, players = 0; pl != NULL; pl = pl->next, players++);
+    return players;
+}
+
 /* cst_tot is for the life of the server, cst_last is for the last series of
  * stats
  */
