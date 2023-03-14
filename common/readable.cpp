@@ -559,13 +559,10 @@ static const int max_titles[6] = {
  * if memory allocation failes, calls fatal().
  */
 static titlelist *get_empty_booklist(void) {
-    titlelist *bl = (titlelist *)malloc(sizeof(titlelist));
+    titlelist *bl = (titlelist *)calloc(1, sizeof(titlelist));
 
     if (bl == NULL)
         fatal(OUT_OF_MEMORY);
-    bl->number = 0;
-    bl->first_book = NULL;
-    bl->next = NULL;
     return bl;
 }
 
@@ -579,17 +576,10 @@ static titlelist *get_empty_booklist(void) {
  * if memory allocation failes, calls fatal().
  */
 static title *get_empty_book(void) {
-    title *t = (title *)malloc(sizeof(title));
+    title *t = (title *)calloc(1, sizeof(title));
 
     if (t == NULL)
         fatal(OUT_OF_MEMORY);
-    t->name = NULL;
-    t->archname = NULL;
-    t->authour = NULL;
-    t->level = 0;
-    t->size = 0;
-    t->msg_index = 0;
-    t->next = NULL;
     return t;
 }
 
