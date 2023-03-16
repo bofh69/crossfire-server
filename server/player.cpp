@@ -2101,8 +2101,18 @@ int fire_bow(object *op, object *arrow, int dir, int wc_mod, int16_t sx, int16_t
                       "You can't shoot yourself!");
         return 0;
     }
-    if (op->type == PLAYER)
+    if (op->type == PLAYER) {
         bow = op->contr->ranges[range_bow];
+        // Make sure the bow's skill is readied.
+        // Otherwise, you can get wrong modifiers from unarmed attacks
+        // because that ends up the readied skill.
+        object *skill = find_skill_by_name(op, bow->skill);
+        if (skill && change_skill(op, skill, 1) == 0) {
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
+                                 "You cannot use %s without the skill %s", bow->name, bow->skill);
+            return 0;
+        }
+    }
     else {
         /* Don't check for applied - monsters don't apply bows - in that way, they
          * don't need to switch back and forth between bows and weapons.
