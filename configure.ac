@@ -60,7 +60,6 @@ AS_BOX([Library Checks])
 dnl#############################################################################
 AC_SEARCH_LIBS([crypt], [crypt])
 AC_SEARCH_LIBS([pow], [m])
-AC_SEARCH_LIBS([pthread_create], [pthread])
 AC_SEARCH_LIBS([sqrt], [m])
 AC_SEARCH_LIBS([clock_gettime], [rt])
 

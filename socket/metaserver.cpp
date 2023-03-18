@@ -20,8 +20,9 @@
 #include "global.h"
 
 #include <ctype.h>
-#include <pthread.h>
 #include <string>
+#include <mutex>
+#include <thread>
 
 #ifndef WIN32 /* ---win32 exclude unix header files */
 #include <sys/types.h>
@@ -40,7 +41,7 @@
 #endif
 
 /** Mutex to protect access to ::metaserver2_updateinfo. */
-static pthread_mutex_t ms2_info_mutex;
+static std::mutex ms2_info_mutex;
 
 int count_players() {
     /* We could use socket_info.nconns, but that is not quite as accurate,
@@ -76,15 +77,15 @@ int count_players() {
  */
 void metaserver_update(void) {
 #ifdef HAVE_LIBCURL
-    /* Everything inside the pthread lock/unlock is related
+    /* Everything inside the lock/unlock is related
      * to metaserver2 synchronization.
      */
-    pthread_mutex_lock(&ms2_info_mutex);
+    ms2_info_mutex.lock();
     metaserver2_updateinfo.num_players = count_players();
     metaserver2_updateinfo.in_bytes = cst_tot.ibytes;
     metaserver2_updateinfo.out_bytes = cst_tot.obytes;
     metaserver2_updateinfo.uptime  = (long)time(NULL)-cst_tot.time_start;
-    pthread_mutex_unlock(&ms2_info_mutex);
+    ms2_info_mutex.unlock();
 #endif
 }
 
@@ -122,8 +123,194 @@ struct LocalMeta2Info {
 /** Non volatile information on the server. */
 static LocalMeta2Info local_info;
 
+/** Metaserver thread, if notifications are enabled. */
+static std::thread metaserver_thread;
+
 /** Statistics on players and such sent to the metaserver2. */
 MetaServer2_UpdateInfo metaserver2_updateinfo;
+
+/**
+ * Handles writing of HTTP request data from the metaserver2.
+ * We treat the data as a string.  We should really pay attention to the
+ * header data, and do something clever if we get 404 codes
+ * or the like.
+ * @param ptr actual data.
+ * @param size size of the data.
+ * @param nmemb number of elements.
+ * @param data user-provided data, unused.
+ * @return number of bytes processed, always the full size.
+ */
+static size_t metaserver2_writer(void *ptr, size_t size, size_t nmemb, void *data) {
+    (void)data;
+    size_t realsize = size*nmemb;
+    LOG(llevError, "Message from metaserver:\n%s\n", (const char*)ptr);
+    return realsize;
+}
+
+#ifdef HAVE_LIBCURL
+static void metaserver2_build_form(struct curl_httppost **formpost) {
+    struct curl_httppost *lastptr = NULL;
+    char buf[MAX_BUF];
+
+    /* First, fill in the form - note that everything has to be a string,
+     * so we convert as needed with snprintf.
+     * The order of fields here really isn't important.
+     * The string after CURLFORM_COPYNAME is the name of the POST variable
+     * as the
+     */
+    curl_formadd(formpost, &lastptr,
+                 CURLFORM_COPYNAME, "hostname",
+                 CURLFORM_COPYCONTENTS, local_info.hostname,
+                 CURLFORM_END);
+
+    snprintf(buf, sizeof(buf), "%d", local_info.portnumber);
+    curl_formadd(formpost, &lastptr,
+                 CURLFORM_COPYNAME, "port",
+                 CURLFORM_COPYCONTENTS, buf,
+                 CURLFORM_END);
+
+    curl_formadd(formpost, &lastptr,
+                 CURLFORM_COPYNAME, "html_comment",
+                 CURLFORM_COPYCONTENTS, local_info.html_comment,
+                 CURLFORM_END);
+
+    curl_formadd(formpost, &lastptr,
+                 CURLFORM_COPYNAME, "text_comment",
+                 CURLFORM_COPYCONTENTS, local_info.text_comment,
+                 CURLFORM_END);
+
+    curl_formadd(formpost, &lastptr,
+                 CURLFORM_COPYNAME, "archbase",
+                 CURLFORM_COPYCONTENTS, local_info.archbase,
+                 CURLFORM_END);
+
+    curl_formadd(formpost, &lastptr,
+                 CURLFORM_COPYNAME, "mapbase",
+                 CURLFORM_COPYCONTENTS, local_info.mapbase,
+                 CURLFORM_END);
+
+    curl_formadd(formpost, &lastptr,
+                 CURLFORM_COPYNAME, "codebase",
+                 CURLFORM_COPYCONTENTS, local_info.codebase,
+                 CURLFORM_END);
+
+    curl_formadd(formpost, &lastptr,
+                 CURLFORM_COPYNAME, "flags",
+                 CURLFORM_COPYCONTENTS, local_info.flags,
+                 CURLFORM_END);
+
+    ms2_info_mutex.lock();
+
+    snprintf(buf, sizeof(buf), "%d", metaserver2_updateinfo.num_players);
+    curl_formadd(formpost, &lastptr,
+                 CURLFORM_COPYNAME, "num_players",
+                 CURLFORM_COPYCONTENTS, buf,
+                 CURLFORM_END);
+
+    snprintf(buf, sizeof(buf), "%d", metaserver2_updateinfo.in_bytes);
+    curl_formadd(formpost, &lastptr,
+                 CURLFORM_COPYNAME, "in_bytes",
+                 CURLFORM_COPYCONTENTS, buf,
+                 CURLFORM_END);
+
+    snprintf(buf, sizeof(buf), "%d", metaserver2_updateinfo.out_bytes);
+    curl_formadd(formpost, &lastptr,
+                 CURLFORM_COPYNAME, "out_bytes",
+                 CURLFORM_COPYCONTENTS, buf,
+                 CURLFORM_END);
+
+    snprintf(buf, sizeof(buf), "%ld", (long)metaserver2_updateinfo.uptime);
+    curl_formadd(formpost, &lastptr,
+                 CURLFORM_COPYNAME, "uptime",
+                 CURLFORM_COPYCONTENTS, buf,
+                 CURLFORM_END);
+
+    ms2_info_mutex.unlock();
+
+    /* Following few fields are global variables,
+     * but are really defines, so won't ever change.
+     */
+    curl_formadd(formpost, &lastptr,
+                 CURLFORM_COPYNAME, "version",
+                 CURLFORM_COPYCONTENTS, FULL_VERSION,
+                 CURLFORM_END);
+
+    snprintf(buf, sizeof(buf), "%d", VERSION_SC);
+    curl_formadd(formpost, &lastptr,
+                 CURLFORM_COPYNAME, "sc_version",
+                 CURLFORM_COPYCONTENTS, buf,
+                 CURLFORM_END);
+
+    snprintf(buf, sizeof(buf), "%d", VERSION_CS);
+    curl_formadd(formpost, &lastptr,
+                 CURLFORM_COPYNAME, "cs_version",
+                 CURLFORM_COPYCONTENTS, buf,
+                 CURLFORM_END);
+}
+#endif
+
+/**
+ * This sends an update to the various metaservers.
+ * It generates the form, and then sends it to the
+ * server
+ */
+static void metaserver2_updates(void) {
+#ifdef HAVE_LIBCURL
+    struct curl_httppost *formpost = NULL;
+    metaserver2_build_form(&formpost);
+
+    for (auto hostname : metaservers) {
+        CURL *curl = curl_easy_init();
+        if (curl) {
+            /* what URL that receives this POST */
+            curl_easy_setopt(curl, CURLOPT_URL, hostname.c_str());
+            curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
+
+            /* Almost always, we will get HTTP data returned
+             * to us - instead of it going to stderr,
+             * we want to take care of it ourselves.
+             */
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, metaserver2_writer);
+
+            char errbuf[CURL_ERROR_SIZE];
+            curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errbuf);
+
+            CURLcode res = curl_easy_perform(curl);
+            if (res) {
+                LOG(llevError, "metaserver update failed: %s\n", errbuf);
+            }
+
+            /* always cleanup */
+            curl_easy_cleanup(curl);
+        } else {
+            LOG(llevError, "metaserver: could not initialize curl\n");
+        }
+    }
+    /* then cleanup the formpost chain */
+    curl_formfree(formpost);
+#endif
+}
+
+/**
+ * metserver2_thread is the function called in the thread.
+ * It is a trivial function - it just sleeps and calls
+ * the update function.  The sleep time here is really
+ * quite arbitrary, but once a minute is probably often
+ * enough.  A better approach might be to
+ * do a time() call and see how long the update takes,
+ * and sleep according to that.
+ *
+ * @param junk unused.
+ * @return
+ * This function should never return/exit.
+ */
+
+void metaserver2_thread() {
+    while (1) {
+        metaserver2_updates();
+        sleep(60);
+    }
+}
 
 /**
  * This initializes the metaserver2 logic - it reads
@@ -143,7 +330,6 @@ int metaserver2_init(void) {
     static int has_init = 0;
     FILE *fp;
     char buf[MAX_BUF], *cp, dummy[1];
-    pthread_t thread_id;
 
     dummy[0] = '\0';
 
@@ -153,7 +339,6 @@ int metaserver2_init(void) {
         memset(&metaserver2_updateinfo, 0, sizeof(MetaServer2_UpdateInfo));
 
         local_info.portnumber = settings.csport;
-        pthread_mutex_init(&ms2_info_mutex, NULL);
         curl_global_init(CURL_GLOBAL_ALL);
     } else {
         local_info.notification = 0;
@@ -268,8 +453,6 @@ int metaserver2_init(void) {
 #endif
 
     if (local_info.notification) {
-        int ret;
-
         /* As noted above, it is much easier for the rest of the code
          * to not have to check for null pointers.  So we do that
          * here, and anything that is null, we just allocate
@@ -288,198 +471,14 @@ int metaserver2_init(void) {
         if (!local_info.flags)
             local_info.flags = strdup("");
 
-        ret = pthread_create(&thread_id, NULL, metaserver2_thread, NULL);
-        if (ret) {
-            LOG(llevError, "metaserver2_init: return code from pthread_create() is %d\n", ret);
-
-            /* Effectively true - we're not going to update the metaserver */
-            local_info.notification = 0;
+        try {
+          metaserver_thread = std::thread(metaserver2_thread);
+        }
+        catch (const std::system_error &err) {
+          LOG(llevError, "metaserver2_init: failed to create thread, code %d, what %s\n", err.code().value(), err.what());
+          /* Effectively true - we're not going to update the metaserver */
+          local_info.notification = 0;
         }
     }
     return local_info.notification;
-}
-
-/**
- * Handles writing of HTTP request data from the metaserver2.
- * We treat the data as a string.  We should really pay attention to the
- * header data, and do something clever if we get 404 codes
- * or the like.
- * @param ptr actual data.
- * @param size size of the data.
- * @param nmemb number of elements.
- * @param data user-provided data, unused.
- * @return number of bytes processed, always the full size.
- */
-static size_t metaserver2_writer(void *ptr, size_t size, size_t nmemb, void *data) {
-    (void)data;
-    size_t realsize = size*nmemb;
-    LOG(llevError, "Message from metaserver:\n%s\n", (const char*)ptr);
-    return realsize;
-}
-
-#ifdef HAVE_LIBCURL
-static void metaserver2_build_form(struct curl_httppost **formpost) {
-    struct curl_httppost *lastptr = NULL;
-    char buf[MAX_BUF];
-
-    /* First, fill in the form - note that everything has to be a string,
-     * so we convert as needed with snprintf.
-     * The order of fields here really isn't important.
-     * The string after CURLFORM_COPYNAME is the name of the POST variable
-     * as the
-     */
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "hostname",
-                 CURLFORM_COPYCONTENTS, local_info.hostname,
-                 CURLFORM_END);
-
-    snprintf(buf, sizeof(buf), "%d", local_info.portnumber);
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "port",
-                 CURLFORM_COPYCONTENTS, buf,
-                 CURLFORM_END);
-
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "html_comment",
-                 CURLFORM_COPYCONTENTS, local_info.html_comment,
-                 CURLFORM_END);
-
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "text_comment",
-                 CURLFORM_COPYCONTENTS, local_info.text_comment,
-                 CURLFORM_END);
-
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "archbase",
-                 CURLFORM_COPYCONTENTS, local_info.archbase,
-                 CURLFORM_END);
-
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "mapbase",
-                 CURLFORM_COPYCONTENTS, local_info.mapbase,
-                 CURLFORM_END);
-
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "codebase",
-                 CURLFORM_COPYCONTENTS, local_info.codebase,
-                 CURLFORM_END);
-
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "flags",
-                 CURLFORM_COPYCONTENTS, local_info.flags,
-                 CURLFORM_END);
-
-    pthread_mutex_lock(&ms2_info_mutex);
-
-    snprintf(buf, sizeof(buf), "%d", metaserver2_updateinfo.num_players);
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "num_players",
-                 CURLFORM_COPYCONTENTS, buf,
-                 CURLFORM_END);
-
-    snprintf(buf, sizeof(buf), "%d", metaserver2_updateinfo.in_bytes);
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "in_bytes",
-                 CURLFORM_COPYCONTENTS, buf,
-                 CURLFORM_END);
-
-    snprintf(buf, sizeof(buf), "%d", metaserver2_updateinfo.out_bytes);
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "out_bytes",
-                 CURLFORM_COPYCONTENTS, buf,
-                 CURLFORM_END);
-
-    snprintf(buf, sizeof(buf), "%ld", (long)metaserver2_updateinfo.uptime);
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "uptime",
-                 CURLFORM_COPYCONTENTS, buf,
-                 CURLFORM_END);
-
-    pthread_mutex_unlock(&ms2_info_mutex);
-
-    /* Following few fields are global variables,
-     * but are really defines, so won't ever change.
-     */
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "version",
-                 CURLFORM_COPYCONTENTS, FULL_VERSION,
-                 CURLFORM_END);
-
-    snprintf(buf, sizeof(buf), "%d", VERSION_SC);
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "sc_version",
-                 CURLFORM_COPYCONTENTS, buf,
-                 CURLFORM_END);
-
-    snprintf(buf, sizeof(buf), "%d", VERSION_CS);
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "cs_version",
-                 CURLFORM_COPYCONTENTS, buf,
-                 CURLFORM_END);
-}
-#endif
-
-/**
- * This sends an update to the various metaservers.
- * It generates the form, and then sends it to the
- * server
- */
-static void metaserver2_updates(void) {
-#ifdef HAVE_LIBCURL
-    struct curl_httppost *formpost = NULL;
-    metaserver2_build_form(&formpost);
-
-    for (auto hostname : metaservers) {
-        CURL *curl = curl_easy_init();
-        if (curl) {
-            /* what URL that receives this POST */
-            curl_easy_setopt(curl, CURLOPT_URL, hostname.c_str());
-            curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
-
-            /* Almost always, we will get HTTP data returned
-             * to us - instead of it going to stderr,
-             * we want to take care of it ourselves.
-             */
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, metaserver2_writer);
-
-            char errbuf[CURL_ERROR_SIZE];
-            curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errbuf);
-
-            CURLcode res = curl_easy_perform(curl);
-            if (res) {
-                LOG(llevError, "metaserver update failed: %s\n", errbuf);
-            }
-
-            /* always cleanup */
-            curl_easy_cleanup(curl);
-        } else {
-            LOG(llevError, "metaserver: could not initialize curl\n");
-        }
-    }
-    /* then cleanup the formpost chain */
-    curl_formfree(formpost);
-#endif
-}
-
-/**
- * metserver2_thread is the function called from pthread_create.
- * it is a trivial function - it just sleeps and calls
- * the update function.  The sleep time here is really
- * quite arbitrary, but once a minute is probably often
- * enough.  A better approach might be to
- * do a time() call and see how long the update takes,
- * and sleep according to that.
- *
- * @param junk unused.
- * @return
- * This function should never return/exit.
- */
-
-void *metaserver2_thread(void *junk) {
-    (void)junk;
-    while (1) {
-        metaserver2_updates();
-        sleep(60);
-    }
-    return NULL;
 }
