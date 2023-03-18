@@ -62,6 +62,12 @@ const char *skill_names[MAX_SKILLS];
  */
 const Face *skill_faces[MAX_SKILLS];
 
+/**
+ * Will contain the message for the skills, initialized by init_skill().
+ * @todo added through add_string, so should be cleared at some point.
+ */
+sstring skill_messages[MAX_SKILLS];
+
 static int free_skill_index() {
     int i;
     for (i = 0; i < MAX_SKILLS; i++) {
@@ -81,6 +87,8 @@ static void do_each_skill(archetype *at) {
         skill_names[i] = add_refcount(at->clone.skill);
         if (at->clone.face != NULL)
             skill_faces[i] = at->clone.face;
+        if (at->clone.msg)
+          skill_messages[i] = add_string(at->clone.msg);
     }
 }
 
@@ -94,6 +102,7 @@ void init_skills(void) {
     for (i = 0; i < MAX_SKILLS; i++) {
         skill_names[i] = NULL;
         skill_faces[i] = NULL;
+        skill_messages[i] = NULL;
     }
 
     archetypes_for_each(do_each_skill);

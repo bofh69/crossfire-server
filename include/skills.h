@@ -122,6 +122,7 @@ enum SK {
 
 extern const char *skill_names[MAX_SKILLS];
 extern const Face *skill_faces[MAX_SKILLS];
+extern sstring skill_messages[MAX_SKILLS];
 
 extern int get_skill_client_code(const char *skill_name);
 

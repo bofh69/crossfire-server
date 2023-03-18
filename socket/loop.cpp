@@ -163,6 +163,8 @@ void request_info_cmd(char *buf, int len, socket_struct *ns) {
         send_image_sums(ns, params);
     else if (!strcmp(buf, "skill_info"))
         send_skill_info(ns, params);
+    else if (!strcmp(buf, "skill_extra"))
+        send_skill_extra(ns, params);
     else if (!strcmp(buf, "spell_paths"))
         send_spell_paths(ns);
     else if (!strcmp(buf, "exp_table"))

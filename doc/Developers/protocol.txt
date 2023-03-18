@@ -1683,6 +1683,19 @@ generally are not something that needs to be designed for.
         142:hiding
         143:smithery
 
+|skill_extra (optional level)|
+
+        This returns extra information about skills, in a binary format.
+        "level" should be 1 for the current version, and may be increased later when other
+        information is added.
+
+        For each skill, the following fields are sent:
+          <skill number>: uint16, same value as returned by skill_info
+          <description length>: uint16, length of the next field
+          <skill description>: string, description of the skill. It may contain newlines
+
+        The list ends when <skill number> is 0.
+
 |spell_paths|
 
         This returns a list of all spell paths in the game, along with

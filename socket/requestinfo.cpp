@@ -95,6 +95,36 @@ void send_skill_info(socket_struct *ns, char *params) {
 }
 
 /**
+ * Send extra skill information.
+ * @param ns where to write the information.
+ * @param params ignored.
+ */
+void send_skill_extra(socket_struct *ns, char *params)
+{
+    (void)params;
+    SockList sl;
+
+    SockList_Init(&sl);
+    SockList_AddString(&sl, "replyinfo skill_extra\n");
+    for (uint8_t i = 0; i < MAX_SKILLS && skill_names[i]; i++) {
+        if (skill_messages[i] == NULL)
+          continue;
+
+        size_t len = 4 + strlen(skill_messages[i]); /* upper bound for length */
+        if (SockList_Avail(&sl) < len) {
+            LOG(llevError, "Buffer overflow in send_skill_extra, not sending all skill information\n");
+            break;
+        }
+
+        SockList_AddShort(&sl, i + CS_STAT_SKILLINFO);
+        SockList_AddLen16Data(&sl, skill_messages[i], strlen(skill_messages[i]));
+    }
+    SockList_AddShort(&sl, 0);
+    Send_With_Handling(ns, &sl);
+    SockList_Term(&sl);
+}
+
+/**
  * This sends the spell path to name mapping.
  *
  * @param ns where to write the information.

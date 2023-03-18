@@ -91,6 +91,7 @@ void esrv_map_scroll(socket_struct *ns, int dx, int dy);
 void send_plugin_custom_message(object *pl, char *buf);
 void send_exp_table(socket_struct *ns);
 void send_skill_info(socket_struct *ns, char *params);
+void send_skill_extra(socket_struct *ns, char *params);
 void send_spell_paths(socket_struct *ns);
 void send_race_list(socket_struct *ns);
 void send_race_info(socket_struct *ns, char *params);
