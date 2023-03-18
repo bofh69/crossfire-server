@@ -174,7 +174,7 @@ START_TEST(test_describe_item) {
             printf("describe_item(%s) returned \"%s\" instead of \"%s\"\n", archs[check], buf, arch_results[check]);
         */
 
-        fail_unless(strcmp(buf, arch_results[check]) == 0, "describe_item(%s) returned \"%s\" instead of \"%s\"", archs[check], buf, arch_results[check]);
+        fail_unless(strcmp(buf, arch_results[check]) == 0, "describe_item(%s) returned \"%s\" instead of \"%s\", check %d", archs[check], buf, arch_results[check], check);
 
         free(buf);
         object_free_drop_inventory(test);
