@@ -53,6 +53,23 @@ START_TEST(test_face_for_each_artifact) {
 }
 END_TEST
 
+/** Ensure key/valuse from artifact definition are correctly copied to the item. */
+START_TEST(test_artifact_key_value) {
+  object *initial = object_new(), *arti = object_new();
+
+#define KEY "check_artifact"
+#define VALUE "all is right!"
+  object_set_value(arti, KEY, VALUE, 1);
+  add_abilities(initial, arti);
+  sstring value = object_get_value(initial, KEY);
+  fail_unless(value, "failed to get the key back");
+  fail_unless(strcmp(value, VALUE) == 0, "wrong value '%s' instead of '%s'", value, VALUE);
+
+  object_free(initial, FREE_OBJ_NO_DESTROY_CALLBACK);
+  object_free(arti, FREE_OBJ_NO_DESTROY_CALLBACK);
+}
+END_TEST
+
 static Suite *artifact_suite(void) {
     Suite *s = suite_create("artifact");
     TCase *tc_core = tcase_create("Core");
@@ -63,6 +80,7 @@ static Suite *artifact_suite(void) {
 
     suite_add_tcase(s, tc_core);
     tcase_add_test(tc_core, test_face_for_each_artifact);
+    tcase_add_test(tc_core, test_artifact_key_value);
 
     return s;
 }
