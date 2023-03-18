@@ -63,7 +63,7 @@ do-collect:
 collect: crossfire.arc
 
 crossfire.arc: .collect-stamp
-	rm -f crossfire.arc crossfire.face crossfire.trs crossfire.tar
+	rm -f crossfire.arc crossfire.face crossfire.trs crossfire.tar crossfire.artifacts
 	../server/crossfire-server -data $(srcdir) -conf $(srcdir)/config \
 	  -pack-assets archs crossfire.arc \
 	  -pack-assets faces crossfire.face \
