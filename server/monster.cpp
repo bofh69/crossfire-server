@@ -1187,20 +1187,23 @@ static int monster_should_cast_spell(object *spell_ob) {
     /* The caller is responsible for making sure that *spell_ob is defined. */
     assert(spell_ob != NULL);
 
-    if (spell_ob->subtype == SP_BOLT
-    || spell_ob->subtype == SP_BULLET
-    || spell_ob->subtype == SP_EXPLOSION
-    || spell_ob->subtype == SP_CONE
-    || spell_ob->subtype == SP_BOMB
-    || spell_ob->subtype == SP_SMITE
-    || spell_ob->subtype == SP_MAGIC_MISSILE
-    || spell_ob->subtype == SP_SUMMON_GOLEM
-    || spell_ob->subtype == SP_MAGIC_WALL
-    || spell_ob->subtype == SP_SUMMON_MONSTER
-    || spell_ob->subtype == SP_MOVING_BALL
-    || spell_ob->subtype == SP_SWARM
-    || spell_ob->subtype == SP_INVISIBLE)
-        return 1;
+    switch (spell_ob->subtype) {
+        case SP_BOLT:
+        case SP_BULLET:
+        case SP_EXPLOSION:
+        case SP_CONE:
+        case SP_BOMB:
+        case SP_SMITE:
+        case SP_MAGIC_MISSILE:
+        case SP_SUMMON_GOLEM:
+        case SP_MAGIC_WALL:
+        case SP_SUMMON_MONSTER:
+        case SP_MOVING_BALL:
+        case SP_SWARM:
+        case SP_INVISIBLE:
+        case SP_AURA:
+            return 1;
+    }
 
     return 0;
 }
@@ -1318,14 +1321,15 @@ static int monster_cast_spell(object *head, object *part, object *pl, int dir) {
         dir = 0;
 
     /* Monster doesn't have enough spell-points */
+    /* As of 2023, monsters do not possess grace points, and so will use sp for prayers too. */
     if (head->stats.sp < SP_level_spellpoint_cost(head, spell_item, SPELL_MANA))
         return 0;
 
-    if (head->stats.grace < SP_level_spellpoint_cost(head, spell_item, SPELL_GRACE))
+    if (head->stats.sp < SP_level_spellpoint_cost(head, spell_item, SPELL_GRACE))
         return 0;
 
     head->stats.sp -= SP_level_spellpoint_cost(head, spell_item, SPELL_MANA);
-    head->stats.grace -= SP_level_spellpoint_cost(head, spell_item, SPELL_GRACE);
+    head->stats.sp -= SP_level_spellpoint_cost(head, spell_item, SPELL_GRACE);
 
     /* set this to null, so next time monster will choose something different */
     head->spellitem = NULL;
