@@ -748,7 +748,7 @@ static void move_swarm_spell(object *op) {
  */
 static void move_aura(object *aura) {
     int i, j, mflags;
-    object *env;
+    object *caster;
     mapstruct *m;
     uint8_t aura_animation_state = 0;
     sstring whole_aura_animation = NULL;
@@ -767,7 +767,7 @@ static void move_aura(object *aura) {
     }
 
     /* auras belong in inventories */
-    env = aura->env;
+    caster = aura->env;
 
     /* no matter what we've gotta remove the aura...
      * we'll put it back if its time isn't up.
@@ -781,7 +781,7 @@ static void move_aura(object *aura) {
     }
 
     /* auras only exist in inventories */
-    if (env == NULL || env->map == NULL) {
+    if (caster == NULL || caster->map == NULL) {
         object_free_drop_inventory(aura);
         return;
     }
@@ -790,18 +790,18 @@ static void move_aura(object *aura) {
         for (j = -aura->range; j <= aura->range; ++j) {
             int16_t nx, ny;
 
-            // Env should be the starting location for the aura, so use
+            // Caster should be the starting location for the aura, so use
             // it as the base positioning instead of the aura.
             // This allows us to be less hacky when handling the long-range aura.
-            nx = env->x+i;
-            ny = env->y+j;
-            mflags = get_map_flags(env->map, &m, nx, ny, &nx, &ny);
+            nx = caster->x+i;
+            ny = caster->y+j;
+            mflags = get_map_flags(caster->map, &m, nx, ny, &nx, &ny);
 
             /* Consider the movement type of the person with the aura as
              * movement type of the aura.  Eg, if the player is flying, the aura
              * is flying also, if player is walking, it is on the ground, etc.
              */
-            if (!(mflags&P_OUT_OF_MAP) && !(OB_TYPE_MOVE_BLOCK(env, GET_MAP_MOVE_BLOCK(m, nx, ny)))) {
+            if (!(mflags&P_OUT_OF_MAP) && !(OB_TYPE_MOVE_BLOCK(caster, GET_MAP_MOVE_BLOCK(m, nx, ny)))) {
                 // If the aura has no attacktype, don't try to hit the map with it.
                 // Chances are, it is casting it's own spell instead.
                 if (aura->attacktype != 0 && (i != 0 || j != 0)) {
@@ -842,8 +842,8 @@ static void move_aura(object *aura) {
                             // If the entity is living and aligned with the caster, then cast the spell at them.
                             // Allow auras to be cast by enemies, too. In that case, they only affect their allies.
                             if (QUERY_FLAG(tmp, FLAG_ALIVE) &&
-                                ((QUERY_FLAG(tmp, FLAG_FRIENDLY) || QUERY_FLAG(tmp, FLAG_UNAGGRESSIVE)) ==
-                                 (QUERY_FLAG(env, FLAG_FRIENDLY) || env->contr))){
+                                ((QUERY_FLAG(tmp, FLAG_FRIENDLY) || QUERY_FLAG(tmp, FLAG_UNAGGRESSIVE) || IS_PLAYER(tmp)) ==
+                                 (QUERY_FLAG(caster, FLAG_FRIENDLY) || IS_PLAYER(caster)))){
                                   cast_spell(tmp, aura, 0, new_ob, NULL);
                             }
                         } FOR_MAP_FINISH();
@@ -857,7 +857,7 @@ static void move_aura(object *aura) {
     /* put the aura back in the player's inventory */
     if (!QUERY_FLAG(aura, FLAG_REMOVED))
         object_remove(aura);
-    object_insert_in_ob(aura, env);
+    object_insert_in_ob(aura, caster);
     check_spell_expiry(aura);
 }
 
