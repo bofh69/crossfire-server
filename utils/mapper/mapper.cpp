@@ -452,6 +452,26 @@ static void free_equipment(struct_equipment *equip) {
 }
 
 /**
+ * Sort 2 struct_equipment.
+ * @param l
+ * @param r
+ * items to compare.
+ * @return
+ * true if l is before r, false else
+ */
+static bool sort_equipment(const struct_equipment *l, const struct_equipment *r) {
+    int cmp = strcasecmp(l->name, r->name);
+    if (cmp)
+        return cmp < 0;
+    if (l->power != r->power)
+        return l->power < r->power;
+    if (l->calc_power != r->calc_power)
+        return l->calc_power < r->calc_power;
+
+    return strcasecmp(l->diff, r->diff) < 0;
+}
+
+/**
  * Searches the item list for an identical item, except maps.
  *
  * @param item
@@ -460,22 +480,13 @@ static void free_equipment(struct_equipment *equip) {
  * item guaranteed to be unique in the item list.
  */
 static struct_equipment *ensure_unique(struct_equipment *item) {
-    struct_equipment *comp;
+    assert(item);
+    auto existing = std::find_if(special_equipment.begin(), special_equipment.end(),
+        [&] (const auto *e) { return !sort_equipment(e, item) && !sort_equipment(item, e); });
 
-    for (size_t check = 0; check < special_equipment.size(); check++) {
-        comp = special_equipment[check];
-
-        if (strcmp(comp->name, item->name))
-            continue;
-        if (comp->power != item->power)
-            continue;
-        if (comp->calc_power != item->calc_power)
-            continue;
-        if (strcmp(comp->diff, item->diff))
-            continue;
-
+    if (existing != special_equipment.end()) {
         free_equipment(item);
-        return comp;
+        return *existing;
     }
 
     special_equipment.push_back(item);
@@ -573,20 +584,6 @@ static void check_equipment(object *item, struct_map_info *map) {
     FOR_INV_PREPARE(item, inv)
         check_equipment(inv, map);
     FOR_INV_FINISH();
-}
-
-/**
- * Sort 2 struct_equipment, first on item power then name.
- * @param l
- * @param r
- * items to compare.
- * @return
- * true if l is before r, false else
- */
-static bool sort_equipment(const struct_equipment *l, const struct_equipment *r) {
-    if (l->power < r->power)
-        return true;
-    return strcasecmp(l->name, r->name) < 0;
 }
 
 /**
