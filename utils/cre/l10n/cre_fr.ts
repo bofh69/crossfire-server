@@ -1202,6 +1202,16 @@ Confirmez-vous ?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../CREMainWindow.cpp" line="1819"/>
+        <source>Really clear map cache?</source>
+        <translation>Vraiment effacer le cache des cartes ?</translation>
+    </message>
+    <message>
+        <location filename="../CREMainWindow.cpp" line="1820"/>
+        <source>This will force cache rebuild at next application start.</source>
+        <translation>Ceci entraîne la reconstruction du cache au prochain lancement de l&apos;application.</translation>
+    </message>
+    <message>
         <location filename="../CREMainWindow.cpp" line="1853"/>
         <source>Please select the &apos;sounds&apos; directory</source>
         <translation>Veuillez sélectionner le répertoire &quot;sounds&quot;</translation>
