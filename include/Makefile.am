@@ -25,13 +25,8 @@ CLEANFILES = svnversion.h
 
 svnversion.h: FORCE
 	OUTPUT_DATA='/* Auto-generated at build time. */'; \
-	if [ "X`echo -n`" = "X-n" ]; then \
-		echo_n() { echo $${1+"$$@"}"\c"; } \
-	else \
-		echo_n() { echo -n $${1+"$$@"}; } \
-	fi; \
 	if test -n "$(GIT)" -a -d "$(top_srcdir)/.git"; \
-	then OUTPUT_DATA=`echo "$$OUTPUT_DATA"; echo_n '#define SVN_REV "'; cd "$(top_srcdir)" && $(GIT) describe --tags`'"'; \
+	then VER_STR=`$(GIT) -C "$(top_srcdir)" describe --tags`; OUTPUT_DATA=`echo "$$OUTPUT_DATA"; echo "#define SVN_REV \"$$VER_STR\""`; \
 	else OUTPUT_DATA=`echo "$$OUTPUT_DATA"; echo '#define SVN_REV "unknown"'`; \
 	fi; \
 	if test ! -e svnversion.h; then \
