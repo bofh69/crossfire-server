@@ -1458,7 +1458,9 @@ object *identify(object *op) {
         if (player)
             esrv_update_item(UPD_FACE | UPD_NAME | UPD_FLAGS, player, op);
 
-    } else {
+    } else if (op->env) {
+        /* If the object is in an inventory, merge it.
+         */
         pl = object_get_player_container(op->env);
         op1 = object_merge(op, op->env->inv);
         if (op1) op = op1;
@@ -1476,5 +1478,7 @@ object *identify(object *op) {
             esrv_update_item(UPD_FACE | UPD_NAME | UPD_FLAGS, pl, op);
         }
     }
+    /* There is a third option where we do nothing extra:
+     * identifying a created item as it is created. */
     return op;
 }

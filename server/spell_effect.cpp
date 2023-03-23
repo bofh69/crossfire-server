@@ -669,6 +669,10 @@ int cast_create_food(object *op, object *caster, object *spell_ob, int dir, cons
     new_op->value = 0;
     if (new_op->nrof < 1)
         new_op->nrof = 1;
+    // Drinks are unidentified by default. Identify those.
+    if (!is_identified(new_op)) {
+        identify(new_op);
+    }
 
     cast_create_obj(op, new_op, dir);
     return 1;
