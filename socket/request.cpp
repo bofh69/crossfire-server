@@ -1398,7 +1398,7 @@ static void check_space_for_heads(int ax, int ay, SockList *sl, socket_struct *n
          * to send 0 as the type/len field.
          */
         sl->len = oldlen+2;         /* 2 bytes for coordinate */
-        SockList_AddChar(sl, 0);    /* Clear byte */
+        SockList_AddChar(sl, MAP2_TYPE_CLEAR);    /* Clear byte */
         SockList_AddChar(sl, 255);  /* Termination byte */
         // Reduce defreferences by passing the inner array offset instead of address of value
         map_clearcell(ns->lastmap.cells[ax] + ay, 0, 0);
@@ -1518,10 +1518,16 @@ static void draw_client_map2(object *pl) {
 
                     /* Darkness changed */
                     if (plyr->socket->lastmap.cells[ax][ay].darkness != darkness
-                    && plyr->socket->darkness) {
+                        && plyr->socket->darkness) {
                         plyr->socket->lastmap.cells[ax][ay].darkness = darkness;
-                        /* Darkness tag & length*/
-                        SockList_AddChar(&sl, MAP2_TYPE_DARKNESS|1<<5);
+                        /* Darkness tag & length (length=1) */
+                        SockList_AddChar(&sl, MAP2_TYPE_DARKNESS|(1<<5));
+
+                        /* Convert darkness level (0-MAX_DARKNESS) to a value
+                         * from 1 (dark) to 255 (bright) for the client.
+                         * Darkness values of 0 (completely dark) are not sent,
+                         * as the space is completely dark.
+                         */
                         SockList_AddChar(&sl, 255-darkness*(256/MAX_LIGHT_RADII));
                         have_darkness = 1;
                     }

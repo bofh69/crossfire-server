@@ -2136,9 +2136,9 @@ void update_position(mapstruct *m, int x, int y) {
             light = tmp->glow_radius;
 
         /* if this object is visible and not a blank face,
-        * update the objects that show how this space
-        * looks.
-        */
+         * update the objects that show how this space
+         * looks.
+         */
         if (!tmp->invisible && tmp->face != blank_face) {
             if (tmp->map_layer) {
                 add_face_layer(tmp->map_layer, map_layer_info[tmp->map_layer].high_layer,
