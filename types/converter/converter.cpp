@@ -277,6 +277,10 @@ static method_ret converter_type_apply(object *converter, object *applier, int a
             }
             else {
                 object_insert_in_ob(conv_res, applier);
+                /* We really just need the weight/speed recalculation here,
+                 * but this is what we can call without changing function
+                 * access modifiers */
+                fix_object(applier);
             }
         }
     }
