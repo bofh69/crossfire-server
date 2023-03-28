@@ -268,7 +268,7 @@ static method_ret converter_type_apply(object *converter, object *applier, int a
     if (conv_src != NULL) {
         int status;
         // Handle player weight limits
-        int lim = applier->type == PLAYER ? get_weight_limit(applier->stats.Str) - applier->carrying : -1;
+        int lim = applier->type == PLAYER ? get_weight_limit(applier->stats.Str) - applier->carrying - applier->weight : -1;
         object *conv_res = do_item_conversion(converter, conv_src, lim, &status);
         if (conv_res != NULL) {
             // If the generated item is unpaid, then do not put it directly into the inventory. Otherwise, put it in the inventory.
