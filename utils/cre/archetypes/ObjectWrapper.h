@@ -48,6 +48,7 @@ class ObjectWrapper : public AssetTWrapper<object> {
     OBJ_FLAG(isMonster, FLAG_MONSTER)
     OBJ_FLAG(isAlive, FLAG_ALIVE)
     OBJ_FLAG(isGenerator, FLAG_GENERATOR)
+    OBJ_FLAG(isUnaggressive, FLAG_UNAGGRESSIVE)
     ATW_RPROP(quint32, attacktype, attacktype)
     ATW_PROP(int, str, stats.Str);
     ATW_PROP(int, dex, stats.Dex);
