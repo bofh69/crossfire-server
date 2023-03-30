@@ -737,20 +737,32 @@ static void thrown_item_effect(object *, object *);
 
 /**
  * Handles simple attack cases.
+ *
+ * If rolling 1d20 > WC - AC, deal damage. Otherwise, miss. In other words, if
+ * WC is less than or equal to AC, the attack will always hit. Otherwise, for
+ * each point of WC above the target's AC, there is a 5% more chance of missing
+ * the target up to a maximum of 95% miss.
+ *
+ * Some adjustments in @ref adj_attackroll() increase or decrease the
+ * attacker's roll.
+ *
+ * Deal between 1-base_dam damage. The actual amount of damage may be
+ * adjusted by the victim's resistances.
+ *
  * @param op
  * victim. Should be the head part.
  * @param hitter
  * attacked. Should be the head part.
  * @param base_dam
- * damage to do.
- * @param base_wc
- * wc to hit with.
+ * Maximum base damage, before resistances, to deal.
+ * @param wc
+ * Attacker's weapon class (see @ref living::wc).
  * @return
  * dealt damage.
  * @todo
  * fix void return values. Try to remove gotos. Better document when it's called.
  */
-static int attack_ob_simple(object *op, object *hitter, int base_dam, int base_wc) {
+static int attack_ob_simple(object *op, object *hitter, int base_dam, int wc) {
     int simple_attack, roll, dam;
     uint32_t type;
     tag_t op_tag, hitter_tag;
@@ -808,7 +820,7 @@ static int attack_ob_simple(object *op, object *hitter, int base_dam, int base_w
         roll += adj_attackroll(hitter, op);
 
     /* See if we hit the creature */
-    if (roll >= 20 || op->stats.ac >= base_wc-roll) {
+    if (roll >= 20 || op->stats.ac >= wc-roll) {
         if (settings.casting_time == TRUE) {
             if (hitter->type == PLAYER && hitter->casting_time > -1) {
                 hitter->casting_time = -1;

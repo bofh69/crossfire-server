@@ -34,8 +34,8 @@ extern const char *const lose_msg[NUM_STATS];
  */
 struct living {
     int8_t         Str, Dex, Con, Wis, Cha, Int, Pow;
-    int8_t         wc;         /**< Weapon Class, how skilled, the lower the better. */
-    int8_t         ac;         /**< Armour Class, how hard to hit, the lower the better. */
+    int8_t         wc;         /**< Weapon Class, lower WC increases probability of hitting. See @ref living::ac. */
+    int8_t         ac;         /**< Armor Class, lower AC increases probability of not getting hit. See @ref attack_ob_simple(). */
     int8_t         luck;       /**< Affects thaco and ac from time to time */
     int16_t        hp;         /**< Hit Points. */
     int16_t        maxhp;      /**< Max hit points. */
