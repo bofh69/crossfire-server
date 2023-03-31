@@ -538,6 +538,9 @@ void new_player_cmd(uint8_t *buf, int len, player *pl) {
         LOG(llevError, "Player %s (%s) has negative time - shouldn't do command.\n",
             pl->ob->name ? pl->ob->name : "(unnamed)", pl->socket->account_name ? pl->socket->account_name : "(no account)");
     }
+    int tmp = 1;
+    if (setsockopt(pl->socket->fd, IPPROTO_TCP, TCP_NODELAY, &tmp, sizeof(tmp)))
+        LOG(llevError, "send_tick: Unable to turn off TCP_NODELAY\n");
     command_execute(pl->ob, command);
     /* Perhaps something better should be done with a left over count.
      * Cleaning up the input should probably be done first - all actions
@@ -557,6 +560,9 @@ void new_player_cmd(uint8_t *buf, int len, player *pl) {
     SockList_AddInt(&sl, time);
     Send_With_Handling(pl->socket, &sl);
     SockList_Term(&sl);
+    tmp = 0;
+    if (setsockopt(pl->socket->fd, IPPROTO_TCP, TCP_NODELAY, &tmp, sizeof(tmp)))
+        LOG(llevError, "send_tick: Unable to turn on TCP_NODELAY\n");
 }
 
 /** This is a reply to a previous query. */
