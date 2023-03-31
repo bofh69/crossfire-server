@@ -148,15 +148,41 @@ void CREMainWindow::closeEvent(QCloseEvent* event)
     cleanup();
 }
 
-QAction *CREMainWindow::createAction(const QString &title, const QString &statusTip) {
-    auto action = new QAction(title, this);
-    action->setStatusTip(statusTip);
+template <typename F>
+QAction *CREMainWindow::createAction(const QString &title, const QString &statusTip, F functor, bool waitMaps) {
+    auto action = createAction(title, statusTip);
+    if (waitMaps) {
+        connect(action, &QAction::triggered, [this, functor] {
+            if (!myMapManager->browseFinished()) {
+                QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+                QProgressDialog prog(this);
+                prog.setLabelText(tr("Waiting for maps browing to finish..."));
+                prog.setWindowModality(Qt::ApplicationModal);
+                prog.setRange(0, 0);
+                prog.setVisible(true);
+                prog.setValue(0);
+                while (!myMapManager->browseFinished())
+                {
+                    if (prog.wasCanceled()) {
+                        QApplication::restoreOverrideCursor();
+                        return;
+                    }
+                    QApplication::processEvents();
+                    QThread::msleep(1);
+                }
+                QApplication::restoreOverrideCursor();
+            }
+            functor();
+        });
+    } else {
+        connect(action, &QAction::triggered, functor);
+    }
     return action;
 }
 
-QAction *CREMainWindow::createAction(const QString &title, const QString &statusTip, QObject *target, const char *slot) {
-    auto action = createAction(title, statusTip);
-    connect(action, SIGNAL(triggered()), target, slot);
+QAction *CREMainWindow::createAction(const QString &title, const QString &statusTip) {
+    auto action = new QAction(title, this);
+    action->setStatusTip(statusTip);
     return action;
 }
 
@@ -165,29 +191,6 @@ void CREMainWindow::createActions()
     mySaveFormulae = new QAction(tr("Formulae"), this);
     mySaveFormulae->setEnabled(false);
     connect(mySaveFormulae, SIGNAL(triggered()), this, SLOT(onSaveFormulae()));
-
-    myReportPlayer = new QAction(tr("Player vs monsters"), this);
-    myReportPlayer->setStatusTip(tr("Compute statistics related to player vs monster combat."));
-    // can't use that while map browsing is running ; will be enabled in browsingFinished()
-    myReportPlayer->setEnabled(false);
-    connect(myReportPlayer, SIGNAL(triggered()), this, SLOT(onReportPlayer()));
-
-    myReportShops = new QAction(tr("Shop specialization"), this);
-    myReportShops->setStatusTip(tr("Display the list of shops and their specialization for items."));
-    // can't use that while map browsing is running ; will be enabled in browsingFinished()
-    myReportShops->setEnabled(false);
-    connect(myReportShops, SIGNAL(triggered()), this, SLOT(onReportShops()));
-
-    myReportQuests = new QAction(tr("Quest solved by players"), this);
-    myReportQuests->setStatusTip(tr("Display quests the players have solved."));
-    // can't use that while map browsing is running ; will be enabled in browsingFinished()
-    myReportQuests->setEnabled(false);
-    connect(myReportQuests, SIGNAL(triggered()), this, SLOT(onReportQuests()));
-
-    myReportArchetypes = new QAction(tr("Unused archetypes"), this);
-    myReportArchetypes->setStatusTip(tr("Display all archetypes which seem unused."));
-    myReportArchetypes->setEnabled(false);
-    connect(myReportArchetypes, SIGNAL(triggered()), this, SLOT(onReportArchetypes()));
 
     myClearMapCache = new QAction(tr("Clear map cache"), this);
     myClearMapCache->setStatusTip(tr("Force a refresh of all map information at next start."));
@@ -217,7 +220,7 @@ void CREMainWindow::createMenus()
         add(asset, myAssets->child(asset)->displayName(), myAssets->child(asset)->property(AssetWrapper::tipProperty).toString());
     }
 
-    myOpenMenu->addAction(createAction(tr("Experience"), tr("Display the experience table."), this, SLOT(onOpenExperience())));
+    myOpenMenu->addAction(createAction(tr("Experience"), tr("Display the experience table."), [this] { onOpenExperience(); }));
 
     myOpenMenu->addSeparator();
     QAction* exit = myOpenMenu->addAction(tr("&Exit"));
@@ -226,44 +229,43 @@ void CREMainWindow::createMenus()
 
     mySaveMenu = menuBar()->addMenu(tr("&Save"));
     mySaveMenu->addAction(mySaveFormulae);
-    mySaveMenu->addAction(createAction(tr("Quests"), tr("Save all modified quests to disk."), this, SLOT(onSaveQuests())));
-    mySaveMenu->addAction(createAction(tr("Dialogs"), tr("Save all modified NPC dialogs."), this, SLOT(onSaveMessages())));
-    mySaveMenu->addAction(createAction(tr("Archetypes"), tr("Save all modified archetypes."), myResourcesManager, SLOT(saveArchetypes())));
-    mySaveMenu->addAction(createAction(tr("Treasures"), tr("Save all modified treasures."), myResourcesManager, SLOT(saveTreasures())));
-    mySaveMenu->addAction(createAction(tr("General messages"), tr("Save all modified general messages."), myResourcesManager, SLOT(saveGeneralMessages())));
-    mySaveMenu->addAction(createAction(tr("Artifacts"), tr("Save all modified artifacts."), myResourcesManager, SLOT(saveArtifacts())));
+    mySaveMenu->addAction(createAction(tr("Quests"), tr("Save all modified quests to disk."), [this] { onSaveQuests(); }));
+    mySaveMenu->addAction(createAction(tr("Dialogs"), tr("Save all modified NPC dialogs."), [this] { onSaveMessages(); }));
+    mySaveMenu->addAction(createAction(tr("Archetypes"), tr("Save all modified archetypes."), [this] { myResourcesManager->saveArchetypes(); }));
+    mySaveMenu->addAction(createAction(tr("Treasures"), tr("Save all modified treasures."), [this] { myResourcesManager->saveTreasures(); }));
+    mySaveMenu->addAction(createAction(tr("General messages"), tr("Save all modified general messages."), [this] { myResourcesManager->saveGeneralMessages(); }));
+    mySaveMenu->addAction(createAction(tr("Artifacts"), tr("Save all modified artifacts."), [this] { myResourcesManager->saveArtifacts(); }));
 
     QMenu* reportMenu = menuBar()->addMenu(tr("&Reports"));
-    reportMenu->addAction(createAction(tr("Faces and animations report"), tr("Show faces and animations which are used by multiple archetypes, or not used."), this, SLOT(onReportDuplicate())));
-    reportMenu->addAction(createAction(tr("Spell damage"), tr("Display damage by level for some spells."), this, SLOT(onReportSpellDamage())));
-    reportMenu->addAction(createAction(tr("Alchemy"), tr("Display alchemy formulae, in a table."), this, SLOT(onReportAlchemy())));
-    reportMenu->addAction(createAction(tr("Alchemy graph"), tr("Export alchemy relationship as a DOT file."), this, SLOT(onReportAlchemyGraph())));
-    reportMenu->addAction(createAction(tr("Spells"), tr("Display all spells, in a table."), this, SLOT(onReportSpells())));
-    reportMenu->addAction(myReportPlayer);
-    reportMenu->addAction(createAction(tr("Summoned pets statistics"), tr("Display wc, hp, speed and other statistics for summoned pets."), this, SLOT(onReportSummon())));
-    reportMenu->addAction(myReportShops);
-    reportMenu->addAction(myReportQuests);
-    reportMenu->addAction(createAction(tr("Materials"), tr("Display all materials with their properties."), this, SLOT(onReportMaterials())));
-    reportMenu->addAction(myReportArchetypes);
-    reportMenu->addAction(createAction(tr("Licenses checks"), tr("Check for licenses inconsistencies."), this, SLOT(onReportLicenses())));
-    reportMenu->addAction(myReportResetGroups = createAction(tr("Map reset groups"), tr("List map reset groups."), this, SLOT(onReportResetGroups())));
-    myReportResetGroups->setEnabled(false);
+    reportMenu->addAction(createAction(tr("Faces and animations report"), tr("Show faces and animations which are used by multiple archetypes, or not used."), [this] { onReportDuplicate(); }));
+    reportMenu->addAction(createAction(tr("Spell damage"), tr("Display damage by level for some spells."), [this] () { onReportSpellDamage(); }, true));
+    reportMenu->addAction(createAction(tr("Alchemy"), tr("Display alchemy formulae, in a table."), [this] { onReportAlchemy(); }));
+    reportMenu->addAction(createAction(tr("Alchemy graph"), tr("Export alchemy relationship as a DOT file."), [this] { onReportAlchemyGraph(); }));
+    reportMenu->addAction(createAction(tr("Spells"), tr("Display all spells, in a table."), [this] { onReportSpells(); }));
+    reportMenu->addAction(createAction(tr("Player vs monsters"), tr("Compute statistics related to player vs monster combat."), [=] { onReportPlayer(); }, true));
+    reportMenu->addAction(createAction(tr("Summoned pets statistics"), tr("Display wc, hp, speed and other statistics for summoned pets."), [=] { onReportSummon(); }));
+    reportMenu->addAction(createAction(tr("Shop specialization"), tr("Display the list of shops and their specialization for items."), [=] { onReportShops(); }, true));
+    reportMenu->addAction(createAction(tr("Quest solved by players"), tr("Display quests the players have solved."), [=] { onReportQuests(); }, true));
+    reportMenu->addAction(createAction(tr("Materials"), tr("Display all materials with their properties."), [this] { onReportMaterials(); }));
+    reportMenu->addAction(createAction(tr("Unused archetypes"), tr("Display all archetypes which seem unused."), [=] { onReportArchetypes(); }, true));
+    reportMenu->addAction(createAction(tr("Licenses checks"), tr("Check for licenses inconsistencies."), [this] { onReportLicenses(); }));
+    reportMenu->addAction(createAction(tr("Map reset groups"), tr("List map reset groups."), [this] { onReportResetGroups(); }, true));
 
     myToolsMenu = menuBar()->addMenu(tr("&Tools"));
-    myToolsMenu->addAction(createAction(tr("Edit monsters"), tr("Edit monsters in a table."), this, SLOT(onToolEditMonsters())));
+    myToolsMenu->addAction(createAction(tr("Edit monsters"), tr("Edit monsters in a table."), [this] { onToolEditMonsters(); }));
     auto resist = createAction(tr("Monster resistances overview"), tr("Display an overview of resistances of monsters"));
     connect(resist, &QAction::triggered, [&] {
         MonsterResistances dlg(this);
         dlg.exec();
     });
     myToolsMenu->addAction(resist);
-    myToolsMenu->addAction(createAction(tr("Generate smooth face base"), tr("Generate the basic smoothed picture for a face."), this, SLOT(onToolSmooth())));
-    myToolsMenu->addAction(createAction(tr("Generate HP bar"), tr("Generate faces for a HP bar."), this, SLOT(onToolBarMaker())));
-    myToolsMenu->addAction(createAction(tr("Combat simulator"), tr("Simulate fighting between two objects."), this, SLOT(onToolCombatSimulator())));
-    myToolsMenu->addAction(createAction(tr("Generate face variants"), tr("Generate faces by changing colors of existing faces."), this, SLOT(onToolFaceMaker())));
+    myToolsMenu->addAction(createAction(tr("Generate smooth face base"), tr("Generate the basic smoothed picture for a face."), [this] { onToolSmooth(); }));
+    myToolsMenu->addAction(createAction(tr("Generate HP bar"), tr("Generate faces for a HP bar."), [this] { onToolBarMaker(); }));
+    myToolsMenu->addAction(createAction(tr("Combat simulator"), tr("Simulate fighting between two objects."), [this] { onToolCombatSimulator(); }));
+    myToolsMenu->addAction(createAction(tr("Generate face variants"), tr("Generate faces by changing colors of existing faces."), [this] { onToolFaceMaker(); }));
     myToolsMenu->addAction(myClearMapCache);
-    myToolsMenu->addAction(createAction(tr("Reload assets"), tr("Reload all assets from the data directory."), this, SLOT(onToolReloadAssets())));
-    myToolsMenu->addAction(createAction(tr("Sounds"), tr("Display defined sounds and associated files."), this, SLOT(onToolSounds())));
+    myToolsMenu->addAction(createAction(tr("Reload assets"), tr("Reload all assets from the data directory."), [this] { onToolReloadAssets(); }));
+    myToolsMenu->addAction(createAction(tr("Sounds"), tr("Display defined sounds and associated files."), [this] { onToolSounds(); }));
 
     CRESettings set;
 
@@ -278,24 +280,21 @@ void CREMainWindow::createMenus()
         set.setStoreWindowState(store->isChecked());
     } );
     
-    myWindows->addAction(createAction(tr("Close current window"), tr("Close the currently focused window"), myArea, SLOT(closeActiveSubWindow())));
-    myWindows->addAction(createAction(tr("Close all windows"), tr("Close all opened windows"), myArea, SLOT(closeAllSubWindows())));
-    myWindows->addAction(createAction(tr("Tile windows"), tr("Tile all windows"), myArea, SLOT(tileSubWindows())));
-    myWindows->addAction(createAction(tr("Cascade windows"), tr("Cascade all windows"), myArea, SLOT(cascadeSubWindows())));
+    myWindows->addAction(createAction(tr("Close current window"), tr("Close the currently focused window"), [this] { myArea->closeActiveSubWindow(); }));
+    myWindows->addAction(createAction(tr("Close all windows"), tr("Close all opened windows"), [=] { myArea->closeAllSubWindows(); }));
+    myWindows->addAction(createAction(tr("Tile windows"), tr("Tile all windows"), [=] { myArea->tileSubWindows(); }));
+    myWindows->addAction(createAction(tr("Cascade windows"), tr("Cascade all windows"), [=] { myArea->cascadeSubWindows(); }));
 
     auto sep = new QAction(this);
     sep->setSeparator(true);
     myWindows->addAction(sep);
 
     auto helpMenu = menuBar()->addMenu(tr("&Help"));
-    auto help = createAction(tr("Help"), tr("CRE Help"));
+    auto help = createAction(tr("Help"), tr("CRE Help"), [=] { myHelpManager->displayHelp(); });
     help->setShortcut(Qt::Key_F1);
     helpMenu->addAction(help);
-    connect(help, &QAction::triggered, myHelpManager, &HelpManager::displayHelp);
 
-    auto about = createAction(tr("About"), tr("About CRE"));
-    helpMenu->addAction(about);
-    connect(about, &QAction::triggered, [=] () { QMessageBox::about(this, tr("About CRE"), tr("Crossfire Resource Editor")); });
+    helpMenu->addAction(createAction(tr("About"), tr("About CRE"), [=] () { QMessageBox::about(this, tr("About CRE"), tr("Crossfire Resource Editor")); }));
 
     CRESettings settings;
     auto show = createAction(tr("Show changes after updating"), tr("If checked, then show latest changes at first startup after an update"));
@@ -307,9 +306,7 @@ void CREMainWindow::createMenus()
         settings.setShowChanges(checked);
     });
 
-    auto changes = createAction(tr("Changes"), tr("Display CRE changes"));
-    helpMenu->addAction(changes);
-    connect(changes, &QAction::triggered, [=] () { myChanges->setVisible(true); });
+    helpMenu->addAction(createAction(tr("Changes"), tr("Display CRE changes"), [=] () { myChanges->setVisible(true); }));
 }
 
 void CREMainWindow::doResourceWindow(int assets, const QByteArray& position)
@@ -394,11 +391,6 @@ void CREMainWindow::browsingFinished()
 {
     statusBar()->showMessage(tr("Finished browsing maps."), 5000);
     myMapBrowseStatus->setVisible(false);
-    myReportPlayer->setEnabled(true);
-    myReportShops->setEnabled(true);
-    myReportQuests->setEnabled(true);
-    myReportArchetypes->setEnabled(true);
-    myReportResetGroups->setEnabled(true);
     myClearMapCache->setEnabled(true);
 }
 

@@ -629,600 +629,604 @@ Confirmez-vous ?</translation>
     </message>
     <message>
         <location filename="../CREMainWindow.cpp" line="86"/>
-        <location filename="../CREMainWindow.cpp" line="298"/>
-        <location filename="../CREMainWindow.cpp" line="1818"/>
+        <location filename="../CREMainWindow.cpp" line="297"/>
+        <location filename="../CREMainWindow.cpp" line="1810"/>
         <source>Crossfire Resource Editor</source>
         <translation>Éditeur de Ressources Crossfire</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="165"/>
+        <location filename="../CREMainWindow.cpp" line="191"/>
         <source>Formulae</source>
         <translation>Formules</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="169"/>
+        <location filename="../CREMainWindow.cpp" line="245"/>
         <source>Player vs monsters</source>
         <translation>Joueur contre monstres</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="170"/>
+        <location filename="../CREMainWindow.cpp" line="245"/>
         <source>Compute statistics related to player vs monster combat.</source>
         <translation>Calcule des statistiques liées au combat joueur contre monstre.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="175"/>
+        <location filename="../CREMainWindow.cpp" line="247"/>
         <source>Shop specialization</source>
         <translation>Spécialisation des boutiques</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="176"/>
+        <location filename="../CREMainWindow.cpp" line="247"/>
         <source>Display the list of shops and their specialization for items.</source>
         <translation>Affiche la liste des boutiques et leur spécialisation par rapport aux objets.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="181"/>
+        <location filename="../CREMainWindow.cpp" line="248"/>
         <source>Quest solved by players</source>
         <translation>Quêtes résolues par les joueurs</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="182"/>
+        <location filename="../CREMainWindow.cpp" line="248"/>
         <source>Display quests the players have solved.</source>
         <translation>Affiche les quêtes terminées par les joueurs.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="187"/>
+        <location filename="../CREMainWindow.cpp" line="250"/>
         <source>Unused archetypes</source>
         <translation>Archétypes inutilisés</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="188"/>
+        <location filename="../CREMainWindow.cpp" line="250"/>
         <source>Display all archetypes which seem unused.</source>
         <translation>Affiche tous les archétypes qui semblent non utilisés.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="192"/>
+        <location filename="../CREMainWindow.cpp" line="195"/>
         <source>Clear map cache</source>
         <translation>Effacer le cache des cartes</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="193"/>
+        <location filename="../CREMainWindow.cpp" line="159"/>
+        <source>Waiting for maps browing to finish...</source>
+        <translation>En attente de la fin de l&apos;analyse des cartes...</translation>
+    </message>
+    <message>
+        <location filename="../CREMainWindow.cpp" line="196"/>
         <source>Force a refresh of all map information at next start.</source>
         <translation>Force une analyse de toutes les cartes au prochain démarrage de l&apos;application.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="198"/>
+        <location filename="../CREMainWindow.cpp" line="201"/>
         <source>Use set fallback for missing faces</source>
         <translation>Utiliser l&apos;alternative de l&apos;assortiment pour les images non définies</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="206"/>
+        <location filename="../CREMainWindow.cpp" line="209"/>
         <source>&amp;Open</source>
         <translation>&amp;Ouvrir</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="215"/>
+        <location filename="../CREMainWindow.cpp" line="218"/>
         <source>Display all defined assets, except the experience table.</source>
         <translation>Affiche toutes les ressources définies, à l&apos;exception de l&apos;expérience.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="215"/>
+        <location filename="../CREMainWindow.cpp" line="218"/>
         <source>Assets</source>
         <translation>Ressources</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="220"/>
+        <location filename="../CREMainWindow.cpp" line="223"/>
         <source>Experience</source>
         <translation>Expérience</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="220"/>
+        <location filename="../CREMainWindow.cpp" line="223"/>
         <source>Display the experience table.</source>
         <translation>Affiche la table d&apos;expérience.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="223"/>
+        <location filename="../CREMainWindow.cpp" line="226"/>
         <source>&amp;Exit</source>
         <translation>&amp;Quitter</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="224"/>
+        <location filename="../CREMainWindow.cpp" line="227"/>
         <source>Close the application.</source>
         <translation>Fermer l&apos;application.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="227"/>
+        <location filename="../CREMainWindow.cpp" line="230"/>
         <source>&amp;Save</source>
         <translation>&amp;Sauvegarder</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="229"/>
+        <location filename="../CREMainWindow.cpp" line="232"/>
         <source>Quests</source>
         <translation>&amp;Quêtes</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="229"/>
+        <location filename="../CREMainWindow.cpp" line="232"/>
         <source>Save all modified quests to disk.</source>
         <translation>Sauvegarde toutes les quêtes modifiées.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="230"/>
+        <location filename="../CREMainWindow.cpp" line="233"/>
         <source>Dialogs</source>
         <translation>Dialogues</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="230"/>
+        <location filename="../CREMainWindow.cpp" line="233"/>
         <source>Save all modified NPC dialogs.</source>
         <translation>Sauvegarde tous les dialogues des PnJ modifiés.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="231"/>
+        <location filename="../CREMainWindow.cpp" line="234"/>
         <source>Archetypes</source>
         <translation>Archétypes</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="231"/>
+        <location filename="../CREMainWindow.cpp" line="234"/>
         <source>Save all modified archetypes.</source>
         <translation>Sauvegarde tous les archétypes modifiés.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="232"/>
+        <location filename="../CREMainWindow.cpp" line="235"/>
         <source>Treasures</source>
         <translation>Trésors</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="232"/>
+        <location filename="../CREMainWindow.cpp" line="235"/>
         <source>Save all modified treasures.</source>
         <translation>Sauvegarde tous les trésors modifiés.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="233"/>
+        <location filename="../CREMainWindow.cpp" line="236"/>
         <source>General messages</source>
         <translation>Messages généraux</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="233"/>
+        <location filename="../CREMainWindow.cpp" line="236"/>
         <source>Save all modified general messages.</source>
         <translation>Sauvegarde tous les messages généraux modifiés.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="234"/>
+        <location filename="../CREMainWindow.cpp" line="237"/>
         <source>Artifacts</source>
         <translation>Artéfacts</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="234"/>
+        <location filename="../CREMainWindow.cpp" line="237"/>
         <source>Save all modified artifacts.</source>
         <translation>Sauvegarde tous les artéfacts modifiés.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="236"/>
+        <location filename="../CREMainWindow.cpp" line="239"/>
         <source>&amp;Reports</source>
         <translation>&amp;Rapports</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="237"/>
+        <location filename="../CREMainWindow.cpp" line="240"/>
         <source>Faces and animations report</source>
         <translation>Rapport sur les images et animations</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="237"/>
+        <location filename="../CREMainWindow.cpp" line="240"/>
         <source>Show faces and animations which are used by multiple archetypes, or not used.</source>
         <translation>Affiche les images et animations utilisée par plusieurs archétypes, ou non utilisées.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="238"/>
+        <location filename="../CREMainWindow.cpp" line="241"/>
         <source>Spell damage</source>
         <translation>Dégâts des sorts</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="238"/>
+        <location filename="../CREMainWindow.cpp" line="241"/>
         <source>Display damage by level for some spells.</source>
         <translation>Affiche les dégâts par niveau de certains sorts.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="239"/>
+        <location filename="../CREMainWindow.cpp" line="242"/>
         <source>Alchemy</source>
         <translation>Alchimie</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="239"/>
+        <location filename="../CREMainWindow.cpp" line="242"/>
         <source>Display alchemy formulae, in a table.</source>
         <translation>Affiche les formules d&apos;alchimie, sous forme de tableau.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="240"/>
+        <location filename="../CREMainWindow.cpp" line="243"/>
         <source>Alchemy graph</source>
         <translation>Graphe d&apos;alchimie</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="240"/>
+        <location filename="../CREMainWindow.cpp" line="243"/>
         <source>Export alchemy relationship as a DOT file.</source>
         <translation>Exporte les relations entre formules d&apos;alchimie sous forme de fichier DOT.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="241"/>
+        <location filename="../CREMainWindow.cpp" line="244"/>
         <source>Spells</source>
         <translation>Sorts</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="241"/>
+        <location filename="../CREMainWindow.cpp" line="244"/>
         <source>Display all spells, in a table.</source>
         <translation>Affiche tous les sorts, sous forme de tableau.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="243"/>
+        <location filename="../CREMainWindow.cpp" line="246"/>
         <source>Summoned pets statistics</source>
         <translation>Statistiques des familiers invoqués</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="243"/>
+        <location filename="../CREMainWindow.cpp" line="246"/>
         <source>Display wc, hp, speed and other statistics for summoned pets.</source>
         <translation>Affiche wc, hp, speed et autres statistiques pour les familiers invoqués.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="246"/>
+        <location filename="../CREMainWindow.cpp" line="249"/>
         <source>Materials</source>
         <translation>Matériaux</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="246"/>
+        <location filename="../CREMainWindow.cpp" line="249"/>
         <source>Display all materials with their properties.</source>
         <translation>Affiche tous les matérieux avec leurs propriétés.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="248"/>
+        <location filename="../CREMainWindow.cpp" line="251"/>
         <source>Licenses checks</source>
         <translation>Vérifications sur les licences</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="248"/>
+        <location filename="../CREMainWindow.cpp" line="251"/>
         <source>Check for licenses inconsistencies.</source>
         <translation>Cherche des inconsistances de licences.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="249"/>
+        <location filename="../CREMainWindow.cpp" line="252"/>
         <source>Map reset groups</source>
         <translation>Groupes de réinitialisation des cartes</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="249"/>
+        <location filename="../CREMainWindow.cpp" line="252"/>
         <source>List map reset groups.</source>
         <translation>Liste les groupes de réinitialisation des cartes.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="252"/>
+        <location filename="../CREMainWindow.cpp" line="254"/>
         <source>&amp;Tools</source>
         <translation>&amp;Outils</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="253"/>
+        <location filename="../CREMainWindow.cpp" line="255"/>
         <source>Edit monsters</source>
         <translation>Éditer les monstres</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="253"/>
+        <location filename="../CREMainWindow.cpp" line="255"/>
         <source>Edit monsters in a table.</source>
         <translation>Éditer les monstres via un tableau.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="254"/>
+        <location filename="../CREMainWindow.cpp" line="256"/>
         <source>Monster resistances overview</source>
         <translation>Aperçu des résistances des monstres</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="254"/>
+        <location filename="../CREMainWindow.cpp" line="256"/>
         <source>Display an overview of resistances of monsters</source>
         <translation>Affiche un aperçu des résistances des monstres aux attaques élémentaires</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="260"/>
+        <location filename="../CREMainWindow.cpp" line="262"/>
         <source>Generate smooth face base</source>
         <translation>Générer une base d&apos;image lissée</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="260"/>
+        <location filename="../CREMainWindow.cpp" line="262"/>
         <source>Generate the basic smoothed picture for a face.</source>
         <translation>Génère la base d&apos;une image lisse pour une image.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="261"/>
+        <location filename="../CREMainWindow.cpp" line="263"/>
         <source>Generate HP bar</source>
         <translation>Générer une barre de points de vie</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="261"/>
+        <location filename="../CREMainWindow.cpp" line="263"/>
         <source>Generate faces for a HP bar.</source>
         <translation>Génère les images pour une barre de points de vie.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="262"/>
+        <location filename="../CREMainWindow.cpp" line="264"/>
         <source>Combat simulator</source>
         <translation>Simulateur de combat</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="262"/>
+        <location filename="../CREMainWindow.cpp" line="264"/>
         <source>Simulate fighting between two objects.</source>
         <translation>Simule le combat de deux objets.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="263"/>
+        <location filename="../CREMainWindow.cpp" line="265"/>
         <source>Generate face variants</source>
         <translation>Générer des variations d&apos;image</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="263"/>
+        <location filename="../CREMainWindow.cpp" line="265"/>
         <source>Generate faces by changing colors of existing faces.</source>
         <translation>Génère des images en changeant des couleurs d&apos;images existantes.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="265"/>
+        <location filename="../CREMainWindow.cpp" line="267"/>
         <source>Reload assets</source>
         <translation>Recharger les ressources</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="265"/>
+        <location filename="../CREMainWindow.cpp" line="267"/>
         <source>Reload all assets from the data directory.</source>
         <translation>Recharge toutes les ressources depuis le répertoire de données.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="266"/>
+        <location filename="../CREMainWindow.cpp" line="268"/>
         <source>Sounds</source>
         <translation>Sons</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="266"/>
+        <location filename="../CREMainWindow.cpp" line="268"/>
         <source>Display defined sounds and associated files.</source>
         <translation>Affiche les sons et les fichiers associés.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="270"/>
+        <location filename="../CREMainWindow.cpp" line="272"/>
         <source>&amp;Windows</source>
         <translation>&amp;Fenêtres</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="272"/>
+        <location filename="../CREMainWindow.cpp" line="274"/>
         <source>Restore windows positions at launch</source>
         <translation>Restaurer la position des fenêtres au démarrage</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="272"/>
+        <location filename="../CREMainWindow.cpp" line="274"/>
         <source>If enabled then opened windows are automatically opened again when the application starts</source>
         <translation>Si activée, les fenêtres ouvertes seront automatiquement réouvertes au démarrage</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="281"/>
+        <location filename="../CREMainWindow.cpp" line="283"/>
         <source>Close current window</source>
         <translation>Fermer la fenêtre courante</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="281"/>
+        <location filename="../CREMainWindow.cpp" line="283"/>
         <source>Close the currently focused window</source>
         <translation>Fermer la fenêtre actuellement active</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="282"/>
+        <location filename="../CREMainWindow.cpp" line="284"/>
         <source>Close all windows</source>
         <translation>Fermer toutes les fenêtres</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="282"/>
+        <location filename="../CREMainWindow.cpp" line="284"/>
         <source>Close all opened windows</source>
         <translation>Ferme toutes les fenêtres ouvertes</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="283"/>
+        <location filename="../CREMainWindow.cpp" line="285"/>
         <source>Tile windows</source>
         <translation>Mosaïque de fenêtres</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="283"/>
+        <location filename="../CREMainWindow.cpp" line="285"/>
         <source>Tile all windows</source>
         <translation>Répartit les fenêtres en mosaïque</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="284"/>
+        <location filename="../CREMainWindow.cpp" line="286"/>
         <source>Cascade windows</source>
         <translation>Cascade de fenêtres</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="284"/>
+        <location filename="../CREMainWindow.cpp" line="286"/>
         <source>Cascade all windows</source>
         <translation>Affiche toutes les fenêtres en cascade</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="290"/>
+        <location filename="../CREMainWindow.cpp" line="292"/>
         <source>&amp;Help</source>
         <translation>&amp;Aide</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="291"/>
+        <location filename="../CREMainWindow.cpp" line="293"/>
         <source>Help</source>
         <translation>Aide</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="291"/>
+        <location filename="../CREMainWindow.cpp" line="293"/>
         <source>CRE Help</source>
         <translation>Aide de CRE</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="296"/>
+        <location filename="../CREMainWindow.cpp" line="297"/>
         <source>About</source>
         <translation>&amp;À propos</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="296"/>
-        <location filename="../CREMainWindow.cpp" line="298"/>
+        <location filename="../CREMainWindow.cpp" line="297"/>
         <source>About CRE</source>
         <translation>À propos de CRE</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="301"/>
+        <location filename="../CREMainWindow.cpp" line="300"/>
         <source>Show changes after updating</source>
         <translation>Afficher les changements après mise à jour</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="301"/>
+        <location filename="../CREMainWindow.cpp" line="300"/>
         <source>If checked, then show latest changes at first startup after an update</source>
         <translation>Si activée, les modifications après mise à jour seront automatiquement affichées au premier démarrage après cette mise à jour</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="310"/>
+        <location filename="../CREMainWindow.cpp" line="309"/>
         <source>Changes</source>
         <translation>Modifications</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="310"/>
+        <location filename="../CREMainWindow.cpp" line="309"/>
         <source>Display CRE changes</source>
         <translation>Affiche l&apos;historique des modifications de CRE</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="356"/>
+        <location filename="../CREMainWindow.cpp" line="353"/>
         <source>Facesets</source>
         <translation>Assortiments d&apos;images</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="390"/>
+        <location filename="../CREMainWindow.cpp" line="387"/>
         <source>Browsing map %1</source>
         <translation>Analyse de la carte %1</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="395"/>
+        <location filename="../CREMainWindow.cpp" line="392"/>
         <source>Finished browsing maps.</source>
         <translation>Analyse des cartes terminées.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="617"/>
+        <location filename="../CREMainWindow.cpp" line="609"/>
         <source>%1 [%2]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="765"/>
+        <location filename="../CREMainWindow.cpp" line="757"/>
         <source>&lt;h1&gt;Formulae with chance of 0&lt;/h1&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="791"/>
+        <location filename="../CREMainWindow.cpp" line="783"/>
         <source>Destination file</source>
         <translation>Fichier de destination</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="791"/>
+        <location filename="../CREMainWindow.cpp" line="783"/>
         <source>Dot files (*.dot);;All files (*.*)</source>
         <translation>Fichiers dot (*.dot);;Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="798"/>
+        <location filename="../CREMainWindow.cpp" line="790"/>
         <source>Unable to write to %1</source>
         <translation>Erreur lors de l&apos;écriture de %1</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="824"/>
+        <location filename="../CREMainWindow.cpp" line="816"/>
         <source>%1 of %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="846"/>
-        <location filename="../CREMainWindow.cpp" line="851"/>
+        <location filename="../CREMainWindow.cpp" line="838"/>
+        <location filename="../CREMainWindow.cpp" line="843"/>
         <source>alchemy_%1 [label=&quot;%2&quot;]
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="854"/>
+        <location filename="../CREMainWindow.cpp" line="846"/>
         <source>alchemy_%1 -&gt; alchemy_%2
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="868"/>
+        <location filename="../CREMainWindow.cpp" line="860"/>
         <source> (%1 formulae not displayed)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1194"/>
+        <location filename="../CREMainWindow.cpp" line="1186"/>
         <source>&lt;h1&gt;Player vs monsters&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;fv&lt;/strong&gt; is the level at which the first victory happened, &lt;strong&gt;hv&lt;/strong&gt; is the level at which at least 50% of fights were victorious.&lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1291"/>
+        <location filename="../CREMainWindow.cpp" line="1283"/>
         <source>&lt;h1&gt;Summoned pet statistics&lt;/h1&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1406"/>
+        <location filename="../CREMainWindow.cpp" line="1398"/>
         <source>&lt;h1&gt;Shop information&lt;/h1&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1539"/>
+        <location filename="../CREMainWindow.cpp" line="1531"/>
         <source>%1 completed out of %2 (%3%)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1574"/>
+        <location filename="../CREMainWindow.cpp" line="1566"/>
         <source>&lt;tr&gt;&lt;td&gt;%1&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1580"/>
+        <location filename="../CREMainWindow.cpp" line="1572"/>
         <source>&lt;h1&gt;%1&lt;/h1&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1581"/>
+        <location filename="../CREMainWindow.cpp" line="1573"/>
         <source>&lt;tr&gt;&lt;th rowspan=&apos;2&apos;&gt;Name&lt;/th&gt;&lt;th colspan=&apos;%1&apos;&gt;%2&lt;/th&gt;&lt;/tr&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1589"/>
+        <location filename="../CREMainWindow.cpp" line="1581"/>
         <source>&lt;tr&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1592"/>
+        <location filename="../CREMainWindow.cpp" line="1584"/>
         <source>&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1641"/>
+        <location filename="../CREMainWindow.cpp" line="1633"/>
         <source>&lt;tr&gt;&lt;td&gt;&lt;img src=&apos;data:image/png;base64,%1&apos;&gt;&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1642"/>
+        <location filename="../CREMainWindow.cpp" line="1634"/>
         <source>unknown: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1773"/>
+        <location filename="../CREMainWindow.cpp" line="1765"/>
         <source>&lt;li&gt;%1 (%2)&lt;/li&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1819"/>
+        <location filename="../CREMainWindow.cpp" line="1811"/>
         <source>Really clear map cache?</source>
         <translation>Vraiment effacer le cache des cartes ?</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1820"/>
+        <location filename="../CREMainWindow.cpp" line="1812"/>
         <source>This will force cache rebuild at next application start.</source>
         <translation>Ceci entraîne la reconstruction du cache au prochain lancement de l&apos;application.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1853"/>
+        <location filename="../CREMainWindow.cpp" line="1845"/>
         <source>Please select the &apos;sounds&apos; directory</source>
         <translation>Veuillez sélectionner le répertoire &quot;sounds&quot;</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1881"/>
+        <location filename="../CREMainWindow.cpp" line="1873"/>
         <source>&amp;%1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1883"/>
+        <location filename="../CREMainWindow.cpp" line="1875"/>
         <source>%1 %2</source>
         <translation type="unfinished"></translation>
     </message>

@@ -60,11 +60,6 @@ class CREMainWindow : public QMainWindow
         QMenu* mySaveMenu;
 
         QAction* mySaveFormulae;
-        QAction* myReportPlayer;
-        QAction* myReportShops;
-        QAction *myReportQuests;
-        QAction* myReportArchetypes;
-        QAction* myReportResetGroups;
         QMenu* myToolsMenu;
         QActionGroup *myFacesetsGroup;
         QAction* myToolFacesetUseFallback;
@@ -82,8 +77,9 @@ class CREMainWindow : public QMainWindow
         void closeEvent(QCloseEvent* event);
         void doResourceWindow(int assets, const QByteArray& position = QByteArray());
         void fillFacesets();
+        template <typename F>
+        QAction *createAction(const QString &title, const QString &statusTip, F functor, bool waitMaps = false);
         QAction *createAction(const QString &title, const QString &statusTip);
-        QAction *createAction(const QString &title, const QString &statusTip, QObject *target, const char *slot);
 
     private slots:
         void onOpenExperience(const QByteArray& position = QByteArray());
