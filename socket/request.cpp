@@ -55,8 +55,10 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <netdb.h>
+typedef int ssop_t;     /**< Parameter type for setsockopt, different between WIN32 and Linux. */
 #else
 #include <winsock2.h>
+typedef char ssop_t;    /**< Parameter type for setsockopt, different between WIN32 and Linux. */
 #endif /* win32 */
 
 #include "commands.h"
@@ -538,7 +540,7 @@ void new_player_cmd(uint8_t *buf, int len, player *pl) {
         LOG(llevError, "Player %s (%s) has negative time - shouldn't do command.\n",
             pl->ob->name ? pl->ob->name : "(unnamed)", pl->socket->account_name ? pl->socket->account_name : "(no account)");
     }
-    int tmp = 1;
+    ssop_t tmp = 1;
     if (setsockopt(pl->socket->fd, IPPROTO_TCP, TCP_NODELAY, &tmp, sizeof(tmp)))
         LOG(llevError, "send_tick: Unable to turn off TCP_NODELAY\n");
     command_execute(pl->ob, command);
@@ -1959,11 +1961,7 @@ void esrv_add_spells(player *pl, object *spell) {
  */
 void send_tick(player *pl) {
     SockList sl;
-#ifdef WIN32
-    char tmp;
-#else
-    int tmp;
-#endif
+    ssop_t tmp;
 
     SockList_Init(&sl);
     SockList_AddString(&sl, "tick ");
