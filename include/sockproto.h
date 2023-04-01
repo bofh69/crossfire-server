@@ -69,6 +69,7 @@ void write_cs_stats(void);
 int count_players(void);
 void metaserver_update(void);
 int metaserver2_init(void);
+void metaserver2_exit();
 /* request.c */
 void set_up_cmd(char *buf, int len, socket_struct *ns);
 void add_me_cmd(char *buf, int len, socket_struct *ns);

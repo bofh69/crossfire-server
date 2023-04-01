@@ -42,6 +42,8 @@
 
 /** Mutex to protect access to ::metaserver2_updateinfo. */
 static std::mutex ms2_info_mutex;
+/** Mutex to signal the thread should stop. */
+static std::timed_mutex ms2_signal;
 
 int count_players() {
     /* We could use socket_info.nconns, but that is not quite as accurate,
@@ -292,24 +294,15 @@ static void metaserver2_updates(void) {
 }
 
 /**
- * metserver2_thread is the function called in the thread.
- * It is a trivial function - it just sleeps and calls
- * the update function.  The sleep time here is really
- * quite arbitrary, but once a minute is probably often
- * enough.  A better approach might be to
- * do a time() call and see how long the update takes,
- * and sleep according to that.
- *
- * @param junk unused.
- * @return
- * This function should never return/exit.
+ * Repeatedly send updates to the metaserver, stopping when ms2_signal is acquired.
+ * Works in the background.
  */
 
 void metaserver2_thread() {
-    while (1) {
+    do {
         metaserver2_updates();
-        sleep(60);
-    }
+    } while (!ms2_signal.try_lock_for(std::chrono::seconds(60)));
+    ms2_signal.unlock();
 }
 
 /**
@@ -471,6 +464,7 @@ int metaserver2_init(void) {
         if (!local_info.flags)
             local_info.flags = strdup("");
 
+        ms2_signal.lock();
         try {
           metaserver_thread = std::thread(metaserver2_thread);
         }
@@ -481,4 +475,14 @@ int metaserver2_init(void) {
         }
     }
     return local_info.notification;
+}
+
+/**
+ * Stop metaserver updates.
+ */
+void metaserver2_exit() {
+    ms2_signal.unlock();
+    if (metaserver_thread.joinable()) {
+        metaserver_thread.join();
+    }
 }
