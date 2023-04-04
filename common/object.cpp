@@ -2000,6 +2000,8 @@ void object_remove(object *op) {
             if (tmp->container == op) {
                 CLEAR_FLAG(op, FLAG_APPLIED);
                 tmp->container = NULL;
+                // Notify the client the container is gone so it clears its active container.
+                esrv_update_item(UPD_FLAGS, tmp, op);
             }
             tmp->contr->socket->update_look = 1;
         }

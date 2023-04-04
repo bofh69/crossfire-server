@@ -1,3 +1,10 @@
+2023-04-04  Daniel Hawkins
+  * common/object.cpp: Fix a bug where an open container on the ground that was destroyed
+    would not be correctly sent to the client, causing the client to act like the player still
+    had a container open when trying to take or drop items.
+    To fix it, we send an update of the destroyed container after its applied flag is cleared,
+    telling the client to consider it unapplied.
+
 2023-02-20  Daniel Hawkins
   * common/treasure.cpp: Change rod, wand, scroll item level calculation.
     Previous behavior had the level be, on average, difficulty/2 power steps above level.
