@@ -359,18 +359,17 @@ static void pack_formulae(StringBuffer *buf) {
 
 static void build_filename(const char *name, const char *prefix, char *dest, size_t max) {
     auto dot = strrchr(name, '.');
+    // If name has no '.', then just name.prefix
     if (!dot) {
         snprintf(dest, max, "%s.%s", name, prefix);
         return;
     }
+
+    // filename for name.111 is name.prefix.111.png
     memset(dest, 0, max);
     dot++;
 
-    memcpy(dest, name, dot - name);
-    strncat(dest, prefix, max);
-    strncat(dest, ".", max);
-    strncat(dest, dot, max);
-    strncat(dest, ".png", max);
+    snprintf(dest,max,"%.*s%s.%s.png",(int)(dot-name),name,prefix,dot);
 }
 
 /**
