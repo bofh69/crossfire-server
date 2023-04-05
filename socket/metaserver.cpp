@@ -264,7 +264,7 @@ static void metaserver2_updates(void) {
     for (auto hostname : metaservers) {
         CURL *curl = curl_easy_init();
         if (curl) {
-            curl_easy_setopt(curl, CURLOPT_TIMEOUT, 1000);
+            curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30000);
 
             /* what URL that receives this POST */
             curl_easy_setopt(curl, CURLOPT_URL, hostname.c_str());
