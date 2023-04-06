@@ -6,6 +6,8 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include "sstring.h"
+
 #include "dialog.h"
 
 /** Object tag, unique during the whole game. */

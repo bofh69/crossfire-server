@@ -44,7 +44,7 @@
 #define PRINTF_ARGS(x, y) __attribute__ ((format (printf, x, y)))
 
 /** Strings that should be manipulated through add_string() and free_string(). */
-typedef const char *sstring;
+#include "sstring.h"
 
 #include "config.h"
 #include "define.h"

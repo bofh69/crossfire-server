@@ -1,8 +1,6 @@
 #ifndef DIALOG_H
 #define DIALOG_H
 
-#include "global.h"
-
 /**
  * Various kind of messages a player or NPC can say.
  */
