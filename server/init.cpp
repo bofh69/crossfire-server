@@ -584,6 +584,7 @@ static void free_materials(void) {
  * information, having it here probably makes more sense.
  */
 static void load_settings(void) {
+    static char motd[MAX_BUF] = { 0 };
     char buf[MAX_BUF], *cp, dummy[1];
     int has_val;
     FILE *fp;
@@ -636,9 +637,10 @@ static void load_settings(void) {
             else
                 LOG(llevError, "load_settings: metaserver_server must have a value.\n");
         } else if (!strcasecmp(buf, "motd")) {
-            if (has_val)
-                safe_strncpy(settings.motd, cp, sizeof(settings.motd));
-            else
+            if (has_val) {
+                safe_strncpy(motd, cp, sizeof(settings.motd));
+                settings.motd = motd;
+            } else
                 LOG(llevError, "load_settings: motd must have a value.\n");
         } else if (!strcasecmp(buf, "metaserver_host")) {
             if (has_val)

@@ -275,7 +275,7 @@ struct Settings {
     uint16_t  set_friendly_fire;       /**< Percent of damage done by peaceful player vs player damage */
     char    who_format[MAX_BUF];     /**< The format that the who command should use */
     char    who_wiz_format[MAX_BUF]; /**< The format that the who command should use when called by a dm*/
-    char    motd[MAX_BUF];      /**< Name of the motd file */
+    const char *motd;                 /**< Name of the motd file */
     const char *rules;          /**< Name of rules file*/
     const char *news;           /**< Name of news file*/
 
