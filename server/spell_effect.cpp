@@ -2445,7 +2445,7 @@ int remove_curse(object *op, object *caster, object *spell) {
  * @return
  * 1 if item was changed, 0 else.
  */
-int cast_item_curse_or_curse(object *op, object *spell_ob) {
+int cast_item_curse_or_bless(object *op, object *spell_ob) {
     object *marked = find_marked_object(op);
     char name[HUGE_BUF];
 

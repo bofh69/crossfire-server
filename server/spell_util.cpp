@@ -1940,7 +1940,7 @@ int cast_spell(object *op, object *caster, int dir, object *spell_ob, char *stri
         break;
 
     case SP_ITEM_CURSE_BLESS:
-        success = cast_item_curse_or_curse(op, spell_ob);
+        success = cast_item_curse_or_bless(op, spell_ob);
         break;
 
     case SP_ELEM_SHIELD:
