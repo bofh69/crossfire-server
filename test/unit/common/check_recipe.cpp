@@ -33,16 +33,26 @@
 #include <stdlib.h>
 #include <check.h>
 
+#include "global.h"
+#include <toolkit_common.h>
+
 void setup(void) {
-    /* put any initialisation steps here, they will be run before each testcase */
+    cctk_setdatadir(SOURCE_ROOT"lib");
+    cctk_setlog(LOGDIR"/unit/common/arch.out");
+    cctk_init_std_archetypes();
 }
 
 void teardown(void) {
     /* put any cleanup steps here, they will be run after each testcase */
 }
 
-START_TEST(test_empty) {
-    /*TESTME test not yet developped*/
+START_TEST(test_check_recipes) {
+    fail_unless(check_recipes(), "check_recipes failed");
+}
+END_TEST
+
+START_TEST(test_check_formulae) {
+    fail_unless(check_formulae(), "check_formulae failed");
 }
 END_TEST
 
@@ -54,7 +64,8 @@ Suite *recipe_suite(void) {
     tcase_add_checked_fixture(tc_core, setup, teardown);
 
     suite_add_tcase(s, tc_core);
-    tcase_add_test(tc_core, test_empty);
+    tcase_add_test(tc_core, test_check_recipes);
+    tcase_add_test(tc_core, test_check_formulae);
 
     return s;
 }

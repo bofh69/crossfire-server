@@ -143,9 +143,8 @@ static int check_recipe(const recipe *rp) {
 
 /**
  * Ensure that all recipes have a valid artifact, and that archetypes are correct.
- * Will call fatal() if any error is found.
  */
-void check_recipes() {
+bool check_recipes() {
     const recipelist *rl = formulalist;
     int abort = 0;
     while (rl) {
@@ -158,9 +157,7 @@ void check_recipes() {
         }
         rl = rl->next;
     }
-    if (abort) {
-        fatal(SEE_LAST_ERROR);
-    }
+    return !abort;
 }
 
 /**
@@ -292,11 +289,12 @@ void init_formulae(BufferReader *reader, const char *filename) {
  *
  * @todo check archetypes exist, check coherence (skill present, cauldron ok, and such things), set chance to 0 for combinations
  */
-void check_formulae(void) {
+bool check_formulae(void) {
     recipelist *fl;
     recipe *check, *formula;
     int numb = 1, tool_match;
     size_t tool_i,tool_j;
+    bool success = true;
 
     LOG(llevDebug, "Checking formulae lists...\n");
 
@@ -327,19 +325,21 @@ void check_formulae(void) {
                         LOG(llevError, " ERROR: On %d ingred list:\n", numb);
                         LOG(llevError, "Formulae [%s] of %s and [%s] of %s have matching index id (%d)\n",
                             formula->arch_name[0], formula->title, check->arch_name[0], check->title, formula->index);
+                        success = false;
                     }
                 }
             for (size_t idx = 0; idx < formula->arch_names; idx++) {
                 if (try_find_archetype(formula->arch_name[idx]) == NULL) {
                     LOG(llevError, "Formulae %s of %s (%d ingredients) references non existent archetype %s\n",
                         formula->arch_name[0], formula->title, numb, formula->arch_name[idx]);
+                    success = false;
                 }
             }
         }
         numb++;
     }
 
-    LOG(llevDebug, "done checking.\n");
+    return success;
 }
 
 /**

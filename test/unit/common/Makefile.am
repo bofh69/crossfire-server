@@ -17,7 +17,7 @@ $(top_builddir)/test/toolkit/libtoolkit_common.a:
 # disabled tests, enable them when they have some real content
 # check_anim check_button check_exp  check_glue check_info check_init
 # check_links check_logger check_los check_map
-# check_player check_porting check_recipe check_re-cmp
+# check_player check_porting check_re-cmp
 
 #check_anim_SOURCES = check_anim.cpp
 check_arch_SOURCES = check_arch.cpp
@@ -45,7 +45,7 @@ check_path_SOURCES = check_path.cpp
 #check_player_SOURCES = check_player.cpp
 #check_porting_SOURCES = check_porting.cpp
 check_readable_SOURCES = check_readable.cpp
-#check_recipe_SOURCES = check_recipe.cpp
+check_recipe_SOURCES = check_recipe.cpp
 #check_re_cmp_SOURCES = check_re-cmp.cpp
 check_region_SOURCES = check_region.cpp
 check_shstr_SOURCES = check_shstr.cpp
@@ -54,7 +54,7 @@ check_time_SOURCES = check_time.cpp
 check_treasure_SOURCES = check_treasure.cpp
 check_utils_SOURCES = check_utils.cpp
 
-TESTS= check_arch check_artifact check_friend check_holy check_image check_item check_living check_loader check_mapsave check_minheap check_object check_path check_readable check_region check_shstr check_stringbuffer check_time check_treasure check_utils
+TESTS= check_arch check_artifact check_friend check_holy check_image check_item check_living check_loader check_mapsave check_minheap check_object check_path check_readable check_recipe check_region check_shstr check_stringbuffer check_time check_treasure check_utils
 TESTS+= check_asset_load_write
 
 DISTCLEANFILES=	.autorun.xml
