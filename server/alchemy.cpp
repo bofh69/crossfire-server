@@ -61,7 +61,7 @@ static const char *const cauldron_effect [] = {
 
 
 static int is_defined_recipe(const recipe *rp, const object *cauldron);
-static const recipe *find_recipe(const recipelist *fl, int formula, object *ingredients);
+static const recipe *find_recipe(const recipelist *fl, int formula, object *cauldron);
 static int content_recipe_value(object *op);
 static int numb_ob_inside(const object *op);
 static void alchemy_failure_effect(object *op, object *cauldron, const recipe *rp, int danger);
@@ -178,7 +178,7 @@ static void attempt_do_alchemy(object *caster, object *cauldron) {
     numb = numb_ob_inside(cauldron);
     if ((fl = get_formulalist(numb))) {
         if (QUERY_FLAG(caster, FLAG_WIZ)) {
-            rp = find_recipe(fl, formula, cauldron->inv);
+            rp = find_recipe(fl, formula, cauldron);
             if (rp != NULL) {
 #ifdef ALCHEMY_DEBUG
                 if (strcmp(rp->title, "NONE"))
@@ -193,7 +193,7 @@ static void attempt_do_alchemy(object *caster, object *cauldron) {
         } /* End of WIZ alchemy */
 
         /* find the recipe */
-        rp = find_recipe(fl, formula, cauldron->inv);
+        rp = find_recipe(fl, formula, cauldron);
         if (rp != NULL) {
             uint64_t value_ingredients;
             uint64_t value_item;
@@ -967,7 +967,7 @@ static int is_defined_recipe(const recipe *rp, const object *cauldron) {
  * @return
  * one matching recipe, or NULL if no recipe matches
  */
-static const recipe *find_recipe(const recipelist *fl, int formula, object *ingredients) {
+static const recipe *find_recipe(const recipelist *fl, int formula, object *cauldron) {
     const recipe *rp;
     const recipe *result;       /* winning recipe, or NULL if no recipe found */
     int recipes_matching; /* total number of matching recipes so far */
@@ -982,13 +982,14 @@ static const recipe *find_recipe(const recipelist *fl, int formula, object *ingr
     transmute_found = 0;
     for (rp = fl->items; rp != NULL; rp = rp->next) {
         /* check if recipe matches at all */
-        if (formula%rp->index != 0) {
+        if (rp->cauldron != cauldron->arch->name || formula%rp->index != 0) {
 #ifdef EXTREME_ALCHEMY_DEBUG
             LOG(llevDebug, " formula %s of %s (%d) does not match\n", rp->arch_name[0], rp->title, rp->index);
 #endif
             continue;
         }
 
+        object *ingredients = cauldron->inv;
         if (rp->transmute && find_transmution_ob(ingredients, rp, &rp_arch_index, 0) != NULL) {
 #ifdef EXTREME_ALCHEMY_DEBUG
             LOG(llevDebug, " formula %s of %s (%d) is a matching transmuting formula\n", rp->arch_name[rp_arch_index], rp->title, rp->index);

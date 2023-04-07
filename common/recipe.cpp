@@ -302,7 +302,7 @@ bool check_formulae(void) {
         for (formula = fl->items; formula != NULL; formula = formula->next) {
             for (check = formula->next; check != NULL; check = check->next)
                 /* If one recipe has a tool and another a caudron, we should be able to handle it */
-                if (check->index == formula->index && (check->tool_size == formula->tool_size)) {
+                if (check->index == formula->index && check->cauldron == formula->cauldron && (check->tool_size == formula->tool_size)) {
                     /* Check the tool list to make sure they have no matches */
                     if (check->tool_size > 0 && check->tool && formula->tool)
                     {
