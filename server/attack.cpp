@@ -38,6 +38,8 @@ static int adj_attackroll(object *hitter, object *target);
 static int is_aimed_missile(object *op);
 static int did_make_save_item(object *op, int type, object *originator);
 static void poison_living(object *op, object *hitter, int dam);
+static int hit_with_one_attacktype(
+    object *op, object *hitter, int dam, uint32_t attacknum);
 
 /**
  * Cancels object *op.  Cancellation basically means an object loses
@@ -1169,6 +1171,86 @@ static void scare_creature(object *target, object *hitter) {
         object_set_enemy(target, owner);
 }
 
+static int hit_with_drain(object *op, object *hitter, int dam) {
+    /* rate is the proportion of exp drained.  High rate means
+        * not much is drained, low rate means a lot is drained.
+        */
+    int rate;
+
+    // Victim loses 1/rate of their current XP, so this scales from 4%
+    // of their XP at -100 resist drain, to 2% at no resistance, to 1%
+    // at 100% resist drain -- so even 100% resistance doesn't entirely
+    // protect you!
+    if (op->resist[ATNR_DRAIN] >= 0)
+        rate = 50+op->resist[ATNR_DRAIN]/2;
+    else
+        rate = 5000/(100-op->resist[ATNR_DRAIN]);
+
+    // This should be impossible, but just in case...
+    if (!rate)
+        return 0;
+
+    int exp_to_drain = op->stats.exp/rate;
+    if (hitter->type != PLAYER) {
+        // Monsters stop draining once they have gained 5x their original exp
+        // value. In practice this means they can drain up to 10x their original
+        // exp from the player, so (e.g.) a grimreaper (exp 800) can drain up to
+        // 8000 exp from the player and keep 4000 of it.
+        exp_to_drain = MIN(exp_to_drain,
+                           hitter->arch->clone.stats.exp*6 - hitter->stats.exp);
+    }
+
+    if (exp_to_drain <= 1) {
+        // Target is too protected, too low on exp, or attacker is too full.
+        if (op->type == GOLEM)
+            return 999; // The force animating it is drained away.
+        else
+            // Treat it like a physical attack instead.
+            return hit_with_one_attacktype(op, hitter, dam, ATNR_PHYSICAL);
+    }
+
+    // If we get this far we are definitely actually draining some exp from the
+    // victim.
+
+    // Randomly give the hitter some hp.
+    if (hitter->stats.hp < hitter->stats.maxhp
+        && (op->level > hitter->level)
+        && random_roll(0, (op->level-hitter->level+2), hitter, PREFER_HIGH) > 3)
+        hitter->stats.hp++;
+
+    // Don't drain exp on battleground spaces or drain the wiz. Still return the
+    // full damage amount though. Note that checking this as late as we do means
+    // the life-restore side effect still works, we just don't transfer any exp.
+    if (op_on_battleground(hitter, NULL, NULL, NULL)
+        || QUERY_FLAG(op, FLAG_WAS_WIZ))
+        return dam;
+
+    int64_t orig_exp = op->stats.exp;
+    change_exp(op, -exp_to_drain, NULL, 0);
+    exp_to_drain = orig_exp - op->stats.exp; // Now the actual amount drained.
+
+    object *owner = object_get_owner(hitter);
+    if (owner && owner != hitter) {
+        // If the attack was made by a pet, credit the pet's owner. If they
+        // don't know the skill the pet attacked with, just give them generic
+        // exp.
+        change_exp(owner, exp_to_drain/2,
+            hitter->chosen_skill ? hitter->chosen_skill->skill : NULL,
+            SK_EXP_TOTAL);
+    } else {
+        // Otherwise just credit the attacker directly, and give them the skill
+        // if they don't already have it.
+        change_exp(hitter, exp_to_drain/2,
+            hitter->chosen_skill ? hitter->chosen_skill->skill : NULL,
+            SK_EXP_ADD_SKILL);
+    }
+
+    // Nominal 1 point of damage, so that if you have a pure drain attack it is
+    // still considered successful and you get the messages for a drain attack
+    // rather than for a miss.
+    return 1;
+}
+
 /**
  * Handles one attacktype's damage.
  * This doesn't damage the creature, but returns how much it should
@@ -1354,64 +1436,8 @@ static int hit_with_one_attacktype(object *op, object *hitter, int dam, uint32_t
         }
         break;
 
-    case ATNR_DRAIN: {
-            /* rate is the proportion of exp drained.  High rate means
-             * not much is drained, low rate means a lot is drained.
-             */
-            int rate;
-
-            if (op->resist[ATNR_DRAIN] >= 0)
-                rate = 50+op->resist[ATNR_DRAIN]/2;
-            else
-                rate = 5000/(100-op->resist[ATNR_DRAIN]);
-
-            /* full protection has no effect.  Nothing else in this
-             * function needs to get done, so just return.  */
-            if (!rate)
-                return 0;
-
-            if (op->stats.exp <= rate) {
-                if (op->type == GOLEM)
-                    dam = 999; /* Its force is "sucked" away. 8) */
-                else
-                    /* If we can't drain, lets try to do physical damage */
-                    dam = hit_with_one_attacktype(op, hitter, dam, ATNR_PHYSICAL);
-            } else {
-                /* Randomly give the hitter some hp */
-                if (hitter->stats.hp < hitter->stats.maxhp
-                && (op->level > hitter->level)
-                && random_roll(0, (op->level-hitter->level+2), hitter, PREFER_HIGH) > 3)
-                    hitter->stats.hp++;
-
-                /* Can't do drains on battleground spaces.
-                 * Move the wiz check up here - before, the hitter wouldn't gain exp
-                 * exp, but the wiz would still lose exp! If drainee is a wiz,
-                 * nothing happens.
-                 * Try to credit the owner.  We try to display player -> player drain
-                 * attacks, hence all the != PLAYER checks.
-                 */
-                if (!op_on_battleground(hitter, NULL, NULL, NULL) && !QUERY_FLAG(op, FLAG_WAS_WIZ)) {
-                    object *owner = object_get_owner(hitter);
-                    int64_t orig_exp = op->stats.exp;
-
-                    change_exp(op, -op->stats.exp/rate, NULL, 0);
-
-                    if (owner && owner != hitter) {
-                        if (op->type != PLAYER || owner->type != PLAYER)
-                            change_exp(owner, MIN(op->stats.exp/(rate*2), orig_exp - op->stats.exp),
-                                       hitter->chosen_skill ? hitter->chosen_skill->skill : NULL, SK_EXP_TOTAL);
-                    } else if (op->type != PLAYER || hitter->type != PLAYER) {
-                        change_exp(hitter, MIN(op->stats.exp/(rate*2), orig_exp - op->stats.exp),
-                                   hitter->chosen_skill ? hitter->chosen_skill->skill : NULL, 0);
-                    }
-                }
-                dam = 1; /* Drain is an effect.  Still return 1 - otherwise, if you have pure
-                          * drain attack, you won't know that you are actually sucking out EXP,
-                          * as the messages will say you missed
-                          */
-            }
-        }
-        break;
+    case ATNR_DRAIN:
+        return hit_with_drain(op, hitter, dam);
 
     case ATNR_TURN_UNDEAD: {
             if (QUERY_FLAG(op, FLAG_UNDEAD)) {
@@ -2105,9 +2131,6 @@ int hit_player(object *op, int dam, object *hitter, uint32_t type, int full_hit)
     /* Lets handle creatures that are splitting now */
     } else if (type&AT_PHYSICAL && !QUERY_FLAG(op, FLAG_FREED) && QUERY_FLAG(op, FLAG_SPLITTING)) {
         change_object(op);
-    } else if (type&AT_DRAIN && hitter->type == GRIMREAPER && hitter->value++ > 10) {
-        object_remove(hitter);
-        object_free_drop_inventory(hitter);
     }
     return maxdam;
 }

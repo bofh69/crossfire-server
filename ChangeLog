@@ -1,3 +1,12 @@
+2023-04-08  Rebecca Kelly
+  * server/attack.cpp: cap the amount of exp enemies can drain to 10x their
+    starting exp value (so a monster worth 800 exp can drain up to 8000 exp from
+    the player, and will get to keep half of that, which the player will reclaim
+    if they kill it).
+    Also fixes an issue where PvP drain attacks would drain exp from the victim
+    but not give any to the attacker, and removes the old special handling for
+    GRIMREAPER-type enemies that makes them vanish after a few attacks.
+
 2023-04-04  Daniel Hawkins
   * common/object.cpp: Fix a bug where an open container on the ground that was destroyed
     would not be correctly sent to the client, causing the client to act like the player still
