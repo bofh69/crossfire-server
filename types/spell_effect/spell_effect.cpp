@@ -35,7 +35,7 @@ static method_ret spell_effect_type_move_on(object *trap, object *victim, object
 static method_ret spell_effect_type_process(object *op);
 
 static void move_bolt(object *op);
-static void move_bullet(object *op);
+static object *move_bullet(object *op);
 static void explosion(object *op);
 static void move_cone(object *op);
 static void animate_bomb(object *op);
@@ -255,8 +255,9 @@ static void move_bolt(object *op) {
  * something, call check_bullet. This function is only applicable to bullets,
  * but not to all fired arches (eg, bolts).
  * @param op The bullet being moved.
+ * @return The bullet at its new location, or NULL if it no longer exists.
  */
-static void move_bullet(object *op) {
+static object *move_bullet(object *op) {
     int16_t new_x, new_y;
     int mflags;
     mapstruct *m;
@@ -269,7 +270,7 @@ static void move_bullet(object *op) {
             object_remove(op);
             object_free_drop_inventory(op);
         }
-        return;
+        return NULL;
     }
 
     new_x = op->x+DIRX(op);
@@ -280,7 +281,7 @@ static void move_bullet(object *op) {
     if (mflags&P_OUT_OF_MAP) {
         object_remove(op);
         object_free_drop_inventory(op);
-        return;
+        return NULL;
     }
 
     if (!op->direction || OB_TYPE_MOVE_BLOCK(op, GET_MAP_MOVE_BLOCK(m, new_x, new_y))) {
@@ -290,19 +291,25 @@ static void move_bullet(object *op) {
             object_remove(op);
             object_free_drop_inventory(op);
         }
-        return;
+        return NULL;
     }
 
     object_remove(op);
     if ((op = object_insert_in_map_at(op, m, op, 0, new_x, new_y)) == NULL)
-        return;
+        return NULL;
 
     if (reflwall(op->map, op->x, op->y, op)) {
         op->direction = absdir(op->direction+4);
         object_update_turn_face(op);
-    } else {
-        check_bullet(op);
+        return op;
     }
+
+    check_bullet(op); // Handles collisions with living things.
+    if (QUERY_FLAG(op, FLAG_FREED)) {
+        // check_bullet() might have deleted it, if it hit something.
+        return NULL;
+    }
+    return op;
 }
 
 /**
@@ -501,54 +508,26 @@ static void animate_bomb(object *op) {
 }
 
 /**
- * Move a missle object.
+ * Move a missile object. This is the same as move_bullet(), except
+ * that after moving, we update the projectile's direction (if it's
+ * still in existence) so that it homes in on things.
  * @param op The missile that needs to be moved.
  */
 static void move_missile(object *op) {
-    int i, mflags;
-    int16_t new_x, new_y;
-    mapstruct *m;
+    // Handles actual movement, collision detection, making it explode
+    // if it has an other_arch and hit something or timed out, etc.
+    // This might have deleted the missile, in which case we bail early.
+    if ((op = move_bullet(op)) == NULL) return;
 
-    if (op->range-- <= 0) {
-        object_remove(op);
-        object_free_drop_inventory(op);
-        return;
-    }
-
-    /* call is required to potentially clean owner, but we don't care for the result */
-    object_get_owner(op);
-
-    new_x = op->x+DIRX(op);
-    new_y = op->y+DIRY(op);
-
-    mflags = get_map_flags(op->map, &m, new_x, new_y, &new_x, &new_y);
-
-    if (!(mflags&P_OUT_OF_MAP)
-    && ((mflags&P_IS_ALIVE) || OB_TYPE_MOVE_BLOCK(op, GET_MAP_MOVE_BLOCK(m, new_x, new_y)))) {
-        tag_t tag = op->count;
-
-        hit_map(op, op->direction, AT_MAGIC, 1);
-        /* Basically, missile only hits one thing then goes away.
-         * we need to remove it if someone hasn't already done so.
-         */
-        if (!object_was_destroyed(op, tag)) {
-            object_remove(op);
-            object_free_drop_inventory(op);
-        }
-        return;
-    }
-
-    object_remove(op);
-    if (!op->direction || (mflags&P_OUT_OF_MAP)) {
-        object_free_drop_inventory(op);
-        return;
-    }
-    i = spell_find_dir(m, new_x, new_y, object_get_owner(op));
-    if (i > 0 && i != op->direction) {
-        op->direction = adjust_dir(op->direction, i);
+    // Still here? Home in on something. Doing this after move_bullet
+    // means that (a) the missile visibly points to where it's about
+    // to move and (b) sufficiently fast enemies can dodge it to some
+    // extent, which looks cool.
+    int dir = spell_find_dir(op->map, op->x, op->y, object_get_owner(op));
+    if (dir > 0 && dir != op->direction) {
+        op->direction = adjust_dir(op->direction, dir);
         object_update_turn_face(op);
     }
-    object_insert_in_map_at(op, m, op, 0, new_x, new_y);
 }
 
 /**

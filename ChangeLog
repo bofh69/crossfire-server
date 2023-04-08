@@ -1,3 +1,14 @@
+2023-04-07  Rebecca Kelly
+  * types/spell_effect/spell_effect.cpp: use check_bullet() for SP_MAGIC_MISSILE
+    spell effects rather than hit_map(). This makes spells of this type (currently
+    only magic missile and missile swarm; other homing spells like ball lightning
+    and speedball are not "magic missiles") will behave more like bullets:
+    - they will not destroy items
+    - they will damage the topmost enemy on the tile, not every enemy on the tile
+    - if they overkill an enemy, they can continue on to hit another enemy
+    This also means that they now support one_hit (which disables the pierce-on-
+    overkill behaviour) and other_arch (in case we want homing fireballs someday).
+
 2023-04-08  Rebecca Kelly
   * server/attack.cpp: handle one_hit flag even if the attack killed the target.
     Previously, monsters/projectiles with one_hit could make multiple attacks as
