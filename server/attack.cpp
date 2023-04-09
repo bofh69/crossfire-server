@@ -2116,22 +2116,27 @@ int hit_player(object *op, int dam, object *hitter, uint32_t type, int full_hit)
 
     /* See if the creature has been killed */
     rtn_kill = kill_object(op, maxdam, hitter);
-    if (rtn_kill != -1)
-        return rtn_kill;
 
-    /* Used to be ghosthit removal - we now use the ONE_HIT flag.  Note
-     * that before if the player was immune to ghosthit, the monster
-     * remained - that is no longer the case.
-     */
+    // If the attacker has one_hit, it dies after attacking.
+    // This used to be part of the ghosthit attacktype, but is now a separate
+    // flag. Note that the attacker is removed whether or not it killed (or
+    // even damaged) the target.
     if (QUERY_FLAG(hitter, FLAG_ONE_HIT)) {
         if (QUERY_FLAG(hitter, FLAG_FRIENDLY))
             remove_friendly_object(hitter);
         object_remove(hitter);
         object_free_drop_inventory(hitter);
-    /* Lets handle creatures that are splitting now */
-    } else if (type&AT_PHYSICAL && !QUERY_FLAG(op, FLAG_FREED) && QUERY_FLAG(op, FLAG_SPLITTING)) {
+    }
+
+    // Target is dead? Nothing else to do.
+    if (rtn_kill != -1)
+        return rtn_kill;
+
+    // If it survived, handle splitting monsters here.
+    if (type&AT_PHYSICAL && !QUERY_FLAG(op, FLAG_FREED) && QUERY_FLAG(op, FLAG_SPLITTING)) {
         change_object(op);
     }
+
     return maxdam;
 }
 

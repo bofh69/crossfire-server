@@ -1,4 +1,9 @@
 2023-04-08  Rebecca Kelly
+  * server/attack.cpp: handle one_hit flag even if the attack killed the target.
+    Previously, monsters/projectiles with one_hit could make multiple attacks as
+    long as each attack one-shotted the target.
+
+2023-04-08  Rebecca Kelly
   * server/attack.cpp: cap the amount of exp enemies can drain to 10x their
     starting exp value (so a monster worth 800 exp can drain up to 8000 exp from
     the player, and will get to keep half of that, which the player will reclaim
