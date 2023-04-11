@@ -260,6 +260,7 @@ static const char *const mon_book_name[] = {
     "compilation",
     "collection",
     "encyclopedia",
+    "field notes",
     "guide",
     "handbook",
     "list",
@@ -267,6 +268,7 @@ static const char *const mon_book_name[] = {
     "notes",
     "omnibus",
     "record",
+    "reference",
     "register",
     "volume"
 };
@@ -274,6 +276,7 @@ static const char *const mon_book_name[] = {
 /** Used by monster beastuary texts. */
 static const char *const mon_author[] = {
     "beasts",
+    "beings",
     "creatures",
     "dezidens",
     "dwellers",
