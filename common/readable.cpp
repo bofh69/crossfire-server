@@ -243,6 +243,7 @@ static const char *const art_book_name[] = {
 static const char *const art_author[] = {
     "ancient things",
     "artifacts",
+    "equipment",
     "Havlor",   /* ancient warrior scribe :) */
     "items",
     "lost artifacts",
@@ -301,6 +302,7 @@ static const char *const gods_book_name[] = {
     "divine work",
     "holy book",
     "holy record",
+    "hymnal",
     "illuminated text",
     "moral text",
     "sacred guide",
@@ -311,6 +313,7 @@ static const char *const gods_book_name[] = {
 /** Used by gods texts. */
 static const char *const gods_author[] = {
     "cults",
+    "dieties",
     "joy",
     "lasting curse",
     "madness",
