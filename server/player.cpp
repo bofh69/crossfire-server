@@ -2586,8 +2586,10 @@ static int player_attack_door(object *op, object *door) {
 
     if (door->type == LOCKED_DOOR) {
         /* Might as well return now - no other way to open this */
-        draw_ext_info(NDI_UNIQUE|NDI_NAVY, 0, op, MSG_TYPE_ITEM, MSG_TYPE_ITEM_INFO,
-                      door->msg);
+        if (door->msg && *door->msg) {
+            draw_ext_info(NDI_UNIQUE|NDI_NAVY, 0, op, MSG_TYPE_ITEM, MSG_TYPE_ITEM_INFO,
+                          door->msg);
+        }
         return 1;
     }
 
