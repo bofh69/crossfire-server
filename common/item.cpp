@@ -239,6 +239,13 @@ static int bits_set(uint32_t x, int start, int end) {
 int calc_item_power(const object *op) {
     int i, tmp, enc;
 
+    // If we get, for example, a pile of gypsum here,
+    // don't give it an item power. Nothing in the inorganic
+    // type can be applied; their resistances are just to avoid
+    // or encourage destruction by specific attacktypes.
+    if (op->type == INORGANIC)
+        return 0;
+
     enc = 0;
     for (i = 0; i < NUM_STATS; i++)
         enc += get_attr_value(&op->stats, i);
