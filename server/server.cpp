@@ -186,9 +186,9 @@ static void enter_map(object *op, mapstruct *newmap, int x, int y) {
     if (y < 0 && x >= 0) y=0;
 
     if (out_of_map(newmap, x, y)) {
-	if ( x != -1 || y != -1 ) {
-	    LOG(llevError, "enter_map: supplied coordinates are not within the map! (%s: %d, %d)\n", newmap->path, x, y);
-	}
+        if (x != -1 || y != -1) {
+            LOG(llevError, "enter_map: supplied coordinates are not within the map! (%s: %d, %d)\n", newmap->path, x, y);
+        }
         /* If op has invalid (probably -1,-1) coordinates, force them to a correct value, else issues later on. */
         if (op->x == x)
             op->x = MAP_ENTER_X(newmap);

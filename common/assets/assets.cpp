@@ -369,7 +369,7 @@ static void build_filename(const char *name, const char *prefix, char *dest, siz
     memset(dest, 0, max);
     dot++;
 
-    snprintf(dest,max,"%.*s%s.%s.png",(int)(dot-name),name,prefix,dot);
+    snprintf(dest, max, "%.*s%s.%s.png", (int)(dot - name), name, prefix, dot);
 }
 
 /**
