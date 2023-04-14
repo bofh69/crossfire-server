@@ -1179,13 +1179,12 @@ static void change_book(object *book, int msgtype) {
 #ifdef ARCHIVE_DEBUG
             LOG(llevDebug, "titles for list %d full (%d possible).\n", msgtype, maxnames);
 #endif
-            if (old_title != NULL)
-                free_string(old_title);
-            free_string(old_name);
-            return;
+            // Set tries to maximum. That way we get the descriptors on books when the
+            // title set is full, too.
+            tries = MAX_TITLE_CHECK;
         }
         /* shouldnt change map-maker books */
-        if (!book->title)
+        else if (!book->title)
             do {
                 /* random book name */
                 new_text_name(book, msgtype);
@@ -1208,7 +1207,8 @@ static void change_book(object *book, int msgtype) {
 #endif
             /* restore old book properties here */
             free_string(book->name);
-            free_string(book->title);
+            if (book->title)
+                free_string(book->title);
             book->title = old_title != NULL ? add_string(old_title) : NULL;
 
             if (RANDOM()%4) {
