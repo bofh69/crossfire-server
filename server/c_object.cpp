@@ -1776,6 +1776,32 @@ ex_autoid_result examine_autoidentify(object *op, object *tmp) {
 }
 
 /**
+ * Output weight and material information for an examined object.
+ *
+ * @param op
+ * player.
+ * @param tmp
+ * object to examine.
+ */
+void examine_weight_and_material(object *op, object *tmp) {
+    bool pl = tmp->nrof > 1;
+    float weight = (tmp->nrof ? tmp->nrof : 1) * ((float)tmp->weight/1000.0);
+
+    if (tmp->materialname && weight) {
+        draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
+            "%s made of %s and %s %3.3f kg.",
+            pl ? "They are" : "It is", tmp->materialname,
+            pl ? "weigh" : "weighs", weight);
+    } else if (tmp->materialname) {
+        draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
+            "%s made of %s.", pl ? "They are" : "It is", tmp->materialname);
+    } else if (weight) {
+        draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
+            "%s %3.3f kg.", pl ? "They weigh" : "it weighs", weight);
+    }
+}
+
+/**
  * Emit the "fluff", the non-mechanical flavour text, for a given item. For most
  * items this does nothing, but if it has a msg, that will be output, and if it
  * contains an embedded spell or skill with a msg, it'll show that too.
@@ -1880,7 +1906,7 @@ void examine_fluff(object *op, object *tmp) {
  */
 void examine(object *op, object *tmp) {
     char buf[VERY_BIG_BUF] = "";
-    int i, conn;
+    int i;
 
     if (tmp == NULL || tmp->type == CLOSE_CON)
         return;
@@ -1946,39 +1972,27 @@ void examine(object *op, object *tmp) {
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
                       buf);
 
-    // TODO: combine with weight and properly pluralize, so you get:
-    // It is made of stone and weighs 15.0 kg.
-    // They are made of paper and weigh 3 kg.
-    if (tmp->materialname != NULL && !tmp->msg) {
-        draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
-                             "It is made of: %s.",
-                             tmp->materialname);
-    }
+    examine_weight_and_material(op, tmp);
+
     /* Where to wear this item */
     for (i = 0; i < NUM_BODY_LOCATIONS; i++) {
         if (tmp->body_info[i]) {
             if (op->body_info[i]) {
                 if (tmp->body_info[i] < -1) {
                     draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
-                                     "%s %s (%d)", tmp->nrof > 1 ? "They go" : "It goes",
+                                     "%s %s (%d).", tmp->nrof > 1 ? "They go" : "It goes",
                                      body_locations[i].use_name, -tmp->body_info[i]);
                 } else {
                     draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
-                                     "%s %s", tmp->nrof > 1 ? "They go" : "It goes",
+                                     "%s %s.", tmp->nrof > 1 ? "They go" : "It goes",
                                      body_locations[i].use_name);
                 }
             } else {
                 draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
-                                     "%s %s", tmp->nrof > 1 ? "They go" : "It goes",
+                                     "%s %s.", tmp->nrof > 1 ? "They go" : "It goes",
                                      body_locations[i].nonuse_name);
             }
         }
-    }
-
-    if (tmp->weight) {
-        snprintf(buf, sizeof(buf), tmp->nrof > 1 ? "They weigh %3.3f kg." : "It weighs %3.3f kg.", tmp->weight*((float)(tmp->nrof ? tmp->nrof : 1)/1000.0));
-        draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
-                      buf);
     }
 
     int in_shop = shop_contains(op);
@@ -2009,25 +2023,27 @@ void examine(object *op, object *tmp) {
 
     /* Is this item buildable? */
     if (QUERY_FLAG(tmp, FLAG_IS_BUILDABLE)) {
-        draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
+        int conn;
+        bool has_link = false;
+        if (QUERY_FLAG(tmp, FLAG_IS_LINKED) && (conn = get_button_value(tmp))) {
+            FOR_INV_PREPARE(op, tmp_inv) {
+                if (tmp_inv->type == FORCE && tmp_inv->slaying != NULL
+                    && strcmp(tmp_inv->slaying, op->map->path) == 0
+                    && tmp_inv->msg != NULL
+                    && tmp_inv->path_attuned == (uint32_t) conn) {
+
+                    has_link = true;
+                    draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND,
+                                MSG_TYPE_COMMAND_EXAMINE,
+                                "This is a buildable item, connected with: %s",
+                                tmp_inv->msg);
+                    break;
+                }
+            } FOR_INV_FINISH();
+        }
+        if (!has_link) {
+            draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
                       "This is a buildable item.");
-        if (QUERY_FLAG(tmp, FLAG_IS_LINKED)){
-            conn = get_button_value(tmp);
-            if (conn) {
-                FOR_INV_PREPARE(op, tmp_inv) {
-                    if (tmp_inv->type == FORCE && tmp_inv->slaying != NULL
-                        && strcmp(tmp_inv->slaying, op->map->path) == 0
-                        && tmp_inv->msg != NULL
-                        && tmp_inv->path_attuned == (uint32_t) conn) {
-
-                        draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND,
-                                  MSG_TYPE_COMMAND_EXAMINE, "Connected with: %s",
-                                  tmp_inv->msg);
-
-                        break;
-                    }
-                } FOR_INV_FINISH();
-            }
         }
     }
 

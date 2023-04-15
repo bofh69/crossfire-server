@@ -56,7 +56,7 @@ body_locations_struct body_locations[NUM_BODY_LOCATIONS] = {
     { "body_arm",      "on your arm",            "on a human's arm" },
     { "body_torso",    "on your body",           "on a human's torso" },
     { "body_head",     "on your head",           "on a human's head" },
-    { "body_neck",     "around your neck",       "around a humans neck" },
+    { "body_neck",     "around your neck",       "around a human's neck" },
     { "body_skill",    "in your skill slot",     "in a human's skill slot" },
     { "body_finger",   "on your finger",         "on a human's finger" },
     { "body_shoulder", "around your shoulders",  "around a human's shoulders" },

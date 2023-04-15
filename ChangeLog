@@ -1,3 +1,11 @@
+2023-04-23  Rebecca Kelly
+  * utils/loreCollect.py: deleted outright, since it doesn't work anymore, and
+    wasn't used for anything even when it did work; there are other uses planned
+    for the lore field.
+  * common/item.cpp: typo fix
+  * server/c_object.cpp: refactoring of examine() into multiple functions; minor
+    changes to output to consolidate related information into the same line.
+
 2023-04-07  Rebecca Kelly
   * types/spell_effect/spell_effect.cpp: use check_bullet() for SP_MAGIC_MISSILE
     spell effects rather than hit_map(). This makes spells of this type (currently
