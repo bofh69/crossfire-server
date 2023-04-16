@@ -1690,6 +1690,91 @@ void examine_monster(object *op, object *tmp, int level) {
         probe->duration = level / 10;
 }
 
+enum ex_autoid_result {
+    EX_ID_ABORT,        // Not safe to continue
+    EX_ID_NO_SKILL,     // Player lacks the requisite skill(s)
+    EX_ID_FAILED        // Player has the skill but failed their ID roll
+};
+
+/**
+ * When the player examines an unidentified object, try to ID it if they have
+ * the requisite skills.
+ *
+ * @param op
+ * player.
+ * @param tmp
+ * object to examine.
+ * @return
+ * an ex_autoid_result (see enum above) describing the result of the attempt
+ */
+ex_autoid_result examine_autoidentify(object *op, object *tmp) {
+    /* We will look for magic status, cursed status and then try to do a full skill-based ID, in that order */
+    int exp = 0;
+    object *skill = find_skill_by_number(op, SK_DET_MAGIC);
+    if (skill && (object_can_pick(op, tmp))) {
+        exp = detect_magic_on_item(op, tmp, skill);
+        if (exp) {
+            change_exp(op, exp, skill->skill, SK_SUBTRACT_SKILL_EXP);
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
+                    "You discover mystic forces on %s", tmp->nrof <= 1?"that item":"those items" );
+        }
+    }
+
+    skill = find_skill_by_number(op, SK_DET_CURSE);
+    /* Cauldrons are a special case of item where it should be possible to detect a curse */
+    if (skill && (object_can_pick(op, tmp) || QUERY_FLAG(tmp, FLAG_IS_CAULDRON))) {
+        exp = detect_curse_on_item(op, tmp, skill);
+        if (exp) {
+            change_exp(op, exp, skill->skill, SK_SUBTRACT_SKILL_EXP);
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
+                    "You have a bad feeling about %s", tmp->nrof <= 1?"that item":"those items" );
+        }
+    }
+
+    const typedata *tmptype = get_typedata(tmp->type);
+    if (!tmptype) {
+        LOG(llevError, "Attempted to examine item %d with type %d, which is invalid\n", tmp->count, tmp->type);
+        return EX_ID_ABORT;
+    }
+
+    bool have_skill = false;
+    if (!QUERY_FLAG(tmp, FLAG_NO_SKILL_IDENT)) {
+        skill = find_skill_by_number(op, tmptype->identifyskill);
+        if (skill) {
+            /* identify_object_with_skill() may merge tmp with another
+             * object, so once that happens, we really can not do
+             * any further processing with tmp.  It would be possible
+             * to modify identify_object_with_skill() to return
+             * the merged object, but it is currently set to return
+             * exp, so it would have to do it via modifying the
+             * passed in value, but many other consumers would
+             * need to be modified for that.
+             */
+            exp = identify_object_with_skill(tmp, op, skill, 1);
+            if (exp) {
+                change_exp(op, exp, skill->skill, SK_SUBTRACT_SKILL_EXP);
+                return EX_ID_ABORT;
+            }
+        }
+
+        /* The primary id skill didn't work, let's try the secondary one */
+        skill = find_skill_by_number(op, tmptype->identifyskill2);
+        if (skill) {
+            /* if we've reached here, then the first skill will have been attempted
+             * and failed; this will have set FLAG_NO_SKILL_IDENT we want to clear
+             * that now, and try with the secondary ID skill, if it fails, then the
+             * flag will be reset anyway, if it succeeds, it won't matter.*/
+            CLEAR_FLAG(tmp, FLAG_NO_SKILL_IDENT);
+            exp = identify_object_with_skill(tmp, op, skill, 1);
+            if (exp) {
+                change_exp(op, exp, skill->skill, SK_SUBTRACT_SKILL_EXP);
+                return EX_ID_ABORT;
+            }
+        }
+    }
+    return have_skill ? EX_ID_FAILED : EX_ID_NO_SKILL;
+}
+
 /**
  * Player examines some object. The item may be identified automatically
  * if the player has the correct skill for that.
@@ -1700,104 +1785,33 @@ void examine_monster(object *op, object *tmp, int level) {
  * object to examine.
  */
 void examine(object *op, object *tmp) {
-    char buf[VERY_BIG_BUF];
+    char buf[VERY_BIG_BUF] = "";
     int in_shop;
-    int i, exp = 0, conn;
-
-    /* we use this to track how far along we got with trying to identify an item,
-     * so that we can give the appropriate message to the player */
-    int id_attempted = 0;
-    char prefix[MAX_BUF] = "That is";
-    const typedata *tmptype;
-    object *skill;
-
-    buf[0] = '\0';
+    int i, conn;
 
     if (tmp == NULL || tmp->type == CLOSE_CON)
         return;
-    tmptype = get_typedata(tmp->type);
-    if (!tmptype) {
-        LOG(llevError, "Attempted to examine item %d with type %d, which is invalid\n", tmp->count, tmp->type);
-        return;
-    }
-    /* first of all check whether this is an item we need to identify, and identify it as best we can.*/
-    if (!QUERY_FLAG(tmp, FLAG_IDENTIFIED)) {
-        /* We will look for magic status, cursed status and then try to do a full skill-based ID, in that order */
-        skill = find_skill_by_number(op, SK_DET_MAGIC);
-        if (skill && (object_can_pick(op, tmp))) {
-            exp = detect_magic_on_item(op, tmp, skill);
-            if (exp) {
-                change_exp(op, exp, skill->skill, SK_SUBTRACT_SKILL_EXP);
-                draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
-                        "You discover mystic forces on %s", tmp->nrof <= 1?"that item":"those items" );
-            }
-        }
-        skill = find_skill_by_number(op, SK_DET_CURSE);
-        /* Cauldrons are a special case of item where it should be possible to detect a curse */
-        if (skill && (object_can_pick(op, tmp) || QUERY_FLAG(tmp, FLAG_IS_CAULDRON))) {
-            exp = detect_curse_on_item(op, tmp, skill);
-            if (exp) {
-                change_exp(op, exp, skill->skill, SK_SUBTRACT_SKILL_EXP);
-                draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
-                        "You have a bad feeling about %s", tmp->nrof <= 1?"that item":"those items" );
-            }
-        }
-        if (!QUERY_FLAG(tmp, FLAG_NO_SKILL_IDENT)) {
 
-            id_attempted = 1;
-            skill = find_skill_by_number(op, tmptype->identifyskill);
-            if (skill) {
-                id_attempted = 2;
-
-                /* identify_object_with_skill() may merge tmp with another
-                 * object, so once that happens, we really can not do
-                 * any further processing with tmp.  It would be possible
-                 * to modify identify_object_with_skill() to return
-                 * the merged object, but it is currently set to return
-                 * exp, so it would have to do it via modifying the
-                 * passed in value, but many other consumers would
-                 * need to be modified for that.
-                 */
-                exp = identify_object_with_skill(tmp, op, skill, 1);
-                if (exp) {
-                    change_exp(op, exp, skill->skill, SK_SUBTRACT_SKILL_EXP);
-                    return;
-                }
-            }
-            if(!exp) {
-                /* The primary id skill didn't work, let's try the secondary one */
-                skill = find_skill_by_number(op, tmptype->identifyskill2);
-                if (skill) {
-                    /* if we've reached here, then the first skill will have been attempted
-                     * and failed; this will have set FLAG_NO_SKILL_IDENT we want to clear
-                     * that now, and try with the secondary ID skill, if it fails, then the
-                     * flag will be reset anyway, if it succeeds, it won't matter.*/
-                    CLEAR_FLAG(tmp, FLAG_NO_SKILL_IDENT);
-                    id_attempted = 2;
-                    exp = identify_object_with_skill(tmp, op, skill, 1);
-                    if (exp) {
-                        change_exp(op, exp, skill->skill, SK_SUBTRACT_SKILL_EXP);
-                        return;
-                    }
-                }
-            }
+    char prefix[MAX_BUF] = "";
+    if (is_identified(tmp)) {
+        snprintf(prefix, MAX_BUF, "%s:", tmp->nrof<=1 ? "That is" : "Those are");
+    } else {
+        switch(examine_autoidentify(op, tmp)) {
+          case EX_ID_NO_SKILL:
+                snprintf(prefix, MAX_BUF, "You lack the skill to understand %s:",
+                    tmp->nrof<=1 ? "that fully; it is" : "those fully; they are");
+                break;
+          case EX_ID_FAILED:
+                snprintf(prefix, MAX_BUF, "You fail to understand %s:",
+                    tmp->nrof<=1 ? "that fully; it is" : "those fully; they are");
+                break;
+          case EX_ID_ABORT:
+          default:
+            /* Item may have been merged with something else, not safe to proceed. */
+            return;
         }
     }
-    if (!exp) {
-        /* if we did get exp we'll already have propulated prefix */
-        if (tmptype->identifyskill || tmptype->identifyskill2) {
-            switch (id_attempted) {
-                case 1:
-                    snprintf(prefix, MAX_BUF, "You lack the skill to understand %s:",  tmp->nrof <= 1?"that fully; it is":"those fully, they are");
-                    break;
-                case 2:
-                    snprintf(prefix, MAX_BUF, "You fail to understand %s:",  tmp->nrof <= 1?"that fully; it is":"those fully, they are");
-                    break;
-                default:
-                    snprintf(prefix, MAX_BUF, "%s:",  tmp->nrof <= 1?"That is":"Those are");
-            }
-        } else snprintf(prefix, MAX_BUF, "%s:",  tmp->nrof <= 1?"That is":"Those are");
-    }
+
     /* now we need to get the rest of the object description */
     ob_describe(tmp, op, 1, buf, sizeof(buf));
 
