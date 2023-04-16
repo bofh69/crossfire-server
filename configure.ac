@@ -13,22 +13,22 @@ dnl Configuration Options
 dnl#############################################################################
 AC_ARG_ENABLE(mapper, [AS_HELP_STRING([--enable-mapper],
               [Build the crossfire-mapper utility (requires libgd)])],
-              [enable_mapper=yes], [enable_mapper=no])
+              [enable_mapper=${enableval}], [enable_mapper=no])
 
 dnl Options for plugins
 
 AC_ARG_ENABLE(logger, [AS_HELP_STRING([--enable-logger],
               [Build the SQLite logging plugin])],
-              [enable_logger=yes], [enable_logger=no])
+              [enable_logger=${enableval}], [enable_logger=no])
 
 AC_ARG_ENABLE(newspaper, [AS_HELP_STRING([--enable-newspaper],
               [Build the newspaper plugin])],
-              [enable_newspaper=yes], [enable_newspaper=no])
+              [enable_newspaper=${enableval}], [enable_newspaper=no])
 
 dnl Unit test configuration
 AC_ARG_ENABLE(check, [AS_HELP_STRING([--disable-check],
               [Disable the unit tests even if check is available])],
-              [enable_check=no], [enable_check=yes])
+              [enable_check=${enableval}], [enable_check=yes])
 
 dnl Add support for dmalloc, if the user wants it.
 AM_WITH_DMALLOC
