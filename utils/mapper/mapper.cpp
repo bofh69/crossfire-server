@@ -2723,6 +2723,7 @@ static const char *ignore_path[] = {
 static const char *ignore_name[] = {
     ".",
     "..",
+    ".git",
     ".svn",
     "README",
     NULL };
