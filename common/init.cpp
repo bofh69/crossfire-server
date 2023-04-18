@@ -225,6 +225,8 @@ struct Settings settings = {
     .hooks_filename = { nullptr },
     .hooks = { nullptr },
     .ignore_assets_errors = 0,
+    .assets_tracker = nullptr,
+    .fatal_hook = nullptr,
 };
 
 struct Statistics statistics;
