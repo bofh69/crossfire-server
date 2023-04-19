@@ -896,9 +896,12 @@ static int is_defined_recipe(const recipe *rp, const object *cauldron) {
     number = 0;
     for (ingredient = rp->ingred; ingredient != NULL; ingredient = ingredient->next)
         number++;
-    FOR_INV_PREPARE(cauldron, ob)
+    FOR_INV_PREPARE(cauldron, ob) {
+#ifdef ALCHEMY_DEBUG
+        LOG(llevDebug, "cauldron %s, item %s, number %d->%d\n", cauldron->name, ob->name, number, number - 1);
+#endif
         number--;
-    FOR_INV_FINISH();
+    } FOR_INV_FINISH();
     if (number != 0)
         return 0;
 
@@ -938,7 +941,11 @@ static int is_defined_recipe(const recipe *rp, const object *cauldron) {
                 if (ob->nrof%nrof == 0) {
                     uint32_t batches;
 
-                    batches = ob->nrof/nrof;
+                    // Make sure we handle non-stacking ingredients such as icecubes.
+                    batches = (ob->nrof ? ob->nrof : 1)/nrof;
+#ifdef ALCHEMY_DEBUG
+                    LOG(llevDebug, "batches of ingred %s: %d; batches prior: %d\n", name, batches, batches_in_cauldron);
+#endif
                     if (batches_in_cauldron == 0) {
                         batches_in_cauldron = batches;
                         ok = 1;
