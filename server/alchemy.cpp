@@ -815,8 +815,7 @@ static void remove_contents(object *first_ob, object *save_item) {
  * the number of ingredients, the magical nature of ingredients,
  * the user's effective level, the user's Int and the enchantment on the
  * mixing device (aka "cauldron"). Higher values of 'danger' indicate more
- * danger. Note that we assume that we have had the caster ready the alchemy
- * skill *before *this routine is called. (no longer auto-readies that skill)
+ * danger.
  * -b.t.
  *
  * @param caster
@@ -831,8 +830,11 @@ static void remove_contents(object *first_ob, object *save_item) {
 static int calc_alch_danger(object *caster, object *cauldron, const recipe *rp) {
     int danger = 0;
 
-    /* Knowing alchemy skill reduces yer risk */
-    danger -= caster->chosen_skill ? caster->chosen_skill->level : caster->level;
+    /* Get the recipe's skill if it has one. Otherwise, use your overall level.
+     * Note that this isn't inherently your chosen skill, so we go find it.
+     */
+    object *skop = rp && rp->skill ? find_skill_by_name(caster, rp->skill) : NULL;
+    danger -= skop ? skop->level : caster->level;
 
     /* better cauldrons reduce risk */
     danger -= cauldron->magic;
