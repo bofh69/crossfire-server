@@ -104,7 +104,12 @@ static void move_creator(object *creator) {
     if (creator->level != 0)
         new_ob->level = creator->level;
 
-    object_insert_in_map_at(new_ob, creator->map, creator, 0, creator->x, creator->y);
+    int flags = 0;
+    // Use the INS_BELOW_ORIGINATOR when creator is labelled with IS_FLOOR
+    if (QUERY_FLAG(creator, FLAG_IS_FLOOR))
+        flags = INS_BELOW_ORIGINATOR;
+
+    object_insert_in_map_at(new_ob, creator->map, creator, flags, creator->x, creator->y);
     if (QUERY_FLAG(new_ob, FLAG_FREED))
         return;
 
