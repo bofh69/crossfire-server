@@ -1776,6 +1776,100 @@ ex_autoid_result examine_autoidentify(object *op, object *tmp) {
 }
 
 /**
+ * Emit the "fluff", the non-mechanical flavour text, for a given item. For most
+ * items this does nothing, but if it has a msg, that will be output, and if it
+ * contains an embedded spell or skill with a msg, it'll show that too.
+ *
+ * @param op
+ * player.
+ * @param tmp
+ * object to examine.
+ */
+void examine_fluff(object *op, object *tmp) {
+    /* No message for stuff the player hasn't IDed. */
+    if (!is_identifiable_type(tmp) || !is_identified(tmp)) {
+        return;
+    }
+
+    // We use stringbuffer throughout this function so that we can use
+    // trim_whitespace to conveniently strip trailing newlines, ensuring that
+    // the output of examine is contiguous.
+    // TODO: It might be better to strip the newlines in object_set_msg
+    // and append them at print time, rather than ensuring that the msg
+    // is newline-terminated and stripping off the newlines when we don't
+    // want them; C string handling makes the latter a lot less convenient.
+    if (tmp->msg && strncasecmp(tmp->msg, "@match", 6)) {
+        draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
+            "%s has a story:", tmp->nrof > 1 ? "These objects" : "This object");
+        StringBuffer *sb = stringbuffer_new();
+        stringbuffer_append_string(sb, tmp->msg);
+        stringbuffer_trim_whitespace(sb);
+        char *const msg = stringbuffer_finish(sb);
+        draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE, msg);
+        free(msg);
+    }
+
+    switch (tmp->type) {
+      /* Stuff with embedded skills. */
+      case SKILLSCROLL:
+      case SKILL_TOOL:
+      {
+        // Embedded skills are stored as an archetype name and don't get reified
+        // until the player actually reads/equips the object, so we need to turn
+        // the name into an actual archetype and then read the msg out of that.
+        if (!tmp->skill) break;  // Blank skill scroll, somehow.
+        archetype *skill = get_archetype_by_skill_name(tmp->skill, SKILL);
+        if (!skill) {
+            // Skill name doesn't correspond to any actual skill.
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_SPELL, MSG_TYPE_SPELL_INFO,
+                "Unfortunately, it is damaged beyond %s.",
+                (tmp->type == SKILLSCROLL) ? "comprehension" : "repair");
+            break;
+        }
+        if (skill->clone.msg) {
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
+                "%s lets you %s a skill:",
+                tmp->nrof > 1 ? "These objects" : "This object",
+                (tmp->type == SKILLSCROLL) ? "learn" : "use");
+
+            StringBuffer *sb = stringbuffer_new();
+            stringbuffer_append_string(sb, skill->clone.msg);
+            stringbuffer_trim_whitespace(sb);
+            char *const fluff = stringbuffer_finish(sb);
+            // SPELL_INFO is not a perfect match here, but it should display in the
+            // same manner as the spell descriptions below and there's no SKILL_INFO
+            // message type.
+            draw_ext_info(NDI_UNIQUE|NDI_GOLD, 0, op, MSG_TYPE_SPELL, MSG_TYPE_SPELL_INFO, fluff);
+            free(fluff);
+        }
+        break;
+      }
+
+      /* Stuff with embedded spells. */
+      case SPELLBOOK:
+      case SCROLL:
+      case WAND:
+      case ROD:
+      case POTION:
+      {
+        if (tmp->inv && tmp->inv->msg) {
+            draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
+                "%s holds%s a spell:",
+                tmp->nrof > 1 ? "These objects" : "This object",
+                tmp->type == SPELLBOOK ? " knowledge of" : "");
+
+            StringBuffer *sb = stringbuffer_new();
+            stringbuffer_append_string(sb, tmp->inv->msg);
+            stringbuffer_trim_whitespace(sb);
+            char *const fluff = stringbuffer_finish(sb);
+            draw_ext_info(NDI_UNIQUE|NDI_BLUE, 0, op, MSG_TYPE_SPELL, MSG_TYPE_SPELL_INFO, fluff);
+            free(fluff);
+        }
+      }
+    }
+}
+
+/**
  * Player examines some object. The item may be identified automatically
  * if the player has the correct skill for that.
  *
@@ -1786,7 +1880,6 @@ ex_autoid_result examine_autoidentify(object *op, object *tmp) {
  */
 void examine(object *op, object *tmp) {
     char buf[VERY_BIG_BUF] = "";
-    int in_shop;
     int i, conn;
 
     if (tmp == NULL || tmp->type == CLOSE_CON)
@@ -1826,68 +1919,18 @@ void examine(object *op, object *tmp) {
     }
 
     switch (tmp->type) {
-    case SKILLSCROLL:
-    case SKILL_TOOL:
-    {
-        // Embedded skills are stored as an archetype name and don't get reified
-        // until the player actually reads/equips the object, so we need to
-        // handle it differently from spells, which are stored in the inv.
-        if (!tmp->skill) break;  // Blank skill scroll, somehow.
-        archetype *skill = get_archetype_by_skill_name(tmp->skill, SKILL);
-        if (!skill) {
-            // Skill name doesn't correspond to any actual skill.
-            draw_ext_info(NDI_UNIQUE|NDI_BLUE, 0, op, MSG_TYPE_SPELL, MSG_TYPE_SPELL_INFO,
-                "Unfortunately the scroll is damaged and unreadable.");
-            break;
-        }
-        // Only print the flavor text once we have identified.
-        if (is_identified(tmp) && skill->clone.msg) {
-            StringBuffer *sb = stringbuffer_new();
-            stringbuffer_append_string(sb, skill->clone.msg);
-            stringbuffer_trim_whitespace(sb);
-            char *const fluff = stringbuffer_finish(sb);
-            // SPELL_INFO is not a perfect match here, but it should display in the
-            // same manner as the spell descriptions below and there's no SKILL_INFO
-            // message type.
-            draw_ext_info(NDI_UNIQUE|NDI_BLUE, 0, op, MSG_TYPE_SPELL, MSG_TYPE_SPELL_INFO, fluff);
-            free(fluff);
-        }
-        break;
-    }
-
-    case SPELLBOOK:
-    case SCROLL:
-    case WAND:
-    case ROD:
-    case POTION:
-        // Only print the flavor text once we have identified.
-        if (is_identified(tmp) && tmp->inv && tmp->inv->msg) {
-            // If the embedded spell has a msg, display it here so that the
-            // player knows what it does before they actually read/use the item.
-            // Strip trailing newlines so that the output of examine() is
-            // contiguous.
-            // TODO: It might be better to strip the newlines in object_set_msg
-            // and append them at print time, rather than ensuring that the msg
-            // is newline-terminated and stripping off the newlines when we don't
-            // want them; C string handling makes the latter a lot less convenient.
-            StringBuffer *sb = stringbuffer_new();
-            stringbuffer_append_string(sb, tmp->inv->msg);
-            stringbuffer_trim_whitespace(sb);
-            char *const fluff = stringbuffer_finish(sb);
-            draw_ext_info(NDI_UNIQUE|NDI_BLUE, 0, op, MSG_TYPE_SPELL, MSG_TYPE_SPELL_INFO, fluff);
-            free(fluff);
-        }
-        if (tmp->type == WAND && is_identified(tmp)) {
+      case WAND:
+        if (is_identified(tmp)) {
             snprintf(buf, sizeof(buf), "It has %d charges left.", tmp->stats.food);
         }
         break;
 
-    case BOOK:
+      case BOOK:
         if (tmp->msg != NULL)
             snprintf(buf, sizeof(buf), "Something is written in it.");
         break;
 
-    case CONTAINER:
+      case CONTAINER:
         if (tmp->race != NULL) {
             if (tmp->weight_limit && tmp->stats.Str < 100)
                 snprintf(buf, sizeof(buf), "It can hold only %s and its weight limit is %.1f kg.", tmp->race, tmp->weight_limit/(10.0*(100-tmp->stats.Str)));
@@ -1938,7 +1981,7 @@ void examine(object *op, object *tmp) {
                       buf);
     }
 
-    in_shop = shop_contains(op);
+    int in_shop = shop_contains(op);
 
     if (tmp->value && !QUERY_FLAG(tmp, FLAG_STARTEQUIP) && !QUERY_FLAG(tmp, FLAG_NO_PICK)) {
         char *value = cost_approx_str(tmp, op);
@@ -1988,32 +2031,8 @@ void examine(object *op, object *tmp) {
         }
     }
 
-    /* Does the object have a message?  Don't show message for all object
-     * types - especially if the first entry is a match
-     */
-    if (tmp->msg
-    && tmp->type != EXIT
-    && tmp->type != BOOK
-    && tmp->type != CORPSE
-    && !tmp->move_on
-    && strncasecmp(tmp->msg, "@match", 6)) {
-        /* This is just a hack so when identifying the items, we print
-         * out the extra message. Do this only for "identifiable types", e.g.
-         * we don't want to print this message when the player looks at a
-         * locked door (where msg is used to store the message they get when
-         * trying to force it open).
-         *
-         * Also, don't print the message for the object unless it has been identified
-         * 		-- SilverNexus 2015-05-20
-         */
-        if (is_identifiable_type(tmp) && is_identified(tmp)) {
-            draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
-                          "The object has a story:");
-
-		    draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
-					      tmp->msg);
-        }
-    }
+    /* Display msg, embedded spell/skill description, etc. */
+    examine_fluff(op, tmp);
     draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
                   " "); /* Blank line */
 
