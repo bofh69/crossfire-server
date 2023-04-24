@@ -1594,7 +1594,7 @@ void fix_object(object *op) {
      */
     if (op->speed < MIN_ACTIVE_SPEED*500 && QUERY_FLAG(op, FLAG_MONSTER)) {
         // If added_speed is less than zero, we're probably working with a slow effect.
-        if (added_speed >= 0)
+        if (added_speed > 0)
             LOG(llevInfo, "fix_object: Monster %s has negative speed of %f.\n",
                 op->name ? op->name : "(null)", op->speed);
         op->speed = MIN_ACTIVE_SPEED*500;
