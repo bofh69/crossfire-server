@@ -168,7 +168,7 @@ int describe_god(const object *god, int what, StringBuffer *buf, size_t maxlen) 
         char tmpbuf[MAX_BUF];
 
         add = stringbuffer_new();
-        stringbuffer_append_printf(add, "\nThe priests of %s are known to make cast a mighty prayer of possession which gives the recipient ", name);
+        stringbuffer_append_printf(add, "\nThe priests of %s are known to make cast a mighty prayer of possession which gives the recipient:\n", name);
 
         for (tmpvar = 0; tmpvar < NROFATTACKS; tmpvar++) {
             if (god->resist[tmpvar] == 100) {
@@ -197,7 +197,7 @@ int describe_god(const object *god, int what, StringBuffer *buf, size_t maxlen) 
 
         if (*cp) {  /* This god does have protections */
             add = stringbuffer_new();
-            stringbuffer_append_printf(add, "\nThe priests of %s are known to be able to bestow a blessing which makes the recipient %s\n ---\n", name, cp);
+            stringbuffer_append_printf(add, "\nThe priests of %s are known to be able to bestow a blessing which grants the recipient:\n%s\n ---\n", name, cp);
 
             if ((maxlen == 0) || (stringbuffer_length(add) + stringbuffer_length(buf) < maxlen)) {
                 stringbuffer_append_stringbuffer(buf, add);

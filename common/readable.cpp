@@ -686,8 +686,13 @@ char *strtoktolin(const char *buf1, const char *buf2, char *retbuf, size_t size)
             snprintf(retbuf+strlen(retbuf), size-strlen(retbuf), " and ");
         else if (i > 0 && maxi > 1)
             snprintf(retbuf+strlen(retbuf), size-strlen(retbuf), ", ");
-        else
-            snprintf(retbuf+strlen(retbuf), size-strlen(retbuf), ".");
+        else {
+            // Remove a trailing newline if it is there.
+            int end = strlen(retbuf);
+            if (retbuf[end-1] == '\n')
+                end--;
+            snprintf(retbuf+end, size-end, ".");
+        }
     }
     return retbuf;
 }
@@ -1772,8 +1777,14 @@ static StringBuffer *msgfile_msg(object *book, size_t booksize) {
                 object_insert_in_ob(event, book);
             }
         }
-    } else
+    } else {
+#ifdef BOOK_MSG_DEBUG
+        // If msg was defined when we got here, we overflowed a book.
+        if (msg)
+            LOG(llevDebug, "Could not fit message %s into %s (%ld > %ld)\n", msg->identifier, book->name, strlen(msg->message), booksize);
+#endif
         stringbuffer_append_string(ret, "\n <undecipherable text>");
+    }
 
     return ret;
 }
