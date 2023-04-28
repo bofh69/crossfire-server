@@ -2888,7 +2888,8 @@ object *object_insert_in_ob(object *op, object *where) {
     CLEAR_FLAG(op, FLAG_REMOVED);
     if (op->nrof || op->type == SKILL) {
         FOR_INV_PREPARE(where, tmp)
-            if (op->type == SKILL && tmp->type == SKILL && op->subtype == tmp->subtype) {
+            // Since harvesting skills have the same subtype, we need to check our shared string skill name as well
+            if (op->type == SKILL && tmp->type == SKILL && op->subtype == tmp->subtype && op->skill == tmp->skill) {
                 // Duplicate skill. Sum exp and total_exp.
                 LOG(llevDebug, "Merged duplicate skill %s for %s\n", op->arch->name, where->name);
                 tmp->stats.exp += op->stats.exp;

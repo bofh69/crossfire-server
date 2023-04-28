@@ -1791,7 +1791,9 @@ object *give_skill_by_name(object *op, const char *skill_name) {
     CLEAR_FLAG(skill_obj, FLAG_CAN_USE_SKILL);
     skill_obj->stats.exp = 0;
     skill_obj->level = 1;
-    object_insert_in_ob(skill_obj, op);
+    // If we inexplicably have the skill (due to a skill merge bug, for example)
+    // not reassigning skill_obj results in us pointing to a freed object.
+    skill_obj = object_insert_in_ob(skill_obj, op);
     if (op->contr) {
         link_player_skills(op);
     }
