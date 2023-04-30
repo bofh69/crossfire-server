@@ -2189,6 +2189,10 @@ int cast_bless(object *op, object *caster, object *spell_ob, int dir) {
  */
 static void alchemy_object(float value_adj, object *obj, int *small_nuggets, int *large_nuggets, int *weight) {
     uint64_t value = price_base(obj);
+    // Don't reduce gems or money, since they don't get the x4 multiplier in price_base()
+    // FIXME: If the x4 multiplier in price_base() gets changed, this should as well.
+    if (obj->type != GEM && obj->type != MONEY)
+        value /= 4;
     uint64_t small_value, large_value; /**< Value of nuggets. */
 
     /* Multiply the value of the object by value_adj, which should range
