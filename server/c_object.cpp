@@ -1958,7 +1958,7 @@ bool examine_fluff(object *op, object *tmp, bool output) {
         draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE,
             "%s a story:", tmp->nrof > 1 ? "These objects have" : "This object has");
         StringBuffer *sb = stringbuffer_new();
-        stringbuffer_append_string(sb, tmp->msg);
+        stringbuffer_append_string(sb, tmp->lore);
         stringbuffer_trim_whitespace(sb);
         char *const msg = stringbuffer_finish(sb);
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE, msg);
