@@ -1229,6 +1229,7 @@ void object_copy_with_inv(const object *src_ob, object *dest_ob, bool update_spe
  * If there is not enough memory, fatal() is called.
  */
 static void expand_objects(void) {
+    int i;
     object *add;
 
     add = (object *)CALLOC(OBJ_EXPAND, sizeof(object));
@@ -1236,17 +1237,21 @@ static void expand_objects(void) {
     if (add == NULL)
         fatal(OUT_OF_MEMORY);
     free_objects = add;
+    add[0].prev = NULL;
+    add[0].next = &add[1],
+    SET_FLAG(&add[0], FLAG_REMOVED);
+    SET_FLAG(&add[0], FLAG_FREED);
 
-    // Initialize empty objects
-    for (int i = 0; i < OBJ_EXPAND; i++) {
+    for (i = 1; i < OBJ_EXPAND-1; i++) {
         add[i].next = &add[i+1],
         add[i].prev = &add[i-1],
         SET_FLAG(&add[i], FLAG_REMOVED);
         SET_FLAG(&add[i], FLAG_FREED);
     }
-    // Go back and fix first and last pointers
-    add[0].prev = NULL;
-    add[OBJ_EXPAND-1].next = NULL;
+    add[OBJ_EXPAND-1].prev = &add[OBJ_EXPAND-2],
+    add[OBJ_EXPAND-1].next = NULL,
+    SET_FLAG(&add[OBJ_EXPAND-1], FLAG_REMOVED);
+    SET_FLAG(&add[OBJ_EXPAND-1], FLAG_FREED);
 
     nrofallocobjects += OBJ_EXPAND;
     nroffreeobjects += OBJ_EXPAND;
