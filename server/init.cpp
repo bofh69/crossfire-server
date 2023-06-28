@@ -638,7 +638,7 @@ static void load_settings(void) {
                 LOG(llevError, "load_settings: metaserver_server must have a value.\n");
         } else if (!strcasecmp(buf, "motd")) {
             if (has_val) {
-                safe_strncpy(motd, cp, sizeof(settings.motd));
+                safe_strncpy(motd, cp, sizeof(motd));
                 settings.motd = motd;
             } else
                 LOG(llevError, "load_settings: motd must have a value.\n");
