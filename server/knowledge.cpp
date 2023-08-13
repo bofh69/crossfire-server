@@ -269,7 +269,10 @@ static void knowledge_alchemy_detail(const char *value, StringBuffer *buf) {
     else
         snprintf(name, sizeof(name), "an unknown place");
 
-    stringbuffer_append_printf(buf, " is made with %s at %s and uses the following ingredients:", rec->skill ? rec->skill : "an unknown skill", name);
+    stringbuffer_append_printf(buf, ", a%s %s recipe, is made with %s at %s and uses the following ingredients:",
+      rec->diff >= 10 && rec->diff < 15 ? "n" : "",
+      recipe_get_difficulty_string(rec->diff),
+      rec->skill ? rec->skill : "an unknown skill", name);
 
     for (next = rec->ingred; next != NULL; next = next->next) {
         stringbuffer_append_printf(buf, "\n - %s", next->name);

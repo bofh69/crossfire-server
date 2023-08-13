@@ -1683,7 +1683,10 @@ static void make_formula_book(object *book, int level) {
     title = stringbuffer_new();
 
     /* preamble */
-    stringbuffer_append_printf(text, "Herein is described a project using %s:\n", formula->skill ? formula->skill : "an unknown skill");
+    stringbuffer_append_printf(text, "Herein is described a%s %s project using %s:\n",
+      formula->diff >= 10 && formula->diff < 15 ? "n" : "",
+      recipe_get_difficulty_string(formula->diff),
+      formula->skill ? formula->skill : "an unknown skill");
 
     /* item name */
     if (strcmp(formula->title, "NONE")) {

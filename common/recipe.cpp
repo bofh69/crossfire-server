@@ -948,3 +948,31 @@ const Face *recipe_get_face(const recipe *rp) {
 
     return face;
 }
+
+/**
+ * A method to produce a difficulty adjective to describe alchemy projects.
+ *
+ * @param difficulty
+ * the base difficulty of the recipe
+ *
+ * @return
+ * A string that approximates the difficulty of the recipe, meant for printing in the recipe books
+ * and the recipe knowledge descriptor.
+ */
+const char *recipe_get_difficulty_string(int difficulty) {
+    if (difficulty < 5)
+        return "basic";
+    if (difficulty < 10)
+        return "simple";
+    if (difficulty < 15)
+        return "advanced";
+    if (difficulty < 20)
+        return "complicated";
+    if (difficulty < 25)
+        return "difficult";
+    if (difficulty < 30)
+        return "challenging";
+    if (difficulty < 35)
+        return "frustrating";
+    return "vextaious";
+}

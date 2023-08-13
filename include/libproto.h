@@ -381,6 +381,7 @@ extern recipe *find_recipe_for_tool(const char *tool, recipe *from);
 extern bool check_formulae(void);
 extern const Face *recipe_get_face(const recipe *rp);
 extern bool check_recipes();
+extern const char *recipe_get_difficulty_string(int difficulty);
 /* region.cpp */
 extern region *get_region_by_name(const char *region_name);
 extern region *get_region_by_map(mapstruct *m);
