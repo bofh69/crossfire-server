@@ -1513,6 +1513,11 @@ void command_recollect(object *op, const char *params) {
     (void)params;
     load_assets();
 
+    // To prevent negative speeds from sneaking through, we need to finalize the archetypes.
+    // Negative speeds on monsters are caught and changed to .005-ish, so we need to make
+    // sure they're right now rather than later.
+    assets_finish_archetypes_for_play();
+
     // Clear sent faces for connected sockets so that clients see new faces.
     for (int i = 0; i < socket_info.allocated_sockets; i++) {
         /*
