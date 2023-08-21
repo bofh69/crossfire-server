@@ -225,6 +225,7 @@ static const arttypename art_name_array[] = {
 
 /** Book titles for artifact information. */
 static const char *const art_book_name[] = {
+    "assemblage",
     "collection",
     "file",
     "files",
@@ -236,7 +237,8 @@ static const char *const art_book_name[] = {
     "listing",
     "omnibus",
     "record",
-    "record book"
+    "record book",
+    "trove"
 };
 
 /** Used by artifact texts */
@@ -245,6 +247,7 @@ static const char *const art_author[] = {
     "artifacts",
     "equipment",
     "Havlor",   /* ancient warrior scribe :) */
+    "hoards",
     "items",
     "lost artifacts",
     "the ancients",
@@ -271,6 +274,7 @@ static const char *const mon_book_name[] = {
     "record",
     "reference",
     "register",
+    "traveller's guide",
     "volume"
 };
 
@@ -289,6 +293,7 @@ static const char *const mon_author[] = {
     "residents",
     "the spawn",
     "the living",
+    "the wilds",
     "things"
 };
 
@@ -305,9 +310,10 @@ static const char *const gods_book_name[] = {
     "hymnal",
     "illuminated text",
     "moral text",
+    "pious pamphlet",
     "sacred guide",
     "testament",
-    "transcript"
+    "transcript",
 };
 
 /** Used by gods texts. */
@@ -318,13 +324,15 @@ static const char *const gods_author[] = {
     "lasting curse",
     "madness",
     "religions",
+    "rituals",
     "the dead",
     "the gods",
     "the heirophant",
     "the poor priest",
     "the priestess",
     "pain",
-    "white"
+    "white",
+    "worship"
 };
 
 /**
