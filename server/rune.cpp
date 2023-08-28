@@ -151,8 +151,17 @@ int write_rune(object *op, object *caster, object *spell, int dir, const char *r
         tmp = object_new();
         object_copy(rune_spell, tmp);
         object_insert_in_ob(tmp, rune);
-        if (spell->face != blank_face)
-            rune->face = spell->face;
+        // Try to find a rune of the given name (and a .111 suffix) and animation, and,
+        // if yes, override with the image *and* the animation.
+        // If either is missing, don't do it. Let's not make more edge cases for now :)
+        char buf[100];
+        snprintf(buf, 100, "%s.111", spell->name);
+        const Face *face_override = try_find_face(buf, NULL);
+        const Animations *anim_override = try_find_animation(spell->name);
+        if (face_override != NULL && anim_override != NULL) {
+            rune->face = face_override;
+            rune->animation = anim_override;
+        }
     }
     rune->level = caster_level(caster, spell);
     rune->stats.Cha = rune->level/2;  /* the invisibility parameter */
