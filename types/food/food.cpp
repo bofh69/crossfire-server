@@ -222,6 +222,106 @@ static void eat_special_food(object *who, object *food) {
             did_one = 1;
         }
     }
+
+    /* Check to affect hp/sp/grace regen. Since sp and hp do direct heals, we use maxhp/maxsp/maxgrace */
+    if (food->stats.maxgrace != 0) {
+        force->stats.grace = food->stats.maxgrace;
+        did_one = 1;
+    }
+    if (food->stats.maxsp != 0) {
+        force->stats.sp = food->stats.maxsp;
+        did_one = 1;
+    }
+    if (food->stats.maxhp != 0) {
+        force->stats.hp = food->stats.maxhp;
+        did_one = 1;
+    }
+    /* Allow for food to attune/repel/deny a spell path for a duration */
+    if (food->path_attuned != 0) {
+        force->path_attuned = food->path_attuned;
+        did_one = 1;
+    }
+    if (food->path_repelled != 0) {
+        force->path_repelled = food->path_repelled;
+        did_one = 1;
+    }
+    if (food->path_denied != 0) {
+        force->path_denied = food->path_denied;
+        did_one = 1;
+    }
+
+    /* Allow for some flags on the food item to transfer to the force, too. */
+    /* Set of transferrable flags from the food to the force, as these print a message in change_abil:
+        FLAG_BLIND
+        FLAG_SEE_IN_DARK
+        FLAG_STEALTH
+        FLAG_MAKE_INVIS
+        FLAG_XRAYS
+        FLAG_UNDEAD
+        FLAG_LIFESAVE
+        FLAG_REFL_MISSILE
+        FLAG_REFL_SPELL
+    */
+    if (QUERY_FLAG(food, FLAG_BLIND)) {
+        SET_FLAG(force, FLAG_BLIND);
+        did_one = 1;
+    }
+    if (QUERY_FLAG(food, FLAG_SEE_IN_DARK)) {
+        SET_FLAG(force, FLAG_SEE_IN_DARK);
+        did_one = 1;
+    }
+    if (QUERY_FLAG(food, FLAG_STEALTH)) {
+        SET_FLAG(force, FLAG_STEALTH);
+        did_one = 1;
+    }
+    if (QUERY_FLAG(food, FLAG_MAKE_INVIS)) {
+        SET_FLAG(force, FLAG_MAKE_INVIS);
+        did_one = 1;
+    }
+    if (QUERY_FLAG(food, FLAG_XRAYS)) {
+        SET_FLAG(force, FLAG_XRAYS);
+        did_one = 1;
+    }
+    if (QUERY_FLAG(food, FLAG_UNDEAD)) {
+        SET_FLAG(force, FLAG_UNDEAD);
+        did_one = 1;
+    }
+    if (QUERY_FLAG(food, FLAG_LIFESAVE)) {
+        SET_FLAG(force, FLAG_LIFESAVE);
+        did_one = 1;
+    }
+    if (QUERY_FLAG(food, FLAG_REFL_MISSILE)) {
+        SET_FLAG(force, FLAG_REFL_MISSILE);
+        did_one = 1;
+    }
+    if (QUERY_FLAG(food, FLAG_REFL_SPELL)) {
+        SET_FLAG(force, FLAG_REFL_SPELL);
+        did_one = 1;
+    }
+    /* Allow for food to temporarily grant move types */
+    if (food->move_type != 0) {
+        force->move_type = food->move_type;
+        did_one = 1;
+    }
+    /* And to grant atacktypes */
+    if (food->attacktype != 0) {
+        force->attacktype = food->attacktype;
+        did_one = 1;
+    }
+    /* And luck, wc, and ac */
+    if (food->stats.wc != 0) {
+        force->stats.wc = food->stats.wc;
+        did_one = 1;
+    }
+    if (food->stats.ac != 0) {
+        force->stats.ac = food->stats.ac;
+        did_one = 1;
+    }
+    if (food->stats.luck != 0) {
+        force->stats.luck = food->stats.luck;
+        did_one = 1;
+    }
+
     if (did_one) {
         force->speed = MOVE_PER_SECOND;
         object_update_speed(force);
