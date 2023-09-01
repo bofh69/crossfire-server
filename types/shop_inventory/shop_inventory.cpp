@@ -126,8 +126,11 @@ static method_ret shop_inventory_type_apply(object *lighter, object *applier, in
     if (applier->type != PLAYER)
         return METHOD_UNHANDLED;
 
-    draw_ext_info(NDI_UNIQUE, 0, applier, MSG_TYPE_SHOP, MSG_TYPE_SHOP_LISTING,
-        "\nThe shop contains:");
+    // By using a buffer, we can make the shop inventory send all at once.
+    // This will make the GTK client behave better when printing the shop inventory.
+    StringBuffer *buf = stringbuffer_new();
+
+    stringbuffer_append_string(buf, "\nThe shop contains:\n");
 
     items = static_cast<shopinv *>(malloc(40*sizeof(shopinv)));
     numallocated = 40;
@@ -154,8 +157,11 @@ static method_ret shop_inventory_type_apply(object *lighter, object *applier, in
         }
     }
     if (numitems == 0) {
-        draw_ext_info(NDI_UNIQUE, 0, applier, MSG_TYPE_SHOP, MSG_TYPE_SHOP_LISTING,
-            "The shop is currently empty.\n");
+        stringbuffer_append_string(buf, "The shop is currently empty.\n");
+        // Print before we clean and exit
+        const char *str = stringbuffer_finish(buf);
+        draw_ext_info(NDI_UNIQUE, 0, applier, MSG_TYPE_SHOP, MSG_TYPE_SHOP_LISTING, str);
+        free((char *)str);
         free(items);
         return METHOD_OK;
     }
@@ -168,14 +174,18 @@ static method_ret shop_inventory_type_apply(object *lighter, object *applier, in
             free(items[i].item_sort);
             free(items[i].item_real);
         } else {
-            draw_ext_info_format(NDI_UNIQUE, 0, applier, MSG_TYPE_SHOP, MSG_TYPE_SHOP_LISTING,
-                "%d %s",
+            stringbuffer_append_printf(buf,
+                "%d %s\n",
                 items[i].nrof ? items[i].nrof : 1,
                 items[i].nrof == 1 ? items[i].item_sort : items[i].item_real);
             free(items[i].item_sort);
             free(items[i].item_real);
         }
     }
+    // Okay, we've got the shop inventory, now we can send it over all at once.
+    const char *str = stringbuffer_finish(buf);
+    draw_ext_info(NDI_UNIQUE, 0, applier, MSG_TYPE_SHOP, MSG_TYPE_SHOP_LISTING, str);
+    free((char *)str);
     free(items);
     return METHOD_OK;
 }
