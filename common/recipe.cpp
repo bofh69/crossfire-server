@@ -974,5 +974,5 @@ const char *recipe_get_difficulty_string(int difficulty) {
         return "challenging";
     if (difficulty < 35)
         return "frustrating";
-    return "vextaious";
+    return "vexatious";
 }
