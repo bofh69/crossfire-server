@@ -152,7 +152,7 @@ START_TEST(test_describe_item) {
         "",
         "(dam+11)(weapon speed 9)(Attacks: physical)",
         "(food+600)",
-        "(item_power +3)",
+        "(item_power +3)(lifesaving)",
         "",
         "",
         "(Con+2)(Cha-1)(dam+10)(item_power +15)(weapon speed 5)(regeneration+1)(Attacks: weaponmagic)[ul](resist drain +100)[/ul][color=green](resist poison +30)[/color]",
