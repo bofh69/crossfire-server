@@ -144,7 +144,7 @@ void FaceLoader::load(BufferReader *buffer, const std::string& filename) {
             if (value)
                 on_face->magicmap |= FACE_FLOOR;
         } else
-            LOG(llevDebug, "faces: unknown line in file %s: %s\n", filename.c_str(), buf);
+            LOG(llevError, "faces: unknown line in file %s: %s\n", filename.c_str(), buf);
     }
 
     if (on_face) {
