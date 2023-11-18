@@ -76,6 +76,7 @@ class ObjectWrapper : public AssetTWrapper<object> {
     ATW_PROP(float, speed, speed);
     Q_PROPERTY(float dps READ dps);
     Q_PROPERTY(float regen READ regen);
+    ATW_RPROP(int, nrof, nrof);
 
     public:
         ObjectWrapper(AssetWrapper *parent, object *ob, ResourcesManager *resourcesManager);
