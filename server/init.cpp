@@ -1200,41 +1200,51 @@ static void init_beforeplay(void) {
     case 1:
         print_monsters();
         cleanup();
+        break;
 
     case 2:
         dump_abilities();
         cleanup();
+        break;
 
     case 3:
         dump_artifacts();
         cleanup();
+        break;
 
     case 4:
         dump_spells();
         cleanup();
+        break;
 
     case 5:
         cleanup();
+        break;
 
     case 6:
         dump_races();
         cleanup();
+        break;
 
     case 7:
         dump_alchemy();
         cleanup();
+        break;
 
     case 8:
         dump_gods();
         cleanup();
+        break;
 
     case 9:
         dump_alchemy_costs();
         cleanup();
+        break;
 
     case 10:
         dump_monster_treasure(settings.dumparg);
         cleanup();
+        break;
     }
 }
 
