@@ -131,6 +131,8 @@ static std::thread metaserver_thread;
 /** Statistics on players and such sent to the metaserver2. */
 MetaServer2_UpdateInfo metaserver2_updateinfo;
 
+#ifdef HAVE_LIBCURL
+
 /**
  * Handles writing of HTTP request data from the metaserver2.
  * We treat the data as a string.  We should really pay attention to the
@@ -149,7 +151,6 @@ static size_t metaserver2_writer(void *ptr, size_t size, size_t nmemb, void *dat
     return realsize;
 }
 
-#ifdef HAVE_LIBCURL
 static void metaserver2_build_form(struct curl_httppost **formpost) {
     struct curl_httppost *lastptr = NULL;
     char buf[MAX_BUF];
@@ -322,13 +323,13 @@ void metaserver2_thread() {
  * metaserver updates
  */
 int metaserver2_init(void) {
-    static int has_init = 0;
     FILE *fp;
     char buf[MAX_BUF], *cp, dummy[1];
 
     dummy[0] = '\0';
 
 #ifdef HAVE_LIBCURL
+    static int has_init = 0;
     if (!has_init) {
         memset(&local_info, 0, sizeof(LocalMeta2Info));
         memset(&metaserver2_updateinfo, 0, sizeof(MetaServer2_UpdateInfo));
