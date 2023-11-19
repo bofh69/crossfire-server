@@ -116,7 +116,7 @@ FILE *tempnam_secure(const char *dir, const char *pfx, char **filename) {
  */
 void remove_directory(const char *path) {
     DIR *dirp;
-    char buf[MAX_BUF];
+    char buf[strlen(path) + sizeof(dirent::d_name) + 1];
     struct stat statbuf;
     int status;
 

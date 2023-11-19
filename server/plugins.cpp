@@ -4565,7 +4565,7 @@ void initPlugins(void) {
     struct dirent *currentfile;
     DIR *plugdir;
     size_t l;
-    char buf[MAX_BUF];
+    char buf[sizeof(LIBDIR) + 9 + sizeof(dirent::d_name)];
 
     snprintf(buf, sizeof(buf), "%s/plugins/", LIBDIR);
     LOG(llevDebug, "plugins: loading from %s\n", buf);

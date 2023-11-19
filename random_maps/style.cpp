@@ -76,7 +76,7 @@ int load_dir(const char *dir, char ***namelist, int skip_dirs)
     DIR *dp;
     struct dirent *d;
     int entries = 0, entry_size = 0;
-    char name[NAME_MAX+1], **rn = NULL;
+    char name[strlen(dir) + sizeof(dirent::d_name) + 1], **rn = NULL;
     struct stat sb;
 
     dp = opendir(dir);
@@ -180,7 +180,7 @@ mapstruct *load_style_map(char *style_name)
 mapstruct *find_style(const char *dirname, const char *stylename, int difficulty)
 {
     char style_file_path[256];
-    char style_file_full_path[256];
+    char style_file_full_path[strlen(settings.datadir) + 5 + sizeof(style_file_path)];
     mapstruct *style_map = NULL;
     struct stat file_stat;
     int i, only_subdirs = 0;
@@ -205,7 +205,7 @@ mapstruct *find_style(const char *dirname, const char *stylename, int difficulty
     if (style_map == NULL) { /* maybe we were given a directory! */
         char **namelist;
         int n;
-        char style_dir_full_path[256];
+        char style_dir_full_path[strlen(settings.datadir) + 5 + sizeof(style_file_path)];
 
         /* get the names of all the files in that directory */
         snprintf(style_dir_full_path, sizeof(style_dir_full_path), "%s/maps%s", settings.datadir, style_file_path);
