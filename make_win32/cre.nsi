@@ -88,15 +88,15 @@ no_current:
   File "cre.ico"
 
   ; Translations
-  CreateDirectory "l10n"
+  CreateDirectory "$INSTDIR\l10n"
   SetOutPath "$INSTDIR\l10n"
   File "..\utils\cre\l10n\*.qm"
 
   ; Required directories
-  CreateDirectory "share"
-  CreateDirectory "share\i18n"
-  CreateDirectory "etc"
-  CreateDirectory "var"
+  CreateDirectory "$INSTDIR\share"
+  CreateDirectory "$INSTDIR\share\i18n"
+  CreateDirectory "$INSTDIR\etc"
+  CreateDirectory "$INSTDIR\var"
 
   ; Required files
   SetOutPath "$INSTDIR\share\i18n"
