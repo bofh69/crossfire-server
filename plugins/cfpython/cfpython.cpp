@@ -1619,7 +1619,7 @@ static void freeEventFiles(char **eventFiles) {
  */
 static char **getEventFiles(CFPContext *context) {
     char **eventFiles = NULL;
-    char name[NAME_MAX+1], path[NAME_MAX + 1];
+    char name[HUGE_BUF], path[NAME_MAX + 1];
 
     int allocated = 0, current = 0;
     DIR *dp;

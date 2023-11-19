@@ -1338,12 +1338,12 @@ void key_change_class(object *op, char key) {
          */
         if (*first_map_ext_path) {
             object *tmp;
-            char mapname[MAX_BUF];
+            char mapname[MAX_BUF + strlen(op->arch->name) + 1];
             mapstruct *oldmap;
 
             oldmap = op->map;
 
-            snprintf(mapname, MAX_BUF-1, "%s/%s", first_map_ext_path, op->arch->name);
+            snprintf(mapname, sizeof(mapname), "%s/%s", first_map_ext_path, op->arch->name);
             /*printf("%s\n", mapname);*/
             tmp = object_new();
             EXIT_PATH(tmp) = add_string(mapname);

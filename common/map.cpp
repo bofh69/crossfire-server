@@ -1347,7 +1347,7 @@ static void delete_unique_items(mapstruct *m) {
 static void load_unique_objects(mapstruct *m) {
     FILE *fp;
     int count;
-    char firstname[MAX_BUF], name[MAX_BUF];
+    char name[MAX_BUF], firstname[sizeof(name) + 4];
 
     create_items_path(m->path, name, MAX_BUF);
     for (count = 0; count < 10; count++) {
@@ -1505,7 +1505,7 @@ int save_map(mapstruct *m, int flag) {
      * player)
      */
     if ((flag == SAVE_MODE_NORMAL || flag == SAVE_MODE_OVERLAY) && !m->unique && !m->is_template) {
-        char name[MAX_BUF], final_unique[MAX_BUF];
+        char name[MAX_BUF], final_unique[sizeof(name) + 4];
 
         create_items_path(m->path, name, MAX_BUF);
         snprintf(final_unique, sizeof(final_unique), "%s.v00", name);
@@ -2663,7 +2663,7 @@ object *map_find_by_flag(mapstruct *map, int x, int y, int flag) {
  * @param map
  */
 void map_remove_unique_files(const mapstruct *map) {
-    char base[HUGE_BUF], path[HUGE_BUF];
+    char base[HUGE_BUF], path[sizeof(base) + 4];
     int count;
 
     if (map->unique) {

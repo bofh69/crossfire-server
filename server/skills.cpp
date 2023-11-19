@@ -236,7 +236,7 @@ static int attempt_steal(object *op, object *who, object *skill) {
              */
             SET_FLAG(op, FLAG_NO_STEAL);
         } else { /* stealing from another player */
-            char buf[MAX_BUF];
+            char buf[HUGE_BUF];
 
             /* Notify the other player */
             if (success && who->stats.Int > random_roll(0, 19, op, PREFER_LOW)) {

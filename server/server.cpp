@@ -616,7 +616,7 @@ static void enter_random_template_map(object *pl, object *exit_ob) {
  * exit containing unique map information.
  */
 static void enter_unique_map(object *op, object *exit_ob) {
-    char apartment[HUGE_BUF], path[MAX_BUF];
+    char apartment[2 * HUGE_BUF], path[MAX_BUF];
     mapstruct        *newmap;
 
     if (EXIT_PATH(exit_ob)[0] == '/') {

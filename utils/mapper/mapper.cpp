@@ -2741,7 +2741,7 @@ static void find_maps(const char *from) {
     struct dirent *file;
     struct stat statbuf;
     int status, ignore;
-    char path[1024], full[1024];
+    char path[1024], full[HUGE_BUF];
     DIR *dir;
 
     for (ignore = 0; ignore_path[ignore] != NULL; ignore++) {

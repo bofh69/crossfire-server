@@ -107,7 +107,7 @@ static int is_suitable_exit(object *exit) {
  * random seed.
  */
 static int get_exit_seed(const object *exit, const mapstruct *map) {
-    char r[500];
+    char r[HUGE_BUF + 100];
     int seed = 0, len, w = 0;
 
     snprintf(r, sizeof(r), "%s!%d,%d*%s", exit->arch->name, exit->x, exit->y, map->path);

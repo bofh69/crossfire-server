@@ -606,7 +606,7 @@ static void get_attack_message(int dam, int type, const object *op, const object
  * use string safe functions.
  */
 static void attack_message(int dam, int type, object *op, object *hitter) {
-    char buf[MAX_BUF], buf1[MAX_BUF], buf2[MAX_BUF];
+    char buf[VERY_BIG_BUF], buf1[MAX_BUF], buf2[MAX_BUF];
     object *owner;
 
     if (dam > 0) {
@@ -1580,7 +1580,7 @@ void party_add_kill(partylist *party, const char *killer, const char *dead, long
  * finish commenting what it does exactly.
  */
 static int kill_object(object *op, int dam, object *hitter) {
-    char kill_message[MAX_BUF];
+    char kill_message[VERY_BIG_BUF];
     const char *skill;
     int maxdam = 0;
     int battleg = 0;  /* true if op standing on battleground */
@@ -1825,7 +1825,8 @@ static int kill_object(object *op, int dam, object *hitter) {
     /* Player has been killed! */
     } else {
         if (owner->type == PLAYER) {
-            snprintf(op->contr->killer, BIG_NAME, "%s the %s", owner->name, owner->contr->title);
+            snprintf(op->contr->killer, BIG_NAME, "%s the %.*s", owner->name,
+                     int(sizeof(op->contr->killer) - strlen(owner->name) - 4), owner->contr->title);
         } else {
             strncpy(op->contr->killer, hitter->name, BIG_NAME);
             op->contr->killer[BIG_NAME-1] = '\0';

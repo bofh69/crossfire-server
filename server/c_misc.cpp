@@ -2045,7 +2045,7 @@ void receive_player_password(object *op, const char *password) {
  * 1.
  */
 void command_title(object *op, const char *params) {
-    char buf[MAX_BUF];
+    char buf[HUGE_BUF];
 
     if (settings.set_title == FALSE) {
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_CONFIG,

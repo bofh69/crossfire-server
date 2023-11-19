@@ -1240,7 +1240,7 @@ static int town_portal_destroy_existing(object* op, object* spell) {
  */
 int cast_create_town_portal(object *op, object *caster, object *spell) {
     object *dummy, *force, *tmp;
-    char portal_name [1024], portal_message [1024];
+    char portal_name [2 * HUGE_BUF], portal_message [1024];
     mapstruct *exitmap;
     int op_level, x, y;
 
@@ -1335,7 +1335,7 @@ int cast_create_town_portal(object *op, object *caster, object *spell) {
      * force contain the track to kill it later
      */
 
-    snprintf(portal_name, 1024, "%s's portal to %s", op->name, force->name);
+    snprintf(portal_name, sizeof(portal_name), "%s's portal to %s", op->name, force->name);
     dummy = create_archetype(spell->slaying); /*The portal*/
     if (dummy == NULL) {
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_SPELL, MSG_TYPE_SPELL_ERROR,
@@ -1384,7 +1384,7 @@ int cast_create_town_portal(object *op, object *caster, object *spell) {
      * the 'force' variable still contains the 'reminder' of
      * where this portal goes to.
      */
-    snprintf(portal_name, 1024, "%s's portal to %s", op->name, op->map->path);
+    snprintf(portal_name, sizeof(portal_name), "%s's portal to %s", op->name, op->map->path);
     dummy = create_archetype(spell->slaying);  /*The portal*/
     if (dummy == NULL) {
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_SPELL, MSG_TYPE_SPELL_ERROR,
