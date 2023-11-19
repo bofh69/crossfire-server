@@ -23,7 +23,7 @@ if [ "$UID" -lt 1000 ]; then
     exit 1
 fi
 cat >"$BUILDDIR/Dockerfile" <<EOF
-FROM debian:stretch
+FROM debian:buster
 
 RUN DEBIAN_FRONTEND=noninteractive TERM=xterm apt-get update && apt-get install -y \
     software-properties-common \
@@ -42,7 +42,7 @@ RUN apt-key adv \
     --recv-keys 86B72ED9
 
 RUN DEBIAN_FRONTEND=noninteractive TERM=xterm add-apt-repository \
-    "deb [arch=amd64] https://pkg.mxe.cc/repos/apt/ stretch main"
+    "deb [arch=amd64] https://pkg.mxe.cc/repos/apt/ buster main"
 
 RUN DEBIAN_FRONTEND=noninteractive TERM=xterm apt-get update && apt-get install -y \
     mxe-x86-64-w64-mingw32.static-cc \
