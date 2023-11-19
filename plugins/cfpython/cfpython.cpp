@@ -876,7 +876,7 @@ static FILE* cfpython_pyfile_asfile(PyObject* obj) {
  */
 static PyObject *catcher = NULL;
 
-#ifdef IS_PY3K10
+#if defined(IS_PY3K9) || defined(IS_PY3K10)
 /**
  * A Python object so that we only need to import the io module once.
  * The recommended way to load a file to compile in 3.10 and later involves importing the io module, so we really just do that once.
@@ -914,7 +914,6 @@ static PyCodeObject *compilePython(char *filename) {
     PyObject *scriptfile = NULL;
     sstring sh_path;
     struct stat stat_buf;
-    struct _node *n;
     int i;
     pycode_cache_entry *replace = NULL, *run = NULL;
 
@@ -963,7 +962,7 @@ static PyCodeObject *compilePython(char *filename) {
             }
             replace->file = cf_add_string(sh_path);
         }
-#ifdef IS_PY3K10
+#if defined (IS_PY3K9) || defined(IS_PY3K10)
         /* With the new parser in 3.10, we need to read the file contents into a buffer, and then pass that string to compile it.
          * The new parser removes the PyNode functions as well as PyParser_SimpleParseFile,
          * so the code needed to be completely rewritten to work.
@@ -1005,6 +1004,7 @@ static PyCodeObject *compilePython(char *filename) {
         } else {
             /* Note: FILE* being opaque, it works, but the actual structure may be different! */
             FILE* pyfile = cfpython_pyfile_asfile(scriptfile);
+            struct _node *n;
             if ((n = PyParser_SimpleParseFile(pyfile, filename, Py_file_input))) {
                 replace->code = PyNode_Compile(n, filename);
                 PyNode_Free(n);

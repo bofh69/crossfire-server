@@ -53,6 +53,9 @@
 #    if PY_MINOR_VERSION >= 8
 #        define IS_PY3K8
 #    endif
+#    if PY_MINOR_VERSION >= 9
+#        define IS_PY3K9
+#    endif
 #    if PY_MINOR_VERSION >= 10
 #        define IS_PY3K10
 #    endif
@@ -196,6 +199,60 @@ PyTypeObject Crossfire_ ## NAME ## Type = { \
     0,                            /* tp_version_tag */ \
     NULL                          /* tp_finalize */ \
 }
+#elif PY_VERSION_HEX == 0x030902F0
+#define CF_PYTHON_OBJECT(NAME, DEALLOC, CONVERT, HASH, FLAGS, DOC, CMP, METHODS, GETSET, BASE, OBNEW) \
+PyTypeObject Crossfire_ ## NAME ## Type = { \
+    /* See http://bugs.python.org/issue4385 */ \
+    PyVarObject_HEAD_INIT(NULL, 0) \
+    "Crossfire." #NAME,           /* tp_name*/ \
+    sizeof(Crossfire_ ## NAME),   /* tp_basicsize*/ \
+    0,                            /* tp_itemsize*/ \
+    DEALLOC,                      /* tp_dealloc*/ \
+    (printfunc)NULL,              /* tp_print*/ \
+    NULL,                         /* tp_getattr*/ \
+    NULL,                         /* tp_setattr*/ \
+    NULL,                         /* tp_reserved */ \
+    NULL,                         /* tp_repr*/ \
+    CONVERT,                      /* tp_as_number*/ \
+    NULL,                         /* tp_as_sequence*/ \
+    NULL,                         /* tp_as_mapping*/ \
+    HASH,                         /* tp_hash */ \
+    NULL,                         /* tp_call*/ \
+    NULL,                         /* tp_str*/ \
+    PyObject_GenericGetAttr,      /* tp_getattro*/ \
+    PyObject_GenericSetAttr,      /* tp_setattro*/ \
+    NULL,                         /* tp_as_buffer*/ \
+    FLAGS,                        /* tp_flags*/ \
+    DOC,                          /* tp_doc */ \
+    NULL,                         /* tp_traverse */ \
+    NULL,                         /* tp_clear */ \
+    CMP,                          /* tp_richcompare */ \
+    0,                            /* tp_weaklistoffset */ \
+    NULL,                         /* tp_iter */ \
+    NULL,                         /* tp_iternext */ \
+    METHODS,                      /* tp_methods */ \
+    NULL,                         /* tp_members */ \
+    GETSET,                       /* tp_getset */ \
+    BASE,                         /* tp_base */ \
+    NULL,                         /* tp_dict */ \
+    NULL,                         /* tp_descr_get */ \
+    NULL,                         /* tp_descr_set */ \
+    0,                            /* tp_dictoffset */ \
+    NULL,                         /* tp_init */ \
+    NULL,                         /* tp_alloc */ \
+    OBNEW,                        /* tp_new */ \
+    NULL,                         /* tp_free */ \
+    NULL,                         /* tp_is_gc */ \
+    NULL,                         /* tp_bases */ \
+    NULL,                         /* tp_mro */ \
+    NULL,                         /* tp_cache */ \
+    NULL,                         /* tp_subclasses */ \
+    NULL,                         /* tp_weaklist */ \
+    NULL,                         /* tp_del */ \
+    0,                            /* tp_version_tag */ \
+    NULL,                         /* tp_finalize */ \
+    NULL                          /* tp_vectorcall */ \
+}
 #else
 #define CF_PYTHON_OBJECT(NAME, DEALLOC, CONVERT, HASH, FLAGS, DOC, CMP, METHODS, GETSET, BASE, OBNEW) \
 PyTypeObject Crossfire_ ## NAME ## Type = { \
@@ -255,7 +312,7 @@ PyTypeObject Crossfire_ ## NAME ## Type = { \
  * - NAME: object's name, like "Object" or "Map", without quotes
  * - LONG: name of a function converting the Python object to a long
  */
-#if PY_VERSION_HEX == 0x030503F0
+#if PY_VERSION_HEX == 0x030503F0 || PY_VERSION_HEX == 0x030902F0
 #define CF_PYTHON_NUMBER_METHODS(NAME, LONG) \
 static PyNumberMethods NAME ## Convert = { \
     NULL,            /* binaryfunc nb_add; */        /* __add__ */ \

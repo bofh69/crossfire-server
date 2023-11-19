@@ -12,6 +12,12 @@
 #include <ctype.h>
 #include <math.h>
 
+#ifdef IS_PY3K9
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif
+
 using namespace std;
 
 typedef struct JSONData {
@@ -1071,7 +1077,7 @@ static PyObject *JSON_encode(PyObject *self, PyObject *object) {
 /* Decode JSON representation into pyhton objects */
 
 static PyObject *JSON_decode(PyObject *self, PyObject *args, PyObject *kwargs) {
-    static char *kwlist[] = { "json", "all_unicode", NULL };
+    static char *kwlist[] = { (char*)"json", (char*)"all_unicode", NULL };
     int all_unicode = True; /* by default return unicode always */
     PyObject *object, *string, *str;
     JSONData jsondata;
@@ -1196,3 +1202,7 @@ PyObject* PyInit_cjson(void)
 
     return m;
 }
+
+#ifdef IS_PY3K9
+#pragma GCC diagnostic pop
+#endif
