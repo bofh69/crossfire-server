@@ -34,6 +34,7 @@
 #include <string.h>
 #include <check.h>
 #include <global.h>
+#include "toolkit_common.h"
 
 #include "path.h"
 
@@ -49,7 +50,7 @@ static void check_combine(const char *src, const char *dst, const char *exp) {
     char res[HUGE_BUF];
 
     path_combine(src, dst, res, HUGE_BUF);
-    fail_unless(strcmp(res, exp) == 0, "path_combine(%s, %s) = %s but should be %s", src, dst, res, exp);
+    FAIL_UNLESS(strcmp(res, exp) == 0, "path_combine(%s, %s) = %s but should be %s", src, dst, res, exp);
 }
 
 static void check_normalize(const char *path, const char *exp) {
@@ -59,14 +60,14 @@ static void check_normalize(const char *path, const char *exp) {
     strncpy(tmp, path, sizeof(tmp));
     tmp[HUGE_BUF-1] = '\0';
     path_normalize(tmp);
-    fail_unless(strcmp(tmp, exp) == 0, "path_normalize(%s) = %s but should be %s", path, tmp, exp);
+    FAIL_UNLESS(strcmp(tmp, exp) == 0, "path_normalize(%s) = %s but should be %s", path, tmp, exp);
 }
 
 static void check_combine_and_normalize(const char *src, const char *dst, const char *exp) {
     char res[HUGE_BUF];
 
     path_combine_and_normalize(src, dst, res, sizeof(res));
-    fail_unless(strcmp(res, exp) == 0, "path_combine_and_normalize(%s, %s) = %s but should be %s", src, dst, res, exp);
+    FAIL_UNLESS(strcmp(res, exp) == 0, "path_combine_and_normalize(%s, %s) = %s but should be %s", src, dst, res, exp);
 }
 
 START_TEST(test_path_combine) {

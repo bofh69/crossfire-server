@@ -115,7 +115,7 @@ static void do_run(void) {
     for (map = 1; map <= 3; map++) {
         snprintf(path, sizeof(path), "/whalingoutpost/underwaterdungeon/level%d", map);
         worldmap = ready_map_name(path, 0);
-        fail_unless(worldmap != NULL, "Can't load %s", path);
+        FAIL_UNLESS(worldmap != NULL, "Can't load %s", path);
 
         random = worldmap;
         old = NULL;
@@ -132,12 +132,12 @@ static void do_run(void) {
                 for (y = 0; y < MAP_HEIGHT(random); y++) {
                     for (check = GET_MAP_OB(random, x, y); check; check = check->above) {
                         if (check->type == ROD && check->title && strcmp(check->title, "of Plenty") == 0)
-                            fail_unless(check->inv != NULL, "Horn has empty inventory!");
+                            FAIL_UNLESS(check->inv != NULL, "Horn has empty inventory!");
                     }
                 }
             }
         }
-        fail_unless(iteration != 0, "did %d iterations", iteration);
+        FAIL_UNLESS(iteration != 0, "did %d iterations", iteration);
         if (old)
             delete_map(old);
     }
@@ -151,18 +151,18 @@ static void do_run(void) {
     object *check;
 
     overlay = ready_map_name("../../rsc/bug_1727944_unique", MAP_PLAYER_UNIQUE);
-    fail_unless(overlay != NULL, "Couldn't load unique map ../../rsc/bug_1727944_unique");
+    FAIL_UNLESS(overlay != NULL, "Couldn't load unique map ../../rsc/bug_1727944_unique");
 
     while (found == 0 && test < 10) {
         map = ready_map_name("../../rsc/bug_1727944", MAP_PLAYER_UNIQUE);
-        fail_unless(map != NULL, "couldn't load map ../../rsc/bug_1727944");
+        FAIL_UNLESS(map != NULL, "couldn't load map ../../rsc/bug_1727944");
 
         for (x = 0; x < MAP_WIDTH(map); x++) {
             for (y = 0; y < MAP_HEIGHT(map); y++) {
                 for (check = GET_MAP_OB(map, x, y); check; check = check->above) {
                     if (check->type == ROD) {
-                        fail_unless(check->inv != NULL, "Horn has empty inventory!");
-                        fail_unless(check->inv->below == NULL, "Horn has 2 items in inventory!");
+                        FAIL_UNLESS(check->inv != NULL, "Horn has empty inventory!");
+                        FAIL_UNLESS(check->inv->below == NULL, "Horn has 2 items in inventory!");
                         if (check->title && strcmp(check->title, "of Plenty") == 0) {
                             object_remove(check);
                             object_insert_in_map_at(check, overlay, NULL, 0, 2, 3);
@@ -343,13 +343,13 @@ START_TEST(test_randommaps) {
 
     for (test = 0; test < 50; test++) {
         overlay = ready_map_name("../../rsc/bug_1727944_unique", MAP_PLAYER_UNIQUE);
-        fail_unless(overlay != NULL, "Couldn't load unique map ../../rsc/bug_1727944_unique");
-        fail_unless(GET_MAP_OB(overlay, 2, 3) != NULL, "No item on spot 2,3?");
+        FAIL_UNLESS(overlay != NULL, "Couldn't load unique map ../../rsc/bug_1727944_unique");
+        FAIL_UNLESS(GET_MAP_OB(overlay, 2, 3) != NULL, "No item on spot 2,3?");
 
         for (check = GET_MAP_OB(overlay, 2, 3)->above; check != NULL; check = check->above) {
-            fail_unless(check->type == ROD, "Found a non horn?");
-            fail_unless(check->inv != NULL, "Horn without a spell!");
-            fail_unless(check->inv->below == NULL, "Horn with 2 items in inventory.");
+            FAIL_UNLESS(check->type == ROD, "Found a non horn?");
+            FAIL_UNLESS(check->inv != NULL, "Horn without a spell!");
+            FAIL_UNLESS(check->inv->below == NULL, "Horn with 2 items in inventory.");
         }
         save_map(overlay, SAVE_MODE_OVERLAY);
         delete_map(overlay);
@@ -359,15 +359,15 @@ START_TEST(test_randommaps) {
 #if 0
     int test;
     archetype *horn = find_archetype("horn");
-    fail_unless(horn != NULL, "couldn't find archetype horn.");
+    FAIL_UNLESS(horn != NULL, "couldn't find archetype horn.");
     archetype *horn2 = find_archetype("horn2");
-    fail_unless(horn2 != NULL, "couldn't find archetype horn2.");
+    FAIL_UNLESS(horn2 != NULL, "couldn't find archetype horn2.");
 
     for (test = 0; test < 100000; test++) {
         object *check = arch_to_object(RANDOM()%2 ? horn : horn2);
 
         generate_artifact(check, RANDOM()%100);
-        fail_unless(check->inv != NULL, "horn without inventory!");
+        FAIL_UNLESS(check->inv != NULL, "horn without inventory!");
     }
 #endif
 
@@ -375,35 +375,35 @@ START_TEST(test_randommaps) {
     object *the_chest, *check;
     mapstruct *map;
     treasurelist *tlist = find_treasurelist("uncommon_items");
-    fail_unless(tlist != NULL, "couldn't find treasure list uncommon_items");
+    FAIL_UNLESS(tlist != NULL, "couldn't find treasure list uncommon_items");
 
     for (test = 0; test < 10; test++) {
         for (level = 1; level < 120; level++) {
             map = get_empty_map(1, 1);
-            fail_unless(map != NULL, "failed to get empty map");
+            FAIL_UNLESS(map != NULL, "failed to get empty map");
             map->difficulty = level;
 
             the_chest = create_archetype("chest");  /* was "chest_2" */
-            fail_unless(the_chest != NULL, "failed to get chest");
+            FAIL_UNLESS(the_chest != NULL, "failed to get chest");
             the_chest->randomitems = tlist;
             the_chest->stats.hp = RANDOM()%100;
             object_insert_in_map_at(the_chest, map, NULL, 0, 0, 0);
             apply_auto_fix(map);
             the_chest = GET_MAP_OB(map, 0, 0);
-            fail_unless(the_chest != NULL, "failed to recover chest?");
+            FAIL_UNLESS(the_chest != NULL, "failed to recover chest?");
             for (check = the_chest->inv; check; check = check->below) {
                 if (check->type != ROD)
                     continue;
                 local_check_loaded_object(check);
-                fail_unless(check->inv != NULL, "horn without inventory");
-                fail_unless(check->inv->below == NULL, "horn with 2 items");
-                fail_unless(check->randomitems == NULL, "horn with randomitems set");
+                FAIL_UNLESS(check->inv != NULL, "horn without inventory");
+                FAIL_UNLESS(check->inv->below == NULL, "horn with 2 items");
+                FAIL_UNLESS(check->randomitems == NULL, "horn with randomitems set");
                 found++;
             }
             delete_map(map);
         }
     }
-    fail_unless(found > 100, "didn't find 100 horn but %d??", found);
+    FAIL_UNLESS(found > 100, "didn't find 100 horn but %d??", found);
 
 }
 END_TEST

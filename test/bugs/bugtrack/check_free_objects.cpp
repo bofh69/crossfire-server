@@ -57,47 +57,47 @@ START_TEST(test_merge) {
     object *food2;
 
     map1 = ready_map_name("/world/world_103_128", 0);
-    fail_unless(map1 != NULL, "cannot load map /world/world_103_128");
+    FAIL_UNLESS(map1 != NULL, "cannot load map /world/world_103_128");
 
     scroll_arch = find_archetype("scroll_new");
-    fail_unless(scroll_arch != NULL, "cannot find archetype scroll_new");
+    FAIL_UNLESS(scroll_arch != NULL, "cannot find archetype scroll_new");
 
     food_arch = find_archetype("food");
-    fail_unless(food_arch != NULL, "cannot find archetype food");
+    FAIL_UNLESS(food_arch != NULL, "cannot find archetype food");
 
     scroll1 = object_create_arch(scroll_arch);
-    fail_unless(scroll1 != NULL, "cannot create object scroll_new");
+    FAIL_UNLESS(scroll1 != NULL, "cannot create object scroll_new");
 
     scroll2 = object_create_arch(scroll_arch);
-    fail_unless(scroll2 != NULL, "cannot create object scroll_new");
+    FAIL_UNLESS(scroll2 != NULL, "cannot create object scroll_new");
 
     food1 = object_create_arch(food_arch);
-    fail_unless(food1 != NULL, "cannot create object food");
+    FAIL_UNLESS(food1 != NULL, "cannot create object food");
 
     food2 = object_create_arch(food_arch);
-    fail_unless(food2 != NULL, "cannot create object food");
+    FAIL_UNLESS(food2 != NULL, "cannot create object food");
 
     food1 = object_insert_in_ob(food1, scroll1);
 
     food2 = object_insert_in_ob(food2, scroll2);
 
-    fail_unless(find_arch_at(map1, 4, 3, "scroll_new") == NULL, "map initially contains a scroll");
-    fail_unless(find_arch_at(map1, 4, 3, "food") == NULL, "map initially contains a food");
+    FAIL_UNLESS(find_arch_at(map1, 4, 3, "scroll_new") == NULL, "map initially contains a scroll");
+    FAIL_UNLESS(find_arch_at(map1, 4, 3, "food") == NULL, "map initially contains a food");
 
     scroll1 = object_insert_in_map_at(scroll1, map1, NULL, 0, 4, 3);
-    fail_unless(scroll1 != NULL, "scroll could not be added to the map");
+    FAIL_UNLESS(scroll1 != NULL, "scroll could not be added to the map");
 
-    fail_unless(find_arch_at(map1, 4, 3, "scroll_new") == scroll1, "scroll disappeared");
-    fail_unless(find_arch_at(map1, 4, 3, "food") == NULL, "map contains a food");
+    FAIL_UNLESS(find_arch_at(map1, 4, 3, "scroll_new") == scroll1, "scroll disappeared");
+    FAIL_UNLESS(find_arch_at(map1, 4, 3, "food") == NULL, "map contains a food");
 
     scroll2 = object_insert_in_map_at(scroll2, map1, NULL, 0, 4, 3);
-    fail_unless(scroll2 != NULL, "scroll could not be added to the map");
+    FAIL_UNLESS(scroll2 != NULL, "scroll could not be added to the map");
 
-    fail_unless(find_arch_at(map1, 4, 3, "scroll_new") == scroll2, "scroll disappeared");
-    fail_unless(find_arch_at(map1, 4, 3, "food") == NULL, "map contains a food");
+    FAIL_UNLESS(find_arch_at(map1, 4, 3, "scroll_new") == scroll2, "scroll disappeared");
+    FAIL_UNLESS(find_arch_at(map1, 4, 3, "food") == NULL, "map contains a food");
 
-    fail_unless(scroll2->nrof == 2, "scrolls didn't merge");
-    fail_unless(QUERY_FLAG(scroll1, FLAG_FREED), "scroll wasn't freed");
+    FAIL_UNLESS(scroll2->nrof == 2, "scrolls didn't merge");
+    FAIL_UNLESS(QUERY_FLAG(scroll1, FLAG_FREED), "scroll wasn't freed");
 }
 END_TEST
 

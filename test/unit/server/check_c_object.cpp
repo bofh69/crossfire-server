@@ -68,7 +68,7 @@ START_TEST(test_find_best_apply_object_match) {
     object *gorokh, *cloak, *other;
 
     pl = create_archetype("kobold");
-    fail_unless(pl != NULL, "can't find kobold archetype.");
+    FAIL_UNLESS(pl != NULL, "can't find kobold archetype.");
 
     gorokh = create_archetype("cloak");
     gorokh->title = add_string("of Gorokh");
@@ -82,13 +82,13 @@ START_TEST(test_find_best_apply_object_match) {
     object_insert_in_ob(other, pl);
 
     found = find_best_apply_object_match(pl->inv, pl, "all", 0);
-    fail_unless(found == other, "not found gem but %s", found ? found->name : "nothing");
+    FAIL_UNLESS(found == other, "not found gem but %s", found ? found->name : "nothing");
 
     found = find_best_apply_object_match(pl->inv, pl, "cloak", 0);
-    fail_unless(found == cloak, "didn't find cloak but %s", found ? found->name : "nothing");
+    FAIL_UNLESS(found == cloak, "didn't find cloak but %s", found ? found->name : "nothing");
 
     found = find_best_apply_object_match(pl->inv, pl, "Gorokh", 0);
-    fail_unless(found == NULL, "Gorokh found %s instead of nothing", found ? found->name : "nothing??");
+    FAIL_UNLESS(found == NULL, "Gorokh found %s instead of nothing", found ? found->name : "nothing??");
 }
 END_TEST
 
@@ -99,18 +99,18 @@ START_TEST(test_put_object_in_sack) {
     dummy = create_archetype("orc");
 
     test_map = get_empty_map(5, 5);
-    fail_unless(test_map != NULL, "can't create test map");
+    FAIL_UNLESS(test_map != NULL, "can't create test map");
 
     sack = create_archetype("gem");
     object_insert_in_map_at(sack, test_map, NULL, 0, 0, 0);
-    fail_unless(GET_MAP_OB(test_map, 0, 0) == sack);
+    FAIL_UNLESS(GET_MAP_OB(test_map, 0, 0) == sack, "item isn't sack");
 
     obj = create_archetype("gem");
     obj->nrof = 1;
     object_insert_in_map_at(obj, test_map, NULL, 0, 1, 0);
     put_object_in_sack(dummy, sack, obj, 1);
-    fail_unless(GET_MAP_OB(test_map, 1, 0) == obj, "object was removed from map?");
-    fail_unless(sack->inv == NULL, "sack's inventory isn't null?");
+    FAIL_UNLESS(GET_MAP_OB(test_map, 1, 0) == obj, "object was removed from map?");
+    FAIL_UNLESS(sack->inv == NULL, "sack's inventory isn't null?");
 
     object_remove(sack);
     object_free_drop_inventory(sack);
@@ -118,14 +118,14 @@ START_TEST(test_put_object_in_sack) {
     /* basic insertion */
     sack = create_archetype("sack");
     sack->nrof = 1;
-    fail_unless(sack->type == CONTAINER, "sack isn't a container?");
+    FAIL_UNLESS(sack->type == CONTAINER, "sack isn't a container?");
     object_insert_in_map_at(sack, test_map, NULL, 0, 0, 0);
-    fail_unless(GET_MAP_OB(test_map, 0, 0) == sack, "sack not put on map?");
+    FAIL_UNLESS(GET_MAP_OB(test_map, 0, 0) == sack, "sack not put on map?");
 
     SET_FLAG(sack, FLAG_APPLIED);
     put_object_in_sack(dummy, sack, obj, 1);
-    fail_unless(sack->inv == obj, "object not inserted into sack?");
-    fail_unless(GET_MAP_OB(test_map, 1, 0) == NULL, "object wasn't removed from map?");
+    FAIL_UNLESS(sack->inv == obj, "object not inserted into sack?");
+    FAIL_UNLESS(GET_MAP_OB(test_map, 1, 0) == NULL, "object wasn't removed from map?");
 
     object_remove(obj);
     object_insert_in_map_at(obj, test_map, NULL, 0, 1, 0);
@@ -133,18 +133,18 @@ START_TEST(test_put_object_in_sack) {
     obj->weight = 5;
 
     put_object_in_sack(dummy, sack, obj, 1);
-    fail_unless(sack->inv == NULL, "item was put in sack even if too heavy?");
-    fail_unless(GET_MAP_OB(test_map, 1, 0) == obj, "object was removed from map?");
+    FAIL_UNLESS(sack->inv == NULL, "item was put in sack even if too heavy?");
+    FAIL_UNLESS(GET_MAP_OB(test_map, 1, 0) == obj, "object was removed from map?");
 
     /* now for sack splitting */
     sack->nrof = 2;
     obj->weight = 1;
 
     put_object_in_sack(dummy, sack, obj, 1);
-    fail_unless(sack->nrof == 1, "sack wasn't split?");
-    fail_unless(sack->above != NULL, "no new sack created?");
-    fail_unless(sack->inv == obj, "object not inserted in old sack?");
-    fail_unless(sack == obj->env, "object's env not updated?");
+    FAIL_UNLESS(sack->nrof == 1, "sack wasn't split?");
+    FAIL_UNLESS(sack->above != NULL, "no new sack created?");
+    FAIL_UNLESS(sack->inv == obj, "object not inserted in old sack?");
+    FAIL_UNLESS(sack == obj->env, "object's env not updated?");
 
     /* now moving to/from containers */
     obj->nrof = 2;
@@ -152,8 +152,8 @@ START_TEST(test_put_object_in_sack) {
     SET_FLAG(sack2, FLAG_APPLIED);
     dummy->container = sack;
     put_object_in_sack(dummy, sack, sack2, 1);
-    fail_unless(sack2->inv == NULL, "sack2's not empty?");
-    fail_unless(sack->inv == obj, "obj wasn't transferred?");
+    FAIL_UNLESS(sack2->inv == NULL, "sack2's not empty?");
+    FAIL_UNLESS(sack->inv == obj, "obj wasn't transferred?");
 
     /* move between containers and split containers */
     object_remove(sack2);
@@ -162,10 +162,10 @@ START_TEST(test_put_object_in_sack) {
     sack2->nrof = 2;
     dummy->container = sack2;
     put_object_in_sack(dummy, sack2, sack, 0);
-    fail_unless(sack->inv == NULL, "sack wasn't put into sack2?");
-    fail_unless(sack2->inv != NULL, "sack2 wasn't filled?");
-    fail_unless(sack2->above != NULL, "sack2 wasn't split?");
-    fail_unless(sack2->above->inv == NULL, "sack2's split was filled?");
+    FAIL_UNLESS(sack->inv == NULL, "sack wasn't put into sack2?");
+    FAIL_UNLESS(sack2->inv != NULL, "sack2 wasn't filled?");
+    FAIL_UNLESS(sack2->above != NULL, "sack2 wasn't split?");
+    FAIL_UNLESS(sack2->above->inv == NULL, "sack2's split was filled?");
 
     free_map(test_map);
 }
@@ -207,18 +207,18 @@ static void do_test(const int do_what, const char *param, ...) {
     const char *action = do_what == DO_TAKE ? "picked" : "dropped";
 
     test_map = get_empty_map(1, 1);
-    fail_unless(test_map != NULL, "couldn't create map");
+    FAIL_UNLESS(test_map != NULL, "couldn't create map");
     monster = create_archetype("kobold");
-    fail_unless(monster != NULL, "couldn't create kobold");
+    FAIL_UNLESS(monster != NULL, "couldn't create kobold");
 
     object_insert_in_map_at(monster, test_map, NULL, 0, 0, 0);
 
     object *top = monster;
     for (int i = 0; i < TEST_ITEMS_COUNT; i++) {
         archetype *arch = try_find_archetype(test_items[i]);
-        fail_unless(arch != NULL, "couldn't find arch %s", test_items[i]);
+        FAIL_UNLESS(arch != NULL, "couldn't find arch %s", test_items[i]);
         items[i] = arch_to_object(arch);
-        fail_unless(items[i] != NULL, "couldn't create %s", test_items[i]);
+        FAIL_UNLESS(items[i] != NULL, "couldn't create %s", test_items[i]);
         if (do_what == DO_TAKE) {
             object_insert_in_map_at(items[i], test_map, top, INS_BELOW_ORIGINATOR, 0, 0);
         } else {
@@ -250,15 +250,15 @@ static void do_test(const int do_what, const char *param, ...) {
     for (int i = 0; i < TEST_ITEMS_COUNT; i++) {
         if (do_what == DO_TAKE) {
             if (check[i]) {
-                fail_unless(items[i]->env == monster, "%s wasn't %s up with %s!", test_items[i], action, param);
+                FAIL_UNLESS(items[i]->env == monster, "%s wasn't %s up with %s!", test_items[i], action, param);
             } else {
-                fail_unless(items[i]->env == NULL && items[i]->map == test_map, "%s was %s up with %s!", test_items[i], action, param);
+                FAIL_UNLESS(items[i]->env == NULL && items[i]->map == test_map, "%s was %s up with %s!", test_items[i], action, param);
             }
         } else {
             if (!check[i]) {
-                fail_unless(items[i]->env == NULL && items[i]->map == test_map, "%s wasn't %s up with %s!", test_items[i], action, param);
+                FAIL_UNLESS(items[i]->env == NULL && items[i]->map == test_map, "%s wasn't %s up with %s!", test_items[i], action, param);
             } else {
-                fail_unless(items[i]->env == monster, "%s was %s up with %s!", test_items[i], action, param);
+                FAIL_UNLESS(items[i]->env == monster, "%s was %s up with %s!", test_items[i], action, param);
             }
         }
     }

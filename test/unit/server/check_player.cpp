@@ -35,15 +35,15 @@ START_TEST(test_get_nearest_player) {
     mapstruct *map = get_empty_map(5, 5);
 
     object *monster = create_archetype("kobold");
-    fail_unless(monster != NULL, "failed to find arch kobold");
+    FAIL_UNLESS(monster != NULL, "failed to find arch kobold");
     object_insert_in_map_at(monster, map, NULL, 0 , 0 , 0);
 
     object *fri = get_nearest_player(monster);
-    fail_unless(fri == NULL, "Shouldn't get any friend");
+    FAIL_UNLESS(fri == NULL, "Shouldn't get any friend");
 
     // Add a player, should be found
     object *ob = create_archetype("angel");
-    fail_unless(QUERY_FLAG(ob, FLAG_MONSTER), "not a monster??");
+    FAIL_UNLESS(QUERY_FLAG(ob, FLAG_MONSTER), "not a monster??");
     player pl;
     memset(&pl, 0, sizeof(pl));
     socket_struct sock;
@@ -54,16 +54,16 @@ START_TEST(test_get_nearest_player) {
     object_insert_in_map_at(ob, map, NULL, 0, 4, 4);
 
     fri = get_nearest_player(monster);
-    fail_unless(fri == ob, "Should get the player");
+    FAIL_UNLESS(fri == ob, "Should get the player");
 
     // Add a pet closer, should be found
     object *pet = create_archetype("vampire");
-    fail_unless(QUERY_FLAG(pet, FLAG_MONSTER), "not a monster??");
+    FAIL_UNLESS(QUERY_FLAG(pet, FLAG_MONSTER), "not a monster??");
     SET_FLAG(pet, FLAG_FRIENDLY);
     add_friendly_object(pet);
     object_insert_in_map_at(pet, map, NULL, 0, 2, 2);
     fri = get_nearest_player(monster);
-    fail_unless(fri == pet, "Should find the pet");
+    FAIL_UNLESS(fri == pet, "Should find the pet");
 }
 END_TEST
 

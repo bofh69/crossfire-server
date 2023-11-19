@@ -34,6 +34,7 @@
 
 #include "global.h"
 #include "libproto.h"
+#include "toolkit_common.h"
 
 void setup(void) {
 }
@@ -46,10 +47,10 @@ START_TEST(test_basic) {
     object *ob = object_new();
     SET_FLAG(ob, FLAG_FRIENDLY);
     add_friendly_object(ob);
-    fail_unless(is_friendly(ob), "Object must be friendly");
+    FAIL_UNLESS(is_friendly(ob), "Object must be friendly");
     remove_friendly_object(ob);
-    fail_unless(!is_friendly(ob), "Object must not be friendly");
-    fail_unless(!QUERY_FLAG(ob, FLAG_FRIENDLY), "Object must not have FLAG_FRIENDLY");
+    FAIL_UNLESS(!is_friendly(ob), "Object must not be friendly");
+    FAIL_UNLESS(!QUERY_FLAG(ob, FLAG_FRIENDLY), "Object must not have FLAG_FRIENDLY");
 }
 END_TEST
 
@@ -58,7 +59,7 @@ START_TEST(test_clean_friendly_list_count) {
     add_friendly_object(ob);
     ob->count = 0;
     clean_friendly_list();
-    fail_unless(!is_friendly(ob), "Object must not be friendly");
+    FAIL_UNLESS(!is_friendly(ob), "Object must not be friendly");
 }
 END_TEST
 
@@ -67,7 +68,7 @@ START_TEST(test_clean_friendly_list_freed) {
     add_friendly_object(ob);
     SET_FLAG(ob, FLAG_FREED);
     clean_friendly_list();
-    fail_unless(!is_friendly(ob), "Object must not be friendly");
+    FAIL_UNLESS(!is_friendly(ob), "Object must not be friendly");
 }
 END_TEST
 
@@ -76,7 +77,7 @@ START_TEST(test_clean_friendly_list_not_friendly) {
     add_friendly_object(ob);
     CLEAR_FLAG(ob, FLAG_FRIENDLY);
     clean_friendly_list();
-    fail_unless(!is_friendly(ob), "Object must not be friendly");
+    FAIL_UNLESS(!is_friendly(ob), "Object must not be friendly");
 }
 END_TEST
 
@@ -85,12 +86,12 @@ START_TEST(test_get_friends_of_null) {
     add_friendly_object(ob);
     add_friendly_object(second);
     objectlink *list = get_friends_of(NULL);
-    fail_unless(list, "Must get a list");
+    FAIL_UNLESS(list, "Must get a list");
     // List is inverted because of its construction
-    fail_unless(list->ob == second, "Second must be first in list");
-    fail_unless(list->next != NULL, "List must have a second item");
-    fail_unless(list->next->ob == ob, "Ob must be the second on the list");
-    fail_unless(list->next->next == NULL, "List must not have a third item");
+    FAIL_UNLESS(list->ob == second, "Second must be first in list");
+    FAIL_UNLESS(list->next != NULL, "List must have a second item");
+    FAIL_UNLESS(list->next->ob == ob, "Ob must be the second on the list");
+    FAIL_UNLESS(list->next->next == NULL, "List must not have a third item");
 }
 END_TEST
 
@@ -98,11 +99,11 @@ START_TEST(test_get_friends_of_owner) {
     object *ob = object_new(), *owner = object_new();
     CLEAR_FLAG(owner, FLAG_REMOVED);
     object_set_owner(ob, owner);
-    fail_unless(ob->owner == owner);
+    FAIL_UNLESS(ob->owner == owner, "Owner is wrong");
     add_friendly_object(ob);
     objectlink *list = get_friends_of(owner);
-    fail_unless(list, "Must get a list of owner's friends");
-    fail_unless(list->ob == ob, "Ob Must be first in list");
+    FAIL_UNLESS(list, "Must get a list of owner's friends");
+    FAIL_UNLESS(list->ob == ob, "Ob Must be first in list");
 }
 END_TEST
 
@@ -110,26 +111,26 @@ START_TEST(test_get_friends_of_owner_only) {
     object *ob = object_new(), *owner = object_new(), *second = object_new();
     CLEAR_FLAG(owner, FLAG_REMOVED);
     object_set_owner(ob, owner);
-    fail_unless(ob->owner == owner);
+    FAIL_UNLESS(ob->owner == owner, "Owner is wrong");
     add_friendly_object(ob);
     add_friendly_object(second);
     objectlink *list = get_friends_of(owner);
-    fail_unless(list, "Must get a list of owner's friends");
-    fail_unless(list->ob == ob, "Ob Must be first in list");
-    fail_unless(list->next == NULL, "There must be only one item on the list");
+    FAIL_UNLESS(list, "Must get a list of owner's friends");
+    FAIL_UNLESS(list->ob == ob, "Ob Must be first in list");
+    FAIL_UNLESS(list->next == NULL, "There must be only one item on the list");
 }
 END_TEST
 
 START_TEST(test_get_next_friend_none) {
-    fail_unless(get_next_friend(NULL) == NULL, "Must get NULL");
+    FAIL_UNLESS(get_next_friend(NULL) == NULL, "Must get NULL");
 }
 END_TEST
 
 START_TEST(test_get_next_friend_single) {
     object *ob = object_new();
     add_friendly_object(ob);
-    fail_unless(get_next_friend(NULL) == ob, "Must get ob");
-    fail_unless(get_next_friend(ob) == NULL, "Must get NULL, last friend");
+    FAIL_UNLESS(get_next_friend(NULL) == ob, "Must get ob");
+    FAIL_UNLESS(get_next_friend(ob) == NULL, "Must get NULL, last friend");
 }
 END_TEST
 
@@ -137,9 +138,9 @@ START_TEST(test_get_next_friend_two) {
     object *ob = object_new(), *second = object_new();
     add_friendly_object(ob);
     add_friendly_object(second);
-    fail_unless(get_next_friend(NULL) == ob, "Must get ob");
-    fail_unless(get_next_friend(ob) == second, "Must get second");
-    fail_unless(get_next_friend(second) == NULL, "Must get NULL");
+    FAIL_UNLESS(get_next_friend(NULL) == ob, "Must get ob");
+    FAIL_UNLESS(get_next_friend(ob) == second, "Must get second");
+    FAIL_UNLESS(get_next_friend(second) == NULL, "Must get NULL");
 }
 END_TEST
 

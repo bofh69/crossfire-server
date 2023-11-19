@@ -49,25 +49,25 @@ static void teardown(void) {
 }
 
 START_TEST(test_get_month_name) {
-    fail_unless(get_month_name(-1) == NULL, "getting month name for negative value should bring a NULL");
-    fail_unless(get_month_name(MONTHS_PER_YEAR) == NULL, "getting month name for too high value should bring a NULL");
-    fail_unless(get_month_name(0) != NULL, "getting month name for correct value should bring a non NULL season name");
+    FAIL_UNLESS(get_month_name(-1) == NULL, "getting month name for negative value should bring a NULL");
+    FAIL_UNLESS(get_month_name(MONTHS_PER_YEAR) == NULL, "getting month name for too high value should bring a NULL");
+    FAIL_UNLESS(get_month_name(0) != NULL, "getting month name for correct value should bring a non NULL season name");
 }
 END_TEST
 
 START_TEST(test_get_weekday) {
-    fail_unless(get_weekday(-1) == NULL, "getting week day name for negative value should bring a NULL");
-    fail_unless(get_weekday(DAYS_PER_WEEK) == NULL, "getting weekday name for too high value should bring a NULL");
-    fail_unless(get_weekday(0) != NULL, "getting weekday name for correct value should bring a non NULL season name");
+    FAIL_UNLESS(get_weekday(-1) == NULL, "getting week day name for negative value should bring a NULL");
+    FAIL_UNLESS(get_weekday(DAYS_PER_WEEK) == NULL, "getting weekday name for too high value should bring a NULL");
+    FAIL_UNLESS(get_weekday(0) != NULL, "getting weekday name for correct value should bring a non NULL season name");
 }
 END_TEST
 
 START_TEST(test_get_season_name) {
-    fail_unless(get_season_name(-1) == NULL, "getting season name for negative value should bring a NULL");
-    fail_unless(get_season_name(SEASONS_PER_YEAR+2) == NULL, "getting season name for too high value should bring a NULL");
-    fail_unless(get_season_name(SEASONS_PER_YEAR) != NULL, "getting season name for limit value should bring a '\\n'");
-    fail_unless(strcmp(get_season_name(SEASONS_PER_YEAR), "\n") == 0, "getting season name for limit value should bring a '\n'");
-    fail_unless(get_season_name(0) != NULL, "getting season name for correct value should bring a non NULL season name");
+    FAIL_UNLESS(get_season_name(-1) == NULL, "getting season name for negative value should bring a NULL");
+    FAIL_UNLESS(get_season_name(SEASONS_PER_YEAR+2) == NULL, "getting season name for too high value should bring a NULL");
+    FAIL_UNLESS(get_season_name(SEASONS_PER_YEAR) != NULL, "getting season name for limit value should bring a '\\n'");
+    FAIL_UNLESS(strcmp(get_season_name(SEASONS_PER_YEAR), "\n") == 0, "getting season name for limit value should bring a '\n'");
+    FAIL_UNLESS(get_season_name(0) != NULL, "getting season name for correct value should bring a non NULL season name");
 }
 END_TEST
 

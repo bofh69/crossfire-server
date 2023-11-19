@@ -54,7 +54,7 @@ START_TEST(test_strtoktolin) {
 
 #define C(w, e) \
     strtoktolin(w, ",", buf, sizeof(buf)); \
-    fail_unless(strcmp(buf, e) == 0, "got %s instead of %s", buf, e);
+    FAIL_UNLESS(strcmp(buf, e) == 0, "got %s instead of %s", buf, e);
 
     C("single", " single.");
     C("one, two", " one and two.");

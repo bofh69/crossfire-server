@@ -164,7 +164,7 @@ START_TEST(test_describe_item) {
 
     for (check = 0; archs[check] != NULL; check++) {
         test = cctk_create_game_object(archs[check]);
-        fail_unless(test != NULL, "couldn't create arch %s", archs[check]);
+        FAIL_UNLESS(test != NULL, "couldn't create arch %s", archs[check]);
         SET_FLAG(test, FLAG_IDENTIFIED);
         buf = stringbuffer_finish(describe_item(test, NULL, 0, NULL));
 
@@ -174,7 +174,7 @@ START_TEST(test_describe_item) {
             printf("describe_item(%s) returned \"%s\" instead of \"%s\"\n", archs[check], buf, arch_results[check]);
         */
 
-        fail_unless(strcmp(buf, arch_results[check]) == 0, "describe_item(%s) returned \"%s\" instead of \"%s\", check %d", archs[check], buf, arch_results[check], check);
+        FAIL_UNLESS(strcmp(buf, arch_results[check]) == 0, "describe_item(%s) returned \"%s\" instead of \"%s\", check %d", archs[check], buf, arch_results[check], check);
 
         free(buf);
         object_free_drop_inventory(test);
@@ -184,9 +184,9 @@ START_TEST(test_describe_item) {
     SRANDOM(100);
     for (check = 0; treasures[check] != NULL; check++) {
         list = find_treasurelist(treasures[check]);
-        fail_unless(list != NULL, "couldn't find treasure list %s", treasures[check]);
+        FAIL_UNLESS(list != NULL, "couldn't find treasure list %s", treasures[check]);
         test = generate_treasure(list, 50);
-        fail_if(test == NULL, "couldn't create item from treasure list %s", treasures[check]);
+        FAIL_IF(test == NULL, "couldn't create item from treasure list %s", treasures[check]);
         SET_FLAG(test, FLAG_IDENTIFIED);
         buf = stringbuffer_finish(describe_item(test, NULL, 0, NULL));
 
@@ -196,7 +196,7 @@ START_TEST(test_describe_item) {
             printf("Item %d describe_item(treasure %s) returned \"%s\" instead of \"%s\"\n", check, treasures[check], buf, treasure_results[check]);
         */
 
-        fail_unless(strcmp(buf, treasure_results[check]) == 0, "describe_item(treasure %s) returned \"%s\" instead of \"%s\" for item %s (index %d)", treasures[check], buf, treasure_results[check], test->arch->name, check);
+        FAIL_UNLESS(strcmp(buf, treasure_results[check]) == 0, "describe_item(treasure %s) returned \"%s\" instead of \"%s\" for item %s (index %d)", treasures[check], buf, treasure_results[check], test->arch->name, check);
 
         free(buf);
         object_free_drop_inventory(test);
@@ -386,12 +386,12 @@ START_TEST(test_describe_monster_rewrite) {
 
         old_describe_monster(ob, buf, sizeof(buf));
         compat = stringbuffer_finish(describe_item(ob, NULL, 0, NULL));
-        fail_unless(strcmp(buf, compat) == 0, "(compat) description change:\n%s\n  === vs ===\n%s", buf, compat);
+        FAIL_UNLESS(strcmp(buf, compat) == 0, "(compat) description change:\n%s\n  === vs ===\n%s", buf, compat);
         free(compat);
 
         final = stringbuffer_finish(describe_monster(ob, 0, NULL));
 
-        fail_unless(strcmp(buf, final) == 0, "description change: \"%s\" vs \"%s\"", buf, final);
+        FAIL_UNLESS(strcmp(buf, final) == 0, "description change: \"%s\" vs \"%s\"", buf, final);
         free(final);
         object_free(ob, FREE_OBJ_NO_DESTROY_CALLBACK | FREE_OBJ_FREE_INVENTORY);
     });

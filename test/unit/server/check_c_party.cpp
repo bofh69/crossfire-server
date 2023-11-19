@@ -34,6 +34,7 @@
 #include <check.h>
 #include <global.h>
 #include <sproto.h>
+#include "toolkit_common.h"
 
 static void setup(void) {
     /* put any initialisation steps here, they will be run before each testcase */
@@ -49,54 +50,54 @@ START_TEST(test_party) {
     object *pl2;
     object *pl3;
 
-    fail_unless(party_get_first() == NULL, "firstparty should be NULL!");
+    FAIL_UNLESS(party_get_first() == NULL, "firstparty should be NULL!");
 
     pl1 = static_cast<object *>(calloc(1, sizeof(object)));
-    fail_unless(pl1 != NULL, "memory allocation failure");
+    FAIL_UNLESS(pl1 != NULL, "memory allocation failure");
     pl1->name = "player1";
     pl1->contr = static_cast<player *>(calloc(1, sizeof(player)));
-    fail_unless(pl1->contr != NULL, "memory allocation failure");
+    FAIL_UNLESS(pl1->contr != NULL, "memory allocation failure");
     first_player = pl1->contr; /* needed because obsolete parties uses this. */
     pl1->contr->ob = pl1;
 
     pl2 = static_cast<object *>(calloc(1, sizeof(object)));
-    fail_unless(pl2 != NULL, "memory allocation failure");
+    FAIL_UNLESS(pl2 != NULL, "memory allocation failure");
     pl2->name = "player2";
     pl2->contr = static_cast<player *>(calloc(1, sizeof(player)));
-    fail_unless(pl2->contr != NULL, "memory allocation failure");
+    FAIL_UNLESS(pl2->contr != NULL, "memory allocation failure");
     first_player = pl2->contr; /* needed because obsolete parties uses this. */
     pl2->contr->ob = pl2;
 
     pl3 = static_cast<object *>(calloc(1, sizeof(object)));
-    fail_unless(pl3 != NULL, "memory allocation failure");
+    FAIL_UNLESS(pl3 != NULL, "memory allocation failure");
     pl3->name = "player2";
     pl3->contr = static_cast<player *>(calloc(1, sizeof(player)));
-    fail_unless(pl3->contr != NULL, "memory allocation failure");
+    FAIL_UNLESS(pl3->contr != NULL, "memory allocation failure");
     first_player = pl3->contr; /* needed because obsolete parties uses this. */
     pl3->contr->ob = pl3;
 
     p1 = party_form(pl1, "test1");
-    fail_unless(p1 != NULL, "party_form failed.");
-    fail_unless(party_get_first() == p1, "firstparty wasn't updated");
-    fail_unless(strcmp(p1->partyname, "test1") == 0, "wrong party name");
-    fail_unless(p1 == pl1->contr->party, "player wasn't added to party");
-    fail_unless(strcmp(party_get_leader(p1), "player1") == 0, "wrong party leader");
+    FAIL_UNLESS(p1 != NULL, "party_form failed.");
+    FAIL_UNLESS(party_get_first() == p1, "firstparty wasn't updated");
+    FAIL_UNLESS(strcmp(p1->partyname, "test1") == 0, "wrong party name");
+    FAIL_UNLESS(p1 == pl1->contr->party, "player wasn't added to party");
+    FAIL_UNLESS(strcmp(party_get_leader(p1), "player1") == 0, "wrong party leader");
 
     p2 = party_form(pl2, "test2");
-    fail_unless(p2 != NULL, "party_form failed.");
-    fail_unless(party_get_next(party_get_first()) == p2, "party incorrectly linked");
+    FAIL_UNLESS(p2 != NULL, "party_form failed.");
+    FAIL_UNLESS(party_get_next(party_get_first()) == p2, "party incorrectly linked");
 
     party_remove(p1);
 
-    fail_unless(party_get_first() == p2, "party incorrectly removed");
+    FAIL_UNLESS(party_get_first() == p2, "party incorrectly removed");
 
     p3 = party_form(pl3, "test3");
-    fail_unless(p3 != NULL, "party_form failed");
-    fail_unless(party_get_next(party_get_first()) == p3, "party p3 incorrectly linked");
-    fail_unless(pl3->contr->party == p3, "p3 incorrectly assigned to pl3");
+    FAIL_UNLESS(p3 != NULL, "party_form failed");
+    FAIL_UNLESS(party_get_next(party_get_first()) == p3, "party p3 incorrectly linked");
+    FAIL_UNLESS(pl3->contr->party == p3, "p3 incorrectly assigned to pl3");
 
     party_obsolete_parties();
-    fail_unless(party_get_first() == p3, "party p2 wasn't removed by obsolete_parties(), party %s still there", party_get_first() ? party_get_first()->partyname : "NULL party?");
+    FAIL_UNLESS(party_get_first() == p3, "party p2 wasn't removed by obsolete_parties(), party %s still there", party_get_first() ? party_get_first()->partyname : "NULL party?");
 }
 END_TEST
 

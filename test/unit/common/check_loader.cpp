@@ -55,14 +55,14 @@ START_TEST(test_get_ob_diff) {
     char *result;
 
     arch = find_archetype("orc");
-    fail_unless(arch != NULL, "Can't find 'orc' archetype!");
+    FAIL_UNLESS(arch != NULL, "Can't find 'orc' archetype!");
     orc = arch_to_object(arch);
-    fail_unless(orc != NULL, "Couldn't create first orc!");
+    FAIL_UNLESS(orc != NULL, "Couldn't create first orc!");
 
     buf = stringbuffer_new();
     get_ob_diff(buf, orc, &arch->clone);
     result = stringbuffer_finish(buf);
-    fail_unless(result && result[0] == '\0', "diff obj/clone was %s!", result);
+    FAIL_UNLESS(result && result[0] == '\0', "diff obj/clone was %s!", result);
     free(result);
 
     orc->speed = 0.5;
@@ -72,7 +72,7 @@ START_TEST(test_get_ob_diff) {
     buf = stringbuffer_new();
     get_ob_diff(buf, orc, &arch->clone);
     result = stringbuffer_finish(buf);
-    fail_unless(result && strcmp(result, "name Orc chief\nspeed 0.500000\n") == 0, "diff modified obj/clone was %s!", result);
+    FAIL_UNLESS(result && strcmp(result, "name Orc chief\nspeed 0.500000\n") == 0, "diff modified obj/clone was %s!", result);
     free(result);
 
     orc->stats.hp = 50;
@@ -83,7 +83,7 @@ START_TEST(test_get_ob_diff) {
     buf = stringbuffer_new();
     get_ob_diff(buf, orc, &arch->clone);
     result = stringbuffer_finish(buf);
-    fail_unless(result && strcmp(result, "name Orc chief\nWis 59\nhp 50\nexpmul 8.500000\ndam 168\nspeed 0.500000\n") == 0, "2n diff modified obj/clone was %s!", result);
+    FAIL_UNLESS(result && strcmp(result, "name Orc chief\nWis 59\nhp 50\nexpmul 8.500000\ndam 168\nspeed 0.500000\n") == 0, "2n diff modified obj/clone was %s!", result);
     free(result);
 }
 END_TEST
@@ -97,13 +97,13 @@ START_TEST(test_object_dump) {
 
     /* Basic */
     empty = arch_to_object(empty_archetype);
-    fail_unless(empty != NULL, "Couldn't create empty archetype!");
+    FAIL_UNLESS(empty != NULL, "Couldn't create empty archetype!");
 
     snprintf(expect, sizeof(expect), "arch empty_archetype\nend\n");
     buf = stringbuffer_new();
     object_dump(empty, buf);
     result = stringbuffer_finish(buf);
-    fail_unless(result && strcmp(result, expect) == 0, "object_dump was \"%s\" instead of \"%s\"!", result, expect);
+    FAIL_UNLESS(result && strcmp(result, expect) == 0, "object_dump was \"%s\" instead of \"%s\"!", result, expect);
     free(result);
 
     /* With more things */
@@ -111,16 +111,16 @@ START_TEST(test_object_dump) {
     empty->inv = arch_to_object(empty_archetype);
     empty->more = arch_to_object(empty_archetype);
     empty->env = arch_to_object(empty_archetype);
-    fail_unless(empty->head != NULL, "Couldn't create empty archetype as head!");
-    fail_unless(empty->inv != NULL, "Couldn't create empty archetype as inv!");
-    fail_unless(empty->more != NULL, "Couldn't create empty archetype as more!");
-    fail_unless(empty->env != NULL, "Couldn't create empty archetype as env!");
+    FAIL_UNLESS(empty->head != NULL, "Couldn't create empty archetype as head!");
+    FAIL_UNLESS(empty->inv != NULL, "Couldn't create empty archetype as inv!");
+    FAIL_UNLESS(empty->more != NULL, "Couldn't create empty archetype as more!");
+    FAIL_UNLESS(empty->env != NULL, "Couldn't create empty archetype as env!");
 
     snprintf(expect, sizeof(expect), "arch empty_archetype\nmore %d\nhead %d\nenv %d\ninv %d\nend\n", empty->more->count, empty->head->count, empty->env->count, empty->inv->count);
     buf = stringbuffer_new();
     object_dump(empty, buf);
     result = stringbuffer_finish(buf);
-    fail_unless(result && strcmp(result, expect) == 0, "object_dump was \"%s\" instead of \"%s\"!", result, expect);
+    FAIL_UNLESS(result && strcmp(result, expect) == 0, "object_dump was \"%s\" instead of \"%s\"!", result, expect);
     free(result);
 }
 END_TEST

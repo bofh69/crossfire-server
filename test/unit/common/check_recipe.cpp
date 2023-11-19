@@ -47,12 +47,12 @@ void teardown(void) {
 }
 
 START_TEST(test_check_recipes) {
-    fail_unless(check_recipes(), "check_recipes failed");
+    FAIL_UNLESS(check_recipes(), "check_recipes failed");
 }
 END_TEST
 
 START_TEST(test_check_formulae) {
-    fail_unless(check_formulae(), "check_formulae failed");
+    FAIL_UNLESS(check_formulae(), "check_formulae failed");
 }
 END_TEST
 

@@ -220,7 +220,7 @@ START_TEST(test_fix_object) {
 #endif
 
         ob = create_archetype(archs[i]);
-        fail_unless(ob != NULL, "invalid archetype %s", archs[i]);
+        FAIL_UNLESS(ob != NULL, "invalid archetype %s", archs[i]);
         if (ob->type == PLAYER)
             ob->contr = pl;
 
@@ -251,11 +251,11 @@ START_TEST(test_fix_object) {
             stringbuffer_append_printf(sac, "%s%d", sep, ob->stats.ac);
             sep = ", ";
 #else
-            fail_unless(ob->stats.wc == wc[i][test], "wc [test %d, arch %d]: got %d instead of %d", test, i, ob->stats.wc, wc[i][test]);
-            fail_unless(ob->stats.maxgrace == maxgr[i][test], "gr: got %d instead of %d", ob->stats.maxgrace, maxgr[i][test]);
-            fail_unless(ob->stats.maxsp == maxsp[i][test], "sp: got %d instead of %d", ob->stats.maxsp, maxsp[i][test]);
-            fail_unless(ob->stats.maxhp == maxhp[i][test], "hp: [test %d, arch %d] [con %d level %d] got %d instead of %d", test, i, con[i][test], ob->level, ob->stats.maxhp, maxhp[i][test]);
-            fail_unless(ob->stats.ac == ac[i][test], "ac: got %d instead of %d", ob->stats.ac, ac[i][test]);
+            FAIL_UNLESS(ob->stats.wc == wc[i][test], "wc [test %d, arch %d]: got %d instead of %d", test, i, ob->stats.wc, wc[i][test]);
+            FAIL_UNLESS(ob->stats.maxgrace == maxgr[i][test], "gr: got %d instead of %d", ob->stats.maxgrace, maxgr[i][test]);
+            FAIL_UNLESS(ob->stats.maxsp == maxsp[i][test], "sp: got %d instead of %d", ob->stats.maxsp, maxsp[i][test]);
+            FAIL_UNLESS(ob->stats.maxhp == maxhp[i][test], "hp: [test %d, arch %d] [con %d level %d] got %d instead of %d", test, i, con[i][test], ob->level, ob->stats.maxhp, maxhp[i][test]);
+            FAIL_UNLESS(ob->stats.ac == ac[i][test], "ac: got %d instead of %d", ob->stats.ac, ac[i][test]);
 #endif
         }
         object_free(ob, FREE_OBJ_FREE_INVENTORY);

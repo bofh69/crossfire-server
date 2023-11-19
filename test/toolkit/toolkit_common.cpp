@@ -53,7 +53,7 @@
 #define CHECK_TKFLAG(__flag) (status_flag&__flag)
 #define CCTK_ASSERT(__flag) { \
         if (!CHECK_TKFLAG(__flag)) \
-            fail("Improper initialisation, flag 0x%H", __flag);\
+            FAIL("Improper initialisation, flag 0x%X", __flag);\
         }
 
 static int status_flag = 0;

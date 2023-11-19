@@ -36,6 +36,7 @@
 #include <stdlib.h>
 
 #include "global.h"
+#include "toolkit_common.h"
 
 
 static void setup(void) {
@@ -57,7 +58,7 @@ static void check_split_string(const char *str, size_t array_size, ...) {
     for(i = 0; i < sizeof(array)/sizeof(*array); i++)
         array[i] = NULL;
     result = split_string(tmp, array, array_size, ':');
-    fail_if(result > array_size, "result == %zu > %zu == array_size", result, array_size);
+    FAIL_IF(result > array_size, "result == %zu > %zu == array_size", result, array_size);
     va_start(arg, array_size);
     for(i = 0; i < sizeof(array)/sizeof(*array); i++) {
         const char *expected_result;
@@ -67,14 +68,14 @@ static void check_split_string(const char *str, size_t array_size, ...) {
             break;
 
         if (i >= array_size)
-            fail("internal error: too many arguments passed to check_split_string()");
+            FAIL("internal error: too many arguments passed to check_split_string()");
         if (i < result)
-            fail_if(strcmp(array[i], expected_result) != 0, "strcmp(array[%zu] == %s, %s) != 0", i, array[i], expected_result);
+            FAIL_IF(strcmp(array[i], expected_result) != 0, "strcmp(array[%zu] == %s, %s) != 0", i, array[i], expected_result);
         else
-            fail_if(array[i] != NULL, "array[%zu] == NULL", i);
+            FAIL_IF(array[i] != NULL, "array[%zu] == NULL", i);
     }
     va_end(arg);
-    fail_if(result != i, "%zu != %zu", result, i);
+    FAIL_IF(result != i, "%zu != %zu", result, i);
 }
 
 START_TEST(test_split_string) {
@@ -104,16 +105,16 @@ START_TEST(test_replace) {
 
     snprintf(init, sizeof(init), "first test");
     replace(init, "first", "other", replaced, sizeof(replaced));
-    fail_if(strcmp(replaced, "other test") != 0, "%s != other test", replaced);
+    FAIL_IF(strcmp(replaced, "other test") != 0, "%s != other test", replaced);
 
     snprintf(init, sizeof(init), "second test");
     replace(init, "e", "a", replaced, sizeof(replaced));
-    fail_if(strcmp(replaced, "sacond tast") != 0, "%s != sacond tast", replaced);
+    FAIL_IF(strcmp(replaced, "sacond tast") != 0, "%s != sacond tast", replaced);
 
     /* corner case for length */
     snprintf(init, sizeof(init), "long test");
     replace(init, "long", "really long", replaced, strlen(init) + 1);
-    fail_if(strcmp(replaced, "really lo") != 0, "%s != really lo", replaced);
+    FAIL_IF(strcmp(replaced, "really lo") != 0, "%s != really lo", replaced);
 }
 END_TEST
 

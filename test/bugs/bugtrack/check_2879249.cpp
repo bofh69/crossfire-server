@@ -45,20 +45,20 @@ START_TEST(test_insert) {
     object *ob;
 
     map1 = ready_map_name("/world/world_103_128", 0);
-    fail_unless(map1 != NULL, "cannot load map /world/world_103_128");
+    FAIL_UNLESS(map1 != NULL, "cannot load map /world/world_103_128");
 
     big_galleon_arch = find_archetype("big_galleon");
-    fail_unless(big_galleon_arch != NULL, "cannot find archetype big_galleon");
+    FAIL_UNLESS(big_galleon_arch != NULL, "cannot find archetype big_galleon");
     big_galleon = object_create_arch(big_galleon_arch);
-    fail_unless(big_galleon != NULL, "cannot create object big_galleon");
+    FAIL_UNLESS(big_galleon != NULL, "cannot create object big_galleon");
 
     for (ob = big_galleon; ob != NULL; ob = ob->more)
         if (ob->arch->clone.x > 0)
             break;
-    fail_unless(ob != NULL, "big_galleon's height must be at least two");
+    FAIL_UNLESS(ob != NULL, "big_galleon's height must be at least two");
     object_insert_in_map_at(big_galleon, map1, NULL, 0, map1->width/2, map1->height-1);
     for (ob = big_galleon; ob != NULL; ob = ob->more)
-        fail_unless(ob->map != NULL);
+        FAIL_UNLESS(ob->map != NULL, "Map is NULL");
 }
 END_TEST
 

@@ -81,7 +81,7 @@ static void setup(void) {
     test_map = get_empty_map(TEST_MAP_SIZE, TEST_MAP_SIZE);
 
     mon = create_archetype("orc");
-    fail_unless(mon != NULL, "Unable to find orc object");
+    FAIL_UNLESS(mon != NULL, "Unable to find orc object");
 
     /* We customize the monster a bit so it is consistent -
      * give it a bunch of HP so it can survive the attacks,
@@ -140,10 +140,10 @@ static void check_hp(const char *test, int hp_row[TEST_MAP_SIZE], int hp_diag[TE
     for (x = 0; x < TEST_MAP_SIZE; x++) {
         our_mon = GET_MAP_OB(test_map, x, TEST_MAP_SIZE/2);
         if (!our_mon) {
-            fail("Monster destroyed at %d, %d\n", x, TEST_MAP_SIZE/2);
+            FAIL("Monster destroyed at %d, %d\n", x, TEST_MAP_SIZE/2);
             continue;
         }
-        fail_unless(mon->name == our_mon->name, "Could not find our monster on the space?");
+        FAIL_UNLESS(mon->name == our_mon->name, "Could not find our monster on the space?");
 
 #ifdef PRINT_DEBUG_HP
         printf("%d, ", our_mon->stats.hp);
@@ -158,7 +158,7 @@ static void check_hp(const char *test, int hp_row[TEST_MAP_SIZE], int hp_diag[TE
         }
 
         if (FABS(diff) > HP_DELTA) {
-            fail("Mon (%d, %d) has hp out of range (%d != %d +/- %d, diff %d)\n", our_mon->x, our_mon->y, our_mon->stats.hp, hp_row[x], HP_DELTA, diff);
+            FAIL("Mon (%d, %d) has hp out of range (%d != %d +/- %d, diff %d)\n", our_mon->x, our_mon->y, our_mon->stats.hp, hp_row[x], HP_DELTA, diff);
         }
 #endif
     }
@@ -174,7 +174,7 @@ static void check_hp(const char *test, int hp_row[TEST_MAP_SIZE], int hp_diag[TE
             continue;
         }
 
-        fail_unless(mon->name == our_mon->name, "Could not find our monster on the space?");
+        FAIL_UNLESS(mon->name == our_mon->name, "Could not find our monster on the space?");
 
 #ifdef PRINT_DEBUG_HP
         printf("%d, ", our_mon->stats.hp);
@@ -188,7 +188,7 @@ static void check_hp(const char *test, int hp_row[TEST_MAP_SIZE], int hp_diag[TE
         }
 
         if (FABS(diff) > HP_DELTA) {
-            fail("Mon (%d, %d) has hp out of range (%d != %d +/- %d, diff %d)\n", our_mon->x, our_mon->y, our_mon->stats.hp, hp_diag[x], HP_DELTA, diff);
+            FAIL("Mon (%d, %d) has hp out of range (%d != %d +/- %d, diff %d)\n", our_mon->x, our_mon->y, our_mon->stats.hp, hp_diag[x], HP_DELTA, diff);
         }
 #endif
     }

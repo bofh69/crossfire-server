@@ -43,14 +43,14 @@ START_TEST(test_apply) {
     object *sword;
 
     monster = create_archetype("goblin");
-    fail_unless(monster, "couldn't create goblin");
+    FAIL_UNLESS(monster, "couldn't create goblin");
     sword = create_archetype("sword");
-    fail_unless(sword, "couldn't create sword");
+    FAIL_UNLESS(sword, "couldn't create sword");
 
     object_insert_in_ob(sword, monster);
     monster_check_apply_all(monster);
 
-    fail_unless(QUERY_FLAG(sword, FLAG_APPLIED), "sword should be applied");
+    FAIL_UNLESS(QUERY_FLAG(sword, FLAG_APPLIED), "sword should be applied");
 }
 END_TEST
 

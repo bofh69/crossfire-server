@@ -51,23 +51,23 @@ START_TEST(test_skills) {
         ns.account_chars = NULL;
 
 	race_arch = find_archetype("halfling_player");
-	fail_unless(race_arch != NULL, "Cannot find halfing arch to test on.");
+	FAIL_UNLESS(race_arch != NULL, "Cannot find halfing arch to test on.");
 
 	class_arch = find_archetype("thief_class");
-	fail_unless(class_arch != NULL, "Cannot find thief class to test on.");
+	FAIL_UNLESS(class_arch != NULL, "Cannot find thief class to test on.");
 
 	// Pretend we sent faces
 	ns.faces_sent = static_cast<uint8_t *>(calloc(sizeof(uint8_t), get_faces_count()));
-	fail_unless(ns.faces_sent != NULL, "Could not allocate socket space to remember what faces are sent.");
+	FAIL_UNLESS(ns.faces_sent != NULL, "Could not allocate socket space to remember what faces are sent.");
 
 	pl = add_player(&ns, ADD_PLAYER_NEW | ADD_PLAYER_NO_MAP | ADD_PLAYER_NO_STATS_ROLL);
-	fail_unless(pl != NULL, "Could not create a player to handle.");
+	FAIL_UNLESS(pl != NULL, "Could not create a player to handle.");
 
 	// This should ensure we don't get negative stats no matter what we choose.
 	stats.Str = stats.Dex = stats.Con = stats.Int = stats.Wis = stats.Pow = stats.Cha = 20;
 
 	result = apply_race_and_class(pl->ob, race_arch, class_arch, &stats);
-	fail_unless(result == 0, "Could not apply race and class to player.");
+	FAIL_UNLESS(result == 0, "Could not apply race and class to player.");
 
 	// Now we loop through the inventory of the object and look for the number of times we find stealing as a skill.
 	// We should find it exactly once.
@@ -79,8 +79,8 @@ START_TEST(test_skills) {
 		ob_inv = ob_inv->below;
 	}
 
-	fail_unless(num_stealing < 2, "Found duplicate stealing skills in player inventory.");
-	fail_unless(num_stealing > 0, "Failed to find any stealing skills in player inventory.");
+	FAIL_UNLESS(num_stealing < 2, "Found duplicate stealing skills in player inventory.");
+	FAIL_UNLESS(num_stealing > 0, "Failed to find any stealing skills in player inventory.");
 
 	// Cleanup
 	free(ns.faces_sent);

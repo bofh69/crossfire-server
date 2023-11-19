@@ -46,7 +46,7 @@ START_TEST(test_face_for_each_artifact) {
     al = first_artifactlist;
     while (al) {
         for (auto art : al->items) {
-            fail_unless(artifact_get_face(art) != (uint16_t)-1, "failed to find a face for %s", art->item->name);
+            FAIL_UNLESS(artifact_get_face(art) != (uint16_t)-1, "failed to find a face for %s", art->item->name);
         }
         al = al->next;
     }
@@ -62,8 +62,8 @@ START_TEST(test_artifact_key_value) {
   object_set_value(arti, KEY, VALUE, 1);
   add_abilities(initial, arti);
   sstring value = object_get_value(initial, KEY);
-  fail_unless(value, "failed to get the key back");
-  fail_unless(strcmp(value, VALUE) == 0, "wrong value '%s' instead of '%s'", value, VALUE);
+  FAIL_UNLESS(value, "failed to get the key back");
+  FAIL_UNLESS(strcmp(value, VALUE) == 0, "wrong value '%s' instead of '%s'", value, VALUE);
 
   object_free(initial, FREE_OBJ_NO_DESTROY_CALLBACK);
   object_free(arti, FREE_OBJ_NO_DESTROY_CALLBACK);

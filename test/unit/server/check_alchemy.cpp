@@ -34,6 +34,7 @@
 #include <check.h>
 #include <global.h>
 #include <assert.h>
+#include "toolkit_common.h"
 
 static void setup(void) {
     /* put any initialisation steps here, they will be run before each testcase */
@@ -67,8 +68,8 @@ START_TEST(test_recipe_chance) {
         for (skill.level = 0; skill.level < 150; skill.level++) {
             chance = recipe_chance(&rp, &skill);
             /* use .009 because of floating point issues */
-            fail_unless(chance >= .00999, "success can't be less than .01 but got %f for %d rp, %d skill", chance, rp.diff, skill.level);
-            fail_unless(chance <= .95, "success can't be more than .95 but got %f for %d rp, %d skill", chance, rp.diff, skill.level);
+            FAIL_UNLESS(chance >= .00999, "success can't be less than .01 but got %f for %d rp, %d skill", chance, rp.diff, skill.level);
+            FAIL_UNLESS(chance <= .95, "success can't be more than .95 but got %f for %d rp, %d skill", chance, rp.diff, skill.level);
             /*printf("%d %d => %f\n", rp.diff, skill.level, chance);*/
         }
         /*printf("\n");*/

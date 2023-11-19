@@ -57,17 +57,17 @@ START_TEST(test_monster_find_nearest_enemy) {
     mapstruct *map = get_empty_map(3, 3);
 
     first = create_archetype("kobold");
-    fail_unless(QUERY_FLAG(first, FLAG_MONSTER));
+    FAIL_UNLESS(QUERY_FLAG(first, FLAG_MONSTER), "first isn't a monster");
     object_insert_in_map_at(first, map, NULL, 0, 1, 1);
 
     for (uint8_t i = 0; i < 200; i++) {
-        fail_unless(monster_find_nearest_enemy(first, NULL) == NULL, "Found something when nothing?");
+        FAIL_UNLESS(monster_find_nearest_enemy(first, NULL) == NULL, "Found something when nothing?");
     }
 
     second = create_archetype("kobold");
     object_insert_in_map_at(second, map, NULL, 0, 0, 1);
     for (uint8_t i = 0; i < 200; i++) {
-        fail_unless(monster_find_nearest_enemy(first, NULL) == second, "Didn't find second monster?");
+        FAIL_UNLESS(monster_find_nearest_enemy(first, NULL) == second, "Didn't find second monster?");
     }
 
     owner = create_archetype("dwarf_player");
@@ -77,35 +77,35 @@ START_TEST(test_monster_find_nearest_enemy) {
     first->ownercount = owner->count;
     for (uint8_t i = 0; i < 200; i++) {
         found = monster_find_nearest_enemy(first, owner);
-        fail_if(found == owner, "Found owner?");
-        fail_unless(found == second, "Should find second!");
+        FAIL_IF(found == owner, "Found owner?");
+        FAIL_UNLESS(found == second, "Should find second!");
     }
 
     second->owner = owner;
     second->ownercount = owner->count;
     for (uint8_t i = 0; i < 200; i++) {
         found = monster_find_nearest_enemy(first, owner);
-        fail_if(found == owner, "Found owner?");
-        fail_unless(found == NULL, "Shouldn't find anything since both are pets");
+        FAIL_IF(found == owner, "Found owner?");
+        FAIL_UNLESS(found == NULL, "Shouldn't find anything since both are pets");
     }
 
     pl.petmode = pet_sad;
     for (uint8_t i = 0; i < 200; i++) {
         found = monster_find_nearest_enemy(first, owner);
-        fail_unless(found == NULL, "Pets shouldn't attack other pets");
+        FAIL_UNLESS(found == NULL, "Pets shouldn't attack other pets");
     }
 
     third = create_archetype("kobold");
     object_insert_in_map_at(third, map, NULL, 0, 1, 0);
     for (uint8_t i = 0; i < 200; i++) {
         found = monster_find_nearest_enemy(first, owner);
-        fail_unless(found == third, "Should find third monster");
+        FAIL_UNLESS(found == third, "Should find third monster");
     }
 
     uint8_t co = 0, cs = 0, ct = 0;
     for (uint16_t i = 0; i < 2000; i++) {
         found = monster_find_nearest_enemy(first, NULL);
-        fail_unless(found, "Should find a target!");
+        FAIL_UNLESS(found, "Should find a target!");
         if (found == owner) {
             co++;
         } else if (found == second) {
@@ -114,9 +114,9 @@ START_TEST(test_monster_find_nearest_enemy) {
             ct++;
         }
     }
-    fail_unless(co != 0, "Should have found the owner");
-    fail_unless(cs != 0, "Should have found second");
-    fail_unless(ct != 0, "Should have found third");
+    FAIL_UNLESS(co != 0, "Should have found the owner");
+    FAIL_UNLESS(cs != 0, "Should have found second");
+    FAIL_UNLESS(ct != 0, "Should have found third");
 }
 END_TEST
 

@@ -54,61 +54,61 @@ START_TEST(test_hit_player) {
 
     map = get_empty_map(5, 5);
     floor = create_archetype("battleground");
-    fail_unless(floor != NULL, "can't find archetype battleground");
+    FAIL_UNLESS(floor != NULL, "can't find archetype battleground");
     object_insert_in_map_at(floor, map, NULL, 0, 0, 0);
     floor = create_archetype("battleground");
-    fail_unless(floor != NULL, "can't find archetype battleground");
+    FAIL_UNLESS(floor != NULL, "can't find archetype battleground");
     object_insert_in_map_at(floor, map, NULL, 0, 1, 0);
 
     deplete = find_archetype(ARCH_DEPLETION);
-    fail_unless(deplete != NULL, "can't find archetype %s", ARCH_DEPLETION);
+    FAIL_UNLESS(deplete != NULL, "can't find archetype %s", ARCH_DEPLETION);
 
     victim = create_archetype("kobold");
-    fail_unless(victim != NULL, "couldn't create kobold");
-    fail_unless(victim->inv == NULL, "kobold shouldn't have an inventory");
+    FAIL_UNLESS(victim != NULL, "couldn't create kobold");
+    FAIL_UNLESS(victim->inv == NULL, "kobold shouldn't have an inventory");
     victim->stats.hp = 5000;
     victim->stats.maxhp = 5000;
     victim->resist[ATNR_DEPLETE] = 100;
     victim->resist[ATNR_FIRE] = 100;
     object_insert_in_map_at(victim, map, NULL, 0, 0, 0);
     hitter = create_archetype("sword");
-    fail_unless(hitter != NULL, "couldn't create sword");
+    FAIL_UNLESS(hitter != NULL, "couldn't create sword");
     hitter->attacktype = AT_DEPLETE|AT_FIRE;
     hitter->stats.dam = 100;
     hitter->map = map;
     object_insert_in_map_at(hitter, map, NULL, 0, 1, 0);
 
-    fail_unless(arch_present_in_ob(deplete, victim) == NULL, "victim shouldn't be depleted before being attacked");
+    FAIL_UNLESS(arch_present_in_ob(deplete, victim) == NULL, "victim shouldn't be depleted before being attacked");
 
     for (test = 0; test < 100; test++) {
         hit_player(victim, hitter->stats.dam, hitter, hitter->attacktype, 0);
-        fail_unless(victim->stats.hp == victim->stats.maxhp, "victim should have %d hp and not %d.", victim->stats.maxhp, victim->stats.hp);
+        FAIL_UNLESS(victim->stats.hp == victim->stats.maxhp, "victim should have %d hp and not %d.", victim->stats.maxhp, victim->stats.hp);
     }
-    fail_unless(victim->inv == NULL, "kobold shouldn't have an inventory after attacked");
-    fail_unless(arch_present_in_ob(deplete, victim) == NULL, "victim shouldn't be depleted when slaying not set");
+    FAIL_UNLESS(victim->inv == NULL, "kobold shouldn't have an inventory after attacked");
+    FAIL_UNLESS(arch_present_in_ob(deplete, victim) == NULL, "victim shouldn't be depleted when slaying not set");
 
     hitter->slaying = add_string(victim->race);
     victim->resist[ATNR_FIRE] = 95;
     for (test = 0; test < 100 && arch_present_in_ob(deplete, victim) == NULL; test++) {
         hit_player(victim, hitter->stats.dam, hitter, hitter->attacktype, 0);
     }
-    fail_unless(arch_present_in_ob(deplete, victim) != NULL, "victim should be depleted when slaying is set");
-    fail_unless(victim->stats.hp != victim->stats.maxhp, "victim shouldn't have %d hp", victim->stats.hp);
+    FAIL_UNLESS(arch_present_in_ob(deplete, victim) != NULL, "victim should be depleted when slaying is set");
+    FAIL_UNLESS(victim->stats.hp != victim->stats.maxhp, "victim shouldn't have %d hp", victim->stats.hp);
 }
 END_TEST
 
 START_TEST(test_fix_object_confused) {
     player *pl = static_cast<player *>(calloc(1, sizeof(player)));
     object *ob = create_archetype("human_player");
-    fail_unless(ob, "wrong archetype human_player");
-    fail_unless(ob->type == PLAYER, "archetype isn't a player");
+    FAIL_UNLESS(ob, "wrong archetype human_player");
+    FAIL_UNLESS(ob->type == PLAYER, "archetype isn't a player");
     ob->contr = pl;
 
     confuse_living(ob, NULL, 0);
-    fail_unless(QUERY_FLAG(ob, FLAG_CONFUSED), "player should be confused after confuse_living");
+    FAIL_UNLESS(QUERY_FLAG(ob, FLAG_CONFUSED), "player should be confused after confuse_living");
 
     fix_object(ob);
-    fail_unless(QUERY_FLAG(ob, FLAG_CONFUSED), "player should be confused after fix_object");
+    FAIL_UNLESS(QUERY_FLAG(ob, FLAG_CONFUSED), "player should be confused after fix_object");
 
     object_free(ob, FREE_OBJ_NO_DESTROY_CALLBACK);
     free(pl);

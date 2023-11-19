@@ -95,30 +95,30 @@ treasurelist *generate_random_list(Archetypes &arches) {
 
 bool equal(const treasure *left, treasure *right) {
     if (left == nullptr) {
-        fail_unless(right == nullptr, "left treasure == null but right treasure != null");
+        FAIL_UNLESS(right == nullptr, "left treasure == null but right treasure != null");
         return true;
     }
-    fail_unless(right != nullptr, "left treasure != null but right treasure == null");
-    fail_unless(left->item == right->item, "different arch");
-    fail_unless(left->artifact == right->artifact, "different artifacts");
-    fail_unless(left->name == right->name, "different list");
-    fail_unless(left->chance == right->chance, "different chance %d %d", left->chance, right->chance);
-    fail_unless(left->magic == right->magic, "different magic %d %d", left->magic, right->magic);
-    fail_unless(left->nrof == right->nrof, "different nrof %d %d", left->nrof, right->nrof);
-    fail_unless(left->list_magic_value == right->list_magic_value, "different list_magic_value %d %d", left->list_magic_value, right->list_magic_value);
-    fail_unless(left->list_magic_adjustment == right->list_magic_adjustment, "different list_magic_adjustment %d %d", left->list_magic_adjustment, right->list_magic_adjustment);
+    FAIL_UNLESS(right != nullptr, "left treasure != null but right treasure == null");
+    FAIL_UNLESS(left->item == right->item, "different arch");
+    FAIL_UNLESS(left->artifact == right->artifact, "different artifacts");
+    FAIL_UNLESS(left->name == right->name, "different list");
+    FAIL_UNLESS(left->chance == right->chance, "different chance %d %d", left->chance, right->chance);
+    FAIL_UNLESS(left->magic == right->magic, "different magic %d %d", left->magic, right->magic);
+    FAIL_UNLESS(left->nrof == right->nrof, "different nrof %d %d", left->nrof, right->nrof);
+    FAIL_UNLESS(left->list_magic_value == right->list_magic_value, "different list_magic_value %d %d", left->list_magic_value, right->list_magic_value);
+    FAIL_UNLESS(left->list_magic_adjustment == right->list_magic_adjustment, "different list_magic_adjustment %d %d", left->list_magic_adjustment, right->list_magic_adjustment);
     return true;
 }
 
 bool equal(const treasurelist *left, const treasurelist *right) {
     if (left == nullptr) {
-        fail_unless(right == nullptr, "left list == null but right list != null");
+        FAIL_UNLESS(right == nullptr, "left list == null but right list != null");
         return true;
     }
-    fail_unless(right != nullptr, "left list != null but right list == null");
-    fail_unless(strcmp(left->name, right->name) == 0, "left list name %s != right list name %s", left->name, right->name);
-    fail_unless(equal(left->items, right->items), "left list items != right list items");
-    fail_unless(left->total_chance == right->total_chance, "left list total_chance %d != right list total_chance %d", left->total_chance, right->total_chance);
+    FAIL_UNLESS(right != nullptr, "left list != null but right list == null");
+    FAIL_UNLESS(strcmp(left->name, right->name) == 0, "left list name %s != right list name %s", left->name, right->name);
+    FAIL_UNLESS(equal(left->items, right->items), "left list items != right list items");
+    FAIL_UNLESS(left->total_chance == right->total_chance, "left list total_chance %d != right list total_chance %d", left->total_chance, right->total_chance);
     return true;
 }
 
@@ -133,8 +133,8 @@ START_TEST(test_treasure) {
     write_load(generated, writer, loader);
 
     auto loaded = trs.find(generated->name);
-    fail_unless(loaded, "Treasurelist should have been loaded!");
-    fail_unless(equal(generated, loaded), "loaded treasurelist isn't the same as generated one");
+    FAIL_UNLESS(loaded, "Treasurelist should have been loaded!");
+    FAIL_UNLESS(equal(generated, loaded), "loaded treasurelist isn't the same as generated one");
 
     trs.define(generated->name, generated);
     trs.clear();
@@ -165,7 +165,7 @@ START_TEST(test_animation) {
     write_load(anim, writer, loader);
 
     auto loaded = anims.find(anim->name);
-    fail_unless(loaded, "face should have been loaded");
+    FAIL_UNLESS(loaded, "face should have been loaded");
     ck_assert_str_eq(anim->name, loaded->name);
     ck_assert_int_eq(anim->num_animations, loaded->num_animations);
     for (uint8_t f = 0; f < anim->num_animations; f++) {

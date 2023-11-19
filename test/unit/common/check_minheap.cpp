@@ -42,9 +42,9 @@ int qsort_comp_int(const void *a, const void *b) {
 // Ensure that allocation works.
 START_TEST(test_minheap_allocate) {
     test_heap = minheap_init(1, int_measure, NULL);
-    fail_unless(test_heap != NULL, "Failed to allocate minheap of size 1.");
-    fail_unless(test_heap->len == 0, "Initialized empty heap has nonzero length.");
-    fail_unless(test_heap->capacity == 1, "Initialized heap has capacity of %d, not 1.", test_heap->capacity);
+    FAIL_UNLESS(test_heap != NULL, "Failed to allocate minheap of size 1.");
+    FAIL_UNLESS(test_heap->len == 0, "Initialized empty heap has nonzero length.");
+    FAIL_UNLESS(test_heap->capacity == 1, "Initialized heap has capacity of %d, not 1.", test_heap->capacity);
 }
 END_TEST
 
@@ -53,25 +53,25 @@ START_TEST(test_minheap_overfill) {
     int vals[2] = {4, 3};
     int result;
     result = minheap_insert(test_heap, &vals[0]);
-    fail_unless(result == 0, "Minheap should have allowed 1 element, but allowed 0.");
+    FAIL_UNLESS(result == 0, "Minheap should have allowed 1 element, but allowed 0.");
     result = minheap_insert(test_heap, &vals[1]);
-    fail_unless(result == -1, "Minheap of size 1 allowed 2 elements to be added.");
+    FAIL_UNLESS(result == -1, "Minheap of size 1 allowed 2 elements to be added.");
 }
 END_TEST
 
 START_TEST(test_minheap_empty_remove) {
     test_heap = minheap_init(1, int_measure, NULL);
     int *result = static_cast<int *>(minheap_remove(test_heap));
-    fail_unless(result == NULL, "Empty heap should not return a non-null value on remove.");
+    FAIL_UNLESS(result == NULL, "Empty heap should not return a non-null value on remove.");
     int vals[3] = {1, 2, 3};
     minheap_insert(test_heap, &vals[0]);
     result = static_cast<int *>(minheap_remove(test_heap));
-    fail_unless(result == &vals[0], "Heap should have returned the only value it was given (%d)", vals[0]);
+    FAIL_UNLESS(result == &vals[0], "Heap should have returned the only value it was given (%d)", vals[0]);
     result = static_cast<int *>(minheap_remove(test_heap));
-    fail_unless(result == NULL, "Heap should be empty, yet we returned a value on removal (len=%d)", test_heap->len);
+    FAIL_UNLESS(result == NULL, "Heap should be empty, yet we returned a value on removal (len=%d)", test_heap->len);
     minheap_insert(test_heap, &vals[1]);
     int insresult = minheap_insert(test_heap, &vals[2]);
-    fail_unless(insresult == -1, "Heap should have been full, but insert was allowed (len=%d)", test_heap->len);
+    FAIL_UNLESS(insresult == -1, "Heap should have been full, but insert was allowed (len=%d)", test_heap->len);
 }
 END_TEST
 
@@ -86,14 +86,14 @@ START_TEST(test_minheap_insert_remove) {
     test_heap = minheap_init(30, int_measure, NULL);
     for (int i = 0; i < 30; ++i) {
         int result = minheap_insert(test_heap, &vals[i]);
-        fail_unless(result == 0, "Failed to insert to the heap for index %d (%d).", i, vals[i]);
+        FAIL_UNLESS(result == 0, "Failed to insert to the heap for index %d (%d).", i, vals[i]);
     }
     // Now we pull off the heap, which incidentally sorts the values.
     for (int i = 0; i < 30; ++i) {
         int *result = static_cast<int *>(minheap_remove(test_heap));
-        fail_unless(result != NULL, "Failed to remove from the heap after %d elements.", i);
+        FAIL_UNLESS(result != NULL, "Failed to remove from the heap after %d elements.", i);
         actual[i] = *result;
-        fail_unless(expected[i] == actual[i], "Heap did not gather data correctly. (%d != %d)", expected[i], actual[i]);
+        FAIL_UNLESS(expected[i] == actual[i], "Heap did not gather data correctly. (%d != %d)", expected[i], actual[i]);
     }
 }
 END_TEST
@@ -131,15 +131,15 @@ START_TEST(test_minheap_with_struct) {
     // And then we will use the heap for sorting into actual
     for (int i = 0; i < 400; ++i) {
         int res = minheap_insert(test_heap, &vals[i]);
-        fail_unless(res == 0, "Could not insert into minheap at size %d.", test_heap->len);
+        FAIL_UNLESS(res == 0, "Could not insert into minheap at size %d.", test_heap->len);
     }
     // Then remove them from the heap.
     for (int i = 0; i < 400; ++i) {
         Pos *res = static_cast<Pos *>(minheap_remove(test_heap));
-        fail_unless(res != NULL, "Minheap emptied before it should have: %d items should be left.", 400-i);
+        FAIL_UNLESS(res != NULL, "Minheap emptied before it should have: %d items should be left.", 400-i);
         actual[i] = *res;
         // Since we sorted on the distance from (0,0), any ties could be in different orders.
-        fail_unless(measure_pos_distance(&expected[i]) == measure_pos_distance(&actual[i]),
+        FAIL_UNLESS(measure_pos_distance(&expected[i]) == measure_pos_distance(&actual[i]),
             "Minheap retrieved wrong value. Expected (%d, %d): %d, got (%d, %d): %d", expected[i].x, expected[i].y,
             measure_pos_distance(&expected[i]), actual[i].x, actual[i].y, measure_pos_distance(&actual[i]));
     }
@@ -165,14 +165,14 @@ START_TEST(test_minheap_static_alloc) {
     // Push items onto the heap.
     for (int i = 0; i < HEAP_SIZE; ++i) {
         int res = minheap_insert(&heap, &vals[i]);
-        fail_unless(res == 0, "Could not insert into minheap at size %d.", heap.len);
+        FAIL_UNLESS(res == 0, "Could not insert into minheap at size %d.", heap.len);
     }
 
     // Pull back off the heap
     for (int i = 0; i < HEAP_SIZE; ++i) {
         int *ref = static_cast<int *>(minheap_remove(&heap));
-        fail_unless(ref != NULL, "Minheap emptied before it should have: %d items should be left.", HEAP_SIZE - i);
-        fail_unless(*ref == expected[i], "Minheap retrieved wrong value. Expected %d, got %d.", expected[i], *ref);
+        FAIL_UNLESS(ref != NULL, "Minheap emptied before it should have: %d items should be left.", HEAP_SIZE - i);
+        FAIL_UNLESS(*ref == expected[i], "Minheap retrieved wrong value. Expected %d, got %d.", expected[i], *ref);
     }
 }
 END_TEST

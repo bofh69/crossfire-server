@@ -53,9 +53,9 @@ START_TEST(test_query_cost) {
     static const char *sell_archs[] = { "fl_corpse", "Pdragon_mail", NULL };
 
     player = arch_to_object(find_archetype("dwarf_player"));
-    fail_unless(player != NULL, "can't find player?");
-    fail_unless(player->type == PLAYER, "invalid type for player?");
-    fail_unless(strcmp(player->name, "dwarf") == 0, "wrong name?");
+    FAIL_UNLESS(player != NULL, "can't find player?");
+    FAIL_UNLESS(player->type == PLAYER, "invalid type for player?");
+    FAIL_UNLESS(strcmp(player->name, "dwarf") == 0, "wrong name?");
 
     map = get_empty_map(5, 5);
     strncpy(map->path, "test", sizeof(map->path) - 1);
@@ -63,7 +63,7 @@ START_TEST(test_query_cost) {
 
     for (arch = 0; sell_archs[arch] != NULL; arch++) {
         tosell = arch_to_object(find_archetype(sell_archs[arch]));
-        fail_unless(tosell != NULL, "can't find %s", sell_archs[arch]);
+        FAIL_UNLESS(tosell != NULL, "can't find %s", sell_archs[arch]);
         tosell->nrof = 6;
         CLEAR_FLAG(tosell, FLAG_IDENTIFIED);
 
@@ -72,7 +72,7 @@ START_TEST(test_query_cost) {
             for (map_reset_time = 0; map_reset_time < 1000; map_reset_time++) {
                 map->reset_time = map_reset_time;
                 cost = shop_price_sell(tosell, player);
-                fail_unless(cost < 18446744073710, "mega price %" FMT64U " for charisma %d reset_time %d!", cost, player_charisma, map_reset_time);
+                FAIL_UNLESS(cost < 18446744073710, "mega price %" FMT64U " for charisma %d reset_time %d!", cost, player_charisma, map_reset_time);
             }
         }
         object_free_drop_inventory(tosell);

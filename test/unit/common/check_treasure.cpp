@@ -49,23 +49,23 @@ START_TEST(test_add_treasure_in_list) {
     treasurelist list;
     list.items = NULL;
     treasure *first = treasure_insert(&list, 10);
-    fail_unless(list.items == first, "First not inserted in first place");
+    FAIL_UNLESS(list.items == first, "First not inserted in first place");
 
     treasure *new_first = treasure_insert(&list, -1);
-    fail_unless(list.items == new_first, "First not replaced");
-    fail_unless(new_first->next == first, "List not correctly linked");
+    FAIL_UNLESS(list.items == new_first, "First not replaced");
+    FAIL_UNLESS(new_first->next == first, "List not correctly linked");
 
     treasure *second = treasure_insert(&list, 11);
-    fail_unless(first->next == second, "Second not inserted at end");
-    fail_unless(second->next == NULL, "Second should be the last");
+    FAIL_UNLESS(first->next == second, "Second not inserted at end");
+    FAIL_UNLESS(second->next == NULL, "Second should be the last");
 
     treasure *between = treasure_insert(&list, 2);
-    fail_unless(first->next == between, "Between should be after first");
-    fail_unless(between->next == second, "Between should be before second");
+    FAIL_UNLESS(first->next == between, "Between should be after first");
+    FAIL_UNLESS(between->next == second, "Between should be before second");
 
     treasure *other_first = treasure_insert(&list, 0);
-    fail_unless(list.items == other_first, "Other first should be first item");
-    fail_unless(other_first->next == new_first, "Other first should be before new first");
+    FAIL_UNLESS(list.items == other_first, "Other first should be first item");
+    FAIL_UNLESS(other_first->next == new_first, "Other first should be before new first");
 }
 END_TEST
 
@@ -79,19 +79,19 @@ START_TEST(test_treasure_remove_item) {
     /*treasure *fifth =*/ treasure_insert(&list, 4);
 
     treasure_remove_item(&list, 0);
-    fail_unless(list.items == second, "first not removed");
+    FAIL_UNLESS(list.items == second, "first not removed");
     treasure_remove_item(&list, 1);
-    fail_unless(second->next == fourth, "third not removed");
+    FAIL_UNLESS(second->next == fourth, "third not removed");
     treasure_remove_item(&list, 2);
-    fail_unless(fourth->next == NULL, "fifth not removed");
+    FAIL_UNLESS(fourth->next == NULL, "fifth not removed");
 }
 END_TEST
 
 static void check_treasure_inv(object *op, const char **items) {
     object *inv = op->inv;
     while ((*items) != NULL) {
-        fail_unless(inv != NULL, "missing item %s", *items);
-        fail_unless(strcmp(inv->name, *items) == 0, "got %s instead of %s", inv->name, *items);
+        FAIL_UNLESS(inv != NULL, "missing item %s", *items);
+        FAIL_UNLESS(strcmp(inv->name, *items) == 0, "got %s instead of %s", inv->name, *items);
         ++items;
         inv = inv->below;
     }
@@ -100,7 +100,7 @@ static void check_treasure_inv(object *op, const char **items) {
             printf(" => unexpected inv %s\n", inv->name);
             inv = inv->below;
         }
-        fail_unless(inv != NULL, "got extra inv");
+        FAIL_UNLESS(inv != NULL, "got extra inv");
     }
 }
 
@@ -110,9 +110,9 @@ START_TEST(test_create_treasure_one) {
     const char *items[] = {"kobold's heart", NULL};
     cf_srandom(145);
     treasurelist *list = find_treasurelist("ape_parts");
-    fail_unless(list, "missing list 'ape_parts'");
+    FAIL_UNLESS(list, "missing list 'ape_parts'");
     object *k = create_archetype("kobold");
-    fail_unless(k, "missing kobold");
+    FAIL_UNLESS(k, "missing kobold");
     check_treasure_inv(k, empty);
     create_treasure(list, k, 0, 0, 0);
     check_treasure_inv(k, items);
@@ -131,9 +131,9 @@ START_TEST(test_create_treasure_all) {
     };
     cf_srandom(94);
     treasurelist *list = find_treasurelist("c_knight");
-    fail_unless(list, "missing list 'c_knight'");
+    FAIL_UNLESS(list, "missing list 'c_knight'");
     object *k = create_archetype("kobold");
-    fail_unless(k, "missing kobold");
+    FAIL_UNLESS(k, "missing kobold");
     check_treasure_inv(k, empty);
     create_treasure(list, k, 0, 0, 0);
     check_treasure_inv(k, items);
@@ -142,8 +142,8 @@ END_TEST
 
 static bool check_treasure_arch(object *op, const char **first, const char **last) {
     object *inv = op->inv;
-    fail_unless(inv, "missing inv");
-    fail_unless(inv->below == NULL, "unexpected below");
+    FAIL_UNLESS(inv, "missing inv");
+    FAIL_UNLESS(inv->below == NULL, "unexpected below");
     while (first != last) {
         if (strcmp(*first, inv->arch->name) == 0) {
             return true;
@@ -184,14 +184,14 @@ const char *allTraps[] = {
 START_TEST(test_magic_limit) {
     cf_srandom(19);
     treasurelist *list = find_treasurelist("magical_traps");
-    fail_unless(list, "missing list");
+    FAIL_UNLESS(list, "missing list");
     for (int i = 0; i < 1000; i++) {
         object *k = create_archetype("kobold");
         create_treasure(list, k, GT_INVISIBLE, 0, 0);
         if (!k->inv) {
             continue;
         }
-        fail_unless(check_treasure_arch(k, allTraps, allTraps + 12), "wrong inv %s", k->inv->arch->name);
+        FAIL_UNLESS(check_treasure_arch(k, allTraps, allTraps + 12), "wrong inv %s", k->inv->arch->name);
     }
 
     int nastier = 0;
@@ -202,14 +202,14 @@ START_TEST(test_magic_limit) {
             nastier++;
         }
     }
-    fail_unless(nastier > 0, "should get a nastier trap");
+    FAIL_UNLESS(nastier > 0, "should get a nastier trap");
 }
 END_TEST
 
 static void do_magic(int difficulty, uint8_t value, int8_t adjustment) {
     cf_srandom(57);
     treasurelist *list = find_treasurelist("magical_traps");
-    fail_unless(list, "missing list");
+    FAIL_UNLESS(list, "missing list");
 
     treasure t;
     memset(&t, 0, sizeof(t));
@@ -234,7 +234,7 @@ static void do_magic(int difficulty, uint8_t value, int8_t adjustment) {
             break;
         }
     }
-    fail_unless(nastier > 0, "should get a nastier trap");
+    FAIL_UNLESS(nastier > 0, "should get a nastier trap");
 }
 
 START_TEST(test_magic_set) {
@@ -252,7 +252,7 @@ static object *do_artifact(const char *name) {
     memset(&t, 0, sizeof(t));
     t.chance = 1;
     t.item = try_find_archetype("dagger");
-    fail_unless(t.item, "missing dagger");
+    FAIL_UNLESS(t.item, "missing dagger");
     t.artifact = add_string(name);
     treasurelist tl;
     memset(&tl, 0, sizeof(tl));
@@ -266,20 +266,20 @@ static object *do_artifact(const char *name) {
 START_TEST(test_artifact_valid) {
     sstring p = add_string("Poisoning");
     object *k = do_artifact(p);
-    fail_unless(k->inv, "nothing generated");
-    fail_unless(k->inv->artifact == p, "artifact not generated");
+    FAIL_UNLESS(k->inv, "nothing generated");
+    FAIL_UNLESS(k->inv->artifact == p, "artifact not generated");
 }
 END_TEST
 
 START_TEST(test_artifact_invalid) {
     object *k = do_artifact("Xebinon");
-    fail_unless(k->inv == NULL, "something was generated");
+    FAIL_UNLESS(k->inv == NULL, "something was generated");
 }
 END_TEST
 
 START_TEST(test_artifact_not_existing) {
     object *k = do_artifact("garbage");
-    fail_unless(k->inv == NULL, "something was generated");
+    FAIL_UNLESS(k->inv == NULL, "something was generated");
 }
 END_TEST
 

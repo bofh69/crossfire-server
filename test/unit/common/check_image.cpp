@@ -52,9 +52,9 @@ static void test_faceset(const face_sets *fs) {
         const Face *face = get_face_by_id(idx);
         int fs_id = get_face_fallback(fs->id, idx);
         const face_sets *actual = find_faceset(fs_id);
-        fail_unless(actual != NULL, "couldn't find faceset %d", fs_id);
-        fail_unless(idx < actual->allocated, "found face id %d but allocated %d!", idx, actual->allocated);
-        fail_unless(actual->faces[idx].datalen > 0, "empty face %d (%s) for faceset %d", idx, face ? face->name : "(null)", fs_id);
+        FAIL_UNLESS(actual != NULL, "couldn't find faceset %d", fs_id);
+        FAIL_UNLESS(idx < actual->allocated, "found face id %d but allocated %d!", int(idx), int(actual->allocated));
+        FAIL_UNLESS(actual->faces[idx].datalen > 0, "empty face %d (%s) for faceset %d", int(idx), face ? face->name : "(null)", fs_id);
     }
 }
 

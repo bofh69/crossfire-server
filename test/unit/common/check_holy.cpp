@@ -43,32 +43,32 @@ void teardown(void) {
 
 START_TEST(test_get_random_god) {
     const object *ob = get_rand_god();
-    fail_unless(ob != NULL, "There must be at least one god!");
+    FAIL_UNLESS(ob != NULL, "There must be at least one god!");
 }
 END_TEST
 
 START_TEST(test_find_god) {
     const object *ob = find_god("Valriel");
-    fail_unless(ob != NULL, "Valriel must exist");
+    FAIL_UNLESS(ob != NULL, "Valriel must exist");
 }
 END_TEST
 
 START_TEST(test_find_god_invalid) {
     const object *ob = find_god("FlyingSpaghettiMonster");
-    fail_unless(ob == NULL, "FSM must not be found");
+    FAIL_UNLESS(ob == NULL, "FSM must not be found");
 }
 END_TEST
 
 START_TEST(test_get_god_for_race) {
     const char *god = get_god_for_race("undead");
-    fail_unless(god != NULL, "Undead must have a race");
+    FAIL_UNLESS(god != NULL, "Undead must have a race");
     ck_assert_str_eq(god, "Devourers");
 }
 END_TEST
 
 START_TEST(test_get_god_for_race_invalid) {
     const char *god = get_god_for_race("unicorns!!");
-    fail_unless(god == NULL, "Must not find a god");
+    FAIL_UNLESS(god == NULL, "Must not find a god");
 }
 END_TEST
 

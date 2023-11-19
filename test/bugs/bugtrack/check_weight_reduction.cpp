@@ -55,21 +55,21 @@ START_TEST(test_weight_reduction) {
     for (red = 0; reduction[red] != -1; red++) {
         for (a = 0; archs[a] != NULL; a++) {
             container = create_archetype(archs[a]);
-            fail_unless(container != NULL, "couldn't find container arch %s!", archs[a]);
-            fail_unless(container->type == CONTAINER, "%s isn't a container, type %d instead of %d!", archs[a], container->type, CONTAINER);
-            fail_unless(container->carrying == 0, "%s has already some carrying?", archs[a]);
+            FAIL_UNLESS(container != NULL, "couldn't find container arch %s!", archs[a]);
+            FAIL_UNLESS(container->type == CONTAINER, "%s isn't a container, type %d instead of %d!", archs[a], container->type, CONTAINER);
+            FAIL_UNLESS(container->carrying == 0, "%s has already some carrying?", archs[a]);
 
             container->stats.Str = reduction[red];
 
             for (i = 0; items[i] != NULL; i++) {
                 item = create_archetype(items[i]);
-                fail_unless(item != NULL, "couldn't find item %s to put", items[i]);
-                fail_unless(item->nrof == 1, "can't test item %s with nrof != 1", items[i]);
+                FAIL_UNLESS(item != NULL, "couldn't find item %s to put", items[i]);
+                FAIL_UNLESS(item->nrof == 1, "can't test item %s with nrof != 1", items[i]);
                 sum = 1;
 
                 object_insert_in_ob(item, container);
                 carrying = (signed long)(item->weight * (100 - container->stats.Str) / 100);
-                fail_unless(container->carrying == carrying, "invalid weight %d instead of %d for %s in %s reduction %d!", container->carrying, carrying, items[i], archs[a], reduction[red]);
+                FAIL_UNLESS(container->carrying == carrying, "invalid weight %d instead of %d for %s in %s reduction %d!", container->carrying, int(carrying), items[i], archs[a], reduction[red]);
 
                 for (nrof = 0; add[nrof] != 0; nrof++) {
                     sum += add[nrof];
@@ -80,13 +80,13 @@ START_TEST(test_weight_reduction) {
                     } else {
                         object_decrease_nrof(item, - add[nrof]);
                     }
-                    fail_unless(item->nrof == sum, "invalid item count %d instead of %d", item->nrof, sum);
+                    FAIL_UNLESS(item->nrof == sum, "invalid item count %d instead of %d", item->nrof, sum);
                     carrying = (signed long)(item->nrof * item->weight * (100 - container->stats.Str) / 100);
-                    fail_unless(container->carrying == carrying, "invalid weight %d instead of %d for %s in %s reduction %d after adding %d!", container->carrying, carrying, items[i], archs[a], reduction[red], add[nrof]);
+                    FAIL_UNLESS(container->carrying == carrying, "invalid weight %d instead of %d for %s in %s reduction %d after adding %d!", container->carrying, int(carrying), items[i], archs[a], reduction[red], add[nrof]);
                 }
                 object_remove(item);
                 object_free(item, 0);
-                fail_unless(container->carrying == 0, "container %s is still carrying %d from %s instead of 0!", archs[a], container->carrying, items[i]);
+                FAIL_UNLESS(container->carrying == 0, "container %s is still carrying %d from %s instead of 0!", archs[a], container->carrying, items[i]);
             }
             object_free(container, 0);
         }

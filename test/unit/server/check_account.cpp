@@ -54,27 +54,27 @@ START_TEST(test_account_check_string) {
     int i;
 
     i=account_check_string(" abcd");
-    fail_unless(i != 0, "string started with spaces should not be considered valid");
+    FAIL_UNLESS(i != 0, "string started with spaces should not be considered valid");
     /* We test one string with colon at end, other starting with semicolon -
      * in that way, we also do some basic testing to make sure entire string is being checked.
      */
     i=account_check_string("abcd:");
-    fail_unless(i != 0, "string with colons should not be considered valid");
+    FAIL_UNLESS(i != 0, "string with colons should not be considered valid");
     i=account_check_string("a;bcd");
-    fail_unless(i != 0, "string with semicolons should not be considered valid");
+    FAIL_UNLESS(i != 0, "string with semicolons should not be considered valid");
     i=account_check_string("a/bcd");
-    fail_unless(i != 0, "string with slash should not be considered valid");
+    FAIL_UNLESS(i != 0, "string with slash should not be considered valid");
     i=account_check_string("a'bcd");
-    fail_unless(i != 0, "string with quote should not be considered valid");
+    FAIL_UNLESS(i != 0, "string with quote should not be considered valid");
 
     i=account_check_string("abc\n\nefg");
-    fail_unless(i != 0, "string with non printable characters should not be considered valid");
+    FAIL_UNLESS(i != 0, "string with non printable characters should not be considered valid");
 
     i=account_check_string("$abc");
-    fail_unless(i != 0, "string starting with non alphanumeric should not be considered valid");
+    FAIL_UNLESS(i != 0, "string starting with non alphanumeric should not be considered valid");
 
     i=account_check_string("abc ");
-    fail_unless(i != 0, "string ending in space should not be considered valid");
+    FAIL_UNLESS(i != 0, "string ending in space should not be considered valid");
 
     for (i=0; i<=MAX_NAME; i++) {
         longname[i]='a';
@@ -82,10 +82,10 @@ START_TEST(test_account_check_string) {
     longname[i]='\0';
     i=account_check_string(longname);
 
-    fail_unless(i != 0, "Too long string should not be considered valid");
+    FAIL_UNLESS(i != 0, "Too long string should not be considered valid");
 
     i=account_check_string("Some Body");
-    fail_unless(i == 0, "Valid string not considered valid");
+    FAIL_UNLESS(i == 0, "Valid string not considered valid");
 
 }
 END_TEST
@@ -103,24 +103,24 @@ START_TEST(test_account_add_account) {
      * duplicate account names, saving them out, etc.
      */
     i=account_new("Some Body", "mypassword");
-    fail_unless(i == 0, "Could not add valid account, got code %d", i);
+    FAIL_UNLESS(i == 0, "Could not add valid account, got code %d", i);
 
     i=account_new("Some Body", "mypassword");
-    fail_unless(i != 0, "Duplicate account successfully added");
+    FAIL_UNLESS(i != 0, "Duplicate account successfully added");
 
     /* This is mainly here to have 2 valid accounts */
     i=account_new("No Body", "mypassword");
-    fail_unless(i == 0, "Could not add valid account, got code %d", i);
+    FAIL_UNLESS(i == 0, "Could not add valid account, got code %d", i);
 
     /* This third account is to have one with no players associated to it */
     i=account_new("Every Body", "hispassword");
-    fail_unless(i == 0, "Could not add valid account");
+    FAIL_UNLESS(i == 0, "Could not add valid account");
 
     i=account_link("foobar", "foobar");
-    fail_unless(i != 0, "Added player to non existent character name");
+    FAIL_UNLESS(i != 0, "Added player to non existent character name");
 
     i=account_link("Some Body", "foobar");
-    fail_unless(i == 0, "Failed to add player to valid account");
+    FAIL_UNLESS(i == 0, "Failed to add player to valid account");
 
     for (j=0; j<30; j++) {
         sprintf(names,"char-%02d", j);
@@ -128,10 +128,10 @@ START_TEST(test_account_add_account) {
     }
 
     char_names = account_get_players_for_account("foobar");
-    fail_unless(char_names == NULL, "Got non null value for players on account with non existant accoun");
+    FAIL_UNLESS(char_names == NULL, "Got non null value for players on account with non existant accoun");
 
     char_names = account_get_players_for_account("No Body");
-    fail_unless(char_names != NULL, "Got null value for players on account");
+    FAIL_UNLESS(char_names != NULL, "Got null value for players on account");
 
     /* No return value here */
     accounts_save();
@@ -150,12 +150,12 @@ START_TEST(test_account_load_entries) {
     accounts_load();
 
     ae = account_exists("Every Body");
-    fail_unless(ae != NULL, "Could not find valid account");
+    FAIL_UNLESS(ae != NULL, "Could not find valid account");
     ae = account_exists("Some Body");
-    fail_unless(ae != NULL, "Could not find valid account");
+    FAIL_UNLESS(ae != NULL, "Could not find valid account");
 
     char_names =  account_get_players_for_account("No Body");
-    fail_unless(char_names != NULL, "Got null value for players on account");
+    FAIL_UNLESS(char_names != NULL, "Got null value for players on account");
 
     /* This is sort of data integrity testing - if char_names is not properly
      * null terminated, with will fail.  if char_names[] is corrupt, it should also
@@ -167,21 +167,21 @@ START_TEST(test_account_load_entries) {
         i++;
     }
     char_names =  account_get_players_for_account("Some Body");
-    fail_unless(char_names != NULL, "Got null value for players on account");
-    fail_unless(strcmp(char_names[0],"foobar") == 0, "Can not match on name we put in");
+    FAIL_UNLESS(char_names != NULL, "Got null value for players on account");
+    FAIL_UNLESS(strcmp(char_names[0],"foobar") == 0, "Can not match on name we put in");
 
     /* while we do this same check in test_account_add_account, doing it
      * again here makes sure the code is properly detecting the end of the accounts
      * list after loading it up.
      */
     char_names = account_get_players_for_account("foobar");
-    fail_unless(char_names == NULL, "Got non null value for players on account with non existant account");
+    FAIL_UNLESS(char_names == NULL, "Got non null value for players on account with non existant account");
 
     i = account_remove_player("foobar", "1foobar");
-    fail_unless(i!=0, "Got successsful return code on account_remove_player_from_account with non existent account");
+    FAIL_UNLESS(i!=0, "Got successsful return code on account_remove_player_from_account with non existent account");
 
     i = account_remove_player("No Body", "1foobar");
-    fail_unless(i!=0, "Got successsful return code on account_remove_player_from_account with non existent player");
+    FAIL_UNLESS(i!=0, "Got successsful return code on account_remove_player_from_account with non existent player");
 
     char_names =  account_get_players_for_account("No Body");
     j=0;
@@ -190,7 +190,7 @@ START_TEST(test_account_load_entries) {
     }
 
     i = account_remove_player("No Body", "char-01");
-    fail_unless(i==0, "Got error removing player when it should have worked");
+    FAIL_UNLESS(i==0, "Got error removing player when it should have worked");
 
     char_names =  account_get_players_for_account("No Body");
 
@@ -198,7 +198,7 @@ START_TEST(test_account_load_entries) {
     while (char_names[i] != NULL) {
         i++;
     }
-    fail_unless((i+1) == j, "Player removal get unexpected result - %d != %d", i+1, j);
+    FAIL_UNLESS((i+1) == j, "Player removal get unexpected result - %d != %d", i+1, j);
 }
 END_TEST
 

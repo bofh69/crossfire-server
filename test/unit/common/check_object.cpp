@@ -104,16 +104,16 @@ START_TEST(test_object_can_merge) {
 
     ob1 = cctk_create_game_object(NULL);
     ob2 = cctk_create_game_object(NULL);
-    fail_unless(object_can_merge(ob1, ob2), "Should be able to merge 2 same object");
+    FAIL_UNLESS(object_can_merge(ob1, ob2), "Should be able to merge 2 same object");
     ob2->name = add_string("Not same name");
-    fail_unless(!object_can_merge(ob1, ob2), "Should not be able to merge 2 object with different names");
+    FAIL_UNLESS(!object_can_merge(ob1, ob2), "Should not be able to merge 2 object with different names");
     ob2 = cctk_create_game_object(NULL);
     ob2->type++;
-    fail_unless(!object_can_merge(ob1, ob2), "Should not be able to merge 2 object with different types");
+    FAIL_UNLESS(!object_can_merge(ob1, ob2), "Should not be able to merge 2 object with different types");
     ob2 = cctk_create_game_object(NULL);
     ob1->nrof = (1UL<<31)-1;
     ob2->nrof = 1;
-    fail_unless(!object_can_merge(ob1, ob2), "Should not be able to merge 2 object if result nrof goes to 1<<31 or higher");
+    FAIL_UNLESS(!object_can_merge(ob1, ob2), "Should not be able to merge 2 object if result nrof goes to 1<<31 or higher");
     /*TESTME*/
 }
 END_TEST
@@ -143,7 +143,7 @@ START_TEST(test_object_sum_weight) {
     object_insert_in_ob(ob3, ob1);
     object_insert_in_ob(ob4, ob1);
     sum = object_sum_weight(ob1);
-    fail_unless(sum == 45, "Sum of object's inventory should be 45 ((6*10+7+8)*.6) but was %lu.", sum);
+    FAIL_UNLESS(sum == 45, "Sum of object's inventory should be 45 ((6*10+7+8)*.6) but was %lu.", sum);
 }
 END_TEST
 
@@ -165,7 +165,7 @@ START_TEST(test_object_get_env_recursive) {
     object_insert_in_ob(ob3, ob2);
     object_insert_in_ob(ob4, ob3);
     result = object_get_env_recursive(ob4);
-    fail_unless(result == ob1, "Getting top level container for ob4(%p) should bring ob1(%p) but brought %p.", ob4, ob1, result);
+    FAIL_UNLESS(result == ob1, "Getting top level container for ob4(%p) should bring ob1(%p) but brought %p.", ob4, ob1, result);
 }
 END_TEST
 
@@ -187,10 +187,10 @@ START_TEST(test_object_get_player_container) {
     object_insert_in_ob(ob3, ob2);
     object_insert_in_ob(ob4, ob3);
     result = object_get_player_container(ob4);
-    fail_unless(result == NULL, "Getting containing player for ob4(%p) should bring NULL but brought %p while not contained in a player.", ob4, result);
+    FAIL_UNLESS(result == NULL, "Getting containing player for ob4(%p) should bring NULL but brought %p while not contained in a player.", ob4, result);
     ob1->type = PLAYER;
     result = object_get_player_container(ob4);
-    fail_unless(result == ob1, "Getting containing player for ob4(%p) should bring ob1(%p) but brought %p while ob1 is player.", ob4, ob1, result);
+    FAIL_UNLESS(result == ob1, "Getting containing player for ob4(%p) should bring ob1(%p) but brought %p while ob1 is player.", ob4, ob1, result);
 }
 END_TEST
 
@@ -212,7 +212,7 @@ START_TEST(test_object_dump) {
     sb = stringbuffer_new();
     object_dump(ob1, sb);
     result = stringbuffer_finish(sb);
-    fail_unless(strstr(result, "arch") != NULL, "The object dump should contain 'arch' but was %s", sb);
+    FAIL_UNLESS(strstr(result, "arch") != NULL, "The object dump should contain 'arch' but was %s", result);
     free(result);
 }
 END_TEST
@@ -239,7 +239,7 @@ START_TEST(test_object_find_by_tag_global) {
     cctk_create_game_object(NULL);
     ob1 = cctk_create_game_object(NULL);
     result = object_find_by_tag_global(ob1->count);
-    fail_unless(result == ob1, "Should find ob1(%p) while search for item %d but got %p", ob1, ob1->count, result);
+    FAIL_UNLESS(result == ob1, "Should find ob1(%p) while search for item %d but got %p", ob1, ob1->count, result);
 }
 END_TEST
 
@@ -257,7 +257,7 @@ START_TEST(test_object_find_by_name_global) {
     ob1 = cctk_create_game_object(NULL);
     ob1->name = add_string("This is the key name");
     result = object_find_by_name_global(add_string("This is the key name"));
-    fail_unless(result == ob1, "Searching for object with name 'This is the key name' returned %p(%s) instead of ob1(%p)", result, result ? result->name : "null", ob1);
+    FAIL_UNLESS(result == ob1, "Searching for object with name 'This is the key name' returned %p(%s) instead of ob1(%p)", result, result ? result->name : "null", ob1);
 }
 END_TEST
 
@@ -281,7 +281,7 @@ START_TEST(test_object_get_owner) {
     object_set_owner(ob2, ob1);
     CLEAR_FLAG(ob1, FLAG_REMOVED);
     CLEAR_FLAG(ob2, FLAG_REMOVED);
-    fail_unless(object_get_owner(ob2) == ob1, "Owner of ob2(%p) shoud be ob1(%p) but was %p", ob2, ob1, object_get_owner(ob2));
+    FAIL_UNLESS(object_get_owner(ob2) == ob1, "Owner of ob2(%p) shoud be ob1(%p) but was %p", ob2, ob1, object_get_owner(ob2));
 }
 END_TEST
 
@@ -295,9 +295,9 @@ START_TEST(test_object_clear_owner) {
     ob1 = cctk_create_game_object(NULL);
     ob2 = cctk_create_game_object(NULL);
     object_set_owner(ob2, ob1);
-    fail_unless(ob2->owner != NULL, "Prior to testing object_clear_owner, owner of ob2 was wrongly initialized"); /* XXX: use object_get_owner() */
+    FAIL_UNLESS(ob2->owner != NULL, "Prior to testing object_clear_owner, owner of ob2 was wrongly initialized"); /* XXX: use object_get_owner() */
     object_clear_owner(ob2);
-    fail_unless(ob2->owner == NULL, "After object_clear_owner ob2 still had an owner"); /* XXX: use object_get_owner() */
+    FAIL_UNLESS(ob2->owner == NULL, "After object_clear_owner ob2 still had an owner"); /* XXX: use object_get_owner() */
 }
 END_TEST
 
@@ -311,7 +311,7 @@ START_TEST(test_object_set_owner) {
     ob1 = cctk_create_game_object(NULL);
     ob2 = cctk_create_game_object(NULL);
     object_set_owner(ob2, ob1);
-    fail_unless(ob2->owner == ob1, "After object_set_owner ob2(%p) owner should be ob1(%p) but was (%p)", ob2, ob1, ob2->owner); /* XXX: use object_get_owner() */
+    FAIL_UNLESS(ob2->owner == ob1, "After object_set_owner ob2(%p) owner should be ob1(%p) but was (%p)", ob2, ob1, ob2->owner); /* XXX: use object_get_owner() */
 }
 END_TEST
 
@@ -328,7 +328,7 @@ START_TEST(test_object_copy_owner) {
     ob3 = cctk_create_game_object(NULL);
     object_set_owner(ob2, ob1);
     object_copy_owner(ob3, ob2);
-    fail_unless(object_get_owner(ob2) == object_get_owner(ob3), "After object_copy_owner, ob3 and ob2 should have same owner (ob1=%p) but got %p and %p", object_get_owner(ob3), object_get_owner(ob2));
+    FAIL_UNLESS(object_get_owner(ob2) == object_get_owner(ob3), "After object_copy_owner, ob3 and ob2 should have same owner (ob1=%p) but got %p and %p", ob1, object_get_owner(ob3), object_get_owner(ob2));
 }
 END_TEST
 
@@ -340,15 +340,15 @@ START_TEST(test_object_reset) {
 
     ob1 = cctk_create_game_object(NULL);
     object_reset(ob1);
-    fail_unless(ob1->name == NULL, "Field name of ob1 was not NULLified by object_reset");
-    fail_unless(ob1->name_pl == NULL, "Field name_pl of ob1 was not NULLified by object_reset");
-    fail_unless(ob1->title == NULL, "Field title of ob1 was not NULLified by object_reset");
-    fail_unless(ob1->race == NULL, "Field race of ob1 was not NULLified by object_reset");
-    fail_unless(ob1->slaying == NULL, "Field slaying of ob1 was not NULLified by object_reset");
-    fail_unless(ob1->skill == NULL, "Field skill of ob1 was not NULLified by object_reset");
-    fail_unless(ob1->msg == NULL, "Field msg of ob1 was not NULLified by object_reset");
-    fail_unless(ob1->materialname == NULL, "Field materialname of ob1 was not NULLified by object_reset");
-    fail_unless(ob1->lore == NULL, "Field lore of ob1 was not NULLified by object_reset");
+    FAIL_UNLESS(ob1->name == NULL, "Field name of ob1 was not NULLified by object_reset");
+    FAIL_UNLESS(ob1->name_pl == NULL, "Field name_pl of ob1 was not NULLified by object_reset");
+    FAIL_UNLESS(ob1->title == NULL, "Field title of ob1 was not NULLified by object_reset");
+    FAIL_UNLESS(ob1->race == NULL, "Field race of ob1 was not NULLified by object_reset");
+    FAIL_UNLESS(ob1->slaying == NULL, "Field slaying of ob1 was not NULLified by object_reset");
+    FAIL_UNLESS(ob1->skill == NULL, "Field skill of ob1 was not NULLified by object_reset");
+    FAIL_UNLESS(ob1->msg == NULL, "Field msg of ob1 was not NULLified by object_reset");
+    FAIL_UNLESS(ob1->materialname == NULL, "Field materialname of ob1 was not NULLified by object_reset");
+    FAIL_UNLESS(ob1->lore == NULL, "Field lore of ob1 was not NULLified by object_reset");
 }
 END_TEST
 
@@ -363,16 +363,16 @@ START_TEST(test_object_clear) {
     cctk_set_object_strings(ob1, "This is a test String");
     reference = add_string("This is a test String");
     object_clear(ob1);
-    fail_unless(ob1->name == NULL, "Field name of ob1 was not cleaned by object_clear");
-    fail_unless(ob1->name_pl == NULL, "Field name_pl of ob1 was not cleaned by object_clear");
-    fail_unless(ob1->title == NULL, "Field title of ob1 was not cleaned by object_clear");
-    fail_unless(ob1->race == NULL, "Field race of ob1 was not cleaned by object_clear");
-    fail_unless(ob1->slaying == NULL, "Field slaying of ob1 was not cleaned by object_clear");
-    fail_unless(ob1->skill == NULL, "Field skill of ob1 was not cleaned by object_clear");
-    fail_unless(ob1->msg == NULL, "Field msg of ob1 was not cleaned by object_clear");
-    fail_unless(ob1->materialname == NULL, "Field materialname of ob1 was not cleaned by object_clear");
-    fail_unless(ob1->lore == NULL, "Field lore of ob1 was not cleaned by object_clear");
-    fail_unless(query_refcount(reference) == 1, "The number of references to string should drop back to 1 but was %d", query_refcount(reference));
+    FAIL_UNLESS(ob1->name == NULL, "Field name of ob1 was not cleaned by object_clear");
+    FAIL_UNLESS(ob1->name_pl == NULL, "Field name_pl of ob1 was not cleaned by object_clear");
+    FAIL_UNLESS(ob1->title == NULL, "Field title of ob1 was not cleaned by object_clear");
+    FAIL_UNLESS(ob1->race == NULL, "Field race of ob1 was not cleaned by object_clear");
+    FAIL_UNLESS(ob1->slaying == NULL, "Field slaying of ob1 was not cleaned by object_clear");
+    FAIL_UNLESS(ob1->skill == NULL, "Field skill of ob1 was not cleaned by object_clear");
+    FAIL_UNLESS(ob1->msg == NULL, "Field msg of ob1 was not cleaned by object_clear");
+    FAIL_UNLESS(ob1->materialname == NULL, "Field materialname of ob1 was not cleaned by object_clear");
+    FAIL_UNLESS(ob1->lore == NULL, "Field lore of ob1 was not cleaned by object_clear");
+    FAIL_UNLESS(query_refcount(reference) == 1, "The number of references to string should drop back to 1 but was %d", query_refcount(reference));
 }
 END_TEST
 
@@ -395,27 +395,27 @@ START_TEST(test_object_copy) {
     cctk_set_object_strings(ob2, "test String2");
     reference = add_string("test String2");
     object_copy(ob1, ob2);
-    fail_unless(ob1->name == ob2->name, "Field name of ob1 should match ob2");
-    fail_unless(ob1->name_pl == ob2->name_pl, "Field name_pl of ob1 should match ob2");
-    fail_unless(ob1->title == ob2->title, "Field title of ob1 should match ob2");
-    fail_unless(ob1->race == ob2->race, "Field race of ob1 should match ob2");
-    fail_unless(ob1->slaying == ob2->slaying, "Field slaying of ob1 should match ob2");
-    fail_unless(ob1->skill == ob2->skill, "Field skill of ob1 should match ob2");
-    fail_unless(ob1->msg == ob2->msg, "Field msg of ob1 should match ob2");
-    fail_unless(ob1->materialname == ob2->materialname, "Field materialname of ob1 should match ob2");
-    fail_unless(ob1->lore == ob2->lore, "Field lore of ob1 should match ob2");
-    fail_unless(query_refcount(reference) == 1, "refcount of marker string is not dropped to 1 after copy object, some string field were not cleaned. refcount: %d", query_refcount(reference));
+    FAIL_UNLESS(ob1->name == ob2->name, "Field name of ob1 should match ob2");
+    FAIL_UNLESS(ob1->name_pl == ob2->name_pl, "Field name_pl of ob1 should match ob2");
+    FAIL_UNLESS(ob1->title == ob2->title, "Field title of ob1 should match ob2");
+    FAIL_UNLESS(ob1->race == ob2->race, "Field race of ob1 should match ob2");
+    FAIL_UNLESS(ob1->slaying == ob2->slaying, "Field slaying of ob1 should match ob2");
+    FAIL_UNLESS(ob1->skill == ob2->skill, "Field skill of ob1 should match ob2");
+    FAIL_UNLESS(ob1->msg == ob2->msg, "Field msg of ob1 should match ob2");
+    FAIL_UNLESS(ob1->materialname == ob2->materialname, "Field materialname of ob1 should match ob2");
+    FAIL_UNLESS(ob1->lore == ob2->lore, "Field lore of ob1 should match ob2");
+    FAIL_UNLESS(query_refcount(reference) == 1, "refcount of marker string is not dropped to 1 after copy object, some string field were not cleaned. refcount: %d", query_refcount(reference));
 
-    fail_unless(ob2->key_values, "Key values should have been copied");
+    FAIL_UNLESS(ob2->key_values, "Key values should have been copied");
     kv = ob2->key_values;
-    fail_unless(strcmp(kv->key, "some_other_key") == 0, "Wrong first key %s", ob2->key_values->key);
-    fail_unless(strcmp(kv->value, "another_value") == 0, "Wrong first value %s", ob2->key_values->value);
+    FAIL_UNLESS(strcmp(kv->key, "some_other_key") == 0, "Wrong first key %s", ob2->key_values->key);
+    FAIL_UNLESS(strcmp(kv->value, "another_value") == 0, "Wrong first value %s", ob2->key_values->value);
     kv = kv->next;
-    fail_unless(kv, "Missing second key/value");
-    fail_unless(strcmp(kv->key, "some_key") == 0, "Wrong second key %s", ob2->key_values->key);
-    fail_unless(strcmp(kv->value, "value") == 0, "Wrong second value %s", ob2->key_values->value);
+    FAIL_UNLESS(kv, "Missing second key/value");
+    FAIL_UNLESS(strcmp(kv->key, "some_key") == 0, "Wrong second key %s", ob2->key_values->key);
+    FAIL_UNLESS(strcmp(kv->value, "value") == 0, "Wrong second value %s", ob2->key_values->value);
     kv = kv->next;
-    fail_unless(kv == NULL, "Third key/value?!?");
+    FAIL_UNLESS(kv == NULL, "Third key/value?!?");
 }
 END_TEST
 
@@ -428,24 +428,24 @@ START_TEST(test_object_new) {
     long int i;
 
     ob = object_new();
-    fail_unless(ob != NULL, "Should get an object after calling object_new()");
-    fail_unless(ob->name == NULL, "Field name has not been nullified by object_new()");
-    fail_unless(ob->name_pl == NULL, "Field name_pl has not been nullified by object_new()");
-    fail_unless(ob->title == NULL, "Field title has not been nullified by object_new()");
-    fail_unless(ob->race == NULL, "Field race has not been nullified by object_new()");
-    fail_unless(ob->slaying == NULL, "Field slaying has not been nullified by object_new()");
-    fail_unless(ob->skill == NULL, "Field skill has not been nullified by object_new()");
-    fail_unless(ob->lore == NULL, "Field lore has not been nullified by object_new()");
-    fail_unless(ob->msg == NULL, "Field msg has not been nullified by object_new()");
-    fail_unless(ob->materialname == NULL, "Field materialname has not been nullified by object_new()");
-    fail_unless(ob->prev == NULL, "Field prev has not been nullified by object_new()");
-    fail_unless(ob->active_next == NULL, "Field active_next has not been nullified by object_new()");
-    fail_unless(ob->active_prev == NULL, "Field active_prev has not been nullified by object_new()");
+    FAIL_UNLESS(ob != NULL, "Should get an object after calling object_new()");
+    FAIL_UNLESS(ob->name == NULL, "Field name has not been nullified by object_new()");
+    FAIL_UNLESS(ob->name_pl == NULL, "Field name_pl has not been nullified by object_new()");
+    FAIL_UNLESS(ob->title == NULL, "Field title has not been nullified by object_new()");
+    FAIL_UNLESS(ob->race == NULL, "Field race has not been nullified by object_new()");
+    FAIL_UNLESS(ob->slaying == NULL, "Field slaying has not been nullified by object_new()");
+    FAIL_UNLESS(ob->skill == NULL, "Field skill has not been nullified by object_new()");
+    FAIL_UNLESS(ob->lore == NULL, "Field lore has not been nullified by object_new()");
+    FAIL_UNLESS(ob->msg == NULL, "Field msg has not been nullified by object_new()");
+    FAIL_UNLESS(ob->materialname == NULL, "Field materialname has not been nullified by object_new()");
+    FAIL_UNLESS(ob->prev == NULL, "Field prev has not been nullified by object_new()");
+    FAIL_UNLESS(ob->active_next == NULL, "Field active_next has not been nullified by object_new()");
+    FAIL_UNLESS(ob->active_prev == NULL, "Field active_prev has not been nullified by object_new()");
     /* did you really thing i'll go with only one object? */
     /* let's go for about 2M allocations in a row, let's test roughness */
     for (i = 0; i < 1L<<17; i++) {
         ob = object_new();
-        fail_unless(ob != NULL, "Should get an object after calling object_new() (iteration %l)", i);
+        FAIL_UNLESS(ob != NULL, "Should get an object after calling object_new() (iteration %d)", int(i));
         if (!(i&((1<<13)-1)))
             LOG(llevDebug, "%ldk items created with object_new\n", i>>10);
     }
@@ -467,7 +467,7 @@ START_TEST(test_object_update_turn_face) {
     ob1->direction = 0;
     object_update_turn_face(ob1);
     face2 = ob1->face;
-    fail_unless(face2 != face1, "2 opposite direction should provide different faces after object_update_turn_face");
+    FAIL_UNLESS(face2 != face1, "2 opposite direction should provide different faces after object_update_turn_face");
 }
 END_TEST
 
@@ -487,21 +487,21 @@ START_TEST(test_object_update_speed) {
     ob4 = cctk_create_game_object(NULL);
     ob1->speed = MIN_ACTIVE_SPEED;
     object_update_speed(ob1);
-    fail_unless(!IS_OBJECT_ACTIVE(ob1), "Object with absolute speed <=MIN_ACTIVE_SPEED(%f) should not be made active (speed=%f)", MIN_ACTIVE_SPEED, ob1->speed);
+    FAIL_UNLESS(!IS_OBJECT_ACTIVE(ob1), "Object with absolute speed <=MIN_ACTIVE_SPEED(%f) should not be made active (speed=%f)", MIN_ACTIVE_SPEED, ob1->speed);
     ob1->speed = -MIN_ACTIVE_SPEED;
     object_update_speed(ob1);
-    fail_unless(!IS_OBJECT_ACTIVE(ob1), "Object with absolute speed <=MIN_ACTIVE_SPEED(%f) should not be made active (speed=%f)", MIN_ACTIVE_SPEED, ob1->speed);
+    FAIL_UNLESS(!IS_OBJECT_ACTIVE(ob1), "Object with absolute speed <=MIN_ACTIVE_SPEED(%f) should not be made active (speed=%f)", MIN_ACTIVE_SPEED, ob1->speed);
     ob1->speed = MIN_ACTIVE_SPEED*2;
     object_update_speed(ob1);
-    fail_unless(IS_OBJECT_ACTIVE(ob1), "Object with absolute speed >MIN_ACTIVE_SPEED(%f) should be made active (speed=%f)", MIN_ACTIVE_SPEED, ob1->speed);
+    FAIL_UNLESS(IS_OBJECT_ACTIVE(ob1), "Object with absolute speed >MIN_ACTIVE_SPEED(%f) should be made active (speed=%f)", MIN_ACTIVE_SPEED, ob1->speed);
     ob2->speed = -MIN_ACTIVE_SPEED*2;
     object_update_speed(ob2);
-    fail_unless(IS_OBJECT_ACTIVE(ob2), "Object with absolute speed >MIN_ACTIVE_SPEED(%f) should be made active (speed=%f)", MIN_ACTIVE_SPEED, ob2->speed);
+    FAIL_UNLESS(IS_OBJECT_ACTIVE(ob2), "Object with absolute speed >MIN_ACTIVE_SPEED(%f) should be made active (speed=%f)", MIN_ACTIVE_SPEED, ob2->speed);
     ob4->speed = ob3->speed = ob2->speed;
     object_update_speed(ob3);
     object_update_speed(ob4);
-    fail_unless(IS_OBJECT_ACTIVE(ob3), "Object with absolute speed >MIN_ACTIVE_SPEED(%f) should be made active (speed=%f)", MIN_ACTIVE_SPEED, ob3->speed);
-    fail_unless(IS_OBJECT_ACTIVE(ob4), "Object with absolute speed >MIN_ACTIVE_SPEED(%f) should be made active (speed=%f)", MIN_ACTIVE_SPEED, ob4->speed);
+    FAIL_UNLESS(IS_OBJECT_ACTIVE(ob3), "Object with absolute speed >MIN_ACTIVE_SPEED(%f) should be made active (speed=%f)", MIN_ACTIVE_SPEED, ob3->speed);
+    FAIL_UNLESS(IS_OBJECT_ACTIVE(ob4), "Object with absolute speed >MIN_ACTIVE_SPEED(%f) should be made active (speed=%f)", MIN_ACTIVE_SPEED, ob4->speed);
     ob1->speed = 0.0;
     ob2->speed = 0.0;
     ob3->speed = 0.0;
@@ -510,10 +510,10 @@ START_TEST(test_object_update_speed) {
     object_update_speed(ob2);
     object_update_speed(ob3);
     object_update_speed(ob4);
-    fail_unless(!IS_OBJECT_ACTIVE(ob1), "Object with absolute speed 0.0 should be inactivated", ob1->speed);
-    fail_unless(!IS_OBJECT_ACTIVE(ob2), "Object with absolute speed 0.0 should be inactivated", ob2->speed);
-    fail_unless(!IS_OBJECT_ACTIVE(ob3), "Object with absolute speed 0.0 should be inactivated", ob3->speed);
-    fail_unless(!IS_OBJECT_ACTIVE(ob4), "Object with absolute speed 0.0 should be inactivated", ob4->speed);
+    FAIL_UNLESS(!IS_OBJECT_ACTIVE(ob1), "Object with absolute speed 0.0 should be inactivated, but speed %f", ob1->speed);
+    FAIL_UNLESS(!IS_OBJECT_ACTIVE(ob2), "Object with absolute speed 0.0 should be inactivated, but speed %f", ob2->speed);
+    FAIL_UNLESS(!IS_OBJECT_ACTIVE(ob3), "Object with absolute speed 0.0 should be inactivated, but speed %f", ob3->speed);
+    FAIL_UNLESS(!IS_OBJECT_ACTIVE(ob4), "Object with absolute speed 0.0 should be inactivated, but speed %f", ob4->speed);
 }
 END_TEST
 
@@ -526,9 +526,9 @@ START_TEST(test_object_remove_from_active_list) {
     ob1 = cctk_create_game_object(NULL);
     ob1->speed = MIN_ACTIVE_SPEED*2;
     object_update_speed(ob1);
-    fail_unless(IS_OBJECT_ACTIVE(ob1), "Object with absolute speed >MIN_ACTIVE_SPEED(%f) should be made active (speed=%f)", MIN_ACTIVE_SPEED, ob1->speed);
+    FAIL_UNLESS(IS_OBJECT_ACTIVE(ob1), "Object with absolute speed >MIN_ACTIVE_SPEED(%f) should be made active (speed=%f)", MIN_ACTIVE_SPEED, ob1->speed);
     object_remove_from_active_list(ob1);
-    fail_unless(!IS_OBJECT_ACTIVE(ob1), "After call to object_remove_from_active_list, object should be made inactive");
+    FAIL_UNLESS(!IS_OBJECT_ACTIVE(ob1), "After call to object_remove_from_active_list, object should be made inactive");
 }
 END_TEST
 #undef IS_OBJECT_ACTIVE
@@ -552,8 +552,8 @@ START_TEST(test_object_free_drop_inventory) {
     ob2 = cctk_create_game_object(NULL);
     object_insert_in_ob(ob2, ob1);
     object_free_drop_inventory(ob1);
-    fail_unless(QUERY_FLAG(ob1, FLAG_FREED), "Freeing ob1 should mark it freed");
-    fail_unless(QUERY_FLAG(ob2, FLAG_FREED), "Freeing ob1 should mark it's content freed");
+    FAIL_UNLESS(QUERY_FLAG(ob1, FLAG_FREED), "Freeing ob1 should mark it freed");
+    FAIL_UNLESS(QUERY_FLAG(ob2, FLAG_FREED), "Freeing ob1 should mark it's content freed");
 }
 END_TEST
 
@@ -571,9 +571,9 @@ START_TEST(test_object_count_free) {
      * both will be 0. Allow test suite to pass with this option.
      */
 #ifdef MEMORY_DEBUG
-    fail_unless(((free2 == 0) && (free1 == 0)), "after creating an object, the object_count_free() should return 0 (compiled with MEMORY_DEBUG)", free1-1, free2);
+    FAIL_UNLESS(((free2 == 0) && (free1 == 0)), "after creating an object, the object_count_free() should return 0 (compiled with MEMORY_DEBUG)", free1-1, free2);
 #else
-    fail_unless((free2 == free1-1), "after creating an object, the object_count_free() should return one less (%d) but returned %d", free1-1, free2);
+    FAIL_UNLESS((free2 == free1-1), "after creating an object, the object_count_free() should return one less (%d) but returned %d", free1-1, free2);
 #endif
 }
 END_TEST
@@ -588,7 +588,7 @@ START_TEST(test_object_count_used) {
     used1 = object_count_used();
     cctk_create_game_object(NULL);
     used2 = object_count_used();
-    fail_unless((used2 == used1+1), "after creating an object, the object_count_used() should return one more (%d) but returned %d", used1-1, used2);
+    FAIL_UNLESS((used2 == used1+1), "after creating an object, the object_count_used() should return one more (%d) but returned %d", used1-1, used2);
 }
 END_TEST
 
@@ -607,7 +607,7 @@ START_TEST(test_object_count_active) {
     ob1->speed = MIN_ACTIVE_SPEED*2;
     object_update_speed(ob1);
     active2 = object_count_active();
-    fail_unless((active2 == active1+1), "after activating an additional object, object_count_active should return one less %d but returned %d", active1-1, active2);
+    FAIL_UNLESS((active2 == active1+1), "after activating an additional object, object_count_active should return one less %d but returned %d", active1-1, active2);
 }
 END_TEST
 
@@ -637,9 +637,9 @@ START_TEST(test_object_sub_weight) {
     object_insert_in_ob(ob3, ob2);
     object_insert_in_ob(ob4, ob3);
     sum = object_sum_weight(ob1);
-    fail_unless(sum == 18, "Sum of object's inventory should be 18 (30*0.6+10) but was %lu.", sum);
+    FAIL_UNLESS(sum == 18, "Sum of object's inventory should be 18 (30*0.6+10) but was %lu.", sum);
     object_sub_weight(ob4, 10);
-    fail_unless(ob1->carrying == 12, "after call to object_sub_weight, carrying of ob1 should be 22 but was %d", ob1->carrying);
+    FAIL_UNLESS(ob1->carrying == 12, "after call to object_sub_weight, carrying of ob1 should be 22 but was %d", ob1->carrying);
 }
 END_TEST
 
@@ -690,25 +690,25 @@ START_TEST(test_object_insert_in_map_at) {
     object *got = NULL;
 
     map = get_empty_map(5, 5);
-    fail_unless(map != NULL, "get_empty_map returned NULL.");
+    FAIL_UNLESS(map != NULL, "get_empty_map returned NULL.");
 
     /* Single tile object */
     first = cctk_create_game_object("barrel");
-    fail_unless(first != NULL, "create barrel failed");
+    FAIL_UNLESS(first != NULL, "create barrel failed");
 
     got = object_insert_in_map_at(first, map, NULL, 0, 0, 0);
-    fail_unless(got == first, "item shouldn't be destroyed");
+    FAIL_UNLESS(got == first, "item shouldn't be destroyed");
 
     first = cctk_create_game_object("dragon");
-    fail_unless(first != NULL, "create dragon failed");
-    fail_unless(first->more != NULL, "no other body part");
+    FAIL_UNLESS(first != NULL, "create dragon failed");
+    FAIL_UNLESS(first->more != NULL, "no other body part");
 
     got = object_insert_in_map_at(first, map, NULL, 0, 1, 1);
-    fail_unless(got == first, "item shouldn't be destroyed");
+    FAIL_UNLESS(got == first, "item shouldn't be destroyed");
 
-    fail_unless(GET_MAP_OB(map, 1, 1) == first, "item isn't on 1,1");
-    fail_unless(GET_MAP_OB(map, 2, 1) != NULL, "no item on 2,1");
-    fail_unless(GET_MAP_OB(map, 2, 1)->head == first, "head of 2,1 isn't 1,1");
+    FAIL_UNLESS(GET_MAP_OB(map, 1, 1) == first, "item isn't on 1,1");
+    FAIL_UNLESS(GET_MAP_OB(map, 2, 1) != NULL, "no item on 2,1");
+    FAIL_UNLESS(GET_MAP_OB(map, 2, 1)->head == first, "head of 2,1 isn't 1,1");
 }
 END_TEST
 
@@ -724,74 +724,74 @@ START_TEST(test_object_insert_in_map) {
     object *got = NULL;
 
     map = get_empty_map(5, 5);
-    fail_unless(map != NULL, "get_empty_map returned NULL.");
+    FAIL_UNLESS(map != NULL, "get_empty_map returned NULL.");
 
     /* First, simple tests for insertion. */
     floor = cctk_create_game_object("woodfloor");
-    fail_unless(floor != NULL, "create woodfloor failed");
+    FAIL_UNLESS(floor != NULL, "create woodfloor failed");
     floor->x = 3;
     floor->y = 3;
 
     got = object_insert_in_map(floor, map, NULL, 0);
-    fail_unless(got == floor, "woodfloor shouldn't disappear");
-    fail_unless(floor == GET_MAP_OB(map, 3, 3), "woodfloor should be first object");
+    FAIL_UNLESS(got == floor, "woodfloor shouldn't disappear");
+    FAIL_UNLESS(floor == GET_MAP_OB(map, 3, 3), "woodfloor should be first object");
 
     first = cctk_create_game_object("barrel");
-    fail_unless(first != NULL, "create barrel failed");
+    FAIL_UNLESS(first != NULL, "create barrel failed");
     first->x = 3;
     first->y = 3;
 
     got = object_insert_in_map(first, map, NULL, 0);
-    fail_unless(got == first, "barrel shouldn't disappear");
-    fail_unless(floor == GET_MAP_OB(map, 3, 3), "woodfloor should still be first object");
-    fail_unless(floor->above == first, "barrel should be above floor");
+    FAIL_UNLESS(got == first, "barrel shouldn't disappear");
+    FAIL_UNLESS(floor == GET_MAP_OB(map, 3, 3), "woodfloor should still be first object");
+    FAIL_UNLESS(floor->above == first, "barrel should be above floor");
 
     second = cctk_create_game_object("gem");
-    fail_unless(second != NULL, "create gem failed");
+    FAIL_UNLESS(second != NULL, "create gem failed");
     second->nrof = 1;
     second->x = 3;
     second->y = 3;
 
     got = object_insert_in_map(second, map, NULL, INS_ABOVE_FLOOR_ONLY);
-    fail_unless(got == second, "gem shouldn't disappear");
-    fail_unless(floor == GET_MAP_OB(map, 3, 3), "woodfloor should still be first object");
-    fail_unless(floor->above == second, "gem should be above floor");
-    fail_unless(second->above == first, "barrel should be above gem");
+    FAIL_UNLESS(got == second, "gem shouldn't disappear");
+    FAIL_UNLESS(floor == GET_MAP_OB(map, 3, 3), "woodfloor should still be first object");
+    FAIL_UNLESS(floor->above == second, "gem should be above floor");
+    FAIL_UNLESS(second->above == first, "barrel should be above gem");
 
     third = cctk_create_game_object("bed_1");
-    fail_unless(third != NULL, "create bed_1 failed");
+    FAIL_UNLESS(third != NULL, "create bed_1 failed");
     third->nrof = 1;
     third->x = 3;
     third->y = 3;
 
     got = object_insert_in_map(third, map, first, INS_BELOW_ORIGINATOR);
-    fail_unless(got == third, "bed_1 shouldn't disappear");
-    fail_unless(floor == GET_MAP_OB(map, 3, 3), "woodfloor should still be first object");
-    fail_unless(third->above == first, "bed should be below barrel");
-    fail_unless(third->below == second, "bed should be above gem");
+    FAIL_UNLESS(got == third, "bed_1 shouldn't disappear");
+    FAIL_UNLESS(floor == GET_MAP_OB(map, 3, 3), "woodfloor should still be first object");
+    FAIL_UNLESS(third->above == first, "bed should be below barrel");
+    FAIL_UNLESS(third->below == second, "bed should be above gem");
 
     /* Merging tests. */
     third = cctk_create_game_object("gem");
-    fail_unless(third != NULL, "create gem failed");
+    FAIL_UNLESS(third != NULL, "create gem failed");
     third->nrof = 1;
     third->x = 3;
     third->y = 3;
 
     got = object_insert_in_map(third, map, NULL, 0);
-    fail_unless(got == third, "gem shouldn't disappear");
-    fail_unless(QUERY_FLAG(second, FLAG_FREED), "first gem should have been removed.");
-    fail_unless(third->nrof == 2, "second gem should have nrof 2");
+    FAIL_UNLESS(got == third, "gem shouldn't disappear");
+    FAIL_UNLESS(QUERY_FLAG(second, FLAG_FREED), "first gem should have been removed.");
+    FAIL_UNLESS(third->nrof == 2, "second gem should have nrof 2");
 
     second = cctk_create_game_object("gem");
-    fail_unless(second != NULL, "create gem failed");
+    FAIL_UNLESS(second != NULL, "create gem failed");
     second->nrof = 1;
     second->x = 3;
     second->y = 3;
     second->value = 1;
 
     got = object_insert_in_map(second, map, NULL, 0);
-    fail_unless(got == second, "modified gem shouldn't disappear");
-    fail_unless(second->nrof == 1, "modified gem should have nrof 1");
+    FAIL_UNLESS(got == second, "modified gem shouldn't disappear");
+    FAIL_UNLESS(second->nrof == 1, "modified gem should have nrof 1");
 
     /* Now check sacrificing, on another spot.
      * Can't work here, as altar logic is in server.
@@ -799,22 +799,22 @@ START_TEST(test_object_insert_in_map) {
      */
 /*
     first = cctk_create_game_object("altar");
-    fail_unless(first != NULL, "create altar failed");
+    FAIL_UNLESS(first != NULL, "create altar failed");
     first->x = 2;
     first->y = 2;
     first->stats.food = 5;
     first->value = 0;
-    fail_unless(object_insert_in_map(first, map, NULL, 0) == first, "altar shouldn't disappear");
-    fail_unless(GET_MAP_MOVE_ON(map, 2, 2)&MOVE_WALK == MOVE_WALK, "floor should have MOVE_WALK set");
+    FAIL_UNLESS(object_insert_in_map(first, map, NULL, 0) == first, "altar shouldn't disappear");
+    FAIL_UNLESS(GET_MAP_MOVE_ON(map, 2, 2)&MOVE_WALK == MOVE_WALK, "floor should have MOVE_WALK set");
 
     second = cctk_create_game_object("food");
-    fail_unless(second != NULL, "create food failed");
+    FAIL_UNLESS(second != NULL, "create food failed");
     second->nrof = 5;
     second->x = 2;
     second->y = 2;
     got = object_insert_in_map(second, map, NULL, 0);
-    fail_unless(got == NULL, "object_insert_in_map(food) should have returned NULL");
-    fail_unless(QUERY_FLAG(second, FLAG_FREED), "food should have been freed");
+    FAIL_UNLESS(got == NULL, "object_insert_in_map(food) should have returned NULL");
+    FAIL_UNLESS(QUERY_FLAG(second, FLAG_FREED), "food should have been freed");
 */
 }
 END_TEST
@@ -830,44 +830,44 @@ START_TEST(test_object_replace_insert_in_map) {
     object *got = NULL;
 
     map = get_empty_map(5, 5);
-    fail_unless(map != NULL, "get_empty_map returned NULL.");
+    FAIL_UNLESS(map != NULL, "get_empty_map returned NULL.");
 
     /* Single tile object */
     first = cctk_create_game_object("barrel");
-    fail_unless(first != NULL, "create barrel failed");
+    FAIL_UNLESS(first != NULL, "create barrel failed");
     tag_first = first->count;
 
     got = object_insert_in_map_at(first, map, NULL, 0, 0, 0);
-    fail_unless(got == first, "item shouldn't be destroyed");
+    FAIL_UNLESS(got == first, "item shouldn't be destroyed");
 
     second = cctk_create_game_object("table");
-    fail_unless(second != NULL, "create table failed");
+    FAIL_UNLESS(second != NULL, "create table failed");
 
     got = object_insert_in_map_at(second, map, NULL, 0, 0, 0);
-    fail_unless(got == second, "second item shouldn't be destroyed");
+    FAIL_UNLESS(got == second, "second item shouldn't be destroyed");
     tag_second = second->count;
 
     third = cctk_create_game_object("barrel");
-    fail_unless(third != NULL, "create 2nd barrel failed");
+    FAIL_UNLESS(third != NULL, "create 2nd barrel failed");
     got = object_insert_in_map_at(third, map, NULL, 0, 0, 0);
-    fail_unless(got == third, "second barrel shouldn't be destroyed");
+    FAIL_UNLESS(got == third, "second barrel shouldn't be destroyed");
     tag_third = third->count;
 
-    fail_unless(GET_MAP_OB(map, 0, 0) == first, "item at 0,0 isn't barrel");
-    fail_unless(GET_MAP_OB(map, 0, 0)->above == second, "second item at 0,0 isn't table");
-    fail_unless(GET_MAP_OB(map, 0, 0)->above->above == third, "third item at 0,0 isn't barrel");
+    FAIL_UNLESS(GET_MAP_OB(map, 0, 0) == first, "item at 0,0 isn't barrel");
+    FAIL_UNLESS(GET_MAP_OB(map, 0, 0)->above == second, "second item at 0,0 isn't table");
+    FAIL_UNLESS(GET_MAP_OB(map, 0, 0)->above->above == third, "third item at 0,0 isn't barrel");
 
     object_replace_insert_in_map("barrel", second);
 
-    fail_unless(GET_MAP_OB(map, 0, 0) != first, "item at 0, 0 is still first?");
-    fail_unless(object_was_destroyed(first, tag_first), "1st barrel should be destroyed");
-    fail_unless(!object_was_destroyed(second, tag_second), "table shouldn't be destroyed");
-    fail_unless(object_was_destroyed(third, tag_third), "2nd barrel should be destroyed");
+    FAIL_UNLESS(GET_MAP_OB(map, 0, 0) != first, "item at 0, 0 is still first?");
+    FAIL_UNLESS(object_was_destroyed(first, tag_first), "1st barrel should be destroyed");
+    FAIL_UNLESS(!object_was_destroyed(second, tag_second), "table shouldn't be destroyed");
+    FAIL_UNLESS(object_was_destroyed(third, tag_third), "2nd barrel should be destroyed");
 
-    fail_unless(GET_MAP_OB(map, 0, 0) != NULL, "no item at 0,0 after object_replace_insert_in_map");
-    fail_unless(GET_MAP_OB(map, 0, 0) != second, "second at bottom at 0,0 after object_replace_insert_in_map");
-    fail_unless(GET_MAP_OB(map, 0, 0)->above == second, "table isn't above new barrel");
-    fail_unless(strcmp(GET_MAP_OB(map, 0, 0)->arch->name, "barrel") == 0, "item at 0,0 is not a barrel after object_replace_insert_in_map");
+    FAIL_UNLESS(GET_MAP_OB(map, 0, 0) != NULL, "no item at 0,0 after object_replace_insert_in_map");
+    FAIL_UNLESS(GET_MAP_OB(map, 0, 0) != second, "second at bottom at 0,0 after object_replace_insert_in_map");
+    FAIL_UNLESS(GET_MAP_OB(map, 0, 0)->above == second, "table isn't above new barrel");
+    FAIL_UNLESS(strcmp(GET_MAP_OB(map, 0, 0)->arch->name, "barrel") == 0, "item at 0,0 is not a barrel after object_replace_insert_in_map");
 }
 END_TEST
 
@@ -880,21 +880,21 @@ START_TEST(test_object_split) {
     char err[50];
 
     first = cctk_create_game_object("gem");
-    fail_unless(first != NULL, "create gem failed");
+    FAIL_UNLESS(first != NULL, "create gem failed");
     first->nrof = 5;
 
     second = object_split(first, 2, err, sizeof(err));
-    fail_unless(second != NULL, "should return an item");
-    fail_unless(second->nrof == 2, "2 expected to split");
-    fail_unless(first->nrof == 3, "3 should be left");
+    FAIL_UNLESS(second != NULL, "should return an item");
+    FAIL_UNLESS(second->nrof == 2, "2 expected to split");
+    FAIL_UNLESS(first->nrof == 3, "3 should be left");
 
     second = object_split(first, 3, err, sizeof(err));
-    fail_unless(second != NULL, "should return an item");
-    fail_unless(QUERY_FLAG(first, FLAG_FREED), "first should be freed");
+    FAIL_UNLESS(second != NULL, "should return an item");
+    FAIL_UNLESS(QUERY_FLAG(first, FLAG_FREED), "first should be freed");
 
     first = object_split(second, 10, err, sizeof(err));
-    fail_unless(first == NULL, "should return NULL");
-    fail_unless(second->nrof == 3, "3 should be left");
+    FAIL_UNLESS(first == NULL, "should return NULL");
+    FAIL_UNLESS(second->nrof == 3, "3 should be left");
 }
 END_TEST
 
@@ -906,15 +906,15 @@ START_TEST(test_object_decrease_nrof) {
     object *second = NULL;
 
     first = cctk_create_game_object("gem");
-    fail_unless(first != NULL, "create gem failed");
+    FAIL_UNLESS(first != NULL, "create gem failed");
     first->nrof = 5;
 
     second = object_decrease_nrof(first, 3);
-    fail_unless(second == first, "gem shouldn't be destroyed");
+    FAIL_UNLESS(second == first, "gem shouldn't be destroyed");
 
     second = object_decrease_nrof(first, 2);
-    fail_unless(second == NULL, "object_decrease_nrof should return NULL");
-    fail_unless(QUERY_FLAG(first, FLAG_FREED), "gem should have been freed");
+    FAIL_UNLESS(second == NULL, "object_decrease_nrof should return NULL");
+    FAIL_UNLESS(QUERY_FLAG(first, FLAG_FREED), "gem should have been freed");
 }
 END_TEST
 
@@ -934,27 +934,27 @@ START_TEST(test_object_insert_in_ob) {
     object *item = NULL;
 
     item = cctk_create_game_object("gem");
-    fail_unless(item != NULL, "create gem failed");
+    FAIL_UNLESS(item != NULL, "create gem failed");
     item->weight = 50;
 
     /* Bookshelves have no weight reduction. */
     container = cctk_create_game_object("bookshelf");
-    fail_unless(container != NULL, "create bookshelf failed");
+    FAIL_UNLESS(container != NULL, "create bookshelf failed");
 
     object_insert_in_ob(item, container);
-    fail_unless(container->inv == item, "item not inserted");
-    fail_unless(container->carrying == 50, "container should carry 50 and not %d", container->carrying);
+    FAIL_UNLESS(container->inv == item, "item not inserted");
+    FAIL_UNLESS(container->carrying == 50, "container should carry 50 and not %d", container->carrying);
 
     object_remove(item);
-    fail_unless(container->carrying == 0, "container should carry 0 and not %d", container->carrying);
+    FAIL_UNLESS(container->carrying == 0, "container should carry 0 and not %d", container->carrying);
 
     /* Sacks have a Str of 10, so will reduce the weight. */
     container = cctk_create_game_object("sack");
-    fail_unless(container != NULL, "create sack failed");
+    FAIL_UNLESS(container != NULL, "create sack failed");
 
     object_insert_in_ob(item, container);
-    fail_unless(container->inv == item, "item not inserted");
-    fail_unless(container->carrying == 45, "container should carry 45 and not %d", container->carrying);
+    FAIL_UNLESS(container->inv == item, "item not inserted");
+    FAIL_UNLESS(container->carrying == 45, "container should carry 45 and not %d", container->carrying);
 }
 END_TEST
 
@@ -1159,34 +1159,34 @@ START_TEST(test_object_matches_string) {
     int val;
 
     pl = cctk_create_game_object("kobold");
-    fail_unless(pl != NULL, "couldn't create kobold");
+    FAIL_UNLESS(pl != NULL, "couldn't create kobold");
     pl->contr = (player *)calloc(1, sizeof(player));
-    fail_unless(pl->contr != NULL, "couldn't alloc contr");
+    FAIL_UNLESS(pl->contr != NULL, "couldn't alloc contr");
 
     o1 = cctk_create_game_object("cloak");
-    fail_unless(o1 != NULL, "couldn't find cloak archetype");
+    FAIL_UNLESS(o1 != NULL, "couldn't find cloak archetype");
     o1->title = add_string("of Gorokh");
     CLEAR_FLAG(o1, FLAG_IDENTIFIED);
 
     val = object_matches_string(pl, o1, "all");
-    fail_unless(val == 1, "all didn't match cloak");
+    FAIL_UNLESS(val == 1, "all didn't match cloak");
     val = object_matches_string(pl, o1, "Gorokh");
-    fail_unless(val == 0, "unidentified cloak matched title with value %d", val);
+    FAIL_UNLESS(val == 0, "unidentified cloak matched title with value %d", val);
     val = object_matches_string(pl, o1, "random");
-    fail_unless(val == 0, "unidentified cloak matched random value with value %d", val);
+    FAIL_UNLESS(val == 0, "unidentified cloak matched random value with value %d", val);
 
     SET_FLAG(o1, FLAG_IDENTIFIED);
     val = object_matches_string(pl, o1, "Gorokh");
-    fail_unless(val != 0, "identified cloak didn't match title with value %d", val);
+    FAIL_UNLESS(val != 0, "identified cloak didn't match title with value %d", val);
 
     o2 = cctk_create_game_object("cloak");
     SET_FLAG(o2, FLAG_UNPAID);
     val = object_matches_string(pl, o2, "unpaid");
-    fail_unless(val == 2, "unpaid cloak didn't match unpaid");
+    FAIL_UNLESS(val == 2, "unpaid cloak didn't match unpaid");
     val = object_matches_string(pl, o2, "cloak");
-    fail_unless(val != 0, "unpaid cloak didn't match cloak with %d", val);
+    FAIL_UNLESS(val != 0, "unpaid cloak didn't match cloak with %d", val);
     val = object_matches_string(pl, o2, "wrong");
-    fail_unless(val == 0, "unpaid cloak matched wrong name %d", val);
+    FAIL_UNLESS(val == 0, "unpaid cloak matched wrong name %d", val);
 }
 END_TEST
 
