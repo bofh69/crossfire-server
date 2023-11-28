@@ -14,6 +14,7 @@
 #include "ResourcesManager.h"
 #include "CREPixmap.h"
 #include "../archetypes/ArchetypeWrapper.h"
+#include "CREUtils.h"
 
 RecipeWrapper::RecipeWrapper(AssetWrapper *parent, const recipe *rp, ResourcesManager *)
   : AssetTWrapper(parent, "Recipe", rp) {
@@ -93,7 +94,12 @@ QString RecipeWrapper::displayName() const {
 }
 
 QIcon RecipeWrapper::displayIcon() const {
-    const Face *face = recipe_get_face(myWrappedItem);
+    const Face *face;
+    {
+        auto locker = CREUtils::lockCrossfireData();
+        face = recipe_get_face(myWrappedItem);
+    }
+
     const archetype* base = NULL;
     if (myWrappedItem->arch_names > 0) {
         base = find_archetype(myWrappedItem->arch_name[0]);

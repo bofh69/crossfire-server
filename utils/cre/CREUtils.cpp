@@ -21,6 +21,8 @@
 #include "recipe.h"
 #include "libproto.h"
 
+static QMutex g_crossfireLock;
+
 QTreeWidgetItem* CREUtils::archetypeNode(const archetype* arch, QTreeWidgetItem* parent)
 {
     QTreeWidgetItem* item = new QTreeWidgetItem(parent, QStringList(arch->name));
@@ -52,4 +54,9 @@ QTreeWidgetItem* CREUtils::faceNode(const Face* face, QTreeWidgetItem* parent)
     QTreeWidgetItem* item = new QTreeWidgetItem(parent, QStringList(face->name));
     item->setIcon(0, CREPixmap::getIcon(face->number));
     return item;
+}
+
+std::unique_ptr<QMutexLocker> CREUtils::lockCrossfireData()
+{
+    return std::make_unique<QMutexLocker>(&g_crossfireLock);
 }

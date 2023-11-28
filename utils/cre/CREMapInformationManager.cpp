@@ -19,6 +19,7 @@
 #include "scripts/ScriptFileManager.h"
 #include "scripts/ScriptFile.h"
 #include "random_maps/RandomMap.h"
+#include "CREUtils.h"
 
 #include "global.h"
 #include "assets.h"
@@ -228,6 +229,8 @@ void CREMapInformationManager::process(const QString& path2)
     /* remove scripts to avoid duplications */
     myScriptManager->removeMap(information);
 
+    auto locker = CREUtils::lockCrossfireData();
+
     mapstruct *m = mapfile_load(path.toLatin1(), MAP_STYLE | MAP_NO_DIFFICULTY);
 //    qDebug() << "processing" << path << information->mapTime() << info.lastModified();
     information->setName(m->name);
@@ -288,14 +291,20 @@ void CREMapInformationManager::process(const QString& path2)
         }
     }
 
-    QMutexLocker lock(&myLock);
+    QString region("undefined");
     if (m->region == NULL)
         qDebug() << "map without region" << m->name << m->path;
+    else
+        region = m->region->name;
     myExperience[m->region ? m->region->name : "(undefined)"] += information->experience();
 
     m->reset_time = 1;
     m->in_memory = MAP_IN_MEMORY;
     delete_map(m);
+    locker.reset();
+
+    QMutexLocker lock(&myLock);
+    myExperience[region] += information->experience();
 }
 
 void CREMapInformationManager::browseMaps()

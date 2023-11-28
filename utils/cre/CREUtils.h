@@ -27,6 +27,8 @@ class CREUtils
 
         static QTreeWidgetItem* faceNode(QTreeWidgetItem* parent);
         static QTreeWidgetItem* faceNode(const Face* face, QTreeWidgetItem* parent);
+
+        static std::unique_ptr<QMutexLocker> lockCrossfireData();
 };
 
 #endif // CREUTILS_H
