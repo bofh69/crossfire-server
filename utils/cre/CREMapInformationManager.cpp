@@ -450,7 +450,7 @@ void CREMapInformationManager::loadCache()
         if (reader.isStartElement() && reader.name() == "lastModified")
         {
             QString date = reader.readElementText();
-            map->setMapTime(QDateTime::fromString(date, Qt::ISODate));
+            map->setMapTime(QDateTime::fromString(date, Qt::ISODateWithMs));
             continue;
         }
         if (reader.isStartElement() && reader.name() == "difficulty")
@@ -601,7 +601,7 @@ void CREMapInformationManager::storeCache()
         writer.writeStartElement("map");
         writer.writeTextElement("path", map->path());
         writer.writeTextElement("name", map->name());
-        writer.writeTextElement("lastModified", map->mapTime().toString(Qt::ISODate));
+        writer.writeTextElement("lastModified", map->mapTime().toString(Qt::ISODateWithMs));
         writer.writeTextElement("difficulty", QString::number(map->difficulty()));
         writer.writeTextElement("computedDifficulty", QString::number(map->computedDifficulty()));
         writer.writeTextElement("experience", QString::number(map->experience()));
