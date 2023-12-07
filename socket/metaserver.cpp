@@ -23,6 +23,7 @@
 #include <string>
 #include <mutex>
 #include <thread>
+#include <system_error>
 
 #ifndef WIN32 /* ---win32 exclude unix header files */
 #include <sys/types.h>
