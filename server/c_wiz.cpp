@@ -1975,10 +1975,24 @@ void command_reset(object *op, const char *params) {
             object_free(dummy, FREE_OBJ_NO_DESTROY_CALLBACK);
         }
 
-        if (res < 0 && res != SAVE_ERROR_PLAYER)
+        if (res < 0 && res != SAVE_ERROR_PLAYER) {
             /* no need to warn if player on map, code below checks that. */
             draw_ext_info_format(NDI_UNIQUE|NDI_RED, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
                                  "Reset failed, error code: %d.", res);
+            /* If we somehow (AFAIK this is only possible by DM intervention anyway) get
+             * on a non-uniquely-loaded unique map (such as by a DM using goto onto a
+             * unique map template or by creating an exit to a unique map template
+             * without specifying in that exit that the map is unique), we need to re-insert
+             * the player without calling enter_exit(), since we trip an assertion failure there.
+             * If we reach here and tmp is defined, we have already re-inserted the player,
+             * so we just need to bail.
+             * -- Neila Hawkins 2023-12-13
+             */
+            if (res == SAVE_ERROR_UCREATION) {
+                m->reset_group = reset_group;
+                return;
+            }
+        }
         else {
             draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
                           "Reset failed, couldn't swap map, the following players are on it:");
