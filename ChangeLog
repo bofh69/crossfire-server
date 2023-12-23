@@ -1,3 +1,8 @@
+2023-12-23  Neila Hawkins
+  * common/readable.cpp: If a monster has lore defined, it will be printed into
+    bestiaries in-game. This gives us an in-game avenue to establish non-mechanical
+    information about our monsters.
+
 2023-04-23  Rebecca Kelly
   * utils/loreCollect.py: deleted outright, since it doesn't work anymore, and
     wasn't used for anything even when it did work; there are other uses planned

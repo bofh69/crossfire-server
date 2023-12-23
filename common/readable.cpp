@@ -1298,6 +1298,10 @@ static StringBuffer *mon_desc(const object *mon) {
     StringBuffer *desc = stringbuffer_new();
     stringbuffer_append_printf(desc, "\n---\n *** %s ***\n", mon->name);
     describe_item(mon, NULL, 0, desc);
+    // If a monster has lore, print it here.
+    if (mon->lore) {
+        stringbuffer_append_printf(desc, "\n ^ %s", mon->lore);
+    }
     return desc;
 }
 
