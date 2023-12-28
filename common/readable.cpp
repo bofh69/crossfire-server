@@ -286,6 +286,7 @@ static const char *const mon_author[] = {
     "dezidens",
     "dwellers",
     "evil nature",
+    "Inioda",     /* ancient wizard and biologist */
     "life",
     "monsters",
     "nature",
