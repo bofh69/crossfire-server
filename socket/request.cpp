@@ -70,8 +70,11 @@ typedef char ssop_t;    /**< Parameter type for setsockopt, different between WI
 
 #define VALIDCHAR_MSG "The first character must be alphanumeric and the last cannot be a space. None of these characters are allowed: :;/\\["
 
+static const int MAP2_COORD_MIN = -MAP2_COORD_OFFSET;
+static const int MAP2_COORD_MAX = 63 - MAP2_COORD_OFFSET;
+
 static bool map2_coord_valid(int x) {
-    return x >= -MAP2_COORD_OFFSET && x<= 63 - MAP2_COORD_OFFSET;
+    return x >= MAP2_COORD_MIN && x<= MAP2_COORD_MAX;
 }
 
 /**
@@ -88,6 +91,27 @@ static uint16_t MAP2_COORD_ENCODE(int x, int y, int flags) {
     assert(map2_coord_valid(y));
     assert(flags >= 0 && flags <= 15);
     return ((x+MAP2_COORD_OFFSET)&0x3f)<<10 | ((y+MAP2_COORD_OFFSET)&0x3f)<<4 | (flags&0x0f);
+}
+
+static int clamp(int x, int min, int max) {
+    return MAX(min, MIN(x, max));
+}
+
+/**
+ * As part of sending the map2 command, send one or more scroll commands to update
+ * the client map to match the scroll sent on the server.
+ */
+static void handle_scroll(socket_struct *socket, SockList *sl) {
+    // It is possible for map_scroll_x/y to exceed the maximum value that can be encoded
+    // in one scroll command. If that is the case, encode multiple.
+    while (socket->map_scroll_x || socket->map_scroll_y) { // either are non-zero
+        int8_t tx = clamp(socket->map_scroll_x, MAP2_COORD_MIN, MAP2_COORD_MAX);
+        int8_t ty = clamp(socket->map_scroll_y, MAP2_COORD_MIN, MAP2_COORD_MAX);
+        uint16_t coord = MAP2_COORD_ENCODE(tx, ty, 1);
+        SockList_AddShort(sl, coord);
+        socket->map_scroll_x -= tx;
+        socket->map_scroll_y -= ty;
+    }
 }
 
 /**
@@ -1421,13 +1445,7 @@ static void draw_client_map2(object *pl) {
     SockList_AddString(&sl, "map2 ");
     startlen = sl.len;
 
-    /* Handle map scroll */
-    if (plyr->socket->map_scroll_x || plyr->socket->map_scroll_y) {
-        coord = MAP2_COORD_ENCODE(plyr->socket->map_scroll_x, plyr->socket->map_scroll_y, 1);
-        plyr->socket->map_scroll_x = 0;
-        plyr->socket->map_scroll_y = 0;
-        SockList_AddShort(&sl, coord);
-    }
+    handle_scroll(plyr->socket, &sl);
 
     /* Init data to zero */
     memset(heads, 0, sizeof(heads));
