@@ -1085,50 +1085,39 @@ Map Update
 ~~~~~~~~~~
 map2
 ^^^^
-    S->C: map2 <coord1><len1/type1><data1><len2/type2><data2>...<coord2>
+This replaces the old `map` command. It is meant to be extensible and
+incorporate the ideas of the extended map info command.  All data is in
+standard binary form.
 
-This is an update of the map2 command above. It is meant to be
-extensible. It is also meant to incorporate the ideas of the
-extended map info command.
+    S->C map2-cmd ::= "map2" (scroll-coord | data-cmd)+
+         data-cmd ::= data-coord (len-type extra-data?)+ terminator
 
-All data is in standard binary form.
+===== Coordinate Encoding
+Both `scroll-coord` and `data-coord` are 16 bits of binary data consisting of:
 
-<coord> 2 byte binary
+* 6 bits: X coordinate
+* 6 bits: Y coordinate
+** Both X and Y coordinates are offset by `MAP2_COORD_OFFSET` (currently 15)
+from their actual value on the client map, i.e. (14, 14) represents (-1, -1).
+This is necessary because there may be effects noticeable to the player such
+as light sources that to outside the visible map.
+* 4 bits: Type
+** 0 makes this a normal `data-coord`
+** 1 makes this a `scroll-coord`, instructing the client to scroll the map.
+This replaces the old `mapscroll` command.
 
-    	the coord values are length + x + y values.
-       	The data represented looks like this:
+===== Data Encoding
+For each tile located at `data-coord`, one or more pieces of tile data can be
+sent, followed by the `terminator` byte of 255.
 
-       	first 6 bits: The x coordinate (0-63)
-       	next 6 bits: the y coordinate (0-63)
-       	LSB 0-3:  Has the following meaning:
-       	    0: Normal coordinate
-       	    1: Use this coordinate for scroll information and not an
-       	       actual coordinate. This removes the need for the
-       	       mapscroll command. Note that coordinate are still
-       	       modified with the MAP2_COORD_OFFSET as described below
-       	       - as an example, if 14, 14 is passed, that means
-       	       effective scroll of -1, -1. This should only be set in
-       	       the first coordinate value. Another (real) coordinate
-       	       pair will immediately follow this coordinate pair.
-       	    2-15: Unused/reserved.
+`len-type` is 8 bits of binary data:
 
-
-       	The x & y coordinates are offset by MAP2_COORD_OFFSET (15).
-      	This is necessary because there may be effects noticeable to the
-       	player (light sources) that to the left/above the visible map. By
-       	using this offset, we can use a coordinate like 10, 27 to denote
-       	that something is 5 spaces above the top of the map.
-
-<len/type> 1 byte binary data.  This describes the data that is to follow. If
-this byte is 255, then this is a coordinate termination byte - this means a 7+
-length field of type 1f is not possible.
-
-The top 3 bits (len) denote the number of bytes that follow - it is possible
+* 3 bits: The number of bytes that follow - it is possible
 that this is zero, to denote all the relevant information is included in the
 type. If this is 7 (all bits set) then the following byte is an additive
 length value.  Currently, nothing has a 7+ bit length.
 
-The bottom 5 bits is the type of data - this allows for 31 different types of
+* 5 bits: Type of data - this allows for 31 different types of
 data (0-31/0x0-0x1f). The meaning of the data itself depends on what the type
 is. List of various types:
 
@@ -1150,45 +1139,41 @@ is. List of various types:
        	0x4 - 0xf:: Unused
 
        	0x10 - 0x19:: Image information. Layer 0x10 is the lowest, 0x19 is the
-       	    highest. There are several forms of this data depending on the
-       	    length:
+       	    highest. See Image Encoding below.
 
-       	    2 bytes: This is only the face number.
-       	    3 bytes: <face num>[<smooth>|<animspeed>]
-       	    4 bytes: <face num><animspeed><smooth>
+==== Image Encoding
+When the bottom 5 bits of `len-type` are set to `0x10` - `0x19`, the
+`extra-data` depends on the top 3 length bits:
 
-       		smooth is a single byte for smoothing information. if
-       		face_num has the high bit set, then this object has an
-       		animation, and the byte after the animation is animation
-       		speed (see below for more details). Smooth information
-       		may still be sent for animations, and that would follow
-       		the animspeed.
+2 bytes:: This is only the face number.
+3 bytes:: <face num>[<smooth>|<animspeed>]
+4 bytes:: <face num><animspeed><smooth>
 
-       	    If face is 0, that means that the face (or animation)
-       	    is no longer visible, and smooth information should also be
-       	    cleared.
+`smooth` is a single byte for smoothing information. if `face_num` has the
+high bit set, then this object has an animation, and the byte after the
+animation is animation speed (see below for more details). Smooth information
+may still be sent for animations, and that would follow the animspeed.
 
-       	    For animations:
-           		face will have the high bit set to denote it is not a
-           		face but an animation id.
+If `face` is 0, that means that the face (or animation) is no longer visible,
+and smooth information should also be cleared.
 
-           		MSB-1, MSB-2: These are used to denote type of animation:
-		        0: Normal animation - start at first phase, etc.
-                1: Randomize - randomize the animation phase & timing.
-		        2: Synchronize - this animation should be in the same phase
-		          as other animations with the same id. Used for things
-		          like oceans.
+===== Animations
+For animations, `face` will have the high bit set to denote it is not a face
+but an animation id. The type of animation is denoted by MSB1 and MSB2:
 
-          		Like the itemcmd, the server will send information for
-		        the animation to the client before using the animation
-		        id.
+0:: Normal animation - start at first phase, etc.
+1:: Randomize - randomize the animation phase & timing.
+2:: Synchronize - this animation should be in the same phase as other
+    animations with the same id. Used for things like oceans.
 
-		Animations have an extra byte after the animation id -
-		this is the animation speed. Like the itemcmd, it is
-		how long, in ticks, between animations. 1 means it should
-		be animated every tick.
+Like the itemcmd, the server will send information for the animation to the
+client before using the animation id.
 
-Some notes:
+Animations have an extra byte after the animation id - this is the animation
+speed. Like the itemcmd, it is how long, in ticks, between animations. 1 means
+it should be animated every tick.
+
+==== Notes
 
 Coordinates outside the viewable map may be sent. In these cases, it means
 that a big image that extends onto the viewable map is on that space. For big
