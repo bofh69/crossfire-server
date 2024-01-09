@@ -208,7 +208,7 @@ void SockList_AddPrintf(SockList *sl, const char *format, ...) {
     va_end(arg);
 
     if (n <= -1 || (size_t)n >= size) {
-        fatal(OUT_OF_MEMORY);
+        LOG(llevError, "Truncating message exceeding MAXSOCKBUF. The message was:\n%s\n", sl->buf+sl->len);
     }
     sl->len += (size_t)n;
 }
