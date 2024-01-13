@@ -591,7 +591,7 @@ static PyObject *decode_json(JSONData *jsondata) {
  * - it replaces any non ASCII character hh with \u00hh instead of \xhh
  */
 static PyObject *encode_string(PyObject *string) {
-    register PyBytesObject *op = (PyBytesObject *)string;
+    PyBytesObject *op = (PyBytesObject *)string;
     size_t newsize = 2+6*Py_SIZE(op);
     PyObject *v;
 
@@ -603,9 +603,9 @@ static PyObject *encode_string(PyObject *string) {
     if (v == NULL) {
         return NULL;
     } else {
-        register Py_ssize_t i;
-        register char c;
-        register char *p;
+        Py_ssize_t i;
+        char c;
+        char *p;
         int quote;
 
         quote = '"';
