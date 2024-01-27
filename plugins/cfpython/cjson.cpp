@@ -657,18 +657,14 @@ static PyObject *encode_string(PyObject *string) {
  */
 static PyObject *encode_unicode(PyObject *unicode) {
     PyObject *repr;
-    Py_UNICODE *s;
-    Py_ssize_t size;
+    Py_ssize_t size, pos;
     char *p;
     static const char *hexdigit = "0123456789abcdef";
-#ifdef Py_UNICODE_WIDE
     static const Py_ssize_t expandsize = 10;
-#else
-    static const Py_ssize_t expandsize = 6;
-#endif
 
-    s = PyUnicode_AS_UNICODE(unicode);
-    size = PyUnicode_GET_SIZE(unicode);
+    int kind = PyUnicode_KIND(unicode);
+    void *data = PyUnicode_DATA(unicode);
+    size = PyUnicode_GET_LENGTH(unicode);
 
     if (size > (PY_SSIZE_T_MAX-2-1)/expandsize) {
         PyErr_SetString(PyExc_OverflowError, "unicode object is too large to make repr");
@@ -685,17 +681,21 @@ static PyObject *encode_unicode(PyObject *unicode) {
     p = PyByteArray_AS_STRING(repr);
 
     *p++ = '"';
+    pos = 0;
 
-    while (size-- > 0) {
-        Py_UNICODE ch = *s++;
+    const Py_UCS4 quote = PyByteArray_AS_STRING(repr)[0];
+
+    while (pos < size) {
+        Py_UCS4 ch = PyUnicode_READ(kind, data, pos);
+        pos++;
 
         /* Escape quotes */
-        if ((ch == (Py_UNICODE)PyByteArray_AS_STRING(repr)[0] || ch == '\\')) {
+        if ((ch == quote || ch == '\\')) {
             *p++ = '\\';
             *p++ = (char)ch;
             continue;
         }
-#ifdef Py_UNICODE_WIDE
+
         /* Map 21-bit characters to '\U00xxxxxx' */
         else if (ch >= 0x10000) {
             *p++ = '\\';
@@ -710,33 +710,6 @@ static PyObject *encode_unicode(PyObject *unicode) {
             *p++ = hexdigit[ch&0x0000000F];
             continue;
         }
-#else
-        /* Map UTF-16 surrogate pairs to Unicode \UXXXXXXXX escapes */
-        else if (ch >= 0xD800 && ch < 0xDC00) {
-            Py_UNICODE ch2;
-            Py_UCS4 ucs;
-
-            ch2 = *s++;
-            size--;
-            if (ch2 >= 0xDC00 && ch2 <= 0xDFFF) {
-                ucs = (((ch&0x03FF)<<10)|(ch2&0x03FF))+0x00010000;
-                *p++ = '\\';
-                *p++ = 'U';
-                *p++ = hexdigit[(ucs>>28)&0x0000000F];
-                *p++ = hexdigit[(ucs>>24)&0x0000000F];
-                *p++ = hexdigit[(ucs>>20)&0x0000000F];
-                *p++ = hexdigit[(ucs>>16)&0x0000000F];
-                *p++ = hexdigit[(ucs>>12)&0x0000000F];
-                *p++ = hexdigit[(ucs>>8)&0x0000000F];
-                *p++ = hexdigit[(ucs>>4)&0x0000000F];
-                *p++ = hexdigit[ucs&0x0000000F];
-                continue;
-            }
-            /* Fall through: isolated surrogates are copied as-is */
-            s--;
-            size++;
-        }
-#endif
         /* Map 16-bit characters to '\uxxxx' */
         if (ch >= 256) {
             *p++ = '\\';
