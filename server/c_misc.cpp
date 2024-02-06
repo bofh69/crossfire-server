@@ -2363,9 +2363,15 @@ void do_harvest(object *pl, int dir, object *skill) {
     }
 
     /* Ok, got it. */
+
+    /* If we have nrof 0, treat it like a singleton.
+     * Old behavior was infinite here, and extremely abuseable.
+     * Neila H. 2024-02-06
+     */
     if (inv->nrof == 0) {
-        harvested = object_new();
-        object_copy_with_inv(inv, harvested, true);
+        check_exhaust = (count == 1 ? 1 : 0);
+        object_remove(inv);
+        harvested = inv;
     } else {
         if (count == 1 && inv->nrof == 1) {
             check_exhaust = 1;

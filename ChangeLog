@@ -1,3 +1,9 @@
+2024-02-06  Neila Hawkins
+  * server/c_misc.cpp: Treat harvestables with nrof 0 as singleton items, rather than
+    infinite sources. This should solve the mining exploit I found.
+    A mountain rubble treasurelist change is also inbound to make mining have finite
+    items in each tile, rather than just one with the current treasurelist.
+
 2023-12-23  Neila Hawkins
   * common/readable.cpp: If a monster has lore defined, it will be printed into
     bestiaries in-game. This gives us an in-game avenue to establish non-mechanical
