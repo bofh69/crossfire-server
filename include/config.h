@@ -185,7 +185,7 @@
 #define CS_LOGSTATS
 #endif
 #ifdef CS_LOGSTATS
-#define CS_LOGTIME  600
+#define CS_LOGTIME  60
 #endif
 
 /**

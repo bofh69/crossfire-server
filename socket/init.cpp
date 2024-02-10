@@ -318,10 +318,8 @@ void init_server(void) {
     socket_info.timeout.tv_usec = 0;
 
 #ifdef CS_LOGSTATS
-    memset(&cst_tot, 0, sizeof(CS_Stats));
-    memset(&cst_lst, 0, sizeof(CS_Stats));
-    cst_tot.time_start = time(NULL);
-    cst_lst.time_start = time(NULL);
+    reset_stats(&cst_tot);
+    reset_stats(&cst_lst);
 #endif
 
 #ifdef HAVE_GETADDRINFO

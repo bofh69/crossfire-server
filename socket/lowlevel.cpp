@@ -29,8 +29,10 @@
 #include <errno.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
+#include "output_file.h"
 #include "shared/newclient.h"
 #include "sproto.h"
 
@@ -470,26 +472,52 @@ static int count_all_players() {
  */
 CS_Stats cst_tot, cst_lst;
 
+void reset_stats(struct CS_Stats *stats) {
+    memset(stats, 0, sizeof(CS_Stats));
+    stats->time_start = time(NULL);
+}
+
+#define STAT(name, fmt, val) fprintf(f, "%s %" fmt "\n", name, val);
+
 /**
  * Writes out the gathered stats.  We clear cst_lst.
  */
 void write_cs_stats(void) {
     time_t now = time(NULL);
+    int players_active = count_players();
+    int players_total = count_all_players();
 
-    /* If no connections recently, don't bother to log anything */
-    if (cst_lst.ibytes == 0 && cst_lst.obytes == 0)
-        return;
-
-    LOG(llevInfo, "STAT: players: %d active, %d total\n", count_players(), count_all_players());
-    /* CSSTAT is put in so scripts can easily find the line */
+    // Old statistics format logged to the log file
+    LOG(llevInfo, "STAT: players: %d active, %d total\n", players_active, players_total);
     LOG(llevInfo, "CSSTAT: %.16s tot %d %d %d %ld inc %d %d %d %ld\n",
-        ctime(&now), cst_tot.ibytes, cst_tot.obytes, cst_tot.max_conn,
-        (long)(now-cst_tot.time_start), cst_lst.ibytes, cst_lst.obytes,
-        cst_lst.max_conn, (long)(now-cst_lst.time_start));
-    cst_lst.ibytes = 0;
-    cst_lst.obytes = 0;
+        ctime(&now),
+        cst_tot.ibytes, cst_tot.obytes, cst_tot.max_conn, (long)(now-cst_tot.time_start),
+        cst_lst.ibytes, cst_lst.obytes, cst_lst.max_conn, (long)(now-cst_lst.time_start));
+
+    // Write OpenMetrics-formatted server stats to a file. This can be exported
+    // to tools like Prometheus to monitor the server.
+    if (settings.stat_file) {
+        OutputFile of;
+        FILE *f = of_open(&of, settings.stat_file);
+        if (f) {
+            // ticks can be zero due to idling, so prevent divide by zero
+            float ticks_over = cst_lst.ticks > 0 ? (float)cst_lst.ticks_overtime / cst_lst.ticks : 0;
+            float avg = cst_lst.ticks > 0 ? (float)cst_lst.total_ticktime / cst_lst.ticks : 0; // in us
+
+            STAT("players_total", "d", players_total);
+            STAT("players_active", "d", players_active);
+            STAT("ticks_overtime_percent", "f", ticks_over * 100);
+            STAT("ticktime_max", "f", cst_lst.max_ticktime / 1e3); // in ms
+            STAT("ticktime_avg", "f", avg / 1e3); // in ms
+            STAT("bytes_in_total", "d", cst_tot.ibytes);
+            STAT("bytes_out_total", "d", cst_tot.obytes);
+        } else {
+            LOG(llevError, "Unable to write to stat file: %s\n", settings.stat_file);
+        }
+        of_close(&of);
+    }
+
+    reset_stats(&cst_lst);
     cst_lst.max_conn = socket_info.allocated_sockets;
-    cst_lst.time_start = now;
 }
 #endif
-

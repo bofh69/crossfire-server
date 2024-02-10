@@ -357,3 +357,6 @@ crypt_mode 1
 # Set a minimum length for account and player names
 # This only applies to new characters or new accounts.
 min_name 1
+
+# Absolute path to Prometheus/OpenMetrics-style metrics file.
+#stat_file /var/metrics/crossfire

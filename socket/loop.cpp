@@ -46,6 +46,8 @@
 #include "sockproto.h"
 #include "sproto.h"
 
+extern uint32_t last_time;
+
 /*****************************************************************************
  * Start of command dispatch area.
  * The commands here are protocol commands.
@@ -620,7 +622,18 @@ void do_server(void) {
     if (sleep_time < 0) {
         LOG(llevInfo, "skipping time (over by %ld ms)\n", -sleep_time/1000);
         jump_time();
+        cst_lst.ticks_overtime++;
     }
+
+    // Log information about last tick. This can't be in log_time() because
+    // CS_Stat is in socket/, and time is in common/.
+    cst_lst.max_ticktime = MAX(cst_lst.max_ticktime, last_time);
+    cst_lst.total_ticktime += last_time;
+    cst_lst.ticks++;
+
+    // Since we don't report cumulative tick time information, we don't need to
+    // compute it for cst_tot. Those statistics are available from the
+    // process_*_utime variables anyway.
 
     while (sleep_time > 0) {
         socket_info.timeout.tv_sec = 0;

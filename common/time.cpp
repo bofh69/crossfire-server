@@ -47,6 +47,8 @@ static uint32_t process_tot_mtime;             /**< ? */
 uint32_t pticks;                               /**< Number of ticks since time reset */
 static uint32_t process_utime_long_count;      /**< Number of times server couldn't keep up with game time (tried to sleep for a negative time) */
 
+uint32_t last_time; //< Time to process last tick (in ms), externally-visible
+
 /** Ingame seasons. */
 static const char *const season_name[SEASONS_PER_YEAR+1] = {
     "The Season of New Year",
@@ -150,6 +152,7 @@ static void log_time(uint32_t process_utime) {
     if (++psaveind >= PBUFLEN)
         psaveind = 0;
     process_utime_save[psaveind] = process_utime;
+    last_time = process_utime;
     if (process_utime > process_max_utime)
         process_max_utime = process_utime;
     if (process_utime < process_min_utime)

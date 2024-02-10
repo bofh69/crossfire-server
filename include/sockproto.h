@@ -64,6 +64,7 @@ int GetInt_String(const unsigned char *data);
 short GetShort_String(const unsigned char *data);
 int SockList_ReadPacket(int fd, SockList *sl, int len);
 void Send_With_Handling(socket_struct *ns, SockList *sl);
+void reset_stats(struct CS_Stats *stats);
 void write_cs_stats(void);
 /* metaserver.c */
 int count_players(void);

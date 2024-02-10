@@ -1046,6 +1046,8 @@ static void load_settings(void) {
                     val, 1, MAX_NAME);
             else
                 settings.min_name = val;
+        } else if (!strcasecmp(buf, "stat_file")) {
+            settings.stat_file = strdup_local(cp);
         } else {
             LOG(llevError, "Unknown value in settings file: %s\n", buf);
         }

@@ -335,6 +335,7 @@ struct Settings {
     int     ignore_assets_errors;     /**< If set then go on running even if there are errors in assets. */
     class AssetsTracker *assets_tracker;    /**< If not NULL, called each time an asset is defined. */
     fatalHook fatal_hook;             /**< If not NULL then called when fatal() is called. */
+    char* stat_file;
 
     void add_hook(const char *name, collectorHook hook) {
         hooks_filename[hooks_count] = name;

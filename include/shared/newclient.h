@@ -678,13 +678,21 @@ typedef struct SockList {
 } SockList;
 
 /**
- * Statistics on server.
+ * Statistics for the last CS_LOGTIME seconds on the server.
  */
 typedef struct CS_Stats {
     int     ibytes;     /**< ibytes, obytes are bytes in, out. */
     int     obytes;
     short   max_conn;   /**< Maximum connections received. */
-    time_t  time_start; /**< When we started logging this. */
+    time_t  time_start; //< Start time of sampling interval
+
+    // These variables partly duplicate the process_*_utime statistics in
+    // time.cpp, but are needed because we need data from the last sampling
+    // interval and not over all time.
+    unsigned long ticks;          //< Number of ticks processed
+    unsigned long ticks_overtime; //< Number of ticks that were over time
+    unsigned long max_ticktime;   //< Longest tick (in ms)
+    unsigned long total_ticktime; //< Total tick time (in ms)
 } CS_Stats;
 
 extern CS_Stats cst_tot, cst_lst;
