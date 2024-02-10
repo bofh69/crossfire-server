@@ -161,9 +161,9 @@ static void log_time(uint32_t process_utime) {
  * Return the difference between two timespec's in microseconds.
  */
 long timespec_diff(struct timespec *end, struct timespec *start) {
-    long long sec = (long long)end->tv_sec - (long long)start->tv_sec;
+    double sec = difftime(end->tv_sec, start->tv_sec);
     long nsec = end->tv_nsec - start->tv_nsec;
-    return sec * 1e6 + nsec / 1e3;
+    return (long)(sec * 1e6 + nsec / 1e3);
 }
 
 /**
@@ -187,7 +187,8 @@ long get_sleep_remaining() {
     struct timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
     long time_since_last_sleep = timespec_diff(&now, &game_time);
-    log_time(time_since_last_sleep);
+    if (time_since_last_sleep >= 0)
+        log_time(time_since_last_sleep);
     return tick_duration - time_since_last_sleep;
 }
 
