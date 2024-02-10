@@ -196,18 +196,16 @@ object *monster_find_nearest_enemy(object *npc, object *owner) {
             continue;
 
         if (mflags&P_IS_ALIVE) {
-            object *creature;
-
-            creature = NULL;
+            object *creature = NULL;
             FOR_MAP_PREPARE(m, nx, ny, tmp)
                 if (is_enemy(tmp, owner)) {
                     creature = tmp;
                     break;
                 }
             FOR_MAP_FINISH();
-            if (!creature) {
-                LOG(llevDebug, "monster_find_nearest_living_creature: map %s (%d,%d) has is_alive set but did not find a monster?\n", m->path, nx, ny);
-            } else {
+            // it is possible to not find an enemy even if the square is alive,
+            // e.g. the npc's owner is there
+            if (creature) {
                 if (can_see_monsterP(m, npc->x, npc->y, i))
                     return creature;
             }
