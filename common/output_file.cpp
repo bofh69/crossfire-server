@@ -41,7 +41,7 @@ FILE *of_open(OutputFile *of, const char *fname) {
     remove(fname_tmp);
     f = fopen(fname_tmp, "w");
     if (f == NULL) {
-        LOG(llevError, "%s: %s\n", fname_tmp, strerror(errno));
+        LOG(llevError, "could not open %s: %s\n", fname_tmp, strerror(errno));
         free(fname_tmp);
         return NULL;
     }
@@ -68,7 +68,7 @@ int of_close(OutputFile *of) {
         return 0;
     }
     if (fclose(of->file) != 0) {
-        LOG(llevError, "%s: %s\n", of->fname, strerror(errno));
+        LOG(llevError, "could not write %s: %s\n", of->fname, strerror(errno));
         remove(of->fname_tmp);
         free(of->fname_tmp);
         free(of->fname);
