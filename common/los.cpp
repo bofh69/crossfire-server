@@ -358,7 +358,7 @@ int has_carried_lights(const object *op) {
  * player's object for which to compute the light values.
  */
 static void expand_lighted_sight(object *op) {
-    int x, y, darklevel, ax, ay, basex, basey, mflags, light_radius, x1, y1, dark_change;
+    int x, y, darklevel, ax, ay, basex, basey, mflags, light_radius, dark_change;
     mapstruct *m = op->map;
     int16_t nx, ny;
 
@@ -437,13 +437,13 @@ static void expand_lighted_sight(object *op) {
                      * using the the pythagorean theorem. glow_radius still
                      * represents the radius
                      */
-                    x1 = abs(basex-ax)*abs(basex-ax);
-                    y1 = abs(basey-ay)*abs(basey-ay);
+                    int x1 = basex-ax;
+                    int y1 = basey-ay;
 
                     if (light_radius > 0)
-                        op->contr->blocked_los[ax][ay] -= MAX((light_radius-isqrt(x1+y1)), 0);
+                        op->contr->blocked_los[ax][ay] -= MAX((light_radius-ihypot(x1, y1)), 0);
                     if (light_radius < 0)
-                        op->contr->blocked_los[ax][ay] -= MIN((light_radius+isqrt(x1+y1)), 0);
+                        op->contr->blocked_los[ax][ay] -= MIN((light_radius+ihypot(x1, y1)), 0);
                 } /* for ay */
             } /* for ax */
         } /* for y */

@@ -561,6 +561,23 @@ int isqrt(int n) {
 }
 
 /**
+ * Rough estimate of hypot(a, b). Based on stack overflow:
+ * https://stackoverflow.com/questions/3506404/fast-hypotenuse-algorithm-for-embedded-processor
+ */
+int ihypot(int a, int b) {
+    a = abs(a);
+    b = abs(b);
+    if (a > b) {
+        // Swap
+        int tmp = b;
+        b = a;
+        a = tmp;
+    }
+    //assert(a <= b);
+    return ((sqrt(2) - 1) * a) + b;
+}
+
+/**
  * fatal() is meant to be called whenever a fatal signal is intercepted.
  * It will call the emergency_save and the clean_tmp_files functions.
  *

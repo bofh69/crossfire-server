@@ -121,7 +121,7 @@ void play_sound_map(int8_t sound_type, object *emitter, int dir, const char *act
 
     for (pl = first_player; pl; pl = pl->next) {
         if (pl->ob->map == emitter->map) {
-            int distance = isqrt(POW2(pl->ob->x-source->x)+POW2(pl->ob->y-source->y));
+            int distance = ihypot(pl->ob->x-source->x, pl->ob->y-source->y);
 
             if (distance <= MAX_SOUND_DISTANCE) {
                 play_sound_player_only(pl, sound_type, emitter, dir, action);

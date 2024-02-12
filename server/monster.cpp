@@ -2728,7 +2728,7 @@ int monster_stand_in_light(object *op) {
         return 1;
 
     if (op->map) {
-        int x, y, x1, y1;
+        int x, y;
 
         /* Check the spaces with the max light radius to see if any of them
          * have lights, and if any of them light the player enough, then return 1.
@@ -2742,9 +2742,7 @@ int monster_stand_in_light(object *op) {
                 if (get_map_flags(m, &m, nx, ny, &nx, &ny)&P_OUT_OF_MAP)
                     continue;
 
-                x1 = abs(x-op->x)*abs(x-op->x);
-                y1 = abs(y-op->y)*abs(y-op->y);
-                if (isqrt(x1+y1) < GET_MAP_LIGHT(m, nx, ny))
+                if (ihypot(x-op->x, y-op->y) < GET_MAP_LIGHT(m, nx, ny))
                     return 1;
             }
         }

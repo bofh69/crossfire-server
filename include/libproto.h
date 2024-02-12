@@ -334,6 +334,7 @@ extern char *path_combine_and_normalize(const char *src, const char *dst, char *
 /* porting.cpp */
 extern FILE *tempnam_secure(const char *dir, const char *pfx, char **filename);
 extern void remove_directory(const char *path);
+extern int ihypot(int a, int b);
 extern int isqrt(int n);
 extern void make_path_to_file(const char *filename);
 /* player.cpp */

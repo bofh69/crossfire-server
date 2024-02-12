@@ -2558,7 +2558,7 @@ int get_rangevector(object *op1, const object *op2, rv_vector *retval, int flags
             }
         }
         retval->part = best;
-        retval->distance = isqrt(retval->distance_x*retval->distance_x+retval->distance_y*retval->distance_y);
+        retval->distance = ihypot(retval->distance_x, retval->distance_y);
         retval->direction = find_dir_2(-retval->distance_x, -retval->distance_y);
         return 1;
     }
