@@ -2718,7 +2718,7 @@ int monster_can_detect_enemy(object *op, object *enemy, rv_vector *rv) {
  * @param op who to check.
  * @return 1 if op is in lighe, 0 else.
  */
-int monster_stand_in_light(object *op) {
+static int monster_stand_in_light_internal(object *op) {
     int16_t nx, ny;
     mapstruct *m;
 
@@ -2748,6 +2748,22 @@ int monster_stand_in_light(object *op) {
         }
     }
     return 0;
+}
+
+/**
+ * Cache monster_stand_in_light_internal().
+ */
+int monster_stand_in_light(object *op) {
+    if (!op)
+        return 0;
+
+    if (op->light_cached_time == pticks)
+        return op->light_cached;
+
+    int val = monster_stand_in_light_internal(op);
+    op->light_cached = val;
+    op->light_cached_time = pticks;
+    return val;
 }
 
 /**
