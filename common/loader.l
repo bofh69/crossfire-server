@@ -873,6 +873,7 @@ A       .+
 ^is_buildable{S}    SET_OR_CLEAR_FLAG(op, FLAG_IS_BUILDABLE, IVAL);
 ^sound_chance{S}    op->sound_chance = IVAL;
 ^paralyzed{S}       SET_OR_CLEAR_FLAG(op, FLAG_PARALYZED, IVAL);
+^elevation{S}       op->elevation = IVAL;
 
 <*>(^{WS}$)|\n          { /* ignore empty lines, newlines we don't do above */ }
 #.*\n                   { }

@@ -444,6 +444,9 @@ struct object {
     tag_t       *spell_tags;      /**< Tags used for spell effect merging. */
     uint64_t    event_bitmask;  /**< Bitmask of events this object has a handler for, see events.h */
 
+    /* This used to be a key/value, but this is on all world maps and needs to be fast. */
+    int elevation;
+
     /** Computing whether or not an item is in the light is very expensive, so cache it. */
     uint32_t light_cached_time; //< tick this was cached
     int light_cached; //< 1 for in the light, 0 for not
