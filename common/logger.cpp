@@ -22,6 +22,7 @@
 #include <stdlib.h>
 
 #include "sproto.h"
+#include "stats.h"
 
 int reopen_logfile = 0; /* May be set in SIGHUP handler */
 
@@ -34,6 +35,10 @@ const char *const loglevel_names[] = {
     "[DD] ",
     "[MM] ",
 };
+
+int maps_loaded_total = 0;
+int maps_saved_total = 0;
+int maps_swapped_total = 0;
 
 /**
  * Logs a message to stderr, or to file.

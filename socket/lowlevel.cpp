@@ -35,6 +35,7 @@
 #include "output_file.h"
 #include "shared/newclient.h"
 #include "sproto.h"
+#include "stats.h"
 
 #ifdef WIN32
 #include <winsock2.h>
@@ -511,6 +512,28 @@ void write_cs_stats(void) {
             STAT("ticktime_avg", "f", avg / 1e3); // in ms
             STAT("bytes_in_total", "d", cst_tot.ibytes);
             STAT("bytes_out_total", "d", cst_tot.obytes);
+
+            int maps_in_memory = 0;
+            int maps_swapped = 0;
+            for (mapstruct *m = first_map; m != NULL; m = m->next) {
+                switch (m->in_memory) {
+                case MAP_IN_MEMORY:
+                    maps_in_memory++;
+                    break;
+                case MAP_SWAPPED:
+                    maps_swapped++;
+                    break;
+                }
+            }
+            STAT("maps_in_memory", "d", maps_in_memory);
+            STAT("maps_loaded_total", "d", maps_loaded_total);
+            STAT("maps_saved_total", "d", maps_saved_total);
+            STAT("maps_swapped", "d", maps_swapped);
+            STAT("maps_swapped_total", "d", maps_swapped_total);
+
+            STAT("objects_alloc", "d", nrofallocobjects);
+            STAT("objects_free", "d", nroffreeobjects);
+            STAT("objects_active", "d", object_count_active());
         } else {
             LOG(llevError, "Unable to write to stat file: %s\n", settings.stat_file);
         }

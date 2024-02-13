@@ -34,6 +34,7 @@
 #include "loader.h"
 #include "output_file.h"
 #include "path.h"
+#include "stats.h"
 
 static void free_all_objects(mapstruct *m);
 
@@ -1237,6 +1238,7 @@ mapstruct *mapfile_load(const char *map, int flags) {
     PROFILE_END(diff,
             LOG(llevDebug, "mapfile_load on %s" " took %ld us\n", map, diff));
 
+    maps_loaded_total++;
     return (m);
 }
 
@@ -1572,6 +1574,7 @@ int save_map(mapstruct *m, int flag) {
     PROFILE_END(diff,
             LOG(llevDebug, "save_map on %s" " took %ld us\n", m->path, diff));
 
+    maps_saved_total++;
     return SAVE_ERROR_OK;
 }
 

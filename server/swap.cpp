@@ -23,6 +23,7 @@
 #include "object.h"
 #include "output_file.h"
 #include "sproto.h"
+#include "stats.h"
 
 /**
  * Writes out information on all the temporary maps.  It is called by
@@ -184,6 +185,7 @@ int swap_map(mapstruct *map) {
         return res;
     }
 
+    maps_swapped_total++;
     map->timeout = 0;
     free_map(map);
 
