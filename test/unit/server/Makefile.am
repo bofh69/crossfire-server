@@ -82,11 +82,12 @@ check_swap_SOURCES = check_swap.cpp
 #check_weather_SOURCES = check_weather.cpp
 #check_win32_SOURCES = check_win32.cpp
 comet_perf_SOURCES = comet_perf.cpp
+perf_tests_SOURCES = perf_tests.cpp
 
 # tests not implemented for now
 #TESTS=check_apply check_ban check_build_map check_c_chat check_c_misc check_c_move check_c_new  check_commands  check_c_range check_c_wiz check_disease check_egoitem check_gods check_hiscore check_init check_login check_main check_move check_pets check_plugins check_resurrection check_rune check_skills check_skill_util check_spell_attack check_spell_effect check_spell_util check_swamp check_time check_timers check_weather check_win32
 TESTS=check_account check_account_char check_alchemy check_attack check_monster check_c_object comet_perf \
-	check_c_party check_shop check_swap check_monster_change check_player
+	check_c_party check_shop check_swap check_monster_change check_player perf_tests
 
 CHECK_ROOT=../../
 CHECK_FOLDER=unit/server

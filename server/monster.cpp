@@ -2739,10 +2739,14 @@ static int monster_stand_in_light_internal(object *op) {
                 nx = x;
                 ny = y;
 
-                if (get_map_flags(m, &m, nx, ny, &nx, &ny)&P_OUT_OF_MAP)
+                if ((m = get_map_from_coord(op->map, &nx, &ny)) == nullptr)
                     continue;
 
-                if (ihypot(x-op->x, y-op->y) < GET_MAP_LIGHT(m, nx, ny))
+                int light = GET_MAP_LIGHT(m, nx, ny);
+                if (light == 0)
+                    continue;
+
+                if (ihypot(x-op->x, y-op->y) < light)
                     return 1;
             }
         }
