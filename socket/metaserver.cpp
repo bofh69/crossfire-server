@@ -85,9 +85,15 @@ void metaserver_update(void) {
      */
     ms2_info_mutex.lock();
     metaserver2_updateinfo.num_players = count_players();
+#ifdef CS_LOGSTATS
     metaserver2_updateinfo.in_bytes = cst_tot.ibytes;
     metaserver2_updateinfo.out_bytes = cst_tot.obytes;
     metaserver2_updateinfo.uptime  = (long)time(NULL)-cst_tot.time_start;
+#else
+    metaserver2_updateinfo.in_bytes = 0;
+    metaserver2_updateinfo.out_bytes = 0;
+    metaserver2_updateinfo.uptime  = 0;
+#endif
     ms2_info_mutex.unlock();
 #endif
 }
