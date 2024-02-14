@@ -78,7 +78,7 @@ loader.cpp: loader.l
 EXTRA_DIST = README is_valid_types_gen.py
 AM_CPPFLAGS = -I$(top_srcdir)/include -DDATADIR=\"$(pkgdatadir)\" -DCONFDIR=\"$(pkgconfdir)\" \
 	      -DLIBDIR=\"$(pkglibdir)\" -DLOCALDIR=\"$(pkgstatedir)\"
-AM_LFLAGS = -i -B
+AM_LFLAGS = -i -B -Cf
 
 CLEANFILES = loader.cpp arch_types_valid.cpp
 
