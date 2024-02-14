@@ -3971,19 +3971,11 @@ void make_visible(object *op) {
  * object to test.
  * @return
  * 1 if undead, 0 else.
- * @todo remove loop on type 44 (was EXPERIENCE)
  */
 int is_true_undead(object *op) {
     if (QUERY_FLAG(&op->arch->clone, FLAG_UNDEAD))
         return 1;
 
-    if (op->type == PLAYER) {
-        FOR_INV_PREPARE(op, tmp) {
-            if (tmp->type == 44 && tmp->stats.Wis)
-                if (QUERY_FLAG(tmp, FLAG_UNDEAD))
-                    return 1;
-        } FOR_INV_FINISH();
-    }
     return 0;
 }
 
