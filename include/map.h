@@ -318,7 +318,7 @@ struct mapstruct {
     struct region *region;             /**< What jurisdiction in the game world this map is ruled by
                                  * points to the struct containing all the properties of
                                  * the region. */
-    uint32_t  reset_time;         /**< When this map should reset. */
+    uint32_t  reset_time;         /**< Server time when map gets reset, seconds since epoch. Accessed through MAP_WHEN_RESET(). */
     uint32_t  reset_timeout;      /**< How many seconds must elapse before this map
                                  * should be reset. */
     uint32_t  fixed_resettime:1;  /**< If true, reset time is not affected by
