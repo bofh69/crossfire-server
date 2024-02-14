@@ -375,7 +375,6 @@ A       .+
 
 %x MESSAGE
 %x LORE
-%x SCRIPT
 
 /* Don't have to link with -lfl with this */
 %option noyywrap
