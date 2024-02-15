@@ -22,6 +22,7 @@
 #include "global.h"
 
 #include <assert.h>
+#include <bitset>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -216,14 +217,9 @@ int get_power_from_ench(int ench) {
     return enc_to_item_power[ench];
 }
 
-static int bits_set(uint32_t x, int start, int end) {
-    int enc = 0;
-    for (int i = start; i < end; i++) {
-        if (x&(1<<i)) {
-            enc++;
-        }
-    }
-    return enc;
+static int bits_set(uint32_t x) {
+    std::bitset<32> xs = x;
+    return xs.count();
 }
 
 /**
@@ -271,7 +267,7 @@ int calc_item_power(const object *op) {
      * physical doesn't count against total.
      */
     if (op->type == WEAPON) {
-        enc += bits_set(op->attacktype, 1, NROFATTACKS);
+        enc += bits_set(op->attacktype);
         if (op->slaying)
             enc += 2;     /* What it slays is probably more relevent */
     }
@@ -296,9 +292,9 @@ int calc_item_power(const object *op) {
     enc += op->stats.luck;
 
     /* Do spell paths now */
-    enc += bits_set(op->path_attuned, 1, NRSPELLPATHS);
-    enc -= bits_set(op->path_repelled, 1, NRSPELLPATHS);
-    enc -= 2*bits_set(op->path_denied, 1, NRSPELLPATHS);
+    enc += bits_set(op->path_attuned);
+    enc -= bits_set(op->path_repelled);
+    enc -= 2*bits_set(op->path_denied);
 
     if (QUERY_FLAG(op, FLAG_LIFESAVE))
         enc += 5;
