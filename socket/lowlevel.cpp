@@ -534,6 +534,11 @@ void write_cs_stats(void) {
             STAT("objects_alloc", "d", nrofallocobjects);
             STAT("objects_free", "d", nroffreeobjects);
             STAT("objects_active", "d", object_count_active());
+
+            STAT("events_total", "d", events_total);
+            STAT("global_events_total", "d", global_events_total);
+
+            STAT("log_total", "d", log_total);
         } else {
             LOG(llevError, "Unable to write to stat file: %s\n", settings.stat_file);
         }

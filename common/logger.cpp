@@ -40,6 +40,8 @@ int maps_loaded_total = 0;
 int maps_saved_total = 0;
 int maps_swapped_total = 0;
 
+int log_total = 0;
+
 /**
  * Logs a message to stderr, or to file.
  * Or discards the message if it is of no importance, and none have
@@ -130,6 +132,7 @@ void LOG(LogLevel logLevel, const char *format, ...) {
         fputs(loglevel_names[logLevel], logfile);
         fputs(buf, logfile);
 #endif
+        log_total++;
     }
     if (!exiting
     && !trying_emergency_save

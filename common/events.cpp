@@ -4,6 +4,11 @@
 #include <map>
 #include <string>
 
+#include "stats.h"
+
+int global_events_total = 0;
+int events_total = 0;
+
 /**
  * To turn on verbose messages about events in the debug log, set the
  * CF_DEBUG_EVENTS environment variable.
@@ -190,6 +195,7 @@ void events_execute_global_event(int eventcode, ...) {
         break;
     }
     va_end(args);
+    global_events_total++;
 }
 
 static void ensure_bitmask(object *op) {
@@ -276,6 +282,7 @@ static int do_execute_event(object *op, int eventcode, object *activator, object
             }
         }
     } FOR_INV_FINISH();
+    events_total++;
     return rv;
 }
 
