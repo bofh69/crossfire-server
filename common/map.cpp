@@ -1440,7 +1440,7 @@ int save_map(mapstruct *m, int flag) {
     if (m->name)
         fprintf(fp, "name %s\n", m->name);
     if (!flag)
-        fprintf(fp, "swap_time %d\n", m->swap_time);
+        fprintf(fp, "swap_time %d\n", m->timeout);
     if (m->reset_timeout)
         fprintf(fp, "reset_timeout %u\n", m->reset_timeout);
     if (m->fixed_resettime)

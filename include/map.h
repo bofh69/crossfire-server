@@ -64,7 +64,6 @@ extern const char *const map_layer_name[MAP_LAYERS];
 #define MAP_RESET_TIMEOUT(m)    ((m)->reset_timeout)
 #define MAP_DIFFICULTY(m)       ((m)->difficulty)
 #define MAP_TIMEOUT(m)          ((m)->timeout)
-#define MAP_SWAP_TIME(m)        ((m)->swap_time)
 #define MAP_OUTDOORS(m)         ((m)->outdoor)
 
 /** Map darkness level (0-MAX_DARKNESS) */
@@ -329,7 +328,6 @@ struct mapstruct {
     uint32_t  nosmooth:1;         /**< If set the content of this map has smoothlevel=0 forced. */
     uint32_t  outdoor:1;          /**< True if an outdoor map. */
     int32_t  timeout;            /**< Swapout is set to this. */
-    int32_t  swap_time;          /**< When it reaches 0, the map will be swapped out. */
     uint16_t  difficulty;         /**< What level the player should be to play here. */
     int16_t  players;            /**< How many players are on this level right now. Automatically updated by the object handling functions. */
     uint32_t  in_memory;          /**< Combination of @ref IN_MEMORY_xxx "IN_MEMORY_xxx" flags. */

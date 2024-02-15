@@ -86,9 +86,6 @@ static void apply_savebed(object *pl) {
     hiscore_check(pl, 0); /* Always check score */
     save_player(pl, 0);
     party_leave(pl);
-#if MAP_MAXTIMEOUT
-    MAP_SWAP_TIME(pl->map) = MAP_TIMEOUT(pl->map);
-#endif
     play_again(pl);
     pl->speed = 0;
     object_update_speed(pl);
