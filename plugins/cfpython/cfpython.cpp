@@ -68,7 +68,7 @@
 
 CF_PLUGIN char SvnRevPlugin[] = SVN_REV;
 
-#define PYTHON_DEBUG   /**< Give us some general infos out. */
+//#define PYTHON_DEBUG   /**< Give us some general infos out. */
 #define PYTHON_CACHE_SIZE 256   /**< Number of python scripts to store the bytecode of at a time. */
 
 /**
@@ -1034,7 +1034,9 @@ static int do_script(CFPContext *context) {
     PyObject *dict;
     PyObject *ret;
 
+#ifdef PYTHON_DEBUG
     cf_log(llevDebug, "CFPython: running script %s\n", context->script);
+#endif
 
     pycode = compilePython(context->script);
     if (pycode) {
