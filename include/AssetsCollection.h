@@ -14,7 +14,7 @@
 #define ASSETSCOLLECTION_H
 
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <set>
 #include <vector>
 #include <algorithm>
@@ -187,7 +187,7 @@ class AssetsCollection {
         }
 
     protected:
-        std::map<Key, T*> m_assets; /**< Known assets. */
+        std::unordered_map<Key, T*> m_assets; /**< Known assets. */
         std::set<Key> m_undefined;  /**< List of undefined assets. */
 
         /**

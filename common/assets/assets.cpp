@@ -39,7 +39,7 @@
 
 #include <string>
 #include <set>
-#include <map>
+#include <unordered_map>
 #include <memory>
 
 #include "AssetWriter.h"
