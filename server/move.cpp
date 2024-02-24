@@ -388,7 +388,7 @@ static int roll_ob(object *op, int dir, object *pusher) {
     y = op->y+freearr_y[dir];
 
     if (!QUERY_FLAG(op, FLAG_CAN_ROLL)
-    || (op->weight && random_roll(0, op->weight/50000-1, pusher, PREFER_LOW) > pusher->stats.Str))
+    || random_roll(0, MAX(op->weight/50000-1, 1), pusher, PREFER_LOW) > pusher->stats.Str)
         return 0;
 
     m = op->map;
