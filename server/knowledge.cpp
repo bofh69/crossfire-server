@@ -1456,7 +1456,7 @@ void knowledge_process_incremental(void) {
         }
 
         /* player left, remove knowledge */
-        if (pl == NULL) {
+        if (pl == NULL || pl->state != ST_PLAYING) {
             if (prev == NULL) {
                 knowledge_global = cur->next;
             } else {
