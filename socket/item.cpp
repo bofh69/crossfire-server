@@ -562,6 +562,9 @@ void esrv_send_item(object *pl, object*op) {
 void esrv_del_item(player *pl, object *ob) {
     SockList sl;
 
+    if (!QUERY_FLAG(ob, FLAG_CLIENT_SENT))
+        return;
+
     SockList_Init(&sl);
     SockList_AddString(&sl, "delitem ");
     SockList_AddInt(&sl, ob->count);
