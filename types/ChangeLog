@@ -13,14 +13,14 @@ Events     : apply
 Moved from : nowhere (new type)
 Moved to   : lightable/lightable.c
 Comment    : Add a type for icecubes and torches that allow them to be lit by applying them.
-2021-08-11 - Daniel Hawkins
+2021-08-11 - Neila Hawkins
 --
 Ob types   : MIMIC
 Events     : pick, apply
 Moved from : nowhere (new type)
 Moved to   : mimic/mimic.c
 Comment    : Added a new type for a mimic monster that waits for you to take it or open it to strike.
-2018-09-24 - Daniel Hawkins
+2018-09-24 - Neila Hawkins
 --
 Ob types   : POISONING
 Events     : process

@@ -1305,7 +1305,7 @@ static int hit_with_one_attacktype(object *op, object *hitter, int dam, uint32_t
      * Skip lifestealing here, because it undergoes a more specific resistance scaling
      * in its own section that involves the better of drain/life stealing resistance
      *
-     * Daniel Hawkins 2018-05-31
+     * Neila Hawkins 2018-05-31
      */
     if (attacknum != ATNR_LIFE_STEALING && op->resist[attacknum]) {
         /* basically:  dam = dam*(100-op->resist[attacknum])/100;
@@ -2271,7 +2271,7 @@ static void slow_living(object *op, object *hitter, int dam) {
     /**
      * Give slow attacks some oomph -- always speed -1 was REALLY weak
      *
-     * Daniel Hawkins 2018-05-31
+     * Neila Hawkins 2018-05-31
      */
     // Higher level slow effects make you slower.
     speed_penalty = hitter->level - op->level + random_roll(1, 5, hitter, PREFER_LOW);
@@ -2422,7 +2422,7 @@ void paralyze_living(object *op, int dam) {
      * At this point, we do nothing.
      * It may be worthwhile to give players another message on paralysis extensions.
      *
-     * Daniel Hawkins 2017-08-22
+     * Neila Hawkins 2017-08-22
      */
 }
 
@@ -2475,7 +2475,7 @@ static void deathstrike_living(object *op, object *hitter, int *dam) {
      * Also, toss in a resistance-based hit modifier.
      * Higher resistance requires higher levels in order to kill with a death attack.
      *
-     * Daniel Hawkins 2018-05-21
+     * Neila Hawkins 2018-05-21
      */
     atk_lev = (hitter->chosen_skill ? hitter->chosen_skill->level : hitter->level);
     /* LOG(llevDebug, "Deathstrike - attack level %d, defender level %d\n", atk_lev, def_lev); */

@@ -4,7 +4,7 @@
 # Takes the server spell list and parses them into text documents.
 # Designed to use the server dump of spells, so it should be easier than parsing arches.
 #
-# Author: Daniel Hawkins
+# Author: Neila Hawkins
 #
 
 use strict;

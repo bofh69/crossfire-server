@@ -105,7 +105,7 @@ static void improve_armour(object *op, object *improver, object *armour) {
     // It is also used for when item +X is spawned, but it will work fine here.
     // There is one caveat -- if the armor was corroded and then this occurs,
     // the weight may actually increase; haven't tested but I believe it to be
-    // the case.  -- Daniel Hawkins 2021-01-19
+    // the case.  -- Neila Hawkins 2021-01-19
     set_abs_magic(armour, armour->magic);
 
     if (armour->weight <= 0) {

@@ -42,14 +42,14 @@
     but not give any to the attacker, and removes the old special handling for
     GRIMREAPER-type enemies that makes them vanish after a few attacks.
 
-2023-04-04  Daniel Hawkins
+2023-04-04  Neila Hawkins
   * common/object.cpp: Fix a bug where an open container on the ground that was destroyed
     would not be correctly sent to the client, causing the client to act like the player still
     had a container open when trying to take or drop items.
     To fix it, we send an update of the destroyed container after its applied flag is cleared,
     telling the client to consider it unapplied.
 
-2023-02-20  Daniel Hawkins
+2023-02-20  Neila Hawkins
   * common/treasure.cpp: Change rod, wand, scroll item level calculation.
     Previous behavior had the level be, on average, difficulty/2 power steps above level.
     This caused high level magic items to appear too frequently.
@@ -72,12 +72,12 @@
 	* Fix possible crash after login due to access to an uninitialized
 	variable.
 
-2022-05-12  Daniel Hawkins
+2022-05-12  Neila Hawkins
     * plugins/cfpython/include/cfpython.h,
       plugins/cfpython/cfpython.c,
       configure.ac: Add support for Python 3.10.
 
-2022-02-19  Daniel Hawkins
+2022-02-19  Neila Hawkins
     * server/attack.c: Nerf death attacks in deathstrike_living.
         Previous behavior had 10% + 5%/level over target.
         Reduced to 4% + 2%/level over target.
@@ -87,7 +87,7 @@
     * Add 'partial_commands' option/command to allow using commands with their first
         letters only if there is no ambiguity
 
-2021-11-17  Daniel Hawkins
+2021-11-17  Neila Hawkins
     * server/time.c: Handle when a generated monster immediately dies to a spell effect
         when being inserted into the map.
         Looking at you, banishment....
@@ -96,7 +96,7 @@
     * Fix crash with the 'rename' command, see https://sourceforge.net/p/crossfire/bugs/910/
     * Make NPCs spawned by citylife switch back to default behaviour when attacked
 
-2021-11-09  Daniel Hawkins
+2021-11-09  Neila Hawkins
     * server/monster.c: Rework monster_compute_path to use terrain-aware A*,
         instead of a naive Dijkstra's algorithm.
 
@@ -107,18 +107,18 @@
 2021-11-07  Nicolas Weeger
     * Improve pet behaviour, see https://sourceforge.net/p/crossfire/bugs/908/
 
-2021-10-24  Daniel Hawkins
+2021-10-24  Neila Hawkins
     * types/lightable/lightable.c: Refactor priority check to be easier to read.
         Make LIGHTER type be higher priority than SPELLs.
         Allow for clawing and flame touch skills with fire attacktype to be used before LIGHTERs and SPELLs.
 
-2021-10-8  Daniel Hawkins
+2021-10-8  Neila Hawkins
     * common/is_valid_types_gen.pl: Removed. Replaced by a Python script.
     * common/is_valid_types_gen.py: New script to do the same thing is_valid_types_gen.pl used to do.
     * common/Makefile.am: Make sure the build process points to the new file instead of the old one.
     * configure.ac: Remove checks for perl from the build tree. We don't need it for most building [I think the docs might, but that's already a broken mess]
 
-2021-10-04  Daniel Hawkins
+2021-10-04  Neila Hawkins
     * common/item.c: Allow for identified bows to print out firing rate information
         when examined. Previously, the way to figure this out was simply trial and error.
         Like weapon speed, lower is better. But, to be more precise, the firing rate
@@ -127,7 +127,7 @@
 2021-08-18  Andreas Kirschbaum
     * Do not print an object dump without error message.
 
-2021-08-11  Daniel Hawkins
+2021-08-11  Neila Hawkins
     * types/common/light_object.c,
       types/lighter/lighter.c: Refactor part of lighter.c into a function so it can be called by lightable.c
     * types/lightable/lightable.c: New type apply function -- lightable objects can be lit via
@@ -139,56 +139,56 @@
     * server/ob_types.c: Initialize lightable type when the other types are all initialized.
     * types/Makefile.am: Tell autotools to tell make to build the new type files.
 
-2021-08-07  Daniel Hawkins
+2021-08-07  Neila Hawkins
     * common/object.c: Correctly handle when multipart objects are created through death_animation key.
 
-2021-08-04  Daniel Hawkins
+2021-08-04  Neila Hawkins
     * plugins/cfpython/cjson.c,
       plugins/cfpython/include/cfpython.h,
       plugins/cfpython/cfpython_region.c: Clean up remaining Python 2.x/3 shims, and stand up
           some infrastructure to do some 3.x shims.
 
-2021-08-03  Daniel Hawkins
+2021-08-03  Neila Hawkins
     * plugins/cfpython/cfpython_object.c: Fix incorrect flag in setter for Identified attribute.
         This fixes indefinite experience exploits with the dip command, since the resulting
         water would be unidentified.
 
-2021-07-26  Daniel Hawkins
+2021-07-26  Neila Hawkins
     * server/login.c: Don't allow a player to be created with a given name if there's an
         unsaved player with that name already in the game.
 
 2021-07-25  Andreas Kirschbaum
     * doc/Developers/objects: Update section "NPC's Speak out".
 
-2021-07-24 Daniel Hawkins
+2021-07-24 Neila Hawkins
     * types/spell_effect/spell_effect.c,
       server/spell_effect.c,
       doc/Developers/spells: Allow for auras to have a radius larger than 1.
 
-2021-07-20 Daniel Hawkins
+2021-07-20 Neila Hawkins
     * socket/request.c: Prevent segfault from asksmooth commands asking for out-of-bounds faces.
 
-2021-07-16 Daniel Hawkins
+2021-07-16 Neila Hawkins
     * types/gate/gate.c: Allow for unmoveable objects at the top of the tile with moveable objects below
         to be handled correctly. Before it would fail to push a moveable boulder if there was rain above it,
         for example. This change allows for the boulder to be moved despite not being the top tile, because
         it is still the topmost moveable object.
 
-2021-07-15 Daniel Hawkins
+2021-07-15 Neila Hawkins
     * common/item.c: Make describe_item() indicate when a weapon will bounce off walls when thrown.
 
-2021-07-14 Daniel Hawkins
+2021-07-14 Neila Hawkins
     * common/artifact.c: Handle the reflecting flag from the artifacts file to allow for items that reflect
       off walls when used, (e.g. a throwing hammer that bounces off walls)
     * server/skills.c: Copy the reflecting flag from a thrown item to its in-flight counterpart.
     * types/common/projectile.c: Fix the common projectile code to correctly reflect projectiles off walls.
 
-2021-07-03 Daniel Hawkins
+2021-07-03 Neila Hawkins
     * socket/request.c: Set the name of the player object before calling apply_race_and_class(),
         so that the call to esrv_new_player() in apply_race_and_class() uses the new player's name
         instead of the previous player's name (or "dwarf" if no previous player).
 
-2021-06-29 Daniel Hawkins
+2021-06-29 Neila Hawkins
     * common/is_valid_types_gen.pl: Fix attempt to load from nonexistant argument, causing all types
         to be considered valid.
 
@@ -239,7 +239,7 @@
     * include/global.h,
     * server/init.c: Allow modules to be enabled or disabled by default.
 
-2021-04-21 Daniel Hawkins
+2021-04-21 Neila Hawkins
     * include/shared/newclient.h,
       server/c_misc.c,
       server/c_wiz.c,
@@ -343,7 +343,7 @@
     * include/Faces.h: Remove unused function.
     * include/AssetsTracker.h: Documentation.
 
-2021-04-05 Daniel Hawkins
+2021-04-05 Neila Hawkins
     * common/item.c,
       socket/item.c,
       include/shared/newclient.h,
@@ -361,7 +361,7 @@
     * common/assets/assets.cpp,
     * include/libproto.h: Remove unused function.
 
-2021-03-11 Daniel Hawkins
+2021-03-11 Neila Hawkins
     * random_maps/treasure.c: Set the level of a mimic based on map difficulty.
     * types/mimic/mimic.c: Allow for linear scaling of mimic difficulty
         based on the level of the mimic. Is calculated dynamically for use
@@ -429,16 +429,16 @@
     * utils/cre/CREResourcesWindow.cpp: Allow getting the map without a computed difficulty.
         Display computed difficulty in CRE.
 
-2021-03-08 Daniel Hawkins
+2021-03-08 Neila Hawkins
     * common/map.c: Prevent possible null pointer dereference in calculate_difficulty when
         a generator does not have generator_limit set.
 
-2021-03-07 Daniel Hawkins
+2021-03-07 Neila Hawkins
     * common/readable.c: Fix an issue in spellbook generation that occurred when
         a spell type/path had no spells and it tried again to generate without clearing
         the stale type/path.
 
-2021-03-04 Daniel Hawkins
+2021-03-04 Neila Hawkins
     * common/map.c: Adjust auto-map difficulty calculation to not count a generated item
         more times than it can be generated. Make sure we use the exp of the generated monster
         rather than an archangel while we're doing it.
@@ -480,18 +480,18 @@ See https://sourceforge.net/p/crossfire/feature-requests/244/ for more details.
     * server/plugins.c,
     * server/shop.c: Rework bargaining experience. See https://sourceforge.net/p/crossfire/feature-requests/258/ .
 
-2021-02-26 Daniel Hawkins
+2021-02-26 Neila Hawkins
     * common/events.cpp: include <string> for compilers that don't do that automagically.
         Pointy had to mtdew for pointing out the error on IRC.
 
-2021-02-25 Daniel Hawkins
+2021-02-25 Neila Hawkins
     * common/loader.l: Silence const qualifier warnings.
 
 2021-02-25 Nicolas Weeger
     * plugins/cfcitybell/cfcitybell.c: Add church of Valkyrie to Darcap.
     * server/c_object.c: Fix crash when a player using 'search-items' is killed.
 
-2021-02-18 Daniel Hawkins
+2021-02-18 Neila Hawkins
     * include/metaserver2.h,
       socket/metaserver.c: Make ms2_info_mutex static and visible only in metaserver.c.
 
@@ -518,13 +518,13 @@ See https://sourceforge.net/p/crossfire/feature-requests/244/ for more details.
     * plugins/cfpython/cfpython_object.c,
     * plugins/cfpython/cfpython_party.c: Remove Python2 specific parts.
 
-2021-02-10 Daniel Hawkins
+2021-02-10 Neila Hawkins
     * configure.ac: Change python3 check to use python3-embed.
 
 2021-02-09 Nicolas Weeger
     * plugins/cfpython/cfpython_object.c: Allow specifying 'None' for Object.WriteKey().
 
-2021-02-09 Daniel Hawkins
+2021-02-09 Neila Hawkins
     * test/bugs/bugtrack/check_duplicate_skills.c: Add test to ensure we don't get duplicate skills
         from character creation in the future.
     * test/bugs/bugtrack/Makefile.am: Add new test to list.
@@ -551,7 +551,7 @@ See https://sourceforge.net/p/crossfire/feature-requests/244/ for more details.
     * common/assets/assets.cpp: Write 'smoothface' in .face packed file instead of .arc.
 
 
-2021-02-04 Daniel Hawkins
+2021-02-04 Neila Hawkins
     * doc/Developers/images: Apply patch #386. Docs now reference correct location for image_info.
 
 2021-02-03 Nicolas Weeger
@@ -559,7 +559,7 @@ See https://sourceforge.net/p/crossfire/feature-requests/244/ for more details.
     * server/knowledge.c: Fix alchemy attempt not working with items having nrof 0 (like icecubes).
       Also don't consider invisible items as ingredients.
 
-2021-02-02 Daniel Hawkins
+2021-02-02 Neila Hawkins
     * server/apply.c: Remove dubious call to object_free in scroll_failure
         when spell failure effects are enabled.
 
@@ -636,13 +636,13 @@ See https://sourceforge.net/p/crossfire/feature-requests/244/ for more details.
     * server/spell_util.c: Change spell expiry message type to match those in change_abil().
     * types/food/food.c: Correctly display resistance changes when eating a special food.
 
-2021-01-25 Daniel Hawkins
+2021-01-25 Neila Hawkins
     * include/sproto.h: Remove function declarations that could be made static.
     * server/c_misc.c: Change several functions only referenced in this file
          to be static. A few were given forward declarations at the top when
          declaration/use ordering would have been an issue.
 
-2021-01-21 Daniel Hawkins
+2021-01-21 Neila Hawkins
     * server/c_object.c: Correctly handle icecubes when calculating available
          weight for a container. This solves a bug where one icecube of any size
          fit into a container as long as the container had enough room for the
@@ -655,7 +655,7 @@ See https://sourceforge.net/p/crossfire/feature-requests/244/ for more details.
     * utils/cre/CREWrapperFormulae.cpp,
       utils/cre/CREWrapperFormulae.h: Add more properties.
 
-2021-01-20 Daniel Hawkins
+2021-01-20 Neila Hawkins
     * plugins/cfpython/cfpython_*.c: Fix implicit cast compiler warnings.
 
 2021-01-20 Nicolas Weeger
@@ -665,7 +665,7 @@ See https://sourceforge.net/p/crossfire/feature-requests/244/ for more details.
     * lib/Makefile.am: Collect all assets in one run, remove files before.
     * server/init.c: Allow multiple -pack-assets switches.
 
-2021-01-19 Daniel Hawkins
+2021-01-19 Neila Hawkins
     * server/player.c: Modify how flags are set in order for skills to match
         in object_can_merge on character creation.
     * common/treasure.c: Make weight and speed-cap reductions on +/- x items
@@ -696,11 +696,11 @@ Rewrite the collect mechanism to use the server itself and not an external scrip
 2021-01-08 Nicolas Weeger
     * server/quest.c: Use media tags for quest information.
 
-2021-01-07 Daniel Hawkins
+2021-01-07 Neila Hawkins
     * types/spell_effect/spell_effect.c: Drop unpaid items when word of recall triggers.
         This prevents abuse of balms of return home in shops.
 
-2021-01-06 Daniel Hawkins
+2021-01-06 Neila Hawkins
     * server/skill_util.c: Disallow use of unapid skill tools in use_skill()
 
 2021-01-02 Nicolas Weeger
@@ -761,13 +761,13 @@ Patch by Kevin Zheng, slightly adjusted.
 2020-12-01 Nicolas Weeger
     * types/spellbook/spellbook.c: Fix invalid array indice leading to crash.
 
-2020-11-28 Daniel Hawkins
+2020-11-28 Neila Hawkins
     * types/spellbook/spellbook.c: Make sure an unidentified spellbook at least tells you
         what you can already see in the viewport, rather than "That is: " without a name.
     * server/c_object.c: Prevent the flavor text for magic to appear when the item is not
         yet identified.
 
-2020-11-27 Daniel Hawkins
+2020-11-27 Neila Hawkins
     * server/skills.c: Make trapped doors detonate traps when lockpicked on the first attempt.
 
 2020-11-23 Nicolas Weeger
@@ -775,28 +775,28 @@ Patch by Kevin Zheng, slightly adjusted.
     * server/attack.c: use a default "attack" anim_suffix for attacks. Apply
         anim_suffix to monsters too.
 
-2020-11-11 Daniel Hawkins and Kevin Zheng
+2020-11-11 Neila Hawkins and Kevin Zheng
     * socket/request.c,
       server/player.c: Make the handling to prevent createplayer command abuse
          more robust. Also address some socket state issues while here.
          And fix a segfault from incorrectly removing pl->ob->contr in create_player_cmd.
 
-2020-11-08 Daniel Hawkins
+2020-11-08 Neila Hawkins
     * server/rune.c: Fix segfault when showing an unanimated trap.
 
-2020-11-02 Daniel Hawkins
+2020-11-02 Neila Hawkins
     * plugins/citylife/citylife.c: Fix an off-by-one in the number of NPCs to spawn on
         map load, and fix the location and inclusion of spawn points in northern Scorn.
         Fixed NPCs loaded on map load from having their inventory drop when killed.
 
-2020-10-23 Daniel Hawkins
+2020-10-23 Neila Hawkins
     * server/spell_util.c: Make no-magic tiles block magic before spells can be bungled.
 
-2020-10-22 Daniel Hawkins
+2020-10-22 Neila Hawkins
     * server/player.c: Refactor code to remove confusion, poison, and disease on death
         into its own function.
 
-2020-10-21 Daniel Hawkins
+2020-10-21 Neila Hawkins
     * socket/request.c: Make sure to remove player's object if they send
         createplayer for a character with a different name than the current one.
     * server/c_object.c: Fix a nullpointer dereference when a skill tool lacks a
@@ -818,32 +818,32 @@ Patch by Kevin Zheng, slightly adjusted.
         telling you what spell a spellbook contains when you successfully read
         it will appear only if you identified the book in the process of reading.
 
-2020-10-18 Daniel Hawkins
+2020-10-18 Neila Hawkins
     * server/server.c: Add a message stating when initialization finishes.
 
-2020-10-14 Daniel Hawkins
+2020-10-14 Neila Hawkins
     * server/shop.c: Add an event hook for when an item is bought.
     * include/plugin.h: Add an event descriptor for the new buying event.
 
-2020-10-10 Daniel Hawkins
+2020-10-10 Neila Hawkins
     * common/readable.c: Fix generation of book names for recipes whose product lack a title.
         While here, add some more book name combinations.
 
-2020-10-10 Daniel Hawkins
+2020-10-10 Neila Hawkins
     * server/spell_attack.c: Adjust handling of aggravation to prevent shenanigans and prepare it for
         use as a legitimate spell.
 
-2020-10-03 Daniel Hawkins
+2020-10-03 Neila Hawkins
     * server/c_wiz.c: Don't interpret blank lines in dm_file as malformed entries.
         Prevent buffer overrun in `plugin command.
     * server/c_misc.c: Use StringBuffer to fix buffer overflow from malicious/malformed bowmode command.
 
-2020-10-02 Daniel Hawkins
+2020-10-02 Neila Hawkins
     * plugins/cfpython/cfpython.c: Set context->event to NULL when running python-based commands.
         It was possible to segfault from it not being a valid address if malloc used
         recycled memory.
 
-2020-09-30 Daniel Hawkins
+2020-09-30 Neila Hawkins
     * server/player.c: Prevent check_pick() from processing on a non-player.
     * server/skills.c: Prevent stop_jump() from calling check_pick() for non-players.
 
@@ -851,7 +851,7 @@ Patch by Kevin Zheng, slightly adjusted.
     * server/commands.c,server/player.c: Add 'face' command to have the
 	player face a given direction without taking any action.
 
-2020-09-17 Daniel Hawkins
+2020-09-17 Neila Hawkins
     * server/build_map.c: Disallow use of unpaid building materials.
           Mentioned by Titus on the Discord/IRC a few weeks back.
 
@@ -879,35 +879,35 @@ Patch by Kevin Zheng, slightly adjusted.
         Note that players may still get fewer spellbooks if multiple books were
         generated holding the same spell.
 
-2020-09-08  Daniel Hawkins
+2020-09-08  Neila Hawkins
     * server/apply.c: Refactor class face apply to allow for custom class faces on races that
         lack noclassfacechange.
 
-2020-09-07  Daniel Hawkins
+2020-09-07  Neila Hawkins
     * server/monster.c: Don't allow monsters to pick up items that are on their spaces while being thrown.
         This fixes an occasional "Thrown object had no map" error that resulted from monsters picking
         thrown items mid-flight and the item not being transitioned back to it's non-thrown form.
 
-2020-09-06  Daniel Hawkins
+2020-09-06  Neila Hawkins
     * common/button.c: Add check for an unpaid flag that matches the check_inv trigger's unpaid flag.
           This allows for us to optionally look exclusively for unapid items, but by default exclude
           unpaid items from the search.
 
-2020-09-06  Daniel Hawkins
+2020-09-06  Neila Hawkins
     * server/plugins.c: Fix invalid pointer dereference when calculating perm_exp.
         Turns out the other end of the plugin was expecting this, but I didn't do it right here.
 
-2020-09-05  Daniel Hawkins
+2020-09-05  Neila Hawkins
     * server/skill_util.c: Add check for not unpaid when searching an inventory for a skill tool.
         This makes it behave like it would it it were manually applied: it does not apply.
 
-2020-09-05  Daniel Hawkins
+2020-09-05  Neila Hawkins
     * server/player.c,
       include/libproto.h,
       common/object.c: Add a function to retrieve an item from inventory that is not unpaid.
           Used it to prevent unpaid keys from being used as if they weren't.
 
-2020-09-01  Daniel Hawkins
+2020-09-01  Neila Hawkins
     * server/plugins.c,
       plugins/common/plugin_common.c,
       plugins/common/include/plugin_common.h,
@@ -933,60 +933,60 @@ Patch by Kevin Zheng, slightly adjusted.
       server/skill_util.c: Change from tracking perm_exp to total_exp, so any
 	rounding is done when it is used, not as it is accumulated.
 
-2020-08-15  Daniel Hawkins
+2020-08-15  Neila Hawkins
     * socket/sounds.c: Adjust sound volume based on proximity to player.
         This makes things like the bullet squares in random maps more bearable.
 
-2020-08-14  Daniel Hawkins
+2020-08-14  Neila Hawkins
     * server/server.c: Partially revert fix, since assumption that all speeds would
         be positive did not hold for custom creatures on random maps.
 
-2020-08-11  Daniel Hawkins
+2020-08-11  Neila Hawkins
     * common/living.c,
       server/server.c,
       common/loader.l: Load speed as positive number, and then set a minimum speed
         for monsters. Fixes bug #854.
 
-2020-08-06  Daniel Hawkins
+2020-08-06  Neila Hawkins
     * plugins/cfpython/cfpython_object.c: Expose item_power to the python API as a R/W value.
     * common/living.c: Add code to handle giving experience to weapons, so that we can handle weapons that get stronger over time.
 
-2020-01-16  Daniel Hawkins
+2020-01-16  Neila Hawkins
     * socket/loop.c: Replace assertion of nonnull cmd in handle_cmd with a check
         that rejects the null command but keeps the server running.
 
-2019-12-29  Daniel Hawkins
+2019-12-29  Neila Hawkins
     * common/artifact.c: Reduce severity of artifacts with no chance to debug.
         There are use cases where no artifact chance makes sense.
         They can be obsoleted, craftable, quest items, or anything else that shouldn't
         appear in random loot.
 
-2019-12-05  Daniel Hawkins
+2019-12-05  Neila Hawkins
     * server/monster.c: Reduce calls to monster_compute_path.
 
-2019-12-04  Daniel Hawkins
+2019-12-04  Neila Hawkins
     * socket/request.c: Reduce dereferences in draw_client_map2.
 
-2019-12-03  Daniel Hawkins
+2019-12-03  Neila Hawkins
     * common/los.c: Reduce recursion overhead in set_wall() by checking to see if the tile has already been set.
     * include/sockproto.h: Remove draw_client_map2. It was only used in request.c
     * socket/request.c: Make draw_client_map2 a static function.
 
-2019-12-01  Daniel Hawkins
+2019-12-01  Neila Hawkins
     * common/los.c,
       server/player.c,
       server/c_wiz.c,
       include/libproto.h: Adjust some trivial cases of los calculations to use player structure directly.
     * socket/loop.c: Add detail to message indicating a tick took too long.
 
-2019-11-30  Daniel Hawkins
+2019-11-30  Neila Hawkins
     * lib/artifacts: Add an artifact for new kite shield arch. Requires r21039.
 
-2019-11-29  Daniel Hawkins
+2019-11-29  Neila Hawkins
     * lib/artifacts: Remove horn of sirens for artifact list, since it is a god-given item.
         Fixes Bug #861.
 
-2019-08-11  Daniel Hawkins
+2019-08-11  Neila Hawkins
     * lib/artifacts: Add artifacts for white/black leather cloaks.
     * lib/formulae: Add formulae to craft white/black leather cloaks and leather armour.
     * common/recipe.c: Add check handling for when one recipe is done with a cauldron and
@@ -996,55 +996,55 @@ Patch by Kevin Zheng, slightly adjusted.
    * server/spell_util.c: Patch #357 Balancing changes to the summoning branch
      Failed summons via Summoning skill no longer cost spell points.
 
-2019-03-15  Daniel Hawkins
+2019-03-15  Neila Hawkins
     * common/arch.c: Dynamically generate is_type_valid().
     * common/is_valid_types_gen.pl: Dynamically generate is_type_valid().
     * common/Makefile.am: Add build rules to dynamically generate is_type_valid().
     (Patched with a non-defective version on 2019-03-20)
 
-2019-01-03  Daniel Hawkins
+2019-01-03  Neila Hawkins
     * server/skills.c: Fix encumbered throw logic to penalize high encumbrance
       instead of reward it.
 
-2018-12-31  Daniel Hawkins
+2018-12-31  Neila Hawkins
     * utils/crossloop.web.in: Make SRCDIR be determined on the fly.
       This reduces the number of variables that need to be changed before use.
     * common/readable.c: Add more book titles.
 
-2018-12-30  Daniel Hawkins
+2018-12-30  Neila Hawkins
     * server/player.c: Simplify melee weapon pickup logic, since tables and chairs
       haven't been weapons since 2011.
 
-2018-12-24  Daniel Hawkins
+2018-12-24  Neila Hawkins
     * server/c_object.c: Fix "gods...retrieves" to agree in plurality.
     * plugins/cfcitybell/*: Refactor city temple bell event to be its own non-Python unit.
     * plugins/Makefile.am: Add the new independent citybell plugin to the build tree.
     * configure.ac: Add config rules to allow for the city bells to be disabled.
 
-2018-12-23  Daniel Hawkins
+2018-12-23  Neila Hawkins
     * common/links.c: Better utilize the calloc function to set the dynamic allocated
       lists to 0 as it is allocated.
     * socket/request.c: Rewrite spell_client_use to use a switch statement instead of ifs.
 
-2018-12-22  Daniel Hawkins
+2018-12-22  Neila Hawkins
     * server/hiscore.c: Adjust i+1 followed by i++ to be ++i;
         (Reverted due to out-of-bounds error w/ optimization by ryo_saeba on 26 Dec)
 
-2018-10-28  Daniel Hawkins
+2018-10-28  Neila Hawkins
     * common/living.c,
       common/artifact.c: Make items that have the confused flag set confuse the wielder.
     * lib/artifacts: Add a helmet of Confusion to utilize the new item-sourced confusion.
 
-2018-10-24  Daniel Hawkins
+2018-10-24  Neila Hawkins
     * common/readable.c: Make text from the messages file not get split at buffer boundaries.
     * server/player.c,
       common/living.c: Make dragon ability gain levels specified in magic field in treasurelist.
 
-2018-10-23  Daniel Hawkins
+2018-10-23  Neila Hawkins
     * common/readable.c: Add "illuminated text" as a religion book name.
     * server/c_object.c: Refactor a loop through the player's inventory to better use the op->contr->mark pointer.
 
-2018-10-22  Daniel Hawkins
+2018-10-22  Neila Hawkins
     * random_maps/style.c: Remove superfluous use of buffer and snprintf.
     * include/global.h,
       common/loader.l,
@@ -1052,7 +1052,7 @@ Patch by Kevin Zheng, slightly adjusted.
       common/arch.c: Remove ::warn_archetypes and make loader use try_find_archetype.
     * common/recipe.c: Refactor recipe creation to use calloc instead of malloc.
 
-2018-09-24  Daniel Hawkins
+2018-09-24  Neila Hawkins
     * types/Makefile.am: Add new mimic type file to build.
     * server/ob_types.c: Initialize the apply hook for mimics.
     * include/typesproto.h: Function prototype for apply hook initialization.
@@ -1061,14 +1061,14 @@ Patch by Kevin Zheng, slightly adjusted.
     * common/item.c: Add new type to the table defined here. Make it like container.
     * random_maps/treasure.c: Make a very slim chance of a mimic replacing a chest when diffiuclty > 5.
 
-2018-06-02  Daniel Hawkins
+2018-06-02  Neila Hawkins
     * server/time.c: Simplify the code for determining the placement of a new object in change_object().
 
-2018-05-31  Daniel Hawkins
+2018-05-31  Neila Hawkins
     * server/attack.c: Fix double application of resistance for life stealing attacktype.
       Also, add more complex algorithm for slowness to reduce >1 speed sometimes.
 
-2018-05-28  Daniel Hawkins
+2018-05-28  Neila Hawkins
     * common/living.c: Simplification of bracer/force/armor AC/WC code in fix_object:
       if we don't replace the best value, don't waste time subtracting and adding the same
       value to the object.
@@ -1076,7 +1076,7 @@ Patch by Kevin Zheng, slightly adjusted.
     * server/monster.c: Skip performance shortcuts in monster_compute_path for
       multitile monsters.
 
-2018-05-23  Daniel Hawkins
+2018-05-23  Neila Hawkins
     * server/attack.c: Make death attacks do no damage when the monster cannot
       be affected by that death attack. Also make the order of the strstr check
       work for multiple races defined on the creature, and only one on the weapon.
@@ -1086,74 +1086,74 @@ Patch by Kevin Zheng, slightly adjusted.
       "slay vampire" and other slaying fields that aren't a normal race to actually
       function while still preserving summon lists for summon cult monster.
 
-2018-05-21  Daniel Hawkins
+2018-05-21  Neila Hawkins
     * server/attack.c: Make death attacks relevant.
 
-2018-05-19  Daniel Hawkins
+2018-05-19  Neila Hawkins
     * server/player.c: Load background music when moving through tiled maps.
 
-2018-02-12  Daniel Hawkins
+2018-02-12  Neila Hawkins
     * server/monster.c: Refactor to reduce calls to ob_blocked by remembering prior blocked tiles from the same run.
       This causes a small but noticable (~5%) reduction in overall pathing cost.
       Do a quick check in monster_compute_path to ensure there are multiple ways the monster can move around
       before attempting to go through the whole pathing algorithm. This yields significant performance improvements.
 
-2018-02-11  Daniel Hawkins
+2018-02-11  Neila Hawkins
     * common/map.c: Refactor get_map_from_coord() to be iterative instead of recursive.
 
-2018-02-03  Daniel Hawkins
+2018-02-03  Neila Hawkins
     * server/time.c: Improve change_object to handle multi-tile monster changes.
     * test/unit/server/check_monster_change.c: Add unit test for changing monsters.
     * test/unit/server/Makefile.am: Add new unit test to the build instructions.
 
-2018-01-24  Daniel Hawkins
+2018-01-24  Neila Hawkins
     * server/login.c: Prevent memory leak of party_name on attempted login of a player with negative hp.
 
-2018-01-23  Daniel Hawkins
+2018-01-23  Neila Hawkins
     * common/anim.c: Reduce calls to realloc on animation load. Handle failed realloc gracefully.
 
-2018-01-22  Daniel Hawkins
+2018-01-22  Neila Hawkins
     * server/plugins.c: Fix redundant call to va_end in cfapi_object_move.
 
-2018-01-21  Daniel Hawkins
+2018-01-21  Neila Hawkins
     * common/init.c: Use strspn for finding the first non-whitespace character in attackmess,
       and allow for tabs to be used as whitespace.
     * socket/request.c: Reorder conditions to prevent segfault if pl is null in esrv_remove_spell.
 
-2018-01-18  Daniel Hawkins
+2018-01-18  Neila Hawkins
     * lib/artifacts: Fix boots/gauntlets that should posess a damage value that don't. Fixes bug #832.
 
-2018-01-14  Daniel Hawkins
+2018-01-14  Neila Hawkins
     * server/skills.c: Fix segfault from check for transport when monster uses
       jumping skill.
 
-2018-01-13  Daniel Hawkins
+2018-01-13  Neila Hawkins
     * lib/artifacts: Make goblin leaders generate facing forward and animate the
       artifact monsters so the versions that have animations use the animation frames.
 
-2018-01-08  Daniel Hawkins
+2018-01-08  Neila Hawkins
     * common/artifact.c: Expand identified face use of pre-identified items, even
       if the type otherwise need identifying. This makes gems appear with the correct face.
 
-2018-01-07  Daniel Hawkins
+2018-01-07  Neila Hawkins
     * common/artifact.c: Make artifacts of items that do not need identifying
       appear using their identified face and animation. In particular, this makes
       the randomly-generated tougher monsters (e.g. goblin leaders) differentiable
       from the normal monsters in the room.
 
-2018-01-02  Daniel Hawkins
+2018-01-02  Neila Hawkins
     * server/shop.c: Make shop pricing treat unidentified items as if they were
       the normal version of the item. Fixes Bug #812.
 
-2017-09-02  Daniel Hawkins
+2017-09-02  Neila Hawkins
     * random_maps/main.c: Expand test generator options to allow
       layout choice.
 
-2017-08-26  Daniel Hawkins
+2017-08-26  Neila Hawkins
     * types/spellbook/spellbook.c: Identify spellbooks of spells you already know
       when applying them. Also make the message name the spell.
 
-2017-08-23  Daniel Hawkins
+2017-08-23  Neila Hawkins
     * server/attack.c: Add message and set a new flag for indicating a player is paralyzed.
     * server/player.c: Add message for end of paralysis and disallow blindly eating
       while paralyzed.
@@ -1161,17 +1161,17 @@ Patch by Kevin Zheng, slightly adjusted.
     * include/define.h: Creation of FLAG_PARALYZED flag.
     * common/loader.l: Allow for the paralyzed flag to exist in objects saved to file.
 
-2017-08-15  Daniel Hawkins
+2017-08-15  Neila Hawkins
     * server/skills.c: Disallow jumping while in a transport.
 
-2017-08-13  Daniel Hawkins
+2017-08-13  Neila Hawkins
     * server/c_wiz.c: Update error message for set_god.
 
-2017-08-09  Daniel Hawkins
+2017-08-09  Neila Hawkins
     * common/living.c: Fix incomplete totaling of equipped item power
       in fix_object(). Should fix bug #648.
 
-2017-08-05  Daniel Hawkins
+2017-08-05  Neila Hawkins
     * server/time.c: Make firewalls choose their direction to cast based on direction,
       not sp. Fixes bug #834.
     * common/button.c: Fix rotation of firewalls to also use direction.
@@ -1181,7 +1181,7 @@ Patch by Kevin Zheng, slightly adjusted.
 	* lib/help/statistics.en: Update statistics help file with information on
 	  damage per second, and time played.
 
-2017-07-27	Daniel Hawkins
+2017-07-27	Neila Hawkins
 	* server/c_misc.c: Add damage per second calculation to "statistics"
 	  command.
 
@@ -1189,7 +1189,7 @@ Patch by Kevin Zheng, slightly adjusted.
 	* server/attack.c: Play attack sounds on the map
 	* server/commands.c: Allow players to forget spells
 
-2017-06-17	Daniel Hawkins
+2017-06-17	Neila Hawkins
 	* server/attack.c: Update display for pk to only show when player kills a
 	  player other than self.
 
@@ -1200,25 +1200,25 @@ Patch by Kevin Zheng, slightly adjusted.
 2017-05-20	Kevin Zheng
 	* socket/sounds.c: Play region music if a map doesn't have music
 
-2017-02-18	Daniel Hawkins
+2017-02-18	Neila Hawkins
 	* server/monster.c: Prevent monster_compute_path from being called for
 	  confused monsters.
 
-2016-06-03  Daniel Hawkins
+2016-06-03  Neila Hawkins
 	* common/map.c: Only check for null tile map if we tried to load;
 	  if we didn't try to load, tile map was already non-null.
 
-2016-05-23  Daniel Hawkins
+2016-05-23  Neila Hawkins
 	* common/map.c: Prevent a potential segfault in get_map_from_coord() and
 	  out_of_map() if load_and_link_tiled_map() returns a null map. It was
 	  used before it was verified in previous behavior. Updated the documentation
 	  for each function to state the initial map passed to it must not be NULL.
 
-2016-05-22  Daniel Hawkins
+2016-05-22  Neila Hawkins
 	* server/server.c: Move the static string reference into the condition
 	  branch, since we only use it on that branch.
 
-2016-05-21  Daniel Hawkins
+2016-05-21  Neila Hawkins
 	* common/los.c: Refactored set_wall() to recycle a couple variables to
 	  reduce recursion overhead.
 	* plugins/cfanim/cfanim.c: Refactored get_boolean() to not use strncmp(),
@@ -1226,7 +1226,7 @@ Patch by Kevin Zheng, slightly adjusted.
 	* common/player.c: Changed a malloc() with a memset() to 0 into a calloc().
 	* lib/attackmess: Change 'acrobaticly' to 'acrobatically'.
 
-2016-05-18  Daniel Hawkins
+2016-05-18  Neila Hawkins
 	* common/map.c: Add new maps to the front of the mapstruct linked list
 	  since there does not appear to be any order preference in the rest of
 	  the codebase.
@@ -1236,16 +1236,16 @@ Patch by Kevin Zheng, slightly adjusted.
 	  Optimize out check_dir in compute_monster_path().
 	  Optimize the initialization of distance to use memset() instead of a loop.
 
-2016-05-17  Daniel Hawkins
+2016-05-17  Neila Hawkins
 	* common/living.c: Change the depletion message for Con loss to differentiate
 	  it from the permanent stat loss message.
 	* server/monster.c: Additional optimizations in monster_compute_path().
 
-2016-05-16  Daniel Hawkins
+2016-05-16  Neila Hawkins
 	* server/knowledge.c: Use malloc instead of calloc where all struct values
 	  are subsequently set.
 
-2016-05-15  Daniel Hawkins
+2016-05-15  Neila Hawkins
 	* server/monster.c: Remove redundant hp value check in monster_do_living().
 	  Adjusted the run_away health check to use integers instead of floats.
 	  This causes a 1-higher threshold for some maxhp values if run_away is
@@ -1254,27 +1254,27 @@ Patch by Kevin Zheng, slightly adjusted.
 	  In this manner, the rounding change occurs on both set and unset of FLAG_RUN_AWAY.
 	* server/arch.c: Refactor some comparisons in is_type_valid() to use a switch statement.
 
-2016-05-14  Daniel Hawkins
+2016-05-14  Neila Hawkins
 	* server/monster.c: Optimizations in monster_compute_path().
 	* common/object.c: Reimplement the absdir() function to avoid loops.
 
-2016-05-07  Daniel Hawkins
+2016-05-07  Neila Hawkins
 	* configure.ac: Change some of the "#" Comments to "dnl" comments.
 	  They didn't need to go into the generated config file, so they won't be.
 
-2016-05-02  Daniel Hawkins
+2016-05-02  Neila Hawkins
 	* doc/spell-docs/tome-of-magic.txt: Made some manual edits to effects of
 	  spells. Still far from complete.
 	* doc/spell-docs/Makefile.am: Tweaked the cleanfiles so that 'make clean'
 	  cleans up all the generated PostScript files.
 
-2016-01-11  Daniel Hawkins
+2016-01-11  Neila Hawkins
 	* doc/scripts/bonus_extract.pl: Refactor shop bonus to match actual implementation.
 
-2015-12-25  Daniel Hawkins
+2015-12-25  Neila Hawkins
 	* configure.ac: Add check for librt and link it in if found.
 
-2015-12-18  Daniel Hawkins
+2015-12-18  Neila Hawkins
 	* doc/spell-docs/spell-summary.ps: Removed. Replaced by a text file for
 	  easier maintenance in the future.
 	* doc/spell-docs/spell-summary.txt: New text file with the information
@@ -1286,7 +1286,7 @@ Patch by Kevin Zheng, slightly adjusted.
 	* include/define.h: Cleaned up RANDOM and SRANDOM macro definitions.
 	  Since we require C99, there should not be a situation where not even srand is found.
 
-2015-12-15  Daniel Hawkins
+2015-12-15  Neila Hawkins
 	* doc/spell-docs/create_ps.sh: Abstracted the PostScript generation
 	  out of the perl script. Also add spell-info.ps to the generated
 	  documents.
@@ -1297,10 +1297,10 @@ Patch by Kevin Zheng, slightly adjusted.
 	* doc/spell-docs/tome-of-magic.ps: Removed. Generated from
 	  tome-of-magic.txt.
 
-2015-12-13  Daniel Hawkins
+2015-12-13  Neila Hawkins
 	* server/skill_util.c: Fix phantom miss messages that should occur only with [Fire]+attack.
 
-2015-12-12	Daniel Hawkins
+2015-12-12	Neila Hawkins
 	* doc/Makefile.am: Add build target for making documentation archive
 	  with new dynamically generated spell lists.
 	* doc/spell-docs/Makefile.am: Add build target for dynamic generation of spell lists.
@@ -1311,7 +1311,7 @@ Patch by Kevin Zheng, slightly adjusted.
 	* doc/spell-docs/prayer-list.txt: Removed. Now dynamically generated from spell-lists.pl.
 	* doc/spell-docs/spell-list.ps: Removed. Now dynamically generated from spell-lists.pl.
 
-2015-12-11	Daniel Hawkins
+2015-12-11	Neila Hawkins
 	* doc/scripts/bonus-extract.pl: Refactor old bonus-extract,
 	  replacing it with a perl script that gets the bonuses from
 	  stat_bonus.
@@ -1320,7 +1320,7 @@ Patch by Kevin Zheng, slightly adjusted.
 	* doc/playbook/Makefile.am: Change the bonus.tex build target to run the new script.
 	* doc/playbook/bonus-extract: Removed.
 
-2015-12-10	Daniel Hawkins
+2015-12-10	Neila Hawkins
 	* server/account.c: Add [ to the blocked characters.
 	  It causes improper message printing on the client side.
 	  This does not effect existing characters, only new ones.
@@ -1328,7 +1328,7 @@ Patch by Kevin Zheng, slightly adjusted.
 2015-12-09	Kevin Zheng
 	* socket/info.c: Log messages that are broadcast to all players
 
-2015-12-07	Daniel Hawkins
+2015-12-07	Neila Hawkins
 	* doc/scripts/gods-extract.pl: Refactor old gods-extract AWK scripts into a perl script.
 	  While we're here, also reimplement protections, immunities, and vulnerabilities.
 	* doc/playbook-html/Makefile.am: Point to the new gods-extract script.
@@ -1350,7 +1350,7 @@ Patch by Kevin Zheng, slightly adjusted.
 2015-11-21  Andreas Kirschbaum
 	* common/artifact.c: Do not truncate face names.
 
-2015-11-10  Daniel Hawkins
+2015-11-10  Neila Hawkins
 	* doc/scripts/levels-extract.pl: Created a new level extraction tool
 	  for the documentation that works with modern server code and
 	  is utilized for both html and latex outputs.
@@ -1361,33 +1361,33 @@ Patch by Kevin Zheng, slightly adjusted.
 	* doc/playbook-html/levels-extract: Removed. It was designed to find a hardcoded
 	  exp table in living.c.
 
-2015-05-31  Daniel Hawkins
+2015-05-31  Neila Hawkins
 	* common/living.c: Fixed a bug introduced in r19972 that made skill
 	  experience based off total level instead of skill level.
 
-2015-05-28  Daniel Hawkins
+2015-05-28  Neila Hawkins
 	* server/player.c: Tweak the starvation calculation to not use a loop.
 	  Tweak the similar_direction calculation to use modulus instead of
 	  a switch statement.
 
-2015-05-25  Daniel Hawkins
+2015-05-25  Neila Hawkins
 	* configure.ac: Made the configure script exit if lex and flex are not found.
 	* utils/cfarches.xsl: Refactored can_use_xxx to be displayed in a single
 	  cell. Also completed the set of can_use_xxx options.
 	  Added XSL Transformation output for body slots.
 
-2015-05-24  Daniel Hawkins
+2015-05-24  Neila Hawkins
 	* common/living.c: Fixed a bug in which the player's experience would
 	  endlessly loop in the level below maxlevel.
 
-2015-05-22	Daniel Hawkins
+2015-05-22	Neila Hawkins
 	* utils/cfarches.xsl: Refactored resistances to be displayed in a single
 	  cell for each arch. Also added the rest of the resistances to the
 	  XSL transformation.
 	  Added attacktype to the generated HTML table.
 	  Added plural names to the name display.
 
-2015-05-21	Daniel Hawkins
+2015-05-21	Neila Hawkins
 	* utils/arch2xml.py: Tweaked whitespace of tag output.
 	  Then added HTML/XML escapes for &, <, and > inside comments and messages.
 	  Fixed the arch tag writing mechanism to give each object its own arch
@@ -1395,20 +1395,20 @@ Patch by Kevin Zheng, slightly adjusted.
 	  Made empty comment lines be ignored instead of printed as [#].
 	* utils/cfarches.xsl: Adjusted headings to be actual HTML table headings.
 
-2015-05-20	Daniel Hawkins
+2015-05-20	Neila Hawkins
 	* lib/artifacts: Adjusted several item messages for clarity and grammar.
 	* server/c_object.c: Don't show item story (msg) unless it has been
     identified.
 
-2015-05-19	Daniel Hawkins (SilverNexus)
+2015-05-19	Neila Hawkins (SilverNexus)
 	* test/toolkit/toolkit_crossedit.c: Retired old crossedit test toolkit.
 	It was never implemented, and crossedit has been gone for years.
 
-2015-05-16	Daniel Hawkins (SilverNexus)
+2015-05-16	Neila Hawkins (SilverNexus)
 	* utils/scores.pl.in: Made experience table be dynamically
 	read in from the server's installed exp_table file.
 
-2015-05-15	Daniel Hawkins (SilverNexus)
+2015-05-15	Neila Hawkins (SilverNexus)
 	* random_maps/special.c: Fix fountain material to prevent fountains
 	that are actually potions from being destroyed.
 

@@ -192,7 +192,7 @@ static void set_wall(player *pl, int x, int y) {
     const blocks * const at = block[x] + y;
     /*
      * Assume the mapsize will not change mid-drawing. This seemed to work in my testing
-     * Daniel Hawkins 2019-12-03
+     * Neila Hawkins 2019-12-03
      */
     const int map_sock_x = (MAP_CLIENT_X-pl->socket->mapx)>>1,
               map_sock_y = (MAP_CLIENT_Y-pl->socket->mapy)>>1;

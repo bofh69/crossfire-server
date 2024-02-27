@@ -357,7 +357,7 @@ void add_abilities(object *op, const object *change) {
      * For items that do not need identifying, use their identified face/animation
      * immediately. This should make seas of generated creatures look more interesting.
      *
-     * Daniel Hawkins
+     * Neila Hawkins
      * 2018-01-07
      *
      * Add query flags to perform the same treatment for identified items or artifacts that come identified.

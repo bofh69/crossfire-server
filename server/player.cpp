@@ -2279,7 +2279,7 @@ static int similar_direction(int a, int b) {
      *  We only needed the direction and the two adjacent to it
      *  (8 is adjacent to 1 here) to return true, so a - 1, a, and a + 1
      *  are the three directions that get "similar" affirmed.
-     *      -- Daniel Hawkins 2015-05-28
+     *      -- Neila Hawkins 2015-05-28
      */
     // The last one for the offset is added afterwards so we get
     // 1-8 instead of 0-7 (specifically, 0 becomes 8 without changing
@@ -3360,7 +3360,7 @@ void do_some_living(object *op) {
         if (is_wraith_pl(op))
             draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_ITEM, MSG_TYPE_ITEM_REMOVE, "You feel a hunger for living flesh.");
         /* Only allow eat if not paralyzed. Otherwise our paralyzed player is "moving" to eat.
-         * Daniel Hawkins 2017-08-23
+         * Neila Hawkins 2017-08-23
          */
         else if (!QUERY_FLAG(op, FLAG_PARALYZED)){
             object *flesh = NULL;

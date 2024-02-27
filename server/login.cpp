@@ -124,7 +124,7 @@ int verify_player(const char *name, char *password) {
      * Creating a second character of the same name makes the game *really* confused, so don't
      * let that happen.
      *
-     * Daniel Hawkins 2021-07-26
+     * Neila Hawkins 2021-07-26
      */
     for (pltmp = first_player; pltmp != NULL; pltmp = pltmp->next) {
         if (pltmp->ob->name != NULL && !strcmp(pltmp->ob->name, name)) {

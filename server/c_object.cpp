@@ -349,7 +349,7 @@ int sack_can_hold(const object *pl, const object *sack, const object *op, uint32
         new_weight = sack->carrying+(nrof ? nrof : 1)
             /* Most non-containers should have op->carrying == 0. Icecubes, however, will not,
              * and we need to handle those.
-             * Daniel Hawkins 2021-01-21
+             * Neila Hawkins 2021-01-21
              */
             *(op->weight+(op->type == CONTAINER ? op->carrying*op->stats.Str : op->carrying))
             *(100-sack->stats.Str)/100;
@@ -1545,7 +1545,7 @@ object *find_marked_object(object *op) {
      * to make sure it is still in the player's inventory.
      * In addition, we ensure there is the correct tag for that item.
      *
-     * Daniel Hawkins 2018-10-23
+     * Neila Hawkins 2018-10-23
      */
     if (op->contr->mark->env == op && op->contr->mark->count == op->contr->mark_count)
         return op->contr->mark;

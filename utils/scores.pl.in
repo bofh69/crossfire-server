@@ -353,7 +353,7 @@ sub read_dms()
 # level of a character if that character does not have a level specified
 # in its own save file.
 #
-# Author: Daniel Hawkins
+# Author: Neila Hawkins
 #
 sub read_exp_table(){
 	# The experience table for the server is stored here

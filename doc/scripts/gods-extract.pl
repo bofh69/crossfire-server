@@ -4,7 +4,7 @@
 #
 # Outputs the results as either html or LaTex.
 #
-# Author: Daniel Hawkins
+# Author: Neila Hawkins
 
 use strict;
 

@@ -1,7 +1,7 @@
 #
 # Extracts the bonuses from the stat_bonus file.
 #
-# Author: Daniel Hawkins
+# Author: Neila Hawkins
 #
 
 use strict;
@@ -49,7 +49,7 @@ while(<IN>){
 	# Also, I'm extracting a few values that, as of now, aren't used.
 	# I intend to implement them in the output soon.
 	#
-	# Daniel Hawkins 2015-12-11
+	# Neila Hawkins 2015-12-11
 	#
 	elsif (/^con_hp_bonus/){
 		$cur_ref = \@hp_bonus;
@@ -64,7 +64,7 @@ while(<IN>){
 #	Not used in curent implementation of shop buy/sell calculations
 #	Current is r20215 at the time of last inspection.
 #
-#	Daniel Hawkins 2016-01-11
+#	Neila Hawkins 2016-01-11
 #
 #	elsif (/^cha_shop_bonus/){
 #		$cur_ref = \@shop_bonus;

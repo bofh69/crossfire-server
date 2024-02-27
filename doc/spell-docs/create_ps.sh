@@ -3,7 +3,7 @@
 #
 # Encodes the txt files into PostScript documents using enscript.
 #
-# Author: Daniel Hawkins
+# Author: Neila Hawkins
 #
 
 # Check for enscript

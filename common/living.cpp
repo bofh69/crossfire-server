@@ -1318,7 +1318,7 @@ void fix_object(object *op) {
 
                     /* Bow and skill utils need to update item_power specifically.
                      * This should fix bug #648
-                     * Daniel Hawkins 2017-08-09
+                     * Neila Hawkins 2017-08-09
                      */
                     case BOW:
                     case SKILL_TOOL:
@@ -1502,7 +1502,7 @@ void fix_object(object *op) {
             case BRACERS:
             case FORCE:
                 // Code simplification to reduce branching -- we don't need to sub/add ac and wc all the time.
-                // Daniel Hawkins 2018-05-28
+                // Neila Hawkins 2018-05-28
                 if (tmp->stats.wc) {
                     // Since we are alreay here, make sure wc stacking also occurs for serpentman players.
                     if (tmp->type == BRACERS && op->type == PLAYER && op->arch->name && strcmp(op->arch->name, "serpentman_player") == 0)
@@ -1523,7 +1523,7 @@ void fix_object(object *op) {
                      * If we have a serpentman player, then we do bracers differently
                      * to allow for both bracers they equip to apply to ac, instead of only the best.
                      *
-                     * Daniel Hawkins 2018-05-28
+                     * Neila Hawkins 2018-05-28
                      */
                     if (tmp->type == BRACERS && op->type == PLAYER && op->arch->name && strcmp(op->arch->name, "serpentman_player") == 0)
                     {
@@ -1999,7 +1999,7 @@ static void add_player_exp(object *op, int64_t exp, const char *skill_name, int 
      * Make sure we aren't trying to go backwards when we hit maximum level,
      * but make sure we can still add to our permanent experience.
      *
-     * -- Daniel Hawkins 2015-05-24
+     * -- Neila Hawkins 2015-05-24
      */
     if (op->level == settings.max_level)
         limit = levels[op->level] / 2;
@@ -2015,7 +2015,7 @@ static void add_player_exp(object *op, int64_t exp, const char *skill_name, int 
          * Make sure we aren't trying to go backwards when we hit maximum level,
          * but make sure we can still add to our permanent experience.
          *
-         * -- Daniel Hawkins 2015-05-24
+         * -- Neila Hawkins 2015-05-24
          */
         if (skill_obj->level == settings.max_level)
             limit = levels[skill_obj->level] / 2;

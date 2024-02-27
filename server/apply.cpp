@@ -1764,7 +1764,7 @@ void apply_changes_to_player(object *pl, object *change, int limit_stats) {
     /* Check for anim == -1 so that we can override specific class faces for races.
      * This allows us to have custom class faces on the races that lack noclassfacechange
      *
-     * Daniel Hawkins 2020-09-08
+     * Neila Hawkins 2020-09-08
      */
     if ((!has_noclassfacechange) && anim == 0) {
         pl->animation = GET_ANIM(change);

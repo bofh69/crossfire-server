@@ -513,7 +513,7 @@ int monster_compute_path(object *source, object *target, int default_dir) {
      * not do so because of this code. So skip multitile monsters. -- 2018-05-28
      *
      * It is worth noting that the variables used here are also used later -- their info here is irrelevant there, and vice versa.
-     * Daniel Hawkins 2018-02-12
+     * Neila Hawkins 2018-02-12
      */
     if (!source->more) // Skip multitile monsters, since this does not work right for them
     {
@@ -1857,7 +1857,7 @@ static void monster_check_pickup(object *monster) {
              * It is fairly likely that an ally threw it past monster to hit player.
              * IDEA: Maybe have a dex save to catch player-thrown projectiles?
              *
-             * Daniel Hawkins 2020-09-07
+             * Neila Hawkins 2020-09-07
              */
             if (tmp->type != THROWN_OBJ && monster_can_pick(monster, tmp)) {
                 uint32_t nrof;

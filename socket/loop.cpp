@@ -210,7 +210,7 @@ handle_cmd(socket_struct *ns, player *pl, char *cmd, char *data, int len) {
     /* Fuzz testing indicated a way to get a null command here
      * --> make an empty command, but have a length.
      * So, if we get here with a null command, log it and exit the function.
-     * Daniel Hawkins 2020-01-16
+     * Neila Hawkins 2020-01-16
      */
     if (cmd == NULL) {
         LOG(llevDebug, "%s: missing command. Sending garbage?\n", ns->host);

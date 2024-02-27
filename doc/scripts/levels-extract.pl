@@ -4,7 +4,7 @@
 # then output the first ten levels
 # for either html or LaTex.
 #
-# Author: Daniel Hawkins
+# Author: Neila Hawkins
 
 use strict;
 

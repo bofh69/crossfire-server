@@ -608,7 +608,7 @@ static int magic_from_difficulty(int difficulty) {
  *
  * Patched to utilize settings values for the speed/weight adjustments,
  * rather than hardcoded ones.
- * Daniel Hawkins 2021-01-19
+ * Neila Hawkins 2021-01-19
  *
  * @param op
  * object we're modifying.
