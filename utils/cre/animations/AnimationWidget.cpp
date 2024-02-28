@@ -46,5 +46,9 @@ void AnimationWidget::paintEvent(QPaintEvent* /*event*/)
         return;
 
     QPainter painter(this);
-    CREPixmap::getIcon(myFaces[myStep]).paint(&painter, 0, 0, 32, 32);
+    int face = myFaces[myStep];
+    if (face == 0)
+        painter.eraseRect(0, 0, 32, 32);
+    else
+        CREPixmap::getIcon(face).paint(&painter, 0, 0, 32, 32);
 }
