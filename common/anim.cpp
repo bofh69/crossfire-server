@@ -122,7 +122,7 @@ void animate_object(object *op, int dir) {
         if (op->face->number == 0) {
             op->invisible = 1;
             CLEAR_FLAG(op, FLAG_ALIVE);
-        } else {
+        } else if (op->temp_animation ? op->temp_animation->has_blank : op->animation->has_blank) {
             op->invisible = 0;
             SET_FLAG(op, FLAG_ALIVE);
         }

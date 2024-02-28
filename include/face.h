@@ -28,6 +28,7 @@ struct Animations {
     uint8_t facings;          /**< How many facings (1,2,4,8). */
     uint16_t num;             /**< Where we are in the array. */
     const Face **faces; /**< The actual faces for the animation. */
+    bool has_blank;           /**< If this animation contains a blank face or not, used for invisibility. */
 };
 
 #endif /* FACE_H */
