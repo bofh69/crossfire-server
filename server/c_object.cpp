@@ -1840,6 +1840,8 @@ void examine_wand_charge_level(object *op, object *tmp) {
  */
 void examine_rod_charge_level(object *op, object *tmp) {
     if (!is_identified(tmp)) return;
+    if (!tmp->inv) // rod has no spell
+        return;
     const int castings = tmp->stats.hp/SP_level_spellpoint_cost(tmp, tmp->inv, SPELL_HIGHEST);
     const char *desc;
     /* Rods get less precise information than wands/staves as part of balancing
