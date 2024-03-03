@@ -179,5 +179,6 @@ void apply_anim_suffix(object *who, const char *suffix) {
  */
 void dump_animations(void) {
     fprintf(stderr, "id    name                                               faces\n");
-    getManager()->animations()->each([] (const auto anim) { fprintf(stderr, "%5d %50s %5d\n", anim->num, anim->name, anim->num_animations); });
+    getManager()->animations()->each([] (const auto anim) { fprintf(stderr, "%5d %50s %5d%s\n", anim->num, anim->name,
+        anim->num_animations, anim->has_blank ? " (with blank)" : ""); });
 }

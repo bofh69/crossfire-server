@@ -40,7 +40,12 @@ void AllAnimations::replace(Animations *existing, Animations *update) {
     update->faces = nullptr;
     existing->facings = update->facings;
     existing->num_animations = update->num_animations;
-    existing->has_blank = update->has_blank;
+    existing->has_blank = false;
+    for (uint8_t face = 0; existing->faces && face < existing->num_animations; face++)
+        if (existing->faces[face] == blank_face) {
+            existing->has_blank = true;
+            break;
+        }
     free_string(update->name);
     free(update);
 }
