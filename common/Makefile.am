@@ -83,4 +83,4 @@ AM_LFLAGS = -i -B -Cf
 CLEANFILES = loader.cpp arch_types_valid.cpp
 
 arch_types_valid.cpp: is_valid_types_gen.py $(top_srcdir)/include/object.h
-	$(PY) $(top_srcdir)/common/is_valid_types_gen.py $(top_srcdir)/include/object.h > $(top_srcdir)/common/arch_types_valid.cpp
+	$(PY) $(top_srcdir)/common/is_valid_types_gen.py $(top_srcdir)/include/object.h > $(builddir)/arch_types_valid.cpp
