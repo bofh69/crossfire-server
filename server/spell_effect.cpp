@@ -1249,7 +1249,7 @@ int cast_create_town_portal(object *op, object *caster, object *spell) {
      * full pathname listed. Ignore if settings.create_home_portals is true.
      */
     if (!settings.create_home_portals) {
-        if (!strncmp(op->map->path, settings.localdir, strlen(settings.localdir))) {
+        if (op->map->unique) {
             draw_ext_info(NDI_UNIQUE|NDI_NAVY, 0, op, MSG_TYPE_SPELL, MSG_TYPE_SPELL_ERROR,
                           "You can't cast that here.");
             return 0;
