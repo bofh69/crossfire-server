@@ -5277,6 +5277,11 @@ void get_ob_diff(StringBuffer *sb, const object *op, const object *op2) {
         FAST_SAVE_DOUBLE(sb, "move_slow_penalty ", op->move_slow_penalty);
     }
 
+    // Make sure we save sound_chance overrides, or sound chance only works on the initial map load.
+    if (op->sound_chance != op2->sound_chance) {
+        FAST_SAVE_LONG(sb, "sound_chance ", op->sound_chance);
+    }
+
     ob_flags diff_flags;
     compare_flags(&diff_flags, op, op2);
     int flag;
