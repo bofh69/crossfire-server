@@ -400,7 +400,9 @@ struct object {
     int32_t      move_status;    /**< What stage in attack mode */
     uint16_t      attack_movement;/**< What kind of attack movement */
     uint8_t       will_apply;     /**< See crossfire.doc and @ref WILL_APPLY_xxx */
-    uint8_t       sound_chance;   /**< Ignored. Probability, 0 to 100, of the object emitting a sound. */
+    uint8_t       sound_chance;   /**< Probability, 1 to 100, of the object emitting a sound.
+                                    * If the chance is greater than 200,
+                                    * assume we wanted negative and override no chance of sound. */
     object  *spellitem;     /**< Spell ability monster is choosing to use */
     double      expmul;         /**< needed experience = (calc_exp*expmul) - means some
                                  * races/classes can need less/more exp to gain levels */

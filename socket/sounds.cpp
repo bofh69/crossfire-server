@@ -119,6 +119,15 @@ void play_sound_map(int8_t sound_type, object *emitter, int dir, const char *act
 
     source = emitter->map ? emitter : emitter->env;
 
+    // If sound_chance is defined, then we skip if the chance fails to generate a sound.
+    if (emitter->sound_chance) {
+        // Override -- sound chance > 200 acts as 0.
+        if (emitter->sound_chance > 200)
+            return;
+        if (RANDOM() % 100 < emitter->sound_chance)
+            return;
+    }
+
     for (pl = first_player; pl; pl = pl->next) {
         if (pl->ob->map == emitter->map) {
             int distance = ihypot(pl->ob->x-source->x, pl->ob->y-source->y);
