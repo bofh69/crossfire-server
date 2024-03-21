@@ -469,7 +469,7 @@
  * client connection. Increase this if players with large player files are
  * causing this buffer to fill up.
  */
-#define SOCKETBUFSIZE 256*1024
+#define SOCKETBUFSIZE 1024*1024
 
 /**
  * Your tmp-directory should be large enough to hold the uncompressed
