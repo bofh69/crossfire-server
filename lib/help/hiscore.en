@@ -59,3 +59,14 @@ High scores for the skill one handed weapons:
 Rank     Score Who <max hp><max sp><max grace>
   1        555 Jose the human left the game on map Wanderer Inn <49><1><1>.
 
+It is also possible to get a hiscore list by skill category, but adding the skill name to the hiscore skill search, hiscore -s:<skill_name>
+
+Example:
+
+  hiscore -s:literacy
+
+Will display:
+
+High scores for the skill literacy:
+Rank     Score Who <max hp><max sp><max grace>
+  1      10461 Jose the human left the game on map Wanderer Inn <49><1><1>.
