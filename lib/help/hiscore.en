@@ -5,6 +5,7 @@ Usage:
  hiscore
  hiscore <player name>
  hiscore <title>
+ hiscore -s
 
 
 The output is in the following format:
@@ -42,3 +43,19 @@ Will display:
   
    3        246 Moh the human was last seen on map Hall of Dungeon Masters <43><1><32>.
    5        135 Hahn the human quit the game on map Wanderer Inn <42><38><33>.
+
+Another option is to get a hiscore list by skill name by adding -s to the command
+
+Example:
+
+  hiscore -s
+
+Will display:
+
+High scores for the skill literacy:
+Rank     Score Who <max hp><max sp><max grace>
+  1      10461 Jose the human left the game on map Wanderer Inn <49><1><1>.
+High scores for the skill one handed weapons:
+Rank     Score Who <max hp><max sp><max grace>
+  1        555 Jose the human left the game on map Wanderer Inn <49><1><1>.
+
