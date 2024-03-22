@@ -70,3 +70,15 @@ Will display:
 High scores for the skill literacy:
 Rank     Score Who <max hp><max sp><max grace>
   1      10461 Jose the human left the game on map Wanderer Inn <49><1><1>.
+
+Note: for multiple word skills (i.e., one handed weapons, missile weapons, et al.), you just use the first word with the hiscore -s:<skill_name> command
+
+Example:
+
+  hiscore -s:one
+
+That will show:
+
+High scores for the skill one handed weapons:
+Rank     Score Who <max hp><max sp><max grace>
+  1        555 Jose the human left the game on map Wanderer Inn <49><1><1>.
