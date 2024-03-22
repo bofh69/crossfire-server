@@ -19,5 +19,5 @@ Example:
 A summary of that output:
 
   The first set of digits relates to the tagged release (i.e., 1.75.0)
-  The middle number of informationi (i.e. 1316) includes a commit number. That way the versions can still be sorted in chronological order.
-  The last string of text indicates a git commit (i.e, ge19bd3e61)
+  The middle number of information (i.e. 1316) includes a commit number. That way the versions can still be sorted in chronological order.
+  The last string of text indicates a git commit (i.e., ge19bd3e61)
