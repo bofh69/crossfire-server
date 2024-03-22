@@ -859,6 +859,12 @@ void look_at(object *op, int dx, int dy) {
     }
 }
 
+static bool player_can_see(player *pl, int dx, int dy) {
+    // TODO: de-duplicate this with darkness check in draw_client_map2()
+    const int darkness = pl->blocked_los[dx+(pl->socket->mapx/2)][dy+(pl->socket->mapy/2)];
+    return darkness < MAX_LIGHT_RADII;
+}
+
 /** Client wants to look at some object.  Lets do so. */
 void look_at_cmd(char *buf, int len, player *pl) {
     int dx, dy;
@@ -881,7 +887,7 @@ void look_at_cmd(char *buf, int len, player *pl) {
         return;
     }
 
-    if (pl->blocked_los[dx+(pl->socket->mapx/2)][dy+(pl->socket->mapy/2)]) {
+    if (!player_can_see(pl, dx, dy)) {
         draw_ext_info(NDI_UNIQUE, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_FAILURE,
                       "You can't see there from where you're standing.");
         return;
