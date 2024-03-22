@@ -6,6 +6,7 @@ Usage:
  hiscore <player name>
  hiscore <title>
  hiscore -s
+ hiscore -s:<skill_name>
 
 
 The output is in the following format:
