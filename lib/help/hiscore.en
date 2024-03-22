@@ -27,21 +27,21 @@ Example:
 You can also search the hiscore list by player name by adding the character name string to the end of the command.
 
 Example:
-  
+
   hiscore test
 
 Will display:
-  
+
    4        150 test the dwarf left the game on map Wanderer Inn <49><1><1>.
-   
+
 It is also possible to search the hiscore list by title by adding the character name string to the end of the command.
 
 Example:
-  
+
   hiscore human
-  
+
 Will display:
-  
+
    3        246 Moh the human was last seen on map Hall of Dungeon Masters <43><1><32>.
    5        135 Hahn the human quit the game on map Wanderer Inn <42><38><33>.
 
