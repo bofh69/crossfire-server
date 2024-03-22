@@ -10,8 +10,14 @@ Example:
 
   Crossfire v1.75.0
 
-If the server is built from the Git repository, it will include a revision number in the version output.
+If the server is built from the Git repository, it will include a commit count and a revision number in the version output.
 
 Example:
 
-  Crossfire v1.75.0-ga725943
+  Crossfire v1.75.0-1316-ge19bd3e61
+
+A summary of that output:
+
+  The first set of digits relates to the tagged release (i.e., 1.75.0)
+  The middle number of informationi (i.e. 1316) includes a commit number. That way the versions can still be sorted in chronological order.
+  The last string of text indicates a git commit (i.e, ge19bd3e61)
