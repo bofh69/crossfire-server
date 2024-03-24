@@ -40,7 +40,7 @@ Valid types are:
 - [color=#ff5500]cloak[/color]
 - [color=#ff5500]key[/color]
 - [color=#ff5500]missile[/color]
-- [color=#ff5500]allweapon[/color]
+- [color=#ff5500]melee[/color]
 - [color=#ff5500]magical[/color]
 - [color=#ff5500]potion[/color]
 - [color=#ff5500]spellbook[/color]
@@ -50,6 +50,7 @@ Valid types are:
 - [color=#ff5500]notcursed[/color]
 - [color=#ff5500]jewels[/color]
 - [color=#ff5500]flesh[/color]
+- [color=#ff5500]container[/color]
 - [color=#ff5500]cursed[/color]
 
 Three options are possible for the first character: [color=#ff5500]+[/color] will make you pick the item type, [color=#ff5500]-[/color] will make you stop picking the item type and [color=#ff5500]![/color] will toggle the pick mode.
