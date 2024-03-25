@@ -89,12 +89,13 @@ static int is_legal_2ways_exit(object *op, object *exit) {
 
     if (exit->stats.exp != 1)
         return 1; /*This is not a 2 way, so it is legal*/
-    if (!has_been_loaded(EXIT_PATH(exit)) && exit->race)
+    exitmap = has_been_loaded(EXIT_PATH(exit));
+    if (!exitmap && exit->race)
         return 0; /* This is a reset town portal */
     /* To know if an exit has a correspondent, we look at
      * all the exits in destination and try to find one with same path as
      * the current exit's position */
-    if (!strncmp(EXIT_PATH(exit), settings.localdir, strlen(settings.localdir)))
+    if (exitmap->unique)
         exitmap = ready_map_name(EXIT_PATH(exit), MAP_PLAYER_UNIQUE);
     else
         exitmap = ready_map_name(EXIT_PATH(exit), 0);
