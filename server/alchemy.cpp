@@ -102,7 +102,7 @@ static float chance_fn(int diff) {
  * Probability of success is a function of the difference between the recipe
  * difficulty and the player's skill level, adjusted by the cauldron bonus.
  *
- * The shape is roughly 1-exp(-x):
+ * The shape is roughly 1.5-exp(x/50):
  * ------------+-------------
  *  Difference | Probability
  * ------------+-------------
