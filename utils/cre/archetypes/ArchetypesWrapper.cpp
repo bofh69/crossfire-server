@@ -13,27 +13,14 @@
 #include "ArchetypesWrapper.h"
 #include "../ResourcesManager.h"
 
-#include "assets.h"
-#include "AssetsManager.h"
 #include "assets/AssetOriginAndCreationDialog.h"
-
-ArchetypesWrapper::ArchetypesWrapper(AssetWrapper *parent, ResourcesManager *resourcesManager)
- : AssetWrapper(parent), myResourcesManager(resourcesManager) {
-    getManager()->archetypes()->each([&] (archetype *arch) {
-        if (!arch->head) {
-            myArch.append(myResourcesManager->wrap(arch, this));
-        }
-    });
-    std::sort(myArch.begin(), myArch.end(), compareByDisplayName);
-    setProperty(tipProperty, tr("Display all archetypes."));
-}
 
 void ArchetypesWrapper::fillMenu(QMenu *menu) {
     connect(menu->addAction(tr("Add archetype")), &QAction::triggered, [this] () { addArchetype(); });
 }
 
 void ArchetypesWrapper::addArchetype() {
-    auto origins = myResourcesManager->archetypeFiles();
+    auto origins = myResources->archetypeFiles();
     auto keys = getManager()->archetypes()->keys();
 
     AssetOriginAndCreationDialog aqd(AssetOriginAndCreationDialog::Archetype, AssetOriginAndCreationDialog::CreateAsset, "", origins, keys);
@@ -46,10 +33,9 @@ void ArchetypesWrapper::addArchetype() {
     arch->name = add_string(aqd.code().toStdString().c_str());
     arch->clone.name = add_string(arch->name);
     getManager()->archetypes()->define(arch->name, arch);
-    myResourcesManager->assetDefined(arch, aqd.file().toStdString());
-    myResourcesManager->archetypeModified(arch);
-    markModified(BeforeChildAdd, myArch.size());
-    myArch.push_back(myResourcesManager->wrap(arch, this));
-    std::sort(myArch.begin(), myArch.end(), compareByDisplayName);
-    markModified(AfterChildAdd, myArch.size());
+    myResources->assetDefined(arch, aqd.file().toStdString());
+    myResources->archetypeModified(arch);
+    markModified(BeforeChildAdd, myAssets.size());
+    myAssets.push_back(myResources->wrap(arch, this));
+    markModified(AfterChildAdd, myAssets.size());
 }

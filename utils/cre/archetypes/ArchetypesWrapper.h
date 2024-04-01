@@ -15,21 +15,20 @@
 
 #include <QObject>
 
+#include "assets.h"
+#include "AssetsManager.h"
 #include "global.h"
-#include "assets/AssetWrapper.h"
+#include "assets/AssetsCollectionWrapper.h"
 
 class ResourcesManager;
 
-class ArchetypesWrapper : public AssetWrapper {
+class ArchetypesWrapper : public AssetsCollectionWrapper<archetype> {
     Q_OBJECT
 
 public:
-    ArchetypesWrapper(AssetWrapper *parent, ResourcesManager *resourcesManager);
-
-    virtual QString displayName() const override { return tr("Archetypes"); }
-    virtual int childrenCount() const override { return myArch.size(); }
-    virtual AssetWrapper *child(int index) override { return myArch[index]; }
-    virtual int childIndex(AssetWrapper *child) override { return myArch.indexOf(child); }
+    ArchetypesWrapper(AssetWrapper *parent, ResourcesManager *resources) : AssetsCollectionWrapper(parent, tr("Archetypes"), getManager()->archetypes(), resources, tr("Display all quests.")) {
+        myResources = resources;
+    }
 
     virtual PossibleUse uses(const AssetWrapper *, std::string &) const override {
         return ChildrenMayUse;
@@ -40,8 +39,7 @@ public:
 protected:
     void addArchetype();
 
-    QVector<AssetWrapper *> myArch;
-    ResourcesManager *myResourcesManager;
+    ResourcesManager *myResources;
 };
 
 #endif // ARCHETYPE_WRAPPER_H
