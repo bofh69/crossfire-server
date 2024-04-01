@@ -26,7 +26,7 @@ class ArchetypesWrapper : public AssetsCollectionWrapper<archetype> {
     Q_OBJECT
 
 public:
-    ArchetypesWrapper(AssetWrapper *parent, ResourcesManager *resources) : AssetsCollectionWrapper(parent, tr("Archetypes"), getManager()->archetypes(), resources, tr("Display all quests.")) {
+    ArchetypesWrapper(AssetWrapper *parent, ResourcesManager *resources) : AssetsCollectionWrapper(parent, tr("Archetypes"), getManager()->archetypes(), resources, tr("Display all archetypes.")) {
         myResources = resources;
     }
 
