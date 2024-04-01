@@ -108,6 +108,7 @@ class ResourcesManager : public QObject, AssetsTracker
 
         const std::map<std::string, std::set<const archetype*> >& origins() const { return myArchetypes.origins(); }
         std::string originOf(const archetype *arch) const { return myArchetypes.originOf(arch); }
+        std::vector<std::string> archetypeFiles() const { return myArchetypes.files(); }
 
         const std::map<std::string, std::set<const quest_definition*> >& questOrigins() const { return myQuests.origins(); }
         std::string originOfQuest(const quest_definition *quest) const { return myQuests.originOf(quest); }

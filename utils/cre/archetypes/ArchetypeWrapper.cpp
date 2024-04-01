@@ -241,3 +241,9 @@ void ArchetypeWrapper::setRaw(const QString &raw) {
         markModified(AssetUpdated);
     }
 }
+
+void ArchetypeWrapper::fillMenu(QMenu *menu) {
+    if (myParent) {
+        myParent->fillMenu(menu);
+    }
+}

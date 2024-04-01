@@ -21,7 +21,7 @@
 class AssetOriginAndCreationDialog : public QDialog {
     Q_OBJECT
 public:
-    enum Type { Quest = 0, Treasure = 1 };
+    enum Type { Quest = 0, Treasure = 1, Archetype = 2 };
     enum Mode { CreateAsset, DefineOrigin };
 
     /**

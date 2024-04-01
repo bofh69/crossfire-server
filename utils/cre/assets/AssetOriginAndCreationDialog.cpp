@@ -16,21 +16,28 @@
 const char * const addTitles[] = {
     QT_TRANSLATE_NOOP("AssetOriginAndCreationDialog", "Quest creation"),
     QT_TRANSLATE_NOOP("AssetOriginAndCreationDialog", "Treasure creation"),
+    QT_TRANSLATE_NOOP("AssetOriginAndCreationDialog", "Archetype creation"),
 };
 const char * const originTitles[] = {
     QT_TRANSLATE_NOOP("AssetOriginAndCreationDialog", "Quest file definition"),
     QT_TRANSLATE_NOOP("AssetOriginAndCreationDialog", "Treasure list file definition"),
+    QT_TRANSLATE_NOOP("AssetOriginAndCreationDialog", "Archetype file definition"),
 };
 const char * const names[] = {
     QT_TRANSLATE_NOOP("AssetOriginAndCreationDialog", "quest"),
     QT_TRANSLATE_NOOP("AssetOriginAndCreationDialog", "treasure"),
+    QT_TRANSLATE_NOOP("AssetOriginAndCreationDialog", "archetype"),
 };
 const char * const extensions[] = {
     ".quests",
     ".trs",
+    ".arc",
 };
+
+// Whether this file is part of 'arch' (true) or 'maps' (false)
 const bool isArch[] = {
     false,
+    true,
     true,
 };
 

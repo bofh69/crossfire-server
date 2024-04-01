@@ -35,7 +35,11 @@ public:
         return ChildrenMayUse;
     }
 
+    virtual void fillMenu(QMenu *menu) override;
+
 protected:
+    void addArchetype();
+
     QVector<AssetWrapper *> myArch;
     ResourcesManager *myResourcesManager;
 };
