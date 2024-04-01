@@ -28,7 +28,6 @@ void QuestsWrapper::addQuest() {
     if (aqd.exec() != QDialog::Accepted) {
         return;
     }
-    qDebug() << aqd.code() << aqd.file();
 
     quest_definition *qd = quest_create(aqd.code().toStdString().c_str());
     qd->quest_title = add_string(qd->quest_code);
