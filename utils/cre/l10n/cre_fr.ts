@@ -69,7 +69,7 @@
 <context>
     <name>ArchetypesWrapper</name>
     <message>
-        <location filename="../archetypes/ArchetypesWrapper.cpp" line="27"/>
+        <location filename="../archetypes/ArchetypesWrapper.h" line="29"/>
         <source>Display all archetypes.</source>
         <translation>Afficher tous les archétypes.</translation>
     </message>
@@ -77,6 +77,11 @@
         <location filename="../archetypes/ArchetypesWrapper.h" line="29"/>
         <source>Archetypes</source>
         <translation>Archétypes</translation>
+    </message>
+    <message>
+        <location filename="../archetypes/ArchetypesWrapper.cpp" line="19"/>
+        <source>Add archetype</source>
+        <translation>Ajouter un archétype</translation>
     </message>
 </context>
 <context>
@@ -188,88 +193,103 @@
         <translation>Création de trésor</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="21"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="19"/>
+        <source>Archetype creation</source>
+        <translation>Création d&apos;archétype</translation>
+    </message>
+    <message>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="22"/>
         <source>Quest file definition</source>
         <translation>Fichier de définition de quête</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="22"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="23"/>
         <source>Treasure list file definition</source>
         <translation>Fichier de définition de trésor</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="25"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="24"/>
+        <source>Archetype file definition</source>
+        <translation>Fichier de définition de l&apos;archétype</translation>
+    </message>
+    <message>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="27"/>
         <source>quest</source>
         <translation>quête</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="26"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="28"/>
         <source>treasure</source>
         <translation>trésor</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="45"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="29"/>
+        <source>archetype</source>
+        <translation>archétype</translation>
+    </message>
+    <message>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="52"/>
         <source>Code:</source>
         <translation>Code :</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="52"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="59"/>
         <source>Add to an existing %1 file:</source>
         <translation>Ajouter à un fichier de %1 existant :</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="60"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="67"/>
         <source>Create a new %1 file:</source>
         <translation>Créer un nouveau fichier de %1 :</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="64"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="71"/>
         <source>Browse...</source>
         <translation>Parcourir...</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="73"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="80"/>
         <source>%1 file (*%2);;All files (*.*)</source>
         <translation>fichier %1 (*%2);;Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="105"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="112"/>
         <source>Empty required field</source>
         <translation>Champ requis vide</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="105"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="112"/>
         <source>Please enter a code.</source>
         <translation>Veuillez entrer un code.</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="110"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="117"/>
         <source>Code already exists</source>
         <translation>Ce code existe déjà</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="110"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="117"/>
         <source>The code you entered matches an existing code.</source>
         <translation>Le code que vous avez choisi correspond à un code existant.</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="117"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="124"/>
         <source>Empty file</source>
         <translation>Fichier vide</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="117"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="124"/>
         <source>Please enter a file to define the %1 into.</source>
         <translation>Veuillez définir un fichier dans lequel définir le %1.</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="122"/>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="128"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="129"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="135"/>
         <source>File warning</source>
         <translation>Avertissement de fichier</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="122"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="129"/>
         <source>The file seems to be outside the root directory for this kind of assets (%1).
 This means the asset will not be visible to the game.
 Are you sure you want to use this file?</source>
@@ -278,7 +298,7 @@ Ceci signifie que la ressource ne sera pas disponible pour le jeu.
 Confirmez-vous vouloir utiliser de fichier ?</translation>
     </message>
     <message>
-        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="128"/>
+        <location filename="../assets/AssetOriginAndCreationDialog.cpp" line="135"/>
         <source>The file does not end with &apos;%1&apos;.
 This means the asset will not be visible to the game.
 Are you sure you want to use this file?</source>
@@ -1575,6 +1595,40 @@ Confirmez-vous ?</translation>
         <source>Report help</source>
         <translation>Aide pour le rapport</translation>
     </message>
+    <message>
+        <location filename="../CREReportDialog.cpp" line="98"/>
+        <source>
+This dialog allows to define a report.&lt;br /&gt;
+&lt;br /&gt;
+A report consists of an optional header, a line for each item of the view optionally sorted, an optional footer.
+&lt;br /&gt;
+&lt;br /&gt;
+&apos;Item sort&apos; contains an optional script expression used to sort items. The items to be compared are &apos;left&apos; and &apos;right&apos;, and the expression should be true if left &amp;lt; right, false else.
+&lt;br /&gt;
+&lt;b&gt;Example: &lt;/b&gt;&lt;i&gt;left.name.toLowerCase() &amp;lt; right.name.toLowerCase()&lt;/i&gt; will sort by ascending item&apos;s name (case unsensitive).
+&lt;br /&gt;
+&lt;br /&gt;
+&apos;Item display&apos; is the expression used to display one item. The current item is &apos;item&apos;, and the expression should be a string value.
+&lt;br /&gt;
+&lt;b&gt;Example: &lt;/b&gt;&lt;i&gt;item.name + &quot; &quot; + item.level&lt;/i&gt; will display for each item its name and level.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CREReportDialog.cpp" line="120"/>
+        <source>&lt;new Report&gt;</source>
+        <translation>&lt;nouveau rapport&gt;</translation>
+    </message>
+    <message>
+        <location filename="../CREReportDialog.cpp" line="132"/>
+        <source>Delete Report?</source>
+        <translation>Supprimer le rapport ?</translation>
+    </message>
+    <message>
+        <location filename="../CREReportDialog.cpp" line="132"/>
+        <source>Really delete Report &apos;%1&apos;?</source>
+        <translation>Confirmez-vous la suppression du rapport &apos;%1&apos; ?</translation>
+    </message>
 </context>
 <context>
     <name>CREReportDisplay</name>
@@ -1949,6 +2003,95 @@ mais les données peuvent être recréées si besoin.</translation>
         <source>Face variant maker</source>
         <translation>Générateur de variations d&apos;images</translation>
     </message>
+    <message>
+        <location filename="../FaceMakerDialog.cpp" line="76"/>
+        <location filename="../FaceMakerDialog.cpp" line="132"/>
+        <location filename="../FaceMakerDialog.cpp" line="145"/>
+        <location filename="../FaceMakerDialog.cpp" line="150"/>
+        <location filename="../FaceMakerDialog.cpp" line="155"/>
+        <location filename="../FaceMakerDialog.cpp" line="161"/>
+        <location filename="../FaceMakerDialog.cpp" line="168"/>
+        <location filename="../FaceMakerDialog.cpp" line="174"/>
+        <source>Error</source>
+        <translation type="unfinished">Erreur</translation>
+    </message>
+    <message>
+        <location filename="../FaceMakerDialog.cpp" line="76"/>
+        <source>Invalid color %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FaceMakerDialog.cpp" line="132"/>
+        <source>Invalid line %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FaceMakerDialog.cpp" line="145"/>
+        <source>Missing &apos;dest&apos;!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FaceMakerDialog.cpp" line="150"/>
+        <source>Missing &apos;name&apos;!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FaceMakerDialog.cpp" line="155"/>
+        <source>No face to process!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FaceMakerDialog.cpp" line="161"/>
+        <source>At least one variant required!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FaceMakerDialog.cpp" line="168"/>
+        <source>Error while opening the archetype file %1!</source>
+        <translation type="unfinished">Erreur lors de l&apos;ouverture du fichier d&apos;archétype %1 !</translation>
+    </message>
+    <message>
+        <location filename="../FaceMakerDialog.cpp" line="174"/>
+        <source>Error while opening the face file %1!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FaceMakerDialog.cpp" line="183"/>
+        <source>Object %1
+face %1.111
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FaceMakerDialog.cpp" line="185"/>
+        <location filename="../FaceMakerDialog.cpp" line="192"/>
+        <source>animation %1
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FaceMakerDialog.cpp" line="222"/>
+        <source>face %1
+%2end
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FaceMakerDialog.cpp" line="225"/>
+        <source>%1.11%2
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FaceMakerDialog.cpp" line="234"/>
+        <source>Completed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../FaceMakerDialog.cpp" line="234"/>
+        <source>Generation completed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FacesWrapper</name>
@@ -2241,7 +2384,7 @@ mais les données peuvent être recréées si besoin.</translation>
 <context>
     <name>QTreeWidget</name>
     <message>
-        <location filename="../CREUtils.cpp" line="46"/>
+        <location filename="../CREUtils.cpp" line="48"/>
         <source>Faces</source>
         <translation>Images</translation>
     </message>
