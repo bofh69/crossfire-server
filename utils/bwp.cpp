@@ -7,7 +7,8 @@
  * Please direct all suggestions or corrections to aaron@baugher.biz (or
  * Mhoram on #crossfire).
  *
- * Compile command: gcc -g -O0 bwp.c -I../include ../common/libcross.a ../socket/libsocket.a ../server/libserver.a ../types/libtypes.a -o bwp -lz -lcrypt -lm -lstdc++
+ * Compile command: g++ -g -O0 bwp.cpp -I../include ../common/libcross.a ../socket/libsocket.a ../types/libtypes.a ../random_maps/librandom_map.a ../server/libserver.a ../common/libcross.a ../socket/libsocket.a ../types/libtypes.a ../random_maps/librandom_map.a -o bwp -lz -lcrypt -lm -lstdc++ -fpermissive -ldl -lcurl -lpthread
+ * (someone should figure the correct order for the link of the libs...)
  */
 
 /*
@@ -15,6 +16,7 @@
  *
  * Copyright (C) 2002-2006 Mark Wedel & Crossfire Development Team
  * Copyright (C) 1992 Frank Tore Johansen
+ * Copyright (C) 2006-2024 the Crossfire Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +44,8 @@
 #include <stdlib.h>
 #include <global.h>
 #include <sys/stat.h>
+
+#include "sproto.h"
 
 char *monster_page_head;       /* Head of wiki page of monsters  */
 char *monster_page_foot;       /* Foot of wiki page of monsters  */
@@ -183,9 +187,9 @@ static int read_template(const char *name, char **buffer) {
  * @note
  * returned string will be a memory block larger than required, for performance reasons.
  */
-static char *do_template(const char *template, const char **vars, const char **values) {
+static char *do_template(const char *tpl, const char **vars, const char **values) {
     int count = 0;
-    const char *sharp = template;
+    const char *sharp = tpl;
     int maxlen = 0;
     int var = 0;
     char *result;
@@ -197,10 +201,10 @@ static char *do_template(const char *template, const char **vars, const char **v
         count++;
     }
     if (!count)
-        return strdup(template);
+        return strdup(tpl);
     if (count%2) {
         printf("Malformed template, mismatched #!\n");
-        return strdup(template);
+        return strdup(tpl);
     }
 
     while (vars[var] != NULL) {
@@ -208,15 +212,15 @@ static char *do_template(const char *template, const char **vars, const char **v
             maxlen = strlen(values[var]);
         var++;
     }
-    result = calloc(1, strlen(template)+maxlen*(count/2)+1);
+    result = calloc(1, strlen(tpl)+maxlen*(count/2)+1);
     if (!result)
         return NULL;
     current_result = result;
 
-    sharp = template;
+    sharp = tpl;
     while ((sharp = strchr(sharp, '#')) != NULL) {
         end = strchr(sharp+1, '#');
-        strncpy(current_result, template, sharp-template);
+        strncpy(current_result, tpl, sharp-tpl);
         if (end == sharp+1) {
             strcat(current_result, "#");
         } else {
@@ -231,9 +235,9 @@ static char *do_template(const char *template, const char **vars, const char **v
         }
         current_result = current_result+strlen(current_result);
         sharp = end+1;
-        template = sharp;
+        tpl = sharp;
     }
-    strcat(current_result, template);
+    strcat(current_result, tpl);
     return result;
 }
 
@@ -374,7 +378,7 @@ int main(int argc, char *argv[]) {
     FILE *image_list;
     char image_list_path[128];
     char wikifile[128];
-    char *template;
+    char *tpl;
 
     const char *wikidir = "/tmp";  /* Should change this to come from command line? */
 
@@ -441,10 +445,10 @@ int main(int argc, char *argv[]) {
                 if (fp) {
                     keycount = 0;
                     key[keycount] = NULL;
-                    template = do_template(monster_page_foot, key, val);
-                    res = fprintf(fp, "%s", template);
-                    free(template);
-                    template = NULL;
+                    tpl = do_template(monster_page_foot, key, val);
+                    res = fprintf(fp, "%s", tpl);
+                    free(tpl);
+                    tpl = NULL;
                     if (res < 0) {
                         LOG(llevError, "Unable to write to file!\n");
                     }
@@ -481,9 +485,9 @@ int main(int argc, char *argv[]) {
                 key[keycount] = "LETTERINDEX";
                 val[keycount++] = letterindex;
                 key[keycount] = NULL;
-                template = do_template(monster_page_head, key, val);
-                res = fprintf(fp, template);
-                free(template);
+                tpl = do_template(monster_page_head, key, val);
+                res = fprintf(fp, tpl);
+                free(tpl);
                 if (res < 0) {
                     LOG(llevError, "Unable to write to file!");
                 }
@@ -668,10 +672,10 @@ int main(int argc, char *argv[]) {
             val[keycount++] = "";
             key[keycount] = NULL;
 
-            template = do_template(monster_entry, key, val);
-            fprintf(fp, template);
-            free(template);
-            template = NULL;
+            tpl = do_template(monster_entry, key, val);
+            fprintf(fp, tpl);
+            free(tpl);
+            tpl = NULL;
 
             free_data(&canuse);
             free_data(&resist);
@@ -697,6 +701,7 @@ void set_map_timeout(void) {
 
 #include <global.h>
 
+#if 0
 /* some plagarized code from apply.c--I needed just these two functions
    without all the rest of the junk, so.... */
 int apply_auto(object *op) {
@@ -782,9 +787,10 @@ void apply_auto_fix(mapstruct *m) {
                 && (tmp->type == TRIGGER_BUTTON || tmp->type == TRIGGER_PEDESTAL))
                     check_trigger(tmp, tmp->above);
 }
-
+#endif
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
+#if 0
 /**
  * Those are dummy functions defined to resolve all symboles.
  * Added as part of glue cleaning.
@@ -832,5 +838,5 @@ void esrv_del_item(player *pl, object *ob) {
 
 void esrv_update_spells(player *pl) {
 }
-
+#endif
 #endif /* dummy DOXYGEN_SHOULD_SKIP_THIS */
