@@ -830,7 +830,7 @@ void enter_exit(object *op, object *exit_ob) {
              * so we don't need to normalize it.
              * But we do need to see if it is unique or not
              */
-            if (!strncmp(EXIT_PATH(exit_ob), settings.localdir, strlen(settings.localdir)))
+            if (map_path_unique(EXIT_PATH(exit_ob)))
                 newmap = ready_map_name(EXIT_PATH(exit_ob), MAP_PLAYER_UNIQUE);
             else
                 newmap = ready_map_name(EXIT_PATH(exit_ob), 0);

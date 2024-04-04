@@ -1626,7 +1626,7 @@ void key_confirm_quit(object *op, char key) {
      * get rid of them.  The trailing slash in the path is intentional,
      * so that players named 'Ab' won't match against players 'Abe' pathname
      */
-    snprintf(buf, sizeof(buf), "%s/%s/%s/", settings.localdir, settings.playerdir, op->name);
+    snprintf(buf, sizeof(buf), "~%s/%s/", settings.playerdir, op->name);
     for (mp = first_map; mp != NULL; mp = next) {
         next = mp->next;
         if (!strncmp(mp->path, buf, strlen(buf)))

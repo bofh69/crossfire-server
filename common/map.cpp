@@ -2704,3 +2704,12 @@ const char *map_get_path(const object *item) {
 
     return "(no map and no env!)";
 }
+
+/**
+ * Return true if the given map path leads to a unique map. This is needed to
+ * correctly load a map with the MAP_UNIQUE flag set, because there are some
+ * contexts in which only a map path is available.
+ */
+bool map_path_unique(const char *path) {
+    return path != NULL && path[0] == '~';
+}

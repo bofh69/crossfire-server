@@ -375,4 +375,6 @@ struct rv_vector {
 
 uint32_t map_size(mapstruct *m);
 
+extern bool map_path_unique(const char *name);
+
 #endif /* MAP_H */

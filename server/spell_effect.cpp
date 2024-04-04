@@ -1176,7 +1176,7 @@ static int town_portal_destroy_existing(object* op, object* spell) {
         LOG(llevDebug, "Trying to kill a portal in %s (%d,%d)\n", old_force->race, exitx, exity);
 
         mapstruct *exitmap;
-        if (!strncmp(old_force->race, settings.localdir, strlen(settings.localdir)))
+        if (map_path_unique(old_force->race))
             exitmap = ready_map_name(old_force->race, MAP_PLAYER_UNIQUE);
         else
             exitmap = ready_map_name(old_force->race, 0);
@@ -1298,7 +1298,7 @@ int cast_create_town_portal(object *op, object *caster, object *spell) {
      */
 
     /* Ensure exit map is loaded*/
-    if (!strncmp(force->name, settings.localdir, strlen(settings.localdir)))
+    if (map_path_unique(force->name))
         exitmap = ready_map_name(force->name, MAP_PLAYER_UNIQUE);
     else
         exitmap = ready_map_name(force->name, 0);
