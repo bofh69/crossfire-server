@@ -2447,7 +2447,7 @@ void paralyze_living(object *op, int dam) {
  * damage to deal, will contain computed damage or 0 if strike failed.
  */
 static void deathstrike_living(object *op, object *hitter, int *dam) {
-    int atk_lev, def_lev, kill_lev, roll;
+    int atk_lev, def_lev, kill_lev, lev_mult = 1;
 
     if (hitter->slaying) {
         if (!((QUERY_FLAG(op, FLAG_UNDEAD) && strstr(hitter->slaying, undead_name))
@@ -2456,6 +2456,8 @@ static void deathstrike_living(object *op, object *hitter, int *dam) {
             *dam = 0; // Don't do damage if we aren't deathstriking them.
             return;
         }
+        // Multiply the attacker level by 3 when doing a slaying effect.
+        lev_mult = 3;
     } else
         if (QUERY_FLAG(op, FLAG_UNDEAD))
         {
@@ -2471,7 +2473,7 @@ static void deathstrike_living(object *op, object *hitter, int *dam) {
     /*
      * Redo this calculation -- you could essentially only kill creatures less than half your level,
      * making death extremely weak at high levels.
-     * Refactoring to use a d50 roll with a fairly high DC (still dependent on level)
+     * Refactoring to use a d150 roll with a fairly high DC (still dependent on level)
      * Also, toss in a resistance-based hit modifier.
      * Higher resistance requires higher levels in order to kill with a death attack.
      *
@@ -2480,12 +2482,19 @@ static void deathstrike_living(object *op, object *hitter, int *dam) {
     atk_lev = (hitter->chosen_skill ? hitter->chosen_skill->level : hitter->level);
     /* LOG(llevDebug, "Deathstrike - attack level %d, defender level %d\n", atk_lev, def_lev); */
 
-    roll = random_roll(1, 50, hitter, PREFER_HIGH);
-    kill_lev = roll - 48 + atk_lev; // Use 49+ as a kill for same level and no resistance; that's 4% + 2%/level
-    kill_lev = kill_lev * (100 - op->resist[ATNR_DEATH]) / 100; // Do not compress to *= for roundoff reasons.
+    // If we have a slaying attribute, we triple the level difference.
+    // Since the calculation is balanced to only work at or above level parity for the attacker,
+    // the more strong negatives this would also produce become irrelevant.
+    // After that, apply a resistance multiplier to the result. Death resistance is a linear scale
+    // for the level difference. Thus death vulnerability does not incur a chance
+    // at lower levels than otherwise, but does increase the chance once the level is met.
+    kill_lev = (atk_lev - def_lev) * lev_mult * (100 - op->resist[ATNR_DEATH]) / 100;
+
+    // Use 150 as a kill for same level and no resistance; that's 0.67% + 0.67%/level
+    kill_lev += random_roll(1, 150, hitter, PREFER_HIGH) - 149;
 
     // If we hit, then kill them. Otherwise, damage is 0.
-    if (kill_lev > def_lev) {
+    if (kill_lev > 0) {
         *dam = op->stats.hp+10; /* take all hp. they can still save for 1/2 */
         /* I think this doesn't really do much.  Because of
          * integer rounding, this only makes any difference if the

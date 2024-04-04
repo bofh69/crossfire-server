@@ -1,3 +1,12 @@
+2024-04-04  Neila Hawkins
+  * server/attack.cpp: Refactor death attacks again.
+    This time, we divide the chance by 3 for non-specific (without a slaying field)
+    death attacks, and leave narrow death attacks (such as the stake on the vampire)
+    at the old rate.
+    While here, refactor where death resistance applies.
+    It now applies a linear scale to the level difference, instead of the non-obvious
+    effect as the last calculation.
+
 2024-02-06  Neila Hawkins
   * server/c_misc.cpp: Treat harvestables with nrof 0 as singleton items, rather than
     infinite sources. This should solve the mining exploit I found.
