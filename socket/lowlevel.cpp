@@ -539,10 +539,10 @@ void write_cs_stats(void) {
             STAT("global_events_total", "d", global_events_total);
 
             STAT("log_total", "d", log_total);
+            of_close(&of);
         } else {
             LOG(llevError, "Unable to write to stat file: %s\n", settings.stat_file);
         }
-        of_close(&of);
     }
 
     reset_stats(&cst_lst);
