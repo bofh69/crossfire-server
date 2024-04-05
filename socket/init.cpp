@@ -300,19 +300,8 @@ void init_server(void) {
 #endif
 #endif /* win32 */
 
-    /*
-     * There is a bug on FreeBSD 9 in that the value we get here is over 1024,
-     * which is the limit FD_ZERO and friends will use.
-     * So later on file descriptors are not correctly cleared, and select() fails.
-     * Therefore here's a hack to prevent that, but the real solution would be
-     * to figure why this happens and how to fix it.
-     * Nicolas W, 2012 feb 07.
-     */
-    if (socket_info.max_filedescriptor > 1024) {
-        LOG(llevDebug, "warning, socket_info.max_filedescriptor is %d, setting to 1024.\n", socket_info.max_filedescriptor);
-        socket_info.max_filedescriptor = 1024;
-    }
-    /* end of hack */
+    // Modern operating systems support more file descriptors than select() can handle.
+    socket_info.max_filedescriptor = MIN(socket_info.max_filedescriptor, FD_SETSIZE);
 
     socket_info.timeout.tv_sec = 0;
     socket_info.timeout.tv_usec = 0;
