@@ -352,66 +352,6 @@ void watchdog(void) {
 #endif
 
 /**
- * Waits for new connection when there is no one connected.
- */
-static void block_until_new_connection(void) {
-    struct timeval Timeout;
-    fd_set readfs;
-    int cycles;
-    int i;
-
-    LOG(llevInfo, "Waiting for connections...\n");
-
-    cycles = 1;
-    do {
-        /* Every minutes is a bit often for updates - especially if nothing is going
-         * on.  This slows it down to every 6 minutes.
-         */
-        cycles++;
-        if (cycles%2 == 0)
-            tick_the_clock();
-
-        FD_ZERO(&readfs);
-        for (i = 0; i < socket_info.allocated_sockets && init_sockets[i].listen; i++)
-            if (init_sockets[i].status == Ns_Add)
-                FD_SET((uint32_t)init_sockets[i].fd, &readfs);
-
-        /* If fastclock is set, we need to seriously slow down the updates
-         * to the metaserver as well as watchdog.  Do same for flush_old_maps() -
-         * that is time sensitive, so there is no good reason to call it 2000 times
-         * a second.
-         */
-        if (settings.fastclock > 0) {
-            if (cycles%120000 == 0) {
-#ifdef WATCHDOG
-                watchdog();
-#endif
-                flush_old_maps();
-            }
-            if (cycles == 720000) {
-                metaserver_update();
-                cycles = 1;
-            }
-            Timeout.tv_sec = 0;
-            Timeout.tv_usec = 50;
-        } else {
-            Timeout.tv_sec = 60;
-            Timeout.tv_usec = 0;
-            if (cycles == 7) {
-                metaserver_update();
-                cycles = 1;
-            }
-#ifdef WATCHDOG
-            watchdog();
-#endif
-            flush_old_maps();
-        }
-    } while (select(socket_info.max_filedescriptor, &readfs, NULL, NULL, &Timeout) == 0);
-
-    reset_sleep(); /* Or the game would go too fast */
-}
-
-/**
  * Checks if file descriptor is valid.
  *
  * @param fd
@@ -565,7 +505,6 @@ static void send_updates(player *pl) {
  */
 void do_server(void) {
     fd_set tmp_read, tmp_exceptions;
-    int active = 0;
     FD_ZERO(&tmp_read);
     FD_ZERO(&tmp_exceptions);
 
@@ -587,7 +526,6 @@ void do_server(void) {
         } else if (init_sockets[i].status != Ns_Avail) {
             FD_SET((uint32_t)init_sockets[i].fd, &tmp_read);
             FD_SET((uint32_t)init_sockets[i].fd, &tmp_exceptions);
-            active++;
         }
     }
 
@@ -614,9 +552,6 @@ void do_server(void) {
             pl = pl->next;
         }
     }
-
-    if (active == 1 && first_player == NULL)
-        block_until_new_connection();
 
     long sleep_time = get_sleep_remaining();
     if (sleep_time < 0) {
