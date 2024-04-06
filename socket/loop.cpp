@@ -497,6 +497,35 @@ static void send_updates(player *pl) {
 }
 
 /**
+ * Check all file descriptors and mark sockets with invalid ones as dead. In
+ * theory this should never need to be called because sockets (and their file
+ * descriptors) are freed when the connection is dropped, but that this error
+ * handling code was added suggests that it occasionally happens and we don't
+ * want to crash the server over this.
+ *
+ * Only run this if select() reports EBADF to avoid fcntl()'ing all of our file
+ * descriptors every time we call select.
+ *
+ * We can just mark the bad sockets as dead so that the next call to
+ * do_server() excludes them from select() and eventually cleans them up.
+ */
+void check_all_fds() {
+    for (int i = 0; i < socket_info.allocated_sockets; i++) {
+        if (!is_fd_valid(init_sockets[i].fd)) {
+            init_sockets[i].status = Ns_Dead;
+            // prevent a memory leak in pre-player clients with faces sent
+            FREE_AND_CLEAR(init_sockets[i].faces_sent);
+        }
+    }
+
+    for (player *pl = first_player; pl != NULL; pl = pl->next) {
+        if (!is_fd_valid(pl->socket->fd)) {
+            pl->socket->status = Ns_Dead;
+        }
+    }
+}
+
+/**
  * This checks the sockets for input and exceptions, does the right thing.
  *
  * A bit of this code is grabbed out of socket.c
@@ -509,11 +538,6 @@ void do_server(void) {
     FD_ZERO(&tmp_exceptions);
 
     for (int i = 0; i < socket_info.allocated_sockets; i++) {
-        if (init_sockets[i].status == Ns_Add && !is_fd_valid(init_sockets[i].fd)) {
-            LOG(llevError, "do_server: invalid waiting fd %d\n", i);
-            init_sockets[i].status = Ns_Dead;
-            FREE_AND_CLEAR(init_sockets[i].faces_sent);
-        }
         if (init_sockets[i].status == Ns_Dead) {
             LOG(llevInfo, "Disconnected from %s\n", init_sockets[i].host);
             if (init_sockets[i].listen) {
@@ -534,14 +558,8 @@ void do_server(void) {
      */
     player *pl, *next;
     for (pl = first_player; pl != NULL; ) {
-        if (pl->socket->status != Ns_Dead && !is_fd_valid(pl->socket->fd)) {
-            LOG(llevError, "do_server: invalid file descriptor for player %s [%s]: %d\n", (pl->ob && pl->ob->name) ? pl->ob->name : "(unnamed player?)", (pl->socket->host) ? pl->socket->host : "(unknown ip?)", pl->socket->fd);
-            pl->socket->status = Ns_Dead;
-        }
-
         if (pl->socket->status == Ns_Dead) {
             player *npl = pl->next;
-
             save_player(pl->ob, 0);
             leave(pl, 1);
             final_free_player(pl);
@@ -580,9 +598,13 @@ void do_server(void) {
         int pollret = select(socket_info.max_filedescriptor, &tmp_read, NULL,
                              &tmp_exceptions, &socket_info.timeout);
         if (pollret == -1) {
-            if (errno != EINTR) {
-                LOG(llevError, "select failed: %s\n", strerror(errno));
+            if (errno == EINTR) {
+                // ignore
+                return;
+            } else if (errno == EBADF) {
+                check_all_fds();
             }
+            LOG(llevError, "select failed: %s\n", strerror(errno));
             return;
         } else if (!pollret) {
             return;
