@@ -77,6 +77,9 @@ class ObjectWrapper : public AssetTWrapper<object> {
     Q_PROPERTY(float dps READ dps);
     Q_PROPERTY(float regen READ regen);
     ATW_RPROP(int, nrof, nrof);
+    ATW_PROP(quint32, path_attuned, path_attuned);
+    ATW_PROP(quint32, path_repelled, path_repelled);
+    ATW_PROP(quint32, path_denied, path_denied);
 
     public:
         ObjectWrapper(AssetWrapper *parent, object *ob, ResourcesManager *resourcesManager);
