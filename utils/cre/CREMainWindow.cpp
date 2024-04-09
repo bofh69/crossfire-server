@@ -868,7 +868,7 @@ static QString spellsTable(const QString& skill)
 {
     bool one = false;
 
-    QString report = QString("<h2>%1</h2><table><thead><tr><th>Spell</th><th>Level</th>").arg(skill);
+    QString report = QString("<h2>%1</h2><table><thead><tr><th>Spell</th><th>Level</th><th>Path</th>").arg(skill);
     report += "</tr></thead><tbody>";
 
     QHash<int, QStringList> spells;
@@ -876,7 +876,9 @@ static QString spellsTable(const QString& skill)
     getManager()->archetypes()->each([&skill, &spells, &one] (const archetype *spell) {
         if (spell->clone.type == SPELL && spell->clone.skill == skill)
         {
-            spells[spell->clone.level].append(QString("<tr><td>%1</td><td>%2</td></tr>").arg(spell->clone.name).arg(spell->clone.level));
+            auto buf = stringbuffer_finish(describe_spellpath_attenuation(nullptr, spell->clone.path_attuned, nullptr));
+            spells[spell->clone.level].append(QString("<tr><td>%1</td><td>%2</td><td>%3</td></tr>").arg(spell->clone.name).arg(spell->clone.level).arg(buf));
+            free(buf);
             one = true;
         }
     });

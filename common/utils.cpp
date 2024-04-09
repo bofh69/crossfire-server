@@ -499,7 +499,7 @@ size_t split_string(char *str, char *array[], size_t array_size, char sep) {
 
 /**
  * Describe the specified path attenuation.
- * @param attenuation string describing if "Attenued", "Denied", "Repelled".
+ * @param attenuation string describing if "Attenued", "Denied", "Repelled", may be NULL.
  * @param value path value to describe.
  * @param buf where to describe, can be NULL.
  * @return buf, newly allocated StringBuffer the caller should free if buf was NULL.
@@ -510,7 +510,10 @@ StringBuffer *describe_spellpath_attenuation(const char *attenuation, int value,
 
     if (value) {
         int i, j = 0;
-        stringbuffer_append_printf(buf, "(%s: ", attenuation);
+        stringbuffer_append_string(buf, "(");
+        if (attenuation) {
+            stringbuffer_append_printf(buf, "%s: ", attenuation);
+        }
         for (i = 0; i < NRSPELLPATHS; i++)
             if (value&(1<<i)) {
                 if (j)
