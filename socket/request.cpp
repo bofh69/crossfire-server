@@ -564,9 +564,6 @@ void new_player_cmd(uint8_t *buf, int len, player *pl) {
         LOG(llevError, "Player %s (%s) has negative time - shouldn't do command.\n",
             pl->ob->name ? pl->ob->name : "(unnamed)", pl->socket->account_name ? pl->socket->account_name : "(no account)");
     }
-    ssop_t tmp = 1;
-    if (setsockopt(pl->socket->fd, IPPROTO_TCP, TCP_NODELAY, &tmp, sizeof(tmp)))
-        LOG(llevError, "send_tick: Unable to turn off TCP_NODELAY\n");
     command_execute(pl->ob, command);
     /* Perhaps something better should be done with a left over count.
      * Cleaning up the input should probably be done first - all actions
@@ -586,9 +583,6 @@ void new_player_cmd(uint8_t *buf, int len, player *pl) {
     SockList_AddInt(&sl, time);
     Send_With_Handling(pl->socket, &sl);
     SockList_Term(&sl);
-    tmp = 0;
-    if (setsockopt(pl->socket->fd, IPPROTO_TCP, TCP_NODELAY, &tmp, sizeof(tmp)))
-        LOG(llevError, "send_tick: Unable to turn on TCP_NODELAY\n");
 }
 
 /** This is a reply to a previous query. */
@@ -2006,27 +2000,13 @@ void esrv_add_spells(player *pl, object *spell) {
 }
 
 /* sends a 'tick' information to the client.
- * We also take the opportunity to toggle TCP_NODELAY -
- * this forces the data in the socket to be flushed sooner to the
- * client - otherwise, the OS tries to wait for full packets
- * and will this hold sending the data for some amount of time,
- * which thus adds some additional latency.
  */
 void send_tick(player *pl) {
     SockList sl;
-    ssop_t tmp;
-
     SockList_Init(&sl);
     SockList_AddString(&sl, "tick ");
     SockList_AddInt(&sl, pticks);
-    tmp = 1;
-    if (setsockopt(pl->socket->fd, IPPROTO_TCP, TCP_NODELAY, &tmp, sizeof(tmp)))
-        LOG(llevError, "send_tick: Unable to turn on TCP_NODELAY\n");
-
     Send_With_Handling(pl->socket, &sl);
-    tmp = 0;
-    if (setsockopt(pl->socket->fd, IPPROTO_TCP, TCP_NODELAY, &tmp, sizeof(tmp)))
-        LOG(llevError, "send_tick: Unable to turn off TCP_NODELAY\n");
     SockList_Term(&sl);
 }
 

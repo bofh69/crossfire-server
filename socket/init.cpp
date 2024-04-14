@@ -36,6 +36,14 @@
 #include <sys/types.h>
 #include <sys/time.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
+#ifndef WIN32 /* ---win32 exclude unix headers */
+typedef int ssop_t;     /**< Parameter type for setsockopt, different between WIN32 and Linux. */
+#else
+#include <winsock2.h>
+typedef char ssop_t;    /**< Parameter type for setsockopt, different between WIN32 and Linux. */
+#endif /* win32 */
+
 #include <netdb.h>
 #else
 #include <winsock2.h>
@@ -54,6 +62,11 @@ Socket_Info socket_info;
  * Socket at index 0 is the socket listening for connections, and must not
  * be freed.
  * If this socket becomes invalid, then the server will try to reopen it.
+ * We also take the opportunity to set TCP_NODELAY -
+ * this forces the data in the socket to be flushed sooner to the
+ * client - otherwise, the OS tries to wait for full packets
+ * and will this hold sending the data for some amount of time,
+ * which thus adds some additional latency.
  */
 socket_struct *init_sockets;
 
@@ -75,6 +88,9 @@ static void set_output_sock_buf(socket_struct *ns, int bufsize) {
 #ifdef ESRV_DEBUG
     LOG(llevDebug, "Socket buffer size now %d bytes\n", oldbufsize);
 #endif
+    ssop_t tmp = 1;
+    if (setsockopt(ns->fd, IPPROTO_TCP, TCP_NODELAY, &tmp, sizeof(tmp)))
+        LOG(llevError, "Unable to turn on TCP_NODELAY\n");
 }
 
 /**
