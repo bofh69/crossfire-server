@@ -1831,7 +1831,7 @@ void esrv_send_pickup(player *pl) {
  * @retval 3 spell requires a freeform string argument.
  */
 static int spell_client_use(const object *spell) {
-    switch (spell->type)
+    switch (spell->subtype)
     {
         case SP_RAISE_DEAD:
         case SP_MAKE_MARK:
