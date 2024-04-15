@@ -1040,19 +1040,19 @@ new spells are sent.
     text) The description of the spell. Note that this has an extra length
     byte because the messages may well be longer than 256 bytes in length.
 
-	<usage information> (1 byte)
-	       Only sent if 'spellmon 2' was setup by the client.
-	       Values are:
-                - 0: spell needs no argument.
-                - 1: spell needs the name of another spell.
-                - 2: spell can use a freeform string argument.
-                - 3: spell requires a freeform string argument.
+|<usage information> (1 byte)|
+    Only sent if 'spellmon 2' was setup by the client.
+    Values are:
+        - 0: spell needs no argument.
+        - 1: spell needs the name of another spell.
+        - 2: spell can use a freeform string argument.
+        - 3: spell requires a freeform string argument.
 
-       <requirements> (1 byte of length, then that many bytes of ASCII text)
-               Only sent if 'spellmon 2' was setup by the client.
-               If the spell required items to be cast, then this is the list of
-               those items. Comma-separated, potential number of items, singular
-               names (like the ingredients for alchemy).
+|<requirements> (1 byte of length, then that many bytes of ASCII text)|
+    Only sent if 'spellmon 2' was setup by the client.
+    If the spell required items to be cast, then this is the list of
+    those items. Comma-separated, potential number of items, singular
+    names (like the ingredients for alchemy).
 |===========================
 
 updspell
