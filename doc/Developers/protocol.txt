@@ -940,13 +940,16 @@ items together. The client is free to ignore this.
 
 upditem
 ^^^^^^^
-    S->C: upditem <flags><itemspec>
+    S->C: upditem <flag><tag><data>
 
-flags:: int8, determines what values are sent and to be updated (see the
-`UPD_` flags in `newclient.h`)
+Update one field of an existing item.
 
-itemspec:: the same fields as the <<_item2>> command, after the _location_
-field
+flag:: int8, determines which field of the item to update (see the `UPD_`
+flags in `newclient.h`)
+
+tag:: int32, tag of object
+
+data:: depends on the _flag_, see the fields in the <<_item2>> command
 
 Only one item can be updated with the upditem command. An item command should
 have been sent by the server before an upditem command is set.
