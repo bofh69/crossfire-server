@@ -17,9 +17,11 @@
 #include "archetypes/ObjectWrapper.h"
 #include "ResourcesManager.h"
 
-#define PROPERTY_COUNT  12
+#define PROPERTY_COUNT  20
 const char *properties[PROPERTY_COUNT] = {
+    "arch_name",
     "hp",
+    "maxhp",
     "con",
     "regen",
     "ac",
@@ -30,7 +32,13 @@ const char *properties[PROPERTY_COUNT] = {
     "suggested_level",
     "damage",
     "speed",
-    "dps"
+    "dps",
+    "sp",
+    "maxsp",
+    "pow",
+    "wis",
+    "str",
+    "intl",
 };
 
 ArchetypesModel::ArchetypesModel(ResourcesManager *resourcesManager) {

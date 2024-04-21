@@ -36,6 +36,7 @@ class ResourcesManager;
 class ObjectWrapper : public AssetTWrapper<object> {
     Q_OBJECT
 
+    Q_PROPERTY(QString arch_name READ archName)
     ATW_RPROP(QString, name, name)
     ATW_RPROP(QString, race, race)
     ATW_RPROP(QString, title, title)
@@ -89,6 +90,7 @@ class ObjectWrapper : public AssetTWrapper<object> {
 
         object *getObject() { return myWrappedItem; }
 
+        QString archName() const { return myWrappedItem->arch->name; }
         AssetWrapper* arch();
         int suggested_level() const;
         AssetWrapper *randomItems();
