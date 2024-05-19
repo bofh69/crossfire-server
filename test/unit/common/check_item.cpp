@@ -151,7 +151,7 @@ START_TEST(test_describe_item) {
         "(wc+2)(dam+3)(Attacks: physical)",
         "",
         "(dam+11)(weapon speed 9)(Attacks: physical)",
-        "(food+600)",
+        "(food+5)",
         "(item_power +3)(lifesaving)",
         "",
         "",
