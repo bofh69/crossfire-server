@@ -1567,7 +1567,7 @@ static void draw_client_map2(object *pl) {
                             got_one += map2_add_ob(ax, ay, layer, ob, &sl, plyr->socket, &has_obj, 0);
 
                             /* if we added the face, or it is a monster's head, check probe spell */
-                            if (got_one != old_got || (ob->head == NULL && ob->more))
+                            if (got_one != old_got || ob->head == NULL)
                                 got_one += annotate_ob(ax, ay, ob, &sl, plyr->socket, &has_obj, &alive_layer);
 
                             /* If we are just storing away the head
@@ -1577,9 +1577,6 @@ static void draw_client_map2(object *pl) {
                              */
                             if (g1 == has_obj) {
                                 del_one += map2_delete_layer(ax, ay, layer, &sl, plyr->socket);
-                            } else if (ob->head == NULL) {
-                                /* for single-part items */
-                                got_one += annotate_ob(ax, ay, ob, &sl, plyr->socket, &has_obj, &alive_layer);
                             }
                         } else {
                             if (layer != alive_layer)
