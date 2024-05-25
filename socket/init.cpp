@@ -37,16 +37,11 @@
 #include <sys/time.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
-#ifndef WIN32 /* ---win32 exclude unix headers */
 typedef int ssop_t;     /**< Parameter type for setsockopt, different between WIN32 and Linux. */
-#else
-#include <winsock2.h>
-typedef char ssop_t;    /**< Parameter type for setsockopt, different between WIN32 and Linux. */
-#endif /* win32 */
-
 #include <netdb.h>
 #else
 #include <winsock2.h>
+typedef char ssop_t;    /**< Parameter type for setsockopt, different between WIN32 and Linux. */
 #endif /* win32 */
 
 #include "image.h"
