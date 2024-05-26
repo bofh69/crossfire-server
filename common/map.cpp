@@ -2713,3 +2713,11 @@ const char *map_get_path(const object *item) {
 bool map_path_unique(const char *path) {
     return path != NULL && path[0] == '~';
 }
+
+MapSpace *map_space(const mapstruct *m, int x, int y) {
+    if (m->spaces == NULL) // guard against map being swapped out
+        abort();
+    if (OUT_OF_REAL_MAP(m, x, y)) // array out of bounds check
+        abort();
+    return &m->spaces[x + m->width * y];
+}

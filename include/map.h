@@ -154,57 +154,57 @@ extern const char *const map_layer_name[MAP_LAYERS];
  * consistent (eg, op->map, op->x, op->y)
  */
 /** Gets map flags. Not multitile aware. */
-#define GET_MAP_FLAGS(M, X, Y)  ((M)->spaces[(X)+(M)->width*(Y)].flags)
+#define GET_MAP_FLAGS(M, X, Y)  (map_space(M, X, Y)->flags)
 /** Sets map flags. Not multitile aware. */
-#define SET_MAP_FLAGS(M, X, Y, C) ((M)->spaces[(X)+(M)->width*(Y)].flags = C)
+#define SET_MAP_FLAGS(M, X, Y, C) (map_space(M, X, Y)->flags = C)
 
 /** Gets map light. Not multitile aware. */
-#define GET_MAP_LIGHT(M, X, Y)  ((M)->spaces[(X)+(M)->width*(Y)].light)
+#define GET_MAP_LIGHT(M, X, Y)  (map_space(M, X, Y)->light)
 /** Sets map light. Not multitile aware. */
-#define SET_MAP_LIGHT(M, X, Y, L) ((M)->spaces[(X)+(M)->width*(Y)].light = L)
+#define SET_MAP_LIGHT(M, X, Y, L) (map_space(M, X, Y)->light = L)
 
-#define GET_MAP_PLAYER(M, X, Y) ((M)->spaces[(X)+(M)->width*(Y)].pl)
-#define SET_MAP_PLAYER(M, X, Y, C) ((M)->spaces[(X)+(M)->width*(Y)].pl = C)
+#define GET_MAP_PLAYER(M, X, Y) (map_space(M, X, Y)->pl)
+#define SET_MAP_PLAYER(M, X, Y, C) (map_space(M, X, Y)->pl = C)
 
 /** Gets the bottom object on a map. Not multitile aware. */
-#define GET_MAP_OB(M, X, Y)     ((M)->spaces[(X)+(M)->width*(Y)].bottom)
+#define GET_MAP_OB(M, X, Y)     (map_space(M, X, Y)->bottom)
 /** Gets the top object on a map. Not multitile aware. */
-#define GET_MAP_TOP(M, X, Y)    ((M)->spaces[(X)+(M)->width*(Y)].top)
+#define GET_MAP_TOP(M, X, Y)    (map_space(M, X, Y)->top)
 
 /** Sets the bottom object on a map. Not multitile aware. */
-#define SET_MAP_OB(M, X, Y, tmp) ((M)->spaces[(X)+(M)->width*(Y)].bottom = (tmp))
+#define SET_MAP_OB(M, X, Y, tmp) (map_space(M, X, Y)->bottom = (tmp))
 /** Sets the top object on a map. Not multitile aware. */
-#define SET_MAP_TOP(M, X, Y, tmp) ((M)->spaces[(X)+(M)->width*(Y)].top = (tmp))
+#define SET_MAP_TOP(M, X, Y, tmp) (map_space(M, X, Y)->top = (tmp))
 
 /** Sets the layer face of specified square. Not multitile aware. */
-#define SET_MAP_FACE_OBJ(M, X, Y, C, L) ((M)->spaces[(X)+(M)->width*(Y)].faces_obj[L] = C)
+#define SET_MAP_FACE_OBJ(M, X, Y, C, L) (map_space(M, X, Y)->faces_obj[L] = C)
 /** Gets the layer face of specified square. Not multitile aware. */
-#define GET_MAP_FACE_OBJ(M, X, Y, L) ((M)->spaces[(X)+(M)->width*(Y)].faces_obj[L])
+#define GET_MAP_FACE_OBJ(M, X, Y, L) (map_space(M, X, Y)->faces_obj[L])
 /**
  * Returns the layers array so update_position can just copy
  * the entire array over.
  */
-#define GET_MAP_FACE_OBJS(M, X, Y) ((M)->spaces[(X)+(M)->width*(Y)].faces_obj)
+#define GET_MAP_FACE_OBJS(M, X, Y) (map_space(M, X, Y)->faces_obj)
 
 /** Gets the blocking state of a square. Not multitile aware. */
-#define GET_MAP_MOVE_BLOCK(M, X, Y) ((M)->spaces[(X)+(M)->width*(Y)].move_block)
+#define GET_MAP_MOVE_BLOCK(M, X, Y) (map_space(M, X, Y)->move_block)
 /** Sets the blocking state of a square. Not multitile aware. */
-#define SET_MAP_MOVE_BLOCK(M, X, Y, C) ((M)->spaces[(X)+(M)->width*(Y)].move_block = C)
+#define SET_MAP_MOVE_BLOCK(M, X, Y, C) (map_space(M, X, Y)->move_block = C)
 
 /** Gets the slowing state of a square. Not multitile aware. */
-#define GET_MAP_MOVE_SLOW(M, X, Y)  ((M)->spaces[(X)+(M)->width*(Y)].move_slow)
+#define GET_MAP_MOVE_SLOW(M, X, Y)  (map_space(M, X, Y)->move_slow)
 /** Sets the slowing state of a square. Not multitile aware. */
-#define SET_MAP_MOVE_SLOW(M, X, Y, C) ((M)->spaces[(X)+(M)->width*(Y)].move_slow = C)
+#define SET_MAP_MOVE_SLOW(M, X, Y, C) (map_space(M, X, Y)->move_slow = C)
 
 /** Gets the move_on state of a square. Not multitile aware. */
-#define GET_MAP_MOVE_ON(M, X, Y)    ((M)->spaces[(X)+(M)->width*(Y)].move_on)
+#define GET_MAP_MOVE_ON(M, X, Y)    (map_space(M, X, Y)->move_on)
 /** Sets the move_on state of a square. Not multitile aware. */
-#define SET_MAP_MOVE_ON(M, X, Y, C) ((M)->spaces[(X)+(M)->width*(Y)].move_on = C)
+#define SET_MAP_MOVE_ON(M, X, Y, C) (map_space(M, X, Y)->move_on = C)
 
 /** Gets the move_off state of a square. Not multitile aware. */
-#define GET_MAP_MOVE_OFF(M, X, Y)    ((M)->spaces[(X)+(M)->width*(Y)].move_off)
+#define GET_MAP_MOVE_OFF(M, X, Y)    (map_space(M, X, Y)->move_off)
 /** Sets the move_off state of a square. Not multitile aware. */
-#define SET_MAP_MOVE_OFF(M, X, Y, C) ((M)->spaces[(X)+(M)->width*(Y)].move_off = C)
+#define SET_MAP_MOVE_OFF(M, X, Y, C) (map_space(M, X, Y)->move_off = C)
 
 /**
  * Checks if a square is out of the map.
@@ -376,5 +376,7 @@ struct rv_vector {
 uint32_t map_size(mapstruct *m);
 
 extern bool map_path_unique(const char *name);
+
+extern MapSpace *map_space(const mapstruct *m, int x, int y);
 
 #endif /* MAP_H */
