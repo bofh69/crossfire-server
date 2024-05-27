@@ -2366,7 +2366,7 @@ mapstruct *get_map_from_coord(mapstruct *m, int16_t *x, int16_t *y) {
      */
 
     if ( !m ) return NULL;
-    if (*x >= 0 && *x < MAP_WIDTH(m) && *y >= 0 && *y < MAP_HEIGHT(m))
+    if (!OUT_OF_REAL_MAP(m, *x, *y))
         return m;
 
     do /* With the first case there, we can assume we are out of the map if we get here */
