@@ -914,7 +914,11 @@ static void load_settings(void) {
             }
         } else if (!strcasecmp(buf, "create_home_portals")) {
             if (!strcasecmp(cp, "on") || !strcasecmp(cp, "true")) {
+#ifdef TRY_BROKEN_TOWN_PORTALS
                 settings.create_home_portals = TRUE;
+#else
+                LOG(llevError, "load_settings: create_home_portals is currently broken. It results in town portals that prematurely reset when the apartment is swapped.\n");
+#endif
             } else if (!strcasecmp(cp, "off") || !strcasecmp(cp, "false")) {
                 settings.create_home_portals = FALSE;
             } else {
