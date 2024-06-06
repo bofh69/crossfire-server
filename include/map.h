@@ -379,4 +379,6 @@ extern bool map_path_unique(const char *name);
 
 extern MapSpace *map_space(const mapstruct *m, int x, int y);
 
+extern void map_reset_swap(mapstruct *m);
+
 #endif /* MAP_H */

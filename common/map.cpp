@@ -788,7 +788,6 @@ mapstruct *get_linked_map(void) {
     MAP_WIDTH(map) = 16;
     MAP_HEIGHT(map) = 16;
     MAP_RESET_TIMEOUT(map) = 0;
-    MAP_TIMEOUT(map) = 300;
     MAP_ENTER_X(map) = 0;
     MAP_ENTER_Y(map) = 0;
     map->last_reset_time = 0;
@@ -1103,7 +1102,7 @@ static int load_map_header(FILE *fp, mapstruct *m) {
         } else if (!strcmp(key, "reset_timeout")) {
             m->reset_timeout = atoi(value);
         } else if (!strcmp(key, "swap_time")) {
-            m->timeout = atoi(value);
+            // deprecated and ignored
         } else if (!strcmp(key, "difficulty")) {
             m->difficulty = atoi(value);
         } else if (!strcmp(key, "darkness")) {
@@ -1439,8 +1438,6 @@ int save_map(mapstruct *m, int flag) {
     fprintf(fp, "arch map\n");
     if (m->name)
         fprintf(fp, "name %s\n", m->name);
-    if (!flag)
-        fprintf(fp, "swap_time %d\n", m->timeout);
     if (m->reset_timeout)
         fprintf(fp, "reset_timeout %u\n", m->reset_timeout);
     if (m->fixed_resettime)
@@ -1747,6 +1744,15 @@ void delete_map(mapstruct *m) {
 }
 
 /**
+ * Call this when an in-memory map is used or referenced. Helps inform which
+ * maps to swap.
+ */
+void map_reset_swap(mapstruct *m) {
+    // Right now this just sets the fixed swap time.
+    set_map_timeout(m);
+}
+
+/**
  * Makes sure the given map is loaded and swapped in.
  * @param name
  * path name of the map.
@@ -1770,6 +1776,7 @@ mapstruct *ready_map_name(const char *name, int flags) {
 
     /* Map is good to go, so just return it */
     if (m && (m->in_memory == MAP_LOADING || m->in_memory == MAP_IN_MEMORY)) {
+        map_reset_swap(m);
         return m;
     }
 
@@ -1865,6 +1872,7 @@ mapstruct *ready_map_name(const char *name, int flags) {
         }
     }
 
+    map_reset_swap(m);
     events_execute_global_event(EVENT_MAPREADY, m);
 
     return m;

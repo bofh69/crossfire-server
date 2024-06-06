@@ -292,29 +292,14 @@ void player_map_change_common(object* op, mapstruct* const oldmap,
 }
 
 /**
- * Applies the map timeout.
+ * Enable swapping for the given map. Called when all players leave a map,
+ * because maps with players are marked as ineligible for swap.
  *
  * @param oldmap
  * map to process.
  */
 void set_map_timeout(mapstruct *oldmap) {
-#if MAP_MAXTIMEOUT
-    oldmap->timeout = MAP_TIMEOUT(oldmap);
-    /* Do MINTIMEOUT first, so that MAXTIMEOUT is used if that is
-     * lower than the min value.
-     */
-#if MAP_MINTIMEOUT
-    if (oldmap->timeout < MAP_MINTIMEOUT) {
-        oldmap->timeout = MAP_MINTIMEOUT;
-    }
-#endif
-    if (oldmap->timeout > MAP_MAXTIMEOUT) {
-        oldmap->timeout = MAP_MAXTIMEOUT;
-    }
-#else
-    /* save out the map */
-    swap_map(oldmap);
-#endif /* MAP_MAXTIMEOUT */
+    oldmap->timeout = MAP_MINTIMEOUT;
 }
 
 /**

@@ -1693,7 +1693,7 @@ void draw_client_map(object *pl) {
              * much more efficient and 'good enough'
              */
             if (mflags&P_NEW_MAP)
-                m->timeout = 50;
+                map_reset_swap(m);
         }
     }
 
