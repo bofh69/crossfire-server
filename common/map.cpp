@@ -1749,7 +1749,7 @@ void delete_map(mapstruct *m) {
  */
 void map_reset_swap(mapstruct *m) {
     // Right now this just sets the fixed swap time.
-    set_map_timeout(m);
+    m->timeout = MAP_MINTIMEOUT;
 }
 
 /**
