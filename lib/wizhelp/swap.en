@@ -1,0 +1,7 @@
+Usage: swap <map path>
+
+Mark an in-memory map at the given path for swapping.
+
+This is useful for testing things related to swapped maps without waiting for the swap timeout and for flushing unique maps.
+
+The map is only swapped if there are no players on the map and the swapper is ready (usually within a few ticks).
