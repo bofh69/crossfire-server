@@ -3262,6 +3262,10 @@ static const char *gravestone_text(object *op, char *buf2, int len) {
     return buf2;
 }
 
+static bool starving(object *op) {
+    return op->stats.food <= 0;
+}
+
 /**
  * Regenerate hp/sp/gr, decreases food. This only works for players.
  * Will grab food if needed, or kill player.
@@ -3326,7 +3330,7 @@ void do_some_living(object *op) {
         }
 
         /* Regenerate Hit Points (unless you are a wraith player) */
-        if (--op->last_heal < 0 && !is_wraith_pl(op)) {
+        if (--op->last_heal < 0 && !is_wraith_pl(op) && !starving(op)) {
             if (op->stats.hp < op->stats.maxhp) {
                 op->stats.hp++;
                 /* dms do not consume food */
@@ -3356,7 +3360,8 @@ void do_some_living(object *op) {
         }
     }
 
-    if (op->contr->state == ST_PLAYING && op->stats.food < 0 && op->stats.hp >= 0) {
+    // Grab a bite of food if able, starving, and still alive.
+    if (op->contr->state == ST_PLAYING && starving(op) && op->stats.hp >= 0) {
         if (is_wraith_pl(op))
             draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_ITEM, MSG_TYPE_ITEM_REMOVE, "You feel a hunger for living flesh.");
         /* Only allow eat if not paralyzed. Otherwise our paralyzed player is "moving" to eat.
@@ -3391,14 +3396,13 @@ void do_some_living(object *op) {
         } /* end not wraith and is paralyzed */
     } /* end if player is starving */
 
-    if (op->stats.food < 0 && op->stats.hp > 0){
-        // We know food < 0, so we want the absolute value of food
-        int32_t adjust_by = MIN(-(op->stats.food), op->stats.hp);
-        op->stats.food += adjust_by;
-        op->stats.hp -= adjust_by;
+    // Prevent food from going negative, then deal constant hunger damage.
+    if (starving(op)) {
+        op->stats.food = 0;
+        op->stats.hp -= 1;
     }
 
-    if (!op->contr->state && !QUERY_FLAG(op, FLAG_WIZ) && (op->stats.hp < 0 || op->stats.food < 0))
+    if (!op->contr->state && !QUERY_FLAG(op, FLAG_WIZ) && (op->stats.hp <= 0))
         kill_player(op, NULL);
 }
 
@@ -3543,7 +3547,7 @@ void kill_player(object *op, const object *killer) {
         return;
 
     events_execute_global_event(EVENT_PLAYER_DEATH, op, killer);
-    if (op->stats.food < 0) {
+    if (starving(op)) {
         snprintf(buf, sizeof(buf), "%s starved to death.", op->name);
         strcpy(op->contr->killer, "starvation");
     } else {
