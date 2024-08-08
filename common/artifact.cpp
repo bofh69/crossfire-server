@@ -176,7 +176,7 @@ void artifact_compute_chance_for_item(const object *op, const artifact *art, int
  */
 void generate_artifact(object *op, int difficulty) {
     const artifactlist *al;
-    const artifact *art;
+    const artifact *art = NULL;
     int i;
 
     al = find_artifactlist(op->type);
