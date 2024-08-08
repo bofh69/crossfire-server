@@ -2719,9 +2719,6 @@ int monster_can_detect_enemy(object *op, object *enemy, rv_vector *rv) {
  * @return 1 if op is in lighe, 0 else.
  */
 static int monster_stand_in_light_internal(object *op) {
-    int16_t nx, ny;
-    mapstruct *m;
-
     if (!op)
         return 0;
     if (op->glow_radius > 0)
@@ -2735,11 +2732,10 @@ static int monster_stand_in_light_internal(object *op) {
          */
         for (x = op->x-MAX_LIGHT_RADII; x <= op->x+MAX_LIGHT_RADII; x++) {
             for (y = op->y-MAX_LIGHT_RADII; y <= op->y+MAX_LIGHT_RADII; y++) {
-                m = op->map;
-                nx = x;
-                ny = y;
-
-                if ((m = get_map_from_coord(op->map, &nx, &ny)) == nullptr)
+                int16_t nx = x;
+                int16_t ny = y;
+                mapstruct *m = get_map_from_coord(op->map, &nx, &ny);
+                if (m == nullptr)
                     continue;
 
                 int light = GET_MAP_LIGHT(m, nx, ny);
