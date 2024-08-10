@@ -67,7 +67,7 @@ static void cancellation(object *op) {
         CLEAR_FLAG(op, FLAG_KNOWN_MAGICAL);
         CLEAR_FLAG(op, FLAG_KNOWN_CURSED);
         if (op->env && op->env->type == PLAYER) {
-            esrv_update_item(UPD_FLAGS, op->env, op);
+            esrv_update_item(UPD_NAME|UPD_FLAGS, op->env, op);
         }
     }
 }
