@@ -2122,7 +2122,7 @@ int hit_player(object *op, int dam, object *hitter, uint32_t type, int full_hit)
     // This used to be part of the ghosthit attacktype, but is now a separate
     // flag. Note that the attacker is removed whether or not it killed (or
     // even damaged) the target.
-    if (QUERY_FLAG(hitter, FLAG_ONE_HIT)) {
+    if (QUERY_FLAG(hitter, FLAG_ONE_HIT) && !QUERY_FLAG(op, FLAG_REMOVED)) {
         if (QUERY_FLAG(hitter, FLAG_FRIENDLY))
             remove_friendly_object(hitter);
         object_remove(hitter);
