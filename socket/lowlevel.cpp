@@ -410,11 +410,11 @@ static void Write_To_Socket(socket_struct* ns, const unsigned char* buf, const i
     if (amt < 0) { /* We got an error */
 #ifdef WIN32       /* ***win32 Write_To_Socket: change error handling */
         if (amt == -1 && WSAGetLastError() != WSAEWOULDBLOCK) {
-            LOG(llevInfo, "New socket write failed WTS (%d).\n",
+            LOG(llevInfo, "socket write failed: error code %d, disconnecting client\n",
                 WSAGetLastError());
 #else
         if (errno != EWOULDBLOCK) {
-            LOG(llevInfo, "New socket write failed WTS: %s\n",
+            LOG(llevInfo, "socket write failed: %s, disconnecting client\n",
                 strerror(errno));
 #endif
             ns->status = Ns_Dead;
