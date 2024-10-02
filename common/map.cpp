@@ -635,7 +635,7 @@ void load_objects(mapstruct *m, FILE *fp, int mapflags) {
         }
 
         /* don't use out_of_map because we don't want to consider tiling properties, we're loading a single map */
-        if (op->x < 0 || op->y < 0 || op->x >= MAP_WIDTH(m) || op->y >= MAP_HEIGHT(m)) {
+        if (OUT_OF_REAL_MAP(m, op->x, op->y)) {
             LOG(llevError, " object %s not on valid map position %s:%d:%d\n", op->name ? op->name : "(null)", m->path, op->x, op->y);
             if (op->x < 0) {
                 op->x = 0;
