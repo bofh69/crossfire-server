@@ -2278,13 +2278,7 @@ static mapstruct *load_and_link_tiled_map(mapstruct *orig_map, int tile_num) {
 }
 
 /**
- * this returns TRUE if the coordinates (x,y) are out of
- * map m.  This function also takes into account any
- * tiling considerations, loading adjacant maps as needed.
- * This is the function should always be used when it
- * necessary to check for valid coordinates.
- * This function will recursively call itself for the
- * tiled maps.
+ * Return 1 if coordinates X and Y are out of the map M, taking into account tiling.
  *
  * @param m
  * map to consider. Must not be NULL.
@@ -2293,59 +2287,16 @@ static mapstruct *load_and_link_tiled_map(mapstruct *orig_map, int tile_num) {
  * coordinates.
  * @return
  * 1 if out of map, 0 else
+ *
+ * @deprecated Use get_map_from_coord() instead
  */
 int out_of_map(mapstruct *m, int x, int y) {
-
-    /* Simple case - coordinates are within this local
-     * map.
-     */
-    if (x >= 0 && x < MAP_WIDTH(m) && y >= 0 && y < MAP_HEIGHT(m))
+    int16_t xp = x, yp = y;
+    if (get_map_from_coord(m, &xp, &yp) == NULL) {
+        return 1;
+    } else {
         return 0;
-
-    if (x < 0) {
-        if (!m->tile_path[3])
-            return 1;
-        if (!m->tile_map[3] || m->tile_map[3]->in_memory != MAP_IN_MEMORY) {
-            load_and_link_tiled_map(m, 3);
-            /* Verify the tile map loaded correctly */
-            if (!m->tile_map[3])
-                return 0;
-        }
-        return (out_of_map(m->tile_map[3], x+MAP_WIDTH(m->tile_map[3]), y));
-    } else if (x >= MAP_WIDTH(m)) {
-        if (!m->tile_path[1])
-            return 1;
-        if (!m->tile_map[1] || m->tile_map[1]->in_memory != MAP_IN_MEMORY) {
-            load_and_link_tiled_map(m, 1);
-            /* Verify the tile map loaded correctly */
-            if (!m->tile_map[1])
-                return 0;
-        }
-        return (out_of_map(m->tile_map[1], x-MAP_WIDTH(m), y));
     }
-
-    if (y < 0) {
-        if (!m->tile_path[0])
-            return 1;
-        if (!m->tile_map[0] || m->tile_map[0]->in_memory != MAP_IN_MEMORY) {
-            load_and_link_tiled_map(m, 0);
-            /* Verify the tile map loaded correctly */
-            if (!m->tile_map[0])
-                return 0;
-        }
-        return (out_of_map(m->tile_map[0], x, y+MAP_HEIGHT(m->tile_map[0])));
-    } else if (y >= MAP_HEIGHT(m)) {
-        if (!m->tile_path[2])
-            return 1;
-        if (!m->tile_map[2] || m->tile_map[2]->in_memory != MAP_IN_MEMORY) {
-            load_and_link_tiled_map(m, 2);
-            /* Verify the tile map loaded correctly */
-            if (!m->tile_map[2])
-                return 0;
-        }
-        return (out_of_map(m->tile_map[2], x, y-MAP_HEIGHT(m)));
-    }
-    return 1;
 }
 
 /**
