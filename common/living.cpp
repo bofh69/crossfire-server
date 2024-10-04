@@ -1044,10 +1044,10 @@ static void fix_player(object *op, int *ac, int *wc, const object *grace_obj, co
         op->stats.dam = 1;
 
     /* Player speed is nominally 0.75, plus a bonus read in from the file
-       lib/config/stat_bonus. Currently, this is roughly:
-       -0.1 for Dex 1
-       +0 for Dex 8 through 11
-       +0.25 for Dex 30.
+     * lib/config/stat_bonus. Currently, this is roughly:
+     * -0.1 for Dex 1
+     * +0 for Dex 8 through 11
+     * +0.25 for Dex 30.
      */
 
     op->speed = MAX_PLAYER_SPEED+get_speed_bonus(op->stats.Dex);
