@@ -83,12 +83,12 @@ EOF
 while [ ${MAX_RESTART} -ne ${generation} ]; do
     # Create folder to store temporary files if it doesn't exist.
     if [ ! -d ${CF_TMP} ]; then
-        mkdir ${CF_TMP}
+        mkdir ${CF_TMP} || exit 1
         chmod 700 ${CF_TMP}
     fi
 
     # Change to the ${CF_TMP} directory.
-    cd ${CF_TMP}
+    cd ${CF_TMP} || exit 1
     
     # Copy binary for crash dump and profiling.
     cp "${CF_BIN}" "${CF_TMP}/${BIN_COPY}"
