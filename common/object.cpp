@@ -2442,6 +2442,10 @@ object *object_insert_in_map(object *op, mapstruct *m, object *originator, int f
     x = op->x;
     y = op->y;
     op->map = get_map_from_coord(m, &x, &y);
+    if (op->map == NULL) {
+        // This can fail despite out_of_map() returning false.
+        return op;
+    }
 
     /* this has to be done after we translate the coordinates. */
     if (op->nrof
