@@ -2491,7 +2491,7 @@ object *object_insert_in_map(object *op, mapstruct *m, object *originator, int f
     if (originator && originator->contr && originator->contr->transport)
         originator = originator->contr->transport;
 
-    if (flag&INS_BELOW_ORIGINATOR) {
+    if (flag&INS_BELOW_ORIGINATOR && originator != NULL) {
         if (originator->map != op->map
         || originator->x != op->x
         || originator->y != op->y) {
