@@ -2327,7 +2327,7 @@ mapstruct *get_map_from_coord(mapstruct *m, int16_t *x, int16_t *y) {
     if ( !m ) return NULL;
     if (!OUT_OF_REAL_MAP(m, *x, *y))
         return m;
-    if (m->in_memory != MAP_IN_MEMORY) {
+    if (m->in_memory == MAP_SWAPPED) {
         // callers are calling get_map_from_coord() to access the map, so if
         // it's swapped out return early here. While we could finish this
         // computation without having to swap the map in, when they try to
