@@ -20,7 +20,7 @@
  * @note
  * If little books arent getting enough text generated, enlarge this.
  */
-#define BASE_BOOK_BUF   700
+#define BASE_BOOK_BUF   750
 
 /**
  * Get the book buffer size for an individual book object. Make heavy books hold
@@ -28,8 +28,8 @@
  * @param xyz
  * The book object to calculate the buffer size for.
  */
-#define BOOKSIZE(xyz)   BASE_BOOK_BUF+((xyz)->weight/10) > BOOK_BUF ? \
-                                BOOK_BUF : BASE_BOOK_BUF+((xyz)->weight/10);
+#define BOOKSIZE(xyz)   BASE_BOOK_BUF+((xyz)->weight/8) > BOOK_BUF ? \
+                                BOOK_BUF : BASE_BOOK_BUF+((xyz)->weight/8);
 /**
  * Struct to store the message_type and message_subtype for signs and books used by the player.
  */
