@@ -301,8 +301,8 @@ this protocol command or that)
 	    in the masking faces not getting sent to the client.
 
 |extended_stats (0/1 value)|
-	   If set to 1, the server will send the CS_STATS_RACE_xxx and
-	   CS_STATS_BASE_xxx values too, so the client can display
+	   If set to 1, the server will send the CS_STAT_RACE_xxx and
+	   CS_STAT_BASE_xxx values too, so the client can display
 	   various status related to statistics. Default is 0.
 
 |facecache (0/1)|
@@ -1189,7 +1189,7 @@ the following fields:
 ** skill experience: int64
 
 ** spellpaths: int32, only sent if `spellmon` is set in <<_setup>>.  The
-   `CS_STATS_RACE_xxx` and `CS_STATS_BASE_xxx` are only sent if
+   `CS_STAT_RACE_xxx` and `CS_STAT_BASE_xxx` are only sent if
    `extended_stats` was used in setup.
 
 Image Information
