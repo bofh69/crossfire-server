@@ -67,7 +67,7 @@ void command_run_stop(object *op, const char *params) {
 }
 
 /**
- * Player wants to start furing.
+ * Player wants to start firing.
  *
  * @param op
  * player.
