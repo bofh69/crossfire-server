@@ -1175,7 +1175,7 @@ static uint64_t value_limit(uint64_t val, int quantity, const object *who, int i
         map = who->map;
         if (map->shopmin && unit_price < map->shopmin)
             return 0;
-        else if (map->shopmax && unit_price > map->shopmax/2)
+        else if (unit_price > map->shopmax/2)
             newval = MIN((map->shopmax/2)+isqrt(unit_price-map->shopmax/2), map->shopmax);
         else if (unit_price > 10000)
             newval = 8000+isqrt(unit_price)*20;

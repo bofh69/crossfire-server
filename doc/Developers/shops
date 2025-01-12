@@ -90,6 +90,9 @@ of one half of shopmax
 Note that the value is only an aspect of the final price, and the actual price offered for an item
 can be substantially less than shopmax, even when the item's value in in excess of that.
 
+If it is not set, shopmax takes the default value of zero. This means that the
+shop will not buy any items from players.
+
 
 shoprace
 if the player matches shoprace, this has no effect, if they do not, the price offered
