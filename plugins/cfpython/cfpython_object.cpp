@@ -1541,6 +1541,12 @@ static void Crossfire_Player_dealloc(PyObject *obj) {
     }
 }
 
+static PyObject *Player_GetIntProperty(Crossfire_Player *whoptr, void *closure) {
+    (void)closure;
+    EXISTCHECK(whoptr);
+    return Py_BuildValue("i", cf_object_get_int_property(whoptr->obj, (int)(intptr_t)closure));
+}
+
 static PyObject *Player_GetObjectProperty(Crossfire_Player *whoptr, void *closure) {
     EXISTCHECK(whoptr);
     object *ob = cf_object_get_object_property(whoptr->obj, (int)(intptr_t)closure);
@@ -1562,6 +1568,7 @@ CF_PYTHON_OBJECT(Object,
                  );
 
 static PyGetSetDef Player_getseters[] = {
+    { "CmdCount",      (getter)Player_GetIntProperty,NULL, NULL, (void*)CFAPI_PLAYER_PROP_COUNT},
     { "Title",         (getter)Player_GetTitle,         (setter)Player_SetTitle, NULL, NULL },
     { "IP",            (getter)Player_GetIP,            NULL, NULL, NULL },
     { "MarkedItem",    (getter)Player_GetMarkedItem,    (setter)Player_SetMarkedItem, NULL, NULL },

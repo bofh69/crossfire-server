@@ -2231,6 +2231,12 @@ static void cfapi_object_get_property(int *type, ...) {
         *type = CFAPI_SSTRING;
         break;
 
+    case CFAPI_PLAYER_PROP_COUNT:
+        rint = va_arg(args, int *);
+        *rint = op->contr->count;
+        *type = CFAPI_INT;
+        break;
+
     case CFAPI_PLAYER_PROP_IP:
         rsstring = va_arg(args, sstring *);
         *rsstring = op->contr->socket->host;
