@@ -1367,6 +1367,8 @@ const CFConstant cstEventType[] = {
     { "REMOVE", EVENT_REMOVE },
     { "SHOUT", EVENT_SHOUT },
     { "TELL", EVENT_TELL },
+    { "GBOUGHT", EVENT_GBOUGHT },
+    { "GSOLD", EVENT_GSOLD },
     { NULL, 0 }
 };
 
@@ -1577,6 +1579,8 @@ static int GECodes[] = {
     EVENT_MAPUNLOAD,
     EVENT_MAPLOAD,
     EVENT_MAPREADY,
+    EVENT_GBOUGHT,
+    EVENT_GSOLD,
     0
 };
 
@@ -1598,6 +1602,8 @@ static const char* GEPaths[] = {
     "mapunload",
     "mapload",
     "mapready",
+    "gbought",
+    "gsold",
     NULL
 };
 
@@ -1819,6 +1825,13 @@ CF_PLUGIN int cfpython_globalEventListener(int *type, ...) {
 
     case EVENT_MAPLOAD:
         context->who = Crossfire_Map_wrap(va_arg(args, mapstruct *));
+        break;
+
+    case EVENT_GBOUGHT:
+        // fall through: these have the same arguments
+    case EVENT_GSOLD:
+        context->who = Crossfire_Object_wrap(va_arg(args, object *)); // op
+        context->activator = Crossfire_Object_wrap(va_arg(args, object *)); // pl
         break;
     }
     va_end(args);

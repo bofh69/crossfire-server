@@ -908,10 +908,12 @@ static void shop_pay_unpaid_callback(object *op, void *data) {
         // TODO: Figure out how to pass in the shop owner for player shops.
         if (events_execute_object_event(op, EVENT_BOUGHT, pl, NULL, NULL, SCRIPT_FIX_ALL) != 0)
             return;
+
         object *tmp;
         char *value = cost_str(price - reduction);
 
         CLEAR_FLAG(op, FLAG_UNPAID);
+        events_execute_global_event(EVENT_GBOUGHT, op, pl);
         CLEAR_FLAG(op, FLAG_PLAYER_SOLD);
         query_name(op, name_op, MAX_BUF);
 
@@ -977,6 +979,8 @@ void sell_item(object *op, object *pl) {
 
     if (events_execute_object_event(op, EVENT_SELLING, pl, NULL, NULL, SCRIPT_FIX_ALL) != 0)
         return;
+
+    events_execute_global_event(EVENT_GSOLD, op, pl);
 
     object_set_value(op, CUSTOM_NAME_FIELD, NULL, 0);
 

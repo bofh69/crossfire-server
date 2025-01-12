@@ -54,9 +54,11 @@
 #define EVENT_REMOVE    24 /**< A Player character has been removed.           */
 #define EVENT_SHOUT     25 /**< A player 'shout' something.                    */
 #define EVENT_TELL      26 /**< A player 'tell' something.                     */
+#define EVENT_GBOUGHT   36 /**< Player bought object in shop, but global.      */
+#define EVENT_GSOLD     37 /**< Player sold object in shop, but global.        */
 /*@}*/
 
-#define NR_EVENTS 36  /**< Number of events, maximum code + 1. */
+#define NR_EVENTS 38  /**< Number of events, maximum code + 1. */
 
 /** Convert an event to its bit. */
 #define BITMASK_EVENT(evt)  (1ULL << evt)
