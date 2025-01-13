@@ -1,6 +1,6 @@
 /**
 @fn FLAG_LIFESAVE
-@section sec_lifesave Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -21,6 +21,17 @@
 @ref page_type_42
 		</td><td>            If &lt;infinite uses&gt; is set, the creator will work infinitely,
             regardless of the value in &lt;number of uses&gt;.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_54, @ref page_type_6
+		</td><td>                If set on a food with a non-null title, consumption will grant the player the
+                same buff as an amulet of lifesaving for the duration of the food effect.
+                If triggered, a single death will be prevented and the force providing it will
+                end early.
+
+                An item with &lt;save life&gt; should not have any decent additional
+                bonuses!</td>
 	</tr>
 	<tr>
 		<td>

@@ -1,6 +1,6 @@
 /**
 @fn FLAG_REFL_MISSILE
-@section sec_reflect_missile Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -12,6 +12,17 @@
                 to &lt;reflect missiles&gt;, all kinds of projectiles (e.g.
                 arrows, bolts, boulders) will bounce off him. This works only
                 about 90% of all times, to avoid players being completely immune
+                to certain types of attacks.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_54, @ref page_type_6
+		</td><td>                When set on a food with a non-null title, consumption will grant the player
+                projectile reflection for the duration of the food effect.
+
+                If a player is granted the ability to &lt;reflect missiles&gt;, all kinds
+                of projectiles (e.g. arrows, bolts, boulders) will bounce off him. This
+                works only about 90% of all times, to avoid players being completely immune
                 to certain types of attacks.</td>
 	</tr>
 	<tr>

@@ -1,6 +1,6 @@
 /**
 @fn FLAG_IS_HILLY
-@section sec_is_hilly Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>

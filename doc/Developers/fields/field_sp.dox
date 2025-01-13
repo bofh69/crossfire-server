@@ -1,6 +1,6 @@
 /**
 @fn living::sp
-@section sec_sp Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -36,6 +36,13 @@
 @ref page_type_158
 		</td><td>                This value increases the player's rate of mana regeneration.
                 Negative values decrease it.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_54, @ref page_type_6
+		</td><td>                At the time of eating, this food will restore &lt;magic restored&gt; spell points
+                to the player.
+                Negative values drain health instead of restore it.</td>
 	</tr>
 	<tr>
 		<td>

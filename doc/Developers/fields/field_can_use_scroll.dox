@@ -1,6 +1,6 @@
 /**
 @fn FLAG_USE_SCROLL
-@section sec_can_use_scroll Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>

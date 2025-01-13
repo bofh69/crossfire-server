@@ -1,8 +1,6 @@
 /**
 @page page_type_216 Wall
 
-
-@section sec_desc_216 Description
             Walls usually block passage and sight.
 
 
@@ -14,7 +12,7 @@ Type defined by:
 - @ref object::move_allow = 0
 
 
-@section sec_attr_216 Attributes
+# Attributes
 
 <table>
 	<tr>
@@ -153,6 +151,13 @@ Type defined by:
 		</td>
 	</tr>
 	<tr>
+		<td>is buildable</td>
+		<td>@ref FLAG_IS_BUILDABLE</td>
+		<td>            If set, usually for floors, players can use tools and building
+            materials to build above this object.
+		</td>
+	</tr>
+	<tr>
 		<td>is used up</td>
 		<td>@ref FLAG_IS_USED_UP</td>
 		<td>            If set, decrement the &lt;food&gt; field at &lt;speed&gt;. When &lt;food&gt;
@@ -172,6 +177,12 @@ Type defined by:
 		<td>@ref FLAG_CAN_ROLL</td>
 		<td>            If set, the object is able to "roll", so it can be pushed around.
             This setting is used for boulders and barrels.
+		</td>
+	</tr>
+	<tr>
+		<td>movement type</td>
+		<td>@ref object::move_type</td>
+		<td>            Must be set if the object has can_roll set.
 		</td>
 	</tr>
 	<tr>

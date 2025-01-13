@@ -2,7 +2,7 @@
 @page page_custom_attribute_blocks_prayer blocks_prayer
 This is a @ref page_custom_attributes "custom attribute".
 
-@section sec_blocks_prayer Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>

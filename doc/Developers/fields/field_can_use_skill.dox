@@ -1,6 +1,6 @@
 /**
 @fn FLAG_CAN_USE_SKILL
-@section sec_can_use_skill Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>

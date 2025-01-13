@@ -1,6 +1,6 @@
 /**
 @fn object::attack_movement
-@section sec_attack_movement Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>

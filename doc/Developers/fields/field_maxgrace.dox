@@ -1,6 +1,6 @@
 /**
 @fn living::maxgrace
-@section sec_maxgrace Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -20,6 +20,13 @@
                 spell-parameters, if the disease is registered as spell in the
                 code. Due to that, most default diseases take a lot longer to
                 cure than it seems.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_54, @ref page_type_6
+		</td><td>                If set on a food with a non-null title, consumption will grant the player
+                an adjustment to their grace regeneration rate equal to &lt;grace regeneration&gt;.
+                Negative values slow regeneration, positive values increase it.</td>
 	</tr>
 	<tr>
 		<td>

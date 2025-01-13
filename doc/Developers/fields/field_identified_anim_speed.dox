@@ -2,7 +2,7 @@
 @page page_custom_attribute_identified_anim_speed identified_anim_speed
 This is a @ref page_custom_attributes "custom attribute".
 
-@section sec_identified_anim_speed Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>

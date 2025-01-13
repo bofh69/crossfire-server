@@ -2,7 +2,7 @@
 @page page_custom_attribute_price_adjustment price_adjustment
 This is a @ref page_custom_attributes "custom attribute".
 
-@section sec_price_adjustment Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>

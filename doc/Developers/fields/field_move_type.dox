@@ -1,6 +1,6 @@
 /**
 @fn object::move_type
-@section sec_move_type Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -10,6 +10,12 @@
 @ref page_type_39, @ref page_type_99, @ref page_type_104, @ref page_type_16, @ref page_type_87, @ref page_type_113, @ref page_type_100, @ref page_type_34, @ref page_type_70, @ref page_type_33
 		</td><td>                As soon as the player applies a piece of equipment, the player
                 will start using the granted movement types.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_54, @ref page_type_6
+		</td><td>                If set on a food with a non-null title, consumption will grant the player
+                the selected movement types for the duration of the food effect.</td>
 	</tr>
 	<tr>
 		<td>
@@ -36,6 +42,11 @@
 		<td>
 @ref page_type_2
 		</td><td>            The move type the transport uses.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_216
+		</td><td>            Must be set if the object has can_roll set.</td>
 	</tr>
 
 */

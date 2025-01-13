@@ -1,6 +1,6 @@
 /**
 @fn FLAG_USE_ARMOUR
-@section sec_can_use_armour Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>

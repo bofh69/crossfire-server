@@ -1,6 +1,6 @@
 /**
 @fn FLAG_USE_BOW
-@section sec_can_use_bow Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>

@@ -2,175 +2,178 @@
 @page field_index Field index
 This page lists all attributes.
 
-- @ref page_custom_attribute_accept_alive "accept_alive"
-- @ref object::artifact
-- @ref FLAG_BLOCKSVIEW
-- @ref object::move_block
-- @ref page_custom_attribute_blocks_prayer "blocks_prayer"
-- @ref FLAG_CHANGING
-- @ref FLAG_CLIENT_ANIM_RANDOM
-- @ref FLAG_CLIENT_ANIM_SYNC
-- @ref page_connected "connection value"
-- @ref living::food
-- @ref page_custom_attribute_elevation "elevation"
-- @ref object::glow_radius
-- @ref FLAG_IDENTIFIED
-- @ref page_custom_attribute_identified_animation "identified_animation"
-- @ref page_custom_attribute_identified_anim_speed "identified_anim_speed"
-- @ref page_custom_attribute_identified_face "identified_face"
-- @ref page_custom_attribute_identified_anim_random "identified_anim_random"
-- @ref page_custom_attribute_identified_name "identified_name"
-- @ref page_custom_attribute_identified_name_pl "identified_name_pl"
-- @ref object::face
-- @ref object::invisible
-- @ref FLAG_IS_USED_UP
-- @ref object::slaying
-- @ref object::material
-- @ref object::msg
-- @ref object::name
-- @ref FLAG_NO_PICK
-- @ref object::nrof
-- @ref object::name_pl
-- @ref page_custom_attribute_price_adjustment "price_adjustment"
-- @ref page_custom_attribute_price_adjustment_buy "price_adjustment_buy"
-- @ref page_custom_attribute_price_adjustment_sell "price_adjustment_sell"
-- @ref object::smoothlevel
-- @ref FLAG_SPLITTING
-- @ref object::title
-- @ref FLAG_UNPAID
-- @ref object::value
-- @ref object::weight
-- @ref object::last_sp
-- @ref living::exp
-- @ref living::ac
-- @ref object::path_attuned
-- @ref living::Cha
-- @ref living::Con
-- @ref FLAG_CURSED
-- @ref FLAG_DAMNED
-- @ref object::path_denied
-- @ref living::Dex
-- @ref FLAG_STARTEQUIP
-- @ref living::grace
-- @ref object::move_type
-- @ref living::hp
-- @ref living::Int
-- @ref FLAG_APPLIED
-- @ref object::item_power
-- @ref living::luck
-- @ref living::sp
-- @ref living::Pow
-- @ref page_custom_attribute_race_restriction "race_restriction"
-- @ref FLAG_REFL_MISSILE
-- @ref FLAG_REFL_SPELL
-- @ref object::path_repelled
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref object::resist
-- @ref FLAG_LIFESAVE
-- @ref FLAG_STEALTH
-- @ref living::Str
-- @ref FLAG_UNIQUE
-- @ref living::wc
-- @ref living::Wis
-- @ref FLAG_XRAYS
-- @ref object::level
-- @ref object::magic
-- @ref object::last_heal
-- @ref object::anim_suffix
-- @ref object::subtype
-- @ref object::randomitems
-- @ref FLAG_IS_CAULDRON
-- @ref object::other_arch
-- @ref object::race
-- @ref object::container
-- @ref page_custom_attribute_face_opened "face_opened"
-- @ref object::speed
-- @ref object::move_on
-- @ref object::attacktype
-- @ref object::last_grace
-- @ref living::maxgrace
-- @ref living::dam
-- @ref object::last_eat
-- @ref living::maxsp
-- @ref living::maxhp
-- @ref FLAG_NO_DAMAGE
-- @ref page_custom_attribute_on_use_yield "on_use_yield"
-- @ref FLAG_IS_HILLY
-- @ref FLAG_NO_MAGIC
-- @ref object::move_slow
-- @ref object::move_slow_penalty
-- @ref FLAG_IS_WOODED
-- @ref object::direction
-- @ref FLAG_ALIVE
-- @ref object::resist
-- @ref FLAG_SLEEP
-- @ref object::attack_movement
-- @ref FLAG_CAST_SPELL
-- @ref FLAG_USE_ARMOUR
-- @ref FLAG_USE_BOW
-- @ref FLAG_USE_RANGE
-- @ref FLAG_USE_RING
-- @ref FLAG_USE_SCROLL
-- @ref FLAG_USE_SHIELD
-- @ref FLAG_CAN_USE_SKILL
-- @ref FLAG_USE_WEAPON
-- @ref object::carrying
-- @ref page_custom_attribute_death_animation "death_animation"
-- @ref FLAG_FRIENDLY
-- @ref FLAG_HITBACK
-- @ref object::will_apply
-- @ref FLAG_MONSTER
-- @ref FLAG_GENERATOR
-- @ref page_custom_attribute_generator_limit "generator_limit"
-- @ref page_custom_attribute_generator_code "generator_code"
-- @ref page_custom_attribute_generator_max_map "generator_max_map"
-- @ref page_custom_attribute_generator_radius "generator_radius"
-- @ref page_custom_attribute_no_mood_change "no_mood_change"
-- @ref FLAG_ONE_HIT
-- @ref object::pick_up
-- @ref FLAG_RANDOM_MOVE
-- @ref FLAG_RUN_AWAY
-- @ref FLAG_SEE_IN_DARK
-- @ref FLAG_SEE_INVISIBLE
-- @ref FLAG_STAND_STILL
-- @ref FLAG_CONTENT_ON_GEN
-- @ref FLAG_UNAGGRESSIVE
-- @ref FLAG_UNDEAD
-- @ref FLAG_NO_DROP
-- @ref FLAG_NO_STRENGTH
-- @ref FLAG_AUTO_APPLY
-- @ref object::expmul
-- @ref page_custom_attribute_wc_increase_rate "wc_increase_rate"
-- @ref object::skill
-- @ref object::casting_time
-- @ref page_custom_attribute_casting_requirements "casting_requirements"
-- @ref object::duration
-- @ref page_custom_attribute_immunity_chance "immunity_chance"
-- @ref page_custom_attribute_anim_full "anim_full"
-- @ref page_custom_attribute_base_speed "base_speed"
-- @ref page_custom_attribute_face_full "face_full"
-- @ref object::move_allow
-- @ref page_custom_attribute_passenger_limit "passenger_limit"
-- @ref page_custom_attribute_weight_speed_ratio "weight_speed_ratio"
-- @ref FLAG_BLESSED
-- @ref FLAG_CAN_ROLL
-- @ref object::weapontype
+- @subpage page_custom_attribute_accept_alive "accept_alive"
+- @subpage object::artifact
+- @subpage FLAG_BLOCKSVIEW
+- @subpage object::move_block
+- @subpage page_custom_attribute_blocks_prayer "blocks_prayer"
+- @subpage FLAG_CHANGING
+- @subpage FLAG_CLIENT_ANIM_RANDOM
+- @subpage FLAG_CLIENT_ANIM_SYNC
+- @subpage page_connected "connection value"
+- @subpage living::food
+- @subpage page_custom_attribute_elevation "elevation"
+- @subpage object::glow_radius
+- @subpage FLAG_IDENTIFIED
+- @subpage page_custom_attribute_identified_animation "identified_animation"
+- @subpage page_custom_attribute_identified_anim_speed "identified_anim_speed"
+- @subpage page_custom_attribute_identified_face "identified_face"
+- @subpage page_custom_attribute_identified_anim_random "identified_anim_random"
+- @subpage page_custom_attribute_identified_name "identified_name"
+- @subpage page_custom_attribute_identified_name_pl "identified_name_pl"
+- @subpage object::face
+- @subpage object::invisible
+- @subpage FLAG_IS_BUILDABLE
+- @subpage FLAG_IS_USED_UP
+- @subpage object::slaying
+- @subpage object::material
+- @subpage object::msg
+- @subpage object::name
+- @subpage FLAG_NO_PICK
+- @subpage object::nrof
+- @subpage object::name_pl
+- @subpage page_custom_attribute_price_adjustment "price_adjustment"
+- @subpage page_custom_attribute_price_adjustment_buy "price_adjustment_buy"
+- @subpage page_custom_attribute_price_adjustment_sell "price_adjustment_sell"
+- @subpage object::smoothlevel
+- @subpage FLAG_SPLITTING
+- @subpage object::title
+- @subpage FLAG_UNPAID
+- @subpage object::value
+- @subpage object::weight
+- @subpage object::last_sp
+- @subpage living::exp
+- @subpage living::ac
+- @subpage object::path_attuned
+- @subpage living::Cha
+- @subpage living::Con
+- @subpage FLAG_CURSED
+- @subpage FLAG_DAMNED
+- @subpage object::path_denied
+- @subpage living::Dex
+- @subpage FLAG_STARTEQUIP
+- @subpage living::grace
+- @subpage object::move_type
+- @subpage living::hp
+- @subpage living::Int
+- @subpage FLAG_APPLIED
+- @subpage object::item_power
+- @subpage living::luck
+- @subpage living::sp
+- @subpage living::Pow
+- @subpage page_custom_attribute_race_restriction "race_restriction"
+- @subpage FLAG_REFL_MISSILE
+- @subpage FLAG_REFL_SPELL
+- @subpage object::path_repelled
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage FLAG_LIFESAVE
+- @subpage FLAG_STEALTH
+- @subpage living::Str
+- @subpage FLAG_UNIQUE
+- @subpage living::wc
+- @subpage living::Wis
+- @subpage FLAG_XRAYS
+- @subpage object::level
+- @subpage object::magic
+- @subpage object::last_heal
+- @subpage object::anim_suffix
+- @subpage object::subtype
+- @subpage object::randomitems
+- @subpage FLAG_IS_CAULDRON
+- @subpage object::other_arch
+- @subpage object::race
+- @subpage object::container
+- @subpage page_custom_attribute_face_opened "face_opened"
+- @subpage FLAG_IS_FLOOR
+- @subpage object::speed
+- @subpage object::move_on
+- @subpage object::attacktype
+- @subpage object::last_grace
+- @subpage living::maxgrace
+- @subpage living::dam
+- @subpage object::last_eat
+- @subpage living::maxsp
+- @subpage living::maxhp
+- @subpage FLAG_NO_DAMAGE
+- @subpage FLAG_BLIND
+- @subpage page_custom_attribute_on_use_yield "on_use_yield"
+- @subpage FLAG_UNDEAD
+- @subpage FLAG_SEE_IN_DARK
+- @subpage FLAG_IS_HILLY
+- @subpage FLAG_NO_MAGIC
+- @subpage object::move_slow
+- @subpage object::move_slow_penalty
+- @subpage FLAG_IS_WOODED
+- @subpage object::direction
+- @subpage FLAG_ALIVE
+- @subpage object::resist
+- @subpage FLAG_SLEEP
+- @subpage object::attack_movement
+- @subpage FLAG_CAST_SPELL
+- @subpage FLAG_USE_ARMOUR
+- @subpage FLAG_USE_BOW
+- @subpage FLAG_USE_RANGE
+- @subpage FLAG_USE_RING
+- @subpage FLAG_USE_SCROLL
+- @subpage FLAG_USE_SHIELD
+- @subpage FLAG_CAN_USE_SKILL
+- @subpage FLAG_USE_WEAPON
+- @subpage object::carrying
+- @subpage page_custom_attribute_death_animation "death_animation"
+- @subpage FLAG_FRIENDLY
+- @subpage FLAG_HITBACK
+- @subpage object::will_apply
+- @subpage FLAG_MONSTER
+- @subpage FLAG_GENERATOR
+- @subpage page_custom_attribute_generator_limit "generator_limit"
+- @subpage page_custom_attribute_generator_code "generator_code"
+- @subpage page_custom_attribute_generator_max_map "generator_max_map"
+- @subpage page_custom_attribute_generator_radius "generator_radius"
+- @subpage page_custom_attribute_no_mood_change "no_mood_change"
+- @subpage FLAG_ONE_HIT
+- @subpage object::pick_up
+- @subpage FLAG_RANDOM_MOVE
+- @subpage FLAG_RUN_AWAY
+- @subpage FLAG_SEE_INVISIBLE
+- @subpage FLAG_STAND_STILL
+- @subpage FLAG_CONTENT_ON_GEN
+- @subpage FLAG_UNAGGRESSIVE
+- @subpage FLAG_NO_DROP
+- @subpage FLAG_NO_STRENGTH
+- @subpage FLAG_AUTO_APPLY
+- @subpage object::expmul
+- @subpage page_custom_attribute_wc_increase_rate "wc_increase_rate"
+- @subpage object::skill
+- @subpage object::casting_time
+- @subpage page_custom_attribute_casting_requirements "casting_requirements"
+- @subpage object::duration
+- @subpage page_custom_attribute_immunity_chance "immunity_chance"
+- @subpage page_custom_attribute_anim_full "anim_full"
+- @subpage page_custom_attribute_base_speed "base_speed"
+- @subpage page_custom_attribute_face_full "face_full"
+- @subpage object::move_allow
+- @subpage page_custom_attribute_passenger_limit "passenger_limit"
+- @subpage page_custom_attribute_weight_speed_ratio "weight_speed_ratio"
+- @subpage FLAG_BLESSED
+- @subpage FLAG_CAN_ROLL
+- @subpage object::weapontype
 */

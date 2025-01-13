@@ -1,11 +1,17 @@
 /**
 @fn FLAG_UNDEAD
-@section sec_undead Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>
 		<th>Description</th>
 	</tr>	<tr>
+		<td>
+@ref page_type_54, @ref page_type_6
+		</td><td>                If set on a food with a non-null title, consumption will turn the player
+                undead for the duration of the food effect.</td>
+	</tr>
+	<tr>
 		<td>
 @ref page_type_215, @ref page_type_28
 		</td><td>            Several spells only affect undead monsters: turn undead, banish

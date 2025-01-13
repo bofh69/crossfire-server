@@ -1,6 +1,6 @@
 /**
 @fn FLAG_CAST_SPELL
-@section sec_can_cast_spell Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>

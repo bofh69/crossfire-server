@@ -6,8 +6,6 @@ See @ref page_type_34
 /**
 @page page_type_34 Helmet
 
-
-@section sec_desc_34 Description
             Wearing a helmet, the object's stats will directly be inherited to
             the player. Normal helmets usually increase defense, while crowns
             add more special bonuses like stats/resistances paired with low
@@ -19,7 +17,7 @@ Type defined by:
 - @ref object::type = 34
 
 
-@section sec_attr_34 Attributes
+# Attributes
 
 <table>
 	<tr>
@@ -275,6 +273,13 @@ Type defined by:
             the monster to use/wear the item - you must set &lt;is applied&gt;.
             Enabling this flag doesn't make any sense if the item is NOT in a
             monster's inventory.
+		</td>
+	</tr>
+	<tr>
+		<td>is buildable</td>
+		<td>@ref FLAG_IS_BUILDABLE</td>
+		<td>            If set, usually for floors, players can use tools and building
+            materials to build above this object.
 		</td>
 	</tr>
 	<tr>

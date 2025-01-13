@@ -1,6 +1,6 @@
 /**
 @fn living::hp
-@section sec_hp Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -35,6 +35,13 @@
 @ref page_type_23
 		</td><td>            The more &lt;hitpoints&gt; the door has, the longer it takes to be
             broken.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_54, @ref page_type_6
+		</td><td>                At the time of eating, this food will restore an additional &lt;health restored&gt;
+                hit points, in addition to the basic healing tied to the &lt;food&gt; value.
+                Negative values drain health instead of restore it.</td>
 	</tr>
 	<tr>
 		<td>

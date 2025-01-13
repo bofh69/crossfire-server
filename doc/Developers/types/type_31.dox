@@ -6,8 +6,6 @@ See @ref page_type_31
 /**
 @page page_type_31 Altar Trigger
 
-
-@section sec_desc_31 Description
             Altar_triggers work pretty much like normal altars (drop sacrifice
             -> connection activated), except for the fact that they reset after
             usage. Hence, altar_triggers can be used infinitely. 
@@ -18,7 +16,7 @@ Type defined by:
 - @ref object::type = 31
 
 
-@section sec_attr_31 Attributes
+# Attributes
 
 <table>
 	<tr>
@@ -194,6 +192,13 @@ Type defined by:
             some can be made visible by the show_invisible spell. If in doubt,
             test it. Putting an invisible object under the floor always prevents
             it from being shown.
+		</td>
+	</tr>
+	<tr>
+		<td>is buildable</td>
+		<td>@ref FLAG_IS_BUILDABLE</td>
+		<td>            If set, usually for floors, players can use tools and building
+            materials to build above this object.
 		</td>
 	</tr>
 	<tr>

@@ -1,0 +1,15 @@
+/**
+@fn FLAG_BLIND
+# Use
+<table>
+	<tr>
+		<th>Type(s)</th>
+		<th>Description</th>
+	</tr>	<tr>
+		<td>
+@ref page_type_54, @ref page_type_6
+		</td><td>                If set on a food with a non-null title, consumption will blind the player until
+                the food effect wears off.</td>
+	</tr>
+
+*/

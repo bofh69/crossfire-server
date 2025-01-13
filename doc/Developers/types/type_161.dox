@@ -6,8 +6,6 @@ See @ref page_type_161
 /**
 @page page_type_161 Building material
 
-
-@section sec_desc_161 Description
             Materials are what the player can build with the help of a
             builder. They can put walls, doors, buttons, and such.
 
@@ -17,7 +15,7 @@ Type defined by:
 - @ref object::type = 161
 
 
-@section sec_attr_161 Attributes
+# Attributes
 
 <table>
 	<tr>
@@ -167,6 +165,13 @@ Type defined by:
             some can be made visible by the show_invisible spell. If in doubt,
             test it. Putting an invisible object under the floor always prevents
             it from being shown.
+		</td>
+	</tr>
+	<tr>
+		<td>is buildable</td>
+		<td>@ref FLAG_IS_BUILDABLE</td>
+		<td>            If set, usually for floors, players can use tools and building
+            materials to build above this object.
 		</td>
 	</tr>
 	<tr>

@@ -1,6 +1,6 @@
 /**
 @fn object::move_block
-@section sec_move_block Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>

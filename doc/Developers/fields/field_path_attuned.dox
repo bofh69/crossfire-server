@@ -1,6 +1,6 @@
 /**
 @fn object::path_attuned
-@section sec_path_attuned Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -11,6 +11,13 @@
 		</td><td>                Click on the &lt;attuned paths&gt; button to select spellpaths.
                 The player will get attuned to the specified spellpaths while
                 wearing this item.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_54, @ref page_type_6
+		</td><td>                Click on the &lt;attuned paths&gt; button to select spellpaths.
+                If set on a food with a non-null title, the player will get attuned to
+                the specified spellpaths for the duration of the food effect.</td>
 	</tr>
 	<tr>
 		<td>

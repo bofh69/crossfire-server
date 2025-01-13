@@ -6,8 +6,6 @@ See @ref page_type_1
 /**
 @page page_type_1 Player
 
-
-@section sec_desc_1 Description
             This type of objects must not be used on a map. They will be ignored
             during map load by server.
 
@@ -17,7 +15,7 @@ Type defined by:
 - @ref object::type = 1
 
 
-@section sec_attr_1 Attributes
+# Attributes
 
 <table>
 	<tr>
@@ -147,6 +145,13 @@ Type defined by:
             some can be made visible by the show_invisible spell. If in doubt,
             test it. Putting an invisible object under the floor always prevents
             it from being shown.
+		</td>
+	</tr>
+	<tr>
+		<td>is buildable</td>
+		<td>@ref FLAG_IS_BUILDABLE</td>
+		<td>            If set, usually for floors, players can use tools and building
+            materials to build above this object.
 		</td>
 	</tr>
 	<tr>

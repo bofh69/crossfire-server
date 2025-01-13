@@ -1,6 +1,6 @@
 /**
 @fn object::attacktype
-@section sec_attacktype Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -11,6 +11,12 @@
 		</td><td>                The disease will attack the host with the given &lt;attack type&gt;.
                 Godpower attack type is commonly used for "unresistable"
                 diseases.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_54, @ref page_type_6
+		</td><td>                If set on a food with a non-null title, consumption will grant the
+                player the set attacktypes.</td>
 	</tr>
 	<tr>
 		<td>

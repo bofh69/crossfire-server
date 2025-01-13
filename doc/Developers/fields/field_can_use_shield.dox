@@ -1,6 +1,6 @@
 /**
 @fn FLAG_USE_SHIELD
-@section sec_can_use_shield Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>

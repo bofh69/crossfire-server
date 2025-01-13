@@ -1,0 +1,15 @@
+/**
+@fn FLAG_IS_FLOOR
+# Use
+<table>
+	<tr>
+		<th>Type(s)</th>
+		<th>Description</th>
+	</tr>	<tr>
+		<td>
+@ref page_type_42
+		</td><td>            If &lt;insert below&gt; is set, the creator will create the item
+            below itself instead on top of everything.</td>
+	</tr>
+
+*/

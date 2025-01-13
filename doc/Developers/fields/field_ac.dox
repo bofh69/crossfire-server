@@ -1,6 +1,6 @@
 /**
 @fn living::ac
-@section sec_ac Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -25,6 +25,12 @@
 @ref page_type_23
 		</td><td>            Doors of high &lt;armor class&gt; are less likely to get hit. &lt;armor
             class&gt; can be considered the "counter piece" to &lt;weapon class&gt;.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_54, @ref page_type_6
+		</td><td>                If set on a food with a non-null title, consumption will result in this amount
+                being added to the player's AC until the food effect wears off.</td>
 	</tr>
 	<tr>
 		<td>

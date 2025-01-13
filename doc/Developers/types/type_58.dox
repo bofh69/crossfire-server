@@ -6,8 +6,6 @@ See @ref page_type_58
 /**
 @page page_type_58 Battleground
 
-
-@section sec_desc_58 Description
             Battleground is very special: In short, players can die on
             battleground without any death penalties. They don't loose or gain
             experience while on battleground. Acid, draining and depletion
@@ -21,7 +19,7 @@ Type defined by:
 - @ref object::type = 58
 
 
-@section sec_attr_58 Attributes
+# Attributes
 
 <table>
 	<tr>
@@ -171,6 +169,13 @@ Type defined by:
             some can be made visible by the show_invisible spell. If in doubt,
             test it. Putting an invisible object under the floor always prevents
             it from being shown.
+		</td>
+	</tr>
+	<tr>
+		<td>is buildable</td>
+		<td>@ref FLAG_IS_BUILDABLE</td>
+		<td>            If set, usually for floors, players can use tools and building
+            materials to build above this object.
 		</td>
 	</tr>
 	<tr>

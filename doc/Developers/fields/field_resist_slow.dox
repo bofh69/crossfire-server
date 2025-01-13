@@ -14,6 +14,15 @@
 	</tr>
 	<tr>
 		<td>
+@ref page_type_54, @ref page_type_6
+		</td><td>                Resistances on food items make them more durable against
+                spellcraft of the appropriate kind. When set on an artifact
+                food/drink, it also grants the player resistance equal to
+                half the provided resistance value for the duration of the
+                food's effect.</td>
+	</tr>
+	<tr>
+		<td>
 @ref page_type_72
 		</td><td>                Resistances on flesh items make them more durable against
                 spellcraft of the appropriate kind. It also allows dragon

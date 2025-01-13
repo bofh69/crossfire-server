@@ -6,8 +6,6 @@ See @ref page_type_113
 /**
 @page page_type_113 Girdle
 
-
-@section sec_desc_113 Description
             Wearing a girdle, the object's stats will directly be inherited to
             the player. Girdles usually provide stats- or damage bonuses and no
             defense. 
@@ -18,7 +16,7 @@ Type defined by:
 - @ref object::type = 113
 
 
-@section sec_attr_113 Attributes
+# Attributes
 
 <table>
 	<tr>
@@ -274,6 +272,13 @@ Type defined by:
             the monster to use/wear the item - you must set &lt;is applied&gt;.
             Enabling this flag doesn't make any sense if the item is NOT in a
             monster's inventory.
+		</td>
+	</tr>
+	<tr>
+		<td>is buildable</td>
+		<td>@ref FLAG_IS_BUILDABLE</td>
+		<td>            If set, usually for floors, players can use tools and building
+            materials to build above this object.
 		</td>
 	</tr>
 	<tr>

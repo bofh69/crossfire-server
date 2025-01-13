@@ -1,6 +1,6 @@
 /**
 @fn object::move_slow_penalty
-@section sec_move_slow_penalty Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>

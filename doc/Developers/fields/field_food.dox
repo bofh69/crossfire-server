@@ -1,6 +1,6 @@
 /**
 @fn living::food
-@section sec_food Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -36,16 +36,25 @@
 	</tr>
 	<tr>
 		<td>
-@ref page_type_54, @ref page_type_72, @ref page_type_6
+@ref page_type_54, @ref page_type_6
 		</td><td>            The player's stomach will get filled with this amount of food
             points. The player's health will increase by &lt;food points&gt;/50
-            hp.</td>
+            hp. If title or artifact is set, a force effect is inserted into
+            the player's inventory that grants boosts from sections effects and
+            resistances for &lt;food points&gt;/4 seconds.</td>
 	</tr>
 	<tr>
 		<td>
 @ref page_type_83
 		</td><td>            The number of times this duplicator can be used. If not 0, then the duplicator
             will be removed after being used this number of times.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_72
+		</td><td>            The player's stomach will get filled with this amount of food
+            points. The player's health will increase by &lt;food points&gt;/50
+            hp.</td>
 	</tr>
 	<tr>
 		<td>

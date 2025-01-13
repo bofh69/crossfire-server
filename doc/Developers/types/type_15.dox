@@ -6,8 +6,6 @@ See @ref page_type_15
 /**
 @page page_type_15 Weapon
 
-
-@section sec_desc_15 Description
             Wielding a weapon, the object's stats will directly be inherited to
             the player. Usually enhancing his fighting-abilities. Non-magical
             weapons can be improved with scrolls. 
@@ -18,7 +16,7 @@ Type defined by:
 - @ref object::type = 15
 
 
-@section sec_attr_15 Attributes
+# Attributes
 
 <table>
 	<tr>
@@ -281,6 +279,13 @@ Type defined by:
             some can be made visible by the show_invisible spell. If in doubt,
             test it. Putting an invisible object under the floor always prevents
             it from being shown.
+		</td>
+	</tr>
+	<tr>
+		<td>is buildable</td>
+		<td>@ref FLAG_IS_BUILDABLE</td>
+		<td>            If set, usually for floors, players can use tools and building
+            materials to build above this object.
 		</td>
 	</tr>
 	<tr>

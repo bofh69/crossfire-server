@@ -1,6 +1,6 @@
 /**
 @fn FLAG_USE_WEAPON
-@section sec_can_use_weapon Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>

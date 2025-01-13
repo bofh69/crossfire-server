@@ -1,6 +1,6 @@
 /**
 @fn living::maxhp
-@section sec_maxhp Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -13,6 +13,13 @@
                 outside a host before it vanishes. A negative value means the
                 disease lasts for permanent (which is only recommended to use in
                 maps without monsters).</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_54, @ref page_type_6
+		</td><td>                If set on a food with a non-null title, consumption will grant the player
+                an adjustment to their hitpoint regeneration rate equal to &lt;health regeneration&gt;.
+                Negative values slow regeneration, positive values increase it.</td>
 	</tr>
 	<tr>
 		<td>

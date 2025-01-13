@@ -6,8 +6,6 @@ See @ref page_type_70
 /**
 @page page_type_70 Ring
 
-
-@section sec_desc_70 Description
             Rings are worn on the hands - one ring each. Wearing rings, the
             object's stats will directly be inherited to the player. Usually
             enhancing his spell-casting potential. 
@@ -18,7 +16,7 @@ Type defined by:
 - @ref object::type = 70
 
 
-@section sec_attr_70 Attributes
+# Attributes
 
 <table>
 	<tr>
@@ -274,6 +272,13 @@ Type defined by:
             the monster to use/wear the item - you must set &lt;is applied&gt;.
             Enabling this flag doesn't make any sense if the item is NOT in a
             monster's inventory.
+		</td>
+	</tr>
+	<tr>
+		<td>is buildable</td>
+		<td>@ref FLAG_IS_BUILDABLE</td>
+		<td>            If set, usually for floors, players can use tools and building
+            materials to build above this object.
 		</td>
 	</tr>
 	<tr>

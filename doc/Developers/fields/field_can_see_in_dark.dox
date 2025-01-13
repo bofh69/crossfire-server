@@ -1,11 +1,17 @@
 /**
 @fn FLAG_SEE_IN_DARK
-@section sec_can_see_in_dark Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>
 		<th>Description</th>
 	</tr>	<tr>
+		<td>
+@ref page_type_54, @ref page_type_6
+		</td><td>                If set on a food with a non-null title, consumption will grant the player
+                dark vision for the duration of the food effect.</td>
+	</tr>
+	<tr>
 		<td>
 @ref page_type_215, @ref page_type_28
 		</td><td>                A monster with the ability to &lt;see in darkness&gt; cannot be

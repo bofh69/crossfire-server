@@ -1,6 +1,6 @@
 /**
 @fn living::Int
-@section sec_Int Use
+# Use
 <table>
 	<tr>
 		<th>Type(s)</th>
@@ -22,6 +22,12 @@
 @ref page_type_158
 		</td><td>                The player's intelligence will rise by the given value while
                 being infected. (Negative values make intelligence fall)</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_54, @ref page_type_6
+		</td><td>                If set on a food with a non-null title, consumption will result in this amount
+                being added to the player's intelligence until the food effect wears off.</td>
 	</tr>
 	<tr>
 		<td>

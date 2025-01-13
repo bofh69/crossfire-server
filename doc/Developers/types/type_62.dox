@@ -6,8 +6,6 @@ See @ref page_type_62
 /**
 @page page_type_62 Magic Wall
 
-
-@section sec_desc_62 Description
             Magic walls fire spells in a given direction, in regular intervals.
             Magic walls can contain any spell. However, some spells do not
             operate very successfully in them. The only way to know is to test
@@ -23,7 +21,7 @@ Type defined by:
 - @ref object::type = 62
 
 
-@section sec_attr_62 Attributes
+# Attributes
 
 <table>
 	<tr>
@@ -199,6 +197,13 @@ Type defined by:
             some can be made visible by the show_invisible spell. If in doubt,
             test it. Putting an invisible object under the floor always prevents
             it from being shown.
+		</td>
+	</tr>
+	<tr>
+		<td>is buildable</td>
+		<td>@ref FLAG_IS_BUILDABLE</td>
+		<td>            If set, usually for floors, players can use tools and building
+            materials to build above this object.
 		</td>
 	</tr>
 	<tr>

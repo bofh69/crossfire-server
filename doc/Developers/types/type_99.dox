@@ -6,8 +6,6 @@ See @ref page_type_99
 /**
 @page page_type_99 Boots
 
-
-@section sec_desc_99 Description
             Wearing boots, the object's stats will directly be inherited to
             the player. Usually enhancing his speed, or granting some minor
             protection bonus. 
@@ -18,7 +16,7 @@ Type defined by:
 - @ref object::type = 99
 
 
-@section sec_attr_99 Attributes
+# Attributes
 
 <table>
 	<tr>
@@ -274,6 +272,13 @@ Type defined by:
             the monster to use/wear the item - you must set &lt;is applied&gt;.
             Enabling this flag doesn't make any sense if the item is NOT in a
             monster's inventory.
+		</td>
+	</tr>
+	<tr>
+		<td>is buildable</td>
+		<td>@ref FLAG_IS_BUILDABLE</td>
+		<td>            If set, usually for floors, players can use tools and building
+            materials to build above this object.
 		</td>
 	</tr>
 	<tr>
