@@ -1,8 +1,6 @@
 /**
 
-@mainpage Crossfire Server Documentation
-
-@section main_intro Welcome to the Crossfire server documentation.
+@mainpage Overview
 
 This documentation only covers the technical aspects of the server source code. It does not cover how to play, or anything like that (but it may come someday, who knows).
 
