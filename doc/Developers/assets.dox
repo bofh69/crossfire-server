@@ -4,6 +4,7 @@
 
 - @subpage asset_guide "Asset-Making Guide"
 - @subpage page_animations "Animations"
+- @subpage smoothing "Smoothing"
 
 <b>Assets</b> are @ref page_archetype "archetypes", @ref page_treasure_list "treasures", @ref page_artifact "artifacts", in short anything except @ref page_map "maps" and @ref page_region "regions".
 

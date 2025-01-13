@@ -1,47 +1,21 @@
-%% LyX 1.3 created this file.  For more info, see http://www.lyx.org/.
-%% Do not edit unless you really know what you are doing.
-\documentclass[english]{article}
-\usepackage{pslatex}
-\usepackage[T1]{fontenc}
-\usepackage[latin1]{inputenc}
-\usepackage{graphicx}
-\IfFileExists{url.sty}{\usepackage{url}}
-                      {\newcommand{\url}{\texttt}}
+# Smoothing {#smoothing}
 
-\makeatletter
-\usepackage{babel}
-\makeatother
-\begin{document}
-
-\title{Documentation on smoothing\\
-Draft}
-
-
-\author{Tchize}
-
-
-\date{Seven of July 2003}
-
-\maketitle
-
-\section{Introduction}
+\author Tchize
+\date 2003-07-07
 
 The crossfire graphical interface and internal map handling relies
 on a map made of square. No object can lies between squares. A typical
 square has the size of a standing player or other humanoid sized creature
-(Goblins, Orcs, Gnolls, Dwarvens, Elves,\ldots). This lead to an awfull
+(Goblins, Orcs, Gnolls, Dwarvens, Elves, etc.). This lead to an awfull
 interface concerning terrains transitions (Sea shores, road borders,
 mountains, a.s.o)
 
 There are 2 ways to get rid of this problem:
 
-\begin{itemize}
-\item Suppress the square by square behaviour of map handling. This means
-rework half of crossfire code and redraw all maps
-\item Use some magic illusion.
-\end{itemize}
+- Suppress the square by square behaviour of map handling. This means rework half of crossfire code and redraw all maps
+- Use some magic illusion.
 
-\section{What is smoothing}
+## What is smoothing
 
 Large discussions in the cf-devel mailing list was around a document
 on terrain transitions available on \url{http://www.gamedev.net/reference/articles/article934.asp}.
@@ -55,27 +29,24 @@ end abruptly but instead would have some hills above the neighbor
 sand.
 
 
-\section{How to smooth?}
+## How to smooth?
 
 Next of this document is divided in 2 parts. Drawers should be interrested
 only in first part while developpers may be interested in both parts.
 
-
-\subsection{Basic smoothing}
+### Basic smoothing
 
 Basically, there need to be some order for smoothing. If everything
 draws itself above every surrounding square, we would end up with
 some awful bunch of crapy disgusting mixture of color (a Picasso or
 alike).
 
-So, we comme to the
-
-\begin{flushright}\textbf{First Rule}\end{flushright}
+So, we comme to the **First Rule**:
 
 An object O may draw itself above a neighbor object V if, and only
 if, 0 as a <<smoothlevel>> higher than V. See the things like that:
 
-\includegraphics{img/smoothlevel.eps}
+![](img/smoothlevel.eps)
 
 O in the example picture has a higher priority than V so O will overlap
 V a bit but V will not overlap O.
@@ -96,9 +67,7 @@ new elements in the future, you rather choose a high value for mountains
 
 So now you have chosen the smoothlevel for the mountain. What on hell
 are you supposed to draw? You know what overlap what is decided by
-smoothlevel. But the graphics used during the smoothing is the
-
-\begin{flushright}\textbf{Second Rule}\end{flushright}
+smoothlevel. But the graphics used during the smoothing is the **Second Rule**:
 
 The picture used to draw a given object depend on the face of the
 object. All objects using the grass face, for example, if they have
@@ -107,8 +76,7 @@ So you will bind with the picture grass.111 a set of pictures telling
 the client what to draw when smoothing an object having the face grass.111.
 Take a look at the canvas below:
 
-\noindent \includegraphics[%
-  width=1.0\columnwidth]{img/canvas_smooth.eps}
+![](img/canvas_smooth.eps)
 
 Each square have a size of 32x32, which is the size used by the current
 image sets. This canvas handles all cases of corner, borders, L shaped,
@@ -117,19 +85,18 @@ by 2. The first line is all broder related transition. The second
 line is corner related transitions. Here is an example picture for
 grass (yeah really need someone to rework it):
 
-\begin{flushleft}\includegraphics[%
-  width=1.0\columnwidth]{img/sgrass.eps}\end{flushleft}
+![](img/sgrass.eps)
 
 The picture is named sgrass.base.111.png and located in the ground/smooth/
 directory of archetype. Ok, now you have a picture for smoothing grass,
 you have a smoothlevel for grass. There is only one last thing to
 do:
 
-\begin{flushright}\textbf{Final Rule}\end{flushright}
+**Final Rule**
 
 In the archetype of the grass, you need to add a line
 
-\texttt{smoothface grass.111 sgrass.111}
+    smoothface grass.111 sgrass.111
 
 The first is the picture you want to smooth (here it is grass.111%
 \footnote{Please note we suppressed the .png and the .base.\ elements of grass.base.111.png
@@ -145,11 +112,3 @@ above so mapmakers or drawers can see immediatly there is a problem.
 
 Now, drawers know everything. Coders might want to read following
 part.
-
-
-\subsection{Smoothing in the code}
-
-Guess what\ldots
-
-TODO
-\end{document}
