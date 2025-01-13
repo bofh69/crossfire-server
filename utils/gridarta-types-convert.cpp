@@ -938,10 +938,10 @@ void write_type_index(void) {
     index = fopen(buf, "w+");
     fprintf(index, "/**\n@page type_index Type index\n");
 
-    fprintf(index, "Types not listed here have the attributes defined in @ref page_type_0 \"this page\".\n\n");
+    fprintf(index, "Types not listed here have the attributes defined in @subpage page_type_0 \"this page\".\n\n");
 
     for (type = 0; type < type_count; type++) {
-        fprintf(index, "- @ref page_type_%d \"%s\"\n", types[type]->number, types[type]->name);
+        fprintf(index, "- @subpage page_type_%d \"%s (%d)\"\n", types[type]->number, types[type]->name, types[type]->number);
     }
 
     fprintf(index, "*/\n");
@@ -962,7 +962,7 @@ void write_attribute_index(void) {
     fprintf(index, "This page lists all attributes.\n\n");
 
     for (attribute = 0; attribute < attribute_count; attribute++) {
-        fprintf(index, "- @ref ");
+        fprintf(index, "- @subpage ");
         write_attribute_reference(attributes[attribute]->field, index);
         fprintf(index, "\n");
     }
