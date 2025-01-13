@@ -546,6 +546,7 @@ test/unit/server/check_account
 test/unit/server/check_account_char
 test/unit/server/check_monster_change
 utils/cre/build/
+utils/gridarta-types-convert
 utils/mapper/crossfire-mapper
 utils/mapper/html
 utils/openseadragon
@@ -556,3 +557,4 @@ test/unit/common/check_artifact
 test/unit/common/check_mapsave
 configure~
 *.qm
+*.gmon
