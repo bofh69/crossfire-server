@@ -21,9 +21,7 @@ another format, function will need to convert it (eg, atoi) as needed.
 
 @subsection ssec_code From the code
 
-The following functions are available:
-
-@subsubsection sssec_get const char *object_get_value(object *op, const char *key)
+@ref object_get_key_value "key_value *object_get_key_value(const object *ob, const char *key)"
 
   Returns the value parameter for the given key, or NULL if the
   object doesn't have such an extra_field.  The string returned is
@@ -33,7 +31,7 @@ The following functions are available:
   been set to an empty value.  If this differentiation is necessary,
   a value should be stored away.
 
-@subsubsection sssec_set int object_set_value(object *op, const char *key, const char *value, int add_key)
+@ref object_set_value "int object_set_value(object *op, const char *key, const char *value, int add_key)"
 
   Sets the value for the given key. If add_key is true, it will add the key
   if not defined, otherwise, it only updates existing keys.  Returns
@@ -161,6 +159,6 @@ The following should be considered:
   above some certain amount.  It's also conceivable since the real
   high cost here is the comparisons, hashing the keys or values and
   storing that hash in the object could be a big gain, but once again,
-  depends on how often the values change (as you'd have to recalcuate
+  depends on how often the values change (as you'd have to recalculate
   the entire hash)
 */

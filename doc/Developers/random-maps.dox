@@ -1,6 +1,6 @@
 /**
 
-@page random_maps_page Random map technical information
+@page random_maps_page Random Maps
 
 @section rmp_using Using random maps
 
@@ -35,6 +35,7 @@ generator will do special things with the object depending on which directory
 it is in.  Style maps are located in <tt>maps/styles/</tt>,
 you may use Gridarta to modify the style maps, or create new ones.
 
+See the main page ag @subpage page_random_map_styles "Random Map Styles".
 
 @subsection rmp_sp Style Parameters
 

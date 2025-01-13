@@ -13,7 +13,7 @@ A list of all types is available in the @subpage type_index "Type Index".
 
 Objects store a number of fields. The meaning of each field may change depending on the object type. See the @subpage field_index "Field Index" for details.
 
-Some objects have @subpage page_custom_attributes "custom attributes", which are not stored as fields but rather as @subpage page_key_value "key-value pairs".
+Some objects have @subpage page_custom_attributes "custom attributes", which are not stored as fields but rather as key-value pairs.
 
 This structure should not be created directly, but managed through suitable functions (see @ref sec_obj_functions below).
 
