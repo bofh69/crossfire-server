@@ -1,4 +1,4 @@
-TECHNICAL INFORMATION ABOUT MAPS:
+# Technical Information About Maps {#page_map_tech}
 
 This documented is intended to convey technical information on how
 crossfire deals with the map objects and objects placed on the maps.  For
@@ -279,4 +279,3 @@ be bow, mace, sword, floor
 
 Because visibility is not an object attribute, there is generally little that
 can be done to control this, other than to set up the appropriate stacking.
-

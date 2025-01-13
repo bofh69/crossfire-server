@@ -1,3 +1,4 @@
+# Python {#plugin_python}
 This documentation is not uptodate. Latest version is in the python.ps file,
 or available online from http://wiki.cross-fire.org/doku.php/cfpython:cfpython
 

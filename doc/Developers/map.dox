@@ -3,6 +3,8 @@
 
 Maps are where the player and monsters roam. They contain objects, and some pre-computed information for each map square.
 
+When making maps, please follow the @subpage page_map_guide "Mapping Guide".
+
 All objects without the ::FLAG_REMOVED set are ultimately on a map, either directly or because their top-level container is on a map. The only exception are objects for archetypes and artifacts, which aren't anywhere.
 
 Maps reset after some time, reverting to their default state. It is possible that the map is temporarily saved to disk to reclaim memory, in which case it will be reloaded when a player tried to enter it.
@@ -28,6 +30,8 @@ Storage location for maps:
 @section maps_base Map creation, load, save and reset
 
 The ::mapstruct structure contains all the map information, objects it contains, precomputed fields for fast access.
+
+See other @subpage page_map_tech "technical information about maps".
 
 The usual function to call to obtain a valid ::mapstruct structure is ready_map_name(). It is responsible for loading a map from disk, adding unique items and overlays, reloading a map if it was swapped out. The flag parameter controls what should or not be done.
 

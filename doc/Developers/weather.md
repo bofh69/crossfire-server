@@ -1,3 +1,5 @@
+# Weather {#system_weather}
+
 Note: weather was removed in trunk.
 
 This file is for historical purposes only.

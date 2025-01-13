@@ -1,26 +1,10 @@
-SPELLS:
-------------------------------------------------------------------------------
-Index:
-
-1. Background
-2. Spell Objects
-3. Spell Paths
-4. Spell Subtypes
-5. Spell Casting Objects
-6. Arch Directory Layout
-7. Programming Notes
-8. Abilities
-9. Spell Merging
-
-------------------------------------------------------------------------------
-1. BACKGROUND
+# Spells {#system_spell}
 
 This document describe all things spell and spell related that developers
 need to know.  This document outlines the new spell objects and how
 this all works.
 
-------------------------------------------------------------------------------
-2. SPELL OBJECTS
+## Spell Objects {#spell_object}
 
 In the old model, each spell had a specific number associated with it.
 Monster spell abilities, while objects, just said to use spell number
@@ -182,8 +166,7 @@ When a spell is cast, often it copies over certain values into the
 SPELL_EFFECT (102).  The subtype of the SPELL_EFFECT, which should generally
 match that of SPELL itself, determines what the spell does.
 
-------------------------------------------------------------------------------
-3. SPELL PATHS DOCUMENTATION
+## Spell Paths {#spell_path}
 
 Long ago a number of archmages discovered patterns in the web that spells
 weave in the aether. They found that some spells had structural similarities
@@ -242,8 +225,7 @@ objects with path_attuned attributes should have path_repelled and path_denied
 attributes as well, to balance out (eg attuned to Fire, repelled from
 Protection, and denied from Restoration)
 
-------------------------------------------------------------------------------
-4. Spell Subtypes
+## Spell Subtypes {#spell_subtypes}
 
 This section lists specific spell subtypes and what they really
 do.  The idea is to try and generalize the object types (cones,
@@ -1036,8 +1018,7 @@ SP_ITEM_CURSE_BLESS (49):
     Note that if both cursed and blessed are set, cursed only applies.
     Also, no check is made to not have an item both cursed and blessed.
 
-------------------------------------------------------------------------------
-5. Spell Casting Objects
+## Spell Casting Objects {#spell_casters}
 
 As described in section 2 above, objects that cast spells (wands, rods,
 scrolls, etc) contain the spell they cast in their inventory.  When the player
@@ -1066,8 +1047,7 @@ For scrolls, nrof is the number of scrolls to make.  This overrides the
 nrof value for the scroll itself - this allows for fine tuning number
 of scrolls that show up for different spells.
 
-RODS/HORNS:
-----------
+### RODS/HORNS:
 hp is the amount of 'energy' the rod currently has.  when a spell is
 cast, hp is reduced by the amount of sp/grace the spell takes up.
 speed: how often the rod recharges.  There used to be a much more complicated
@@ -1082,8 +1062,7 @@ be set in a map (or elsewhere), and that change would stick.
 Within the archetype itself, the maxhp value determines the number of
 spells the rod can hold before it needs to recharge again.
 
-POTIONS/DUSTS:
---------------
+### POTIONS/DUSTS:
 potions and dusts (which were really just potions with a is_dust flag set)
 have been redone in several ways.
 
@@ -1098,8 +1077,7 @@ same type in the first place - other than name, they really had
 none of the same code.
 
 
-FIREWALL (62)
-----------------------------
+### FIREWALL (62)
 These objects are very basic - they cast a spell whenever they activate.
 If they have a spell object in their inventory
 (must be first item), that is the spell that is cast.  Otherwise, they
@@ -1113,8 +1091,7 @@ Note that FIRECHEST (61) got folded into FIREWALLS, because functionally,
 they were identical - just set 'sp 0' in the firechest, and it fires
 in a random direction.
 
-------------------------------------------------------------------------------
-6. Arch Directory Layout
+## Spell Arch Layout {#spell_arch}
 
 This section describes the basic layout of the archetypes in the arch
 directory.  This explanation is here to try and prevent confusion (where
@@ -1184,8 +1161,7 @@ lightning_bolt.base.111.png (and so on) are the images used by the
 In the case of subtype directories with lots of entries, it is likely that the
 directories may then get broken up by things like attacktype of the spells.
 
-------------------------------------------------------------------------------
-7. PROGRAMMING NOTES
+## Programming Notes {#spell_notes}
 
 The number of top level object types is reduced - instead, many are now
 SPELL_EFFECT, with the subtype being the same as the spell that created
@@ -1210,8 +1186,7 @@ basically all the defines are in include/spells.h.  This is a much simpler
 file than once was here.  Remember, all the data now comes from the
 archetypes.
 
-------------------------------------------------------------------------------
-8. ABILITIES
+## Abilities {#spell_abilities}
 
 In the old code, abilities had some special meaning in terms of what
 spells the monster would cast.
@@ -1239,8 +1214,7 @@ is created.
 hp/sp: Index for the spell that is used.  One was 'short' range vs
    long range.
 
-------------------------------------------------------------------------------
-9. SPELL MERGING
+## Spell Merging {#spell_merging}
 
 In May 2007, I (Mark Wedel) added code added causes spells to merge.  This
 section briefly defines what was done, performance impact, and other random
@@ -1276,8 +1250,7 @@ the spell merging requires op->range=0 change, as described below.
 
 Notes on the changes:
 
-op->range=0 in explosion:
--------------------------
+### op->range=0 in explosion:
 Each time the explosion object got an action, if op->range>0, it would try
 to propagate to all neighboring squares.  In almost all cases this is a
 futile exercise, because if that neighboring square has an instance of this
@@ -1313,14 +1286,12 @@ spells A & B @ 2 do not merge, but instead remain individual spell object - B
 can move to 1, A can move to 4, and after doing so, the range to each spell is
 set to zero, and they can then merge at that point
 
-Making was_destroyed() a macro:
--------------------------------
+### Making was_destroyed() a macro:
 This is pretty clear cut - by making it a macro, it reduces the function
 call overhead.  This was also a trivial 1 line function, so making it
 a macro was not particularly messy.
 
-Allowing spells to merge:
--------------------------
+### Allowing spells to merge:
 The simplest aspect of this is to have like spells be merged in
 insert_ob_in_map().  However, as noted above, we won't propagate a spell to a
 space if there is already an instance of that spell from the same casting.  So
@@ -1376,8 +1347,7 @@ spells around, the more that could be merged to give a benefit - in
 comparison, the op->range=0, while reducing the load quite a bit, still would
 not reduce the number of objects on the different spaces.
 
-Other Thoughts Related on Merging:
-----------------------------------
+### Other Thoughts Related on Merging
 After the changes above, this is the top CPU users when run in the test
 program:
 

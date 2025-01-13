@@ -1,3 +1,5 @@
+# Traps {#system_trap}
+
 Map Maker's Guide to Runes and Traps	(by peterm@soda.berkeley.edu)
 
 * in this document, 'rune' and 'trap' are interchangeable terms.

@@ -1,4 +1,4 @@
-Teleporters
+# Teleporters {#system_teleporter}
 
  'Updated 11/5/95 to include full documentation on teleporters (mwedel)'
 

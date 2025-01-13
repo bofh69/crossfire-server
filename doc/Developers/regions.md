@@ -1,21 +1,12 @@
+# Regions {#page_region}
+
 Included herein is a description of the Region system, as implemented in March 2005.
 
 If by the time you read this, this date is old, then this file may not have been kept
 up to date, either that or no relevant changes have occurred, the Changelog should help
 you determine which is the case.
 
-*****Contents*****
-
-How to read this file
-Overview
-Struct values and meaning
-Sample region file entry and meaning.
-Functions exposed and purpose thereof
-player visible changes
-Known/suspected bugs.
-Future plans
-
-*****How to read this file*****
+## How to read this file
 
 If you are a mapper and want to create a new region for your maps
 read:
@@ -37,7 +28,7 @@ player visible changes
 and, if you care enough...
 Future plans
 
-*****Overview*****
+## Overview
 Regions are connected to maps, they allow a set of common properties to be associated with
 the maps in the game.
 The map struct has had a pointer to a region struct added. This pointer points to the region
@@ -75,7 +66,7 @@ This means that any combination of values can be used scoped appropriately.
 
 Next the values themselves....
 
-*****Struct Values and Meaning*****
+## Struct Values and Meaning
 This contains a list of the information about the regions and what the fields mean.
 *next;
  we construct a singly-linked list of regions, to check all, you go through one by one
@@ -115,7 +106,7 @@ This contains a list of the information about the regions and what the fields me
 *jailx, jaily
  The x and y coordinates on the jailmap the player will go to.
 
-*****Sample Regions file entry*****
+## Sample Regions file entry
 
 region scorn
 longname The Kingdom of Scorn
@@ -145,7 +136,7 @@ nomore
 
 is encountered.
 
-*****Functions exposed and purpose thereof*****
+## Functions exposed and purpose thereof
 
 The following functions are currently accessible, this list is still fluid, expect it to change.
 
@@ -194,7 +185,7 @@ extern void assign_region_parents();
 	called after parse regions, makes the child regions find their parents.
 	shouldn't be called externally yet (maybe later though)
 
-*****Player visible changes*****
+## Player visible changes
 
 The command mapinfo now returns the region name (not longname, but what is included in the map file)
 
@@ -204,13 +195,13 @@ There is a command whereabouts that shows region names and the number of players
 
 who can be given regions as arguments, and only show the players in that region.
 
-*****Known/suspected bugs*****
+## Known/suspected bugs
 
 The region parser is not particularly robust, it dies if the 'endmsg' line is missing,
 or if 'nomore' is missing, or if the 'end' line is missing. These stop the server from
 starting, if it starts, it should be fine afterwards.
 
-*****Future plans*****
+## Future plans
 
 medium term:
 

@@ -1,4 +1,4 @@
-Git Guidelines
+Git Guidelines {#git}
 ==============
 1. All commits should include a log message. The first line of the commit
    should begin with a capital letter and summarize the changes in about

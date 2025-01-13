@@ -15,7 +15,7 @@
  * @file
  * This handles custom timers. See @ref page_timers.
  *
- * @page page_timers Custom timers
+ * @page system_timer Timers
  *
  * It is possible, through the functions in the @ref timers.c file, to create
  * custom timers that get activated after some specified time.

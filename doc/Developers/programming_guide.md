@@ -1,11 +1,14 @@
+# Developer Conventions
+
+- @subpage git "Git Guide"
+
 I've redone this file to hopefully make it a little easier to read through
 and quickly get some idea what to do.  There are 3 sections -
 section 1 is current programming style/hints for developers to make
 things easier.  Section 2 is programming guide for new addition.
 Section 3 is notes for making patches.
 
-------------------------------------------------------------------------------
-Section 1 - currently used conventions/hints for new code writers:
+## Conventions
 
 1) variable abbreviations - op is short for object pointer, ob is for
 object, and pl is for player.
@@ -32,8 +35,7 @@ there are other functions to use the values.
 check and make sure the object still exists after insertion - it is possible
 that the object gets destroyed while being inserted.
 
-------------------------------------------------------------------------------
-Section 2 - Style guide for new additions:
+## Code Style
 
 1) Use descriptive variable names.  op and pl should only be used for
 temporary variables (cycling through the list or the like).  For variables
@@ -224,8 +226,7 @@ These are ok:
 
 Please do NOT use caps expect for typedefs, enums and defines.
 
-------------------------------------------------------------------------------
-Section 3 - sending in patches:
+## Contributing
 
 1) Please send patches on a bug fix or feature enhancement basis
 individually, and not make mega patches.  A diff that changes 10

@@ -1,3 +1,4 @@
+# Shops {#system_shop}
 This guide explains how to implement shop headers on maps.
 
 There are 5 headers related to shops that can be present in a map. Any given map may have some, all or none of them (although in the later case, it isn't considered to be a shop).
@@ -104,7 +105,7 @@ This is a multiplier on all prices offered, items brought from the player are do
 so at a price divided by the greed, items sold to a player are overcharged by a factor of shopgreed.
 
 
-Recognising different types of shops:
+## Recognising different types of shops
 
 Whilst a hit and miss approach will work if there are items of known value to measure
 prices with, it is possible to also guage the manner in which a shop will trade with
@@ -112,7 +113,7 @@ the bargaining skill. Merely use_skill bargaining on an appropriate shop, and th
 details about the shop will be displayed.
 
 
-Value estimation:
+## Value estimation
 no longer does examining an item display the exact sale price you will get (not least
 because there /is/ no exact sale price anymore...). Instead an estimate is given, the
 quality of this estimate is based on your knowledge of any skills that could identify

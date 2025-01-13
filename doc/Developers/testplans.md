@@ -1,4 +1,4 @@
-Unit tests and functional tests documentation.
+# Unit and functional testing {#tests}
 
 Crossfire uses the 'check' C automated testing framework available at
 http://check.sourceforge.net

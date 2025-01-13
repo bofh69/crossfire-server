@@ -1,3 +1,4 @@
+# Sound System {#system_sound}
 This document describes the sound support for Crossfire, and how the client should handle the commands it receives.
 
 -----------------------------------------

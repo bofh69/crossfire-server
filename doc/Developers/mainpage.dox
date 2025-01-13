@@ -6,30 +6,24 @@ This documentation only covers the technical aspects of the server source code. 
 
 Here is a list of topics:
 - @ref page_general
-- @ref page_object, one of the main Crossfire structure
-- @ref page_map, and everything related
-- @ref page_assets
-- @ref page_archetype
-- @ref page_artifact
-- @ref page_player
+    - @ref page_object, one of the main Crossfire structure
+    - @ref page_map, and everything related
+    - @ref page_assets
+    - @ref page_archetype
+    - @ref page_artifact
+    - @ref page_player
+    - @ref page_region
+    - @ref page_treasure_list
 - @ref page_connection
-- @ref page_timers, or how to trigger events after some delay
-- @ref page_connected, that is buttons, triggers, ...
-- @ref page_various
-- @ref page_region
-- @ref page_treasure_list
 - @ref page_client
-- @ref page_custom_attributes
-- @ref page_animations
-- @ref page_dialog
-- @ref module_citylife
-- @ref type_index
-- @ref field_index
-- @ref random_maps_page
-- @ref page_random_map_styles
+- @ref page_systems
+- Modules
+    - @ref module_citylife
+    - @ref module_citybell
 - @ref page_i18n
-- @ref page_type_160
-- @ref page_type_161
+
+## Reference
+
 - @ref PU_xxx
 - @ref IS_xxx
 - @ref FLAG_xxx
@@ -63,5 +57,4 @@ Here is a list of topics:
 - @ref RM_LAYOUT
 - @ref EMOTE_xxx
 - @ref todo
-- @ref module_citybell
 */

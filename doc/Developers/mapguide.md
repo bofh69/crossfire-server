@@ -1,3 +1,5 @@
+# Mapping Guide {#page_map_guide}
+
 This is a guide on what is an acceptable map and what is unacceptable.
 Only acceptable maps will be put in the official Crossfire map distribution
 

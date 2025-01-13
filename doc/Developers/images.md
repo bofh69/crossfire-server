@@ -1,11 +1,6 @@
-url:http://crossfire.freezope.org/docs/Developer%20Docs/images
-meta_type:BackTalk Document
-auth:Basic VG9kZDpyb2NrcG9ydHJvdmVy
-cookie:tree-s="eJzTiFZ3BAOngNSIZFv1WB1NADFEBPk"; fzf_cookie="1"
+# Images {#images}
 
-Making Crossfire Images
-
- Rules for image sets:
+## Rules for image sets
 
   1. Image format for all images should
 be png.
@@ -40,7 +35,7 @@ image sets are optional, but if an arch has one image version -it has to be call
 
 
 
- Internal working of image sets:
+## Internal working of image sets
 
   All images within crossfire are still known without the set or png
 extension.  Thus, for archetypes, the image name is sword.111, not

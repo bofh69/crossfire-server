@@ -2,7 +2,10 @@
 
 @page page_assets Assets
 
-<b>Assets</b> are @subpage page_archetype "archetypes", @subpage page_treasure_list "treasures", @subpage page_artifact "artifacts", in short anything except @ref page_map "maps" and @ref page_region "regions".
+- @subpage asset_guide "Asset-Making Guide"
+- @subpage page_animations "Animations"
+
+<b>Assets</b> are @ref page_archetype "archetypes", @ref page_treasure_list "treasures", @ref page_artifact "artifacts", in short anything except @ref page_map "maps" and @ref page_region "regions".
 
 They reside in the <tt>arch</tt> project.
 
@@ -34,7 +37,7 @@ The following files are recognized as assets.
 	<tr>
 		<td>*.png (if the name conforms to the expected format)</td>
 		<td>crossfire.tar</td>
-		<td>image displayed by the client</td>
+		<td>@subpage images "Image" displayed by the client</td>
 	</tr>
 	<tr>
 		<td>image_info</td>

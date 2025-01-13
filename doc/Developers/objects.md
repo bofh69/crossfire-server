@@ -1,4 +1,4 @@
-
+# Asset-Making Guide {#asset_guide}
 
 This so far only concerns how to make archetypes, treasure and NPC's
 

@@ -2,8 +2,6 @@
 
 @page page_object Objects
 
-@section sec_obj_introduction Introduction
-
 Objects are one of the main structures in Crossfire. They represent every item the player can interact with, including skills, experience, spells and their effects, monsters, walls, including the player as a character in the map...
 
 Objects in Crossfire are represented by the ::object structure. One important field is object::type, which defines the object type (wall, monster, exit, ...). Another important field is object::flags "the flags", that indicate some special properties of the object.

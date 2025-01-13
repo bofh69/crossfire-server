@@ -1,6 +1,6 @@
 /**
 
-@page page_dialog Dialog system
+@page page_dialog Dialog System
 
 The dialog system used by NPCs and magic ear works in the following way:
 - the message is stored in the object::msg field

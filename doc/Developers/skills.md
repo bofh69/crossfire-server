@@ -1,31 +1,4 @@
-SKILLS/EXPERIENCE DOCUMENTATION for DEVELOPERS
-----------------------------------------------
-
-- Summary -
-
-0. Introduction
-
-1. Sketch of system
-   a. Initialization - how skills and experience are linked
-
-2. How to add new skills
-   a. creation of new skill: outline of needed steps
-
-3. Detail of skill archetype values.
-
-4. Skill Tools
-
-5. Skill Scrolls
-
-6. Other Objects
-
-7. Workings of the Skill System
-
-8. Changes & Limitations
-
--------------------------------------------------------------------------
-0. Introduction
----------------
+# Skill System {#system_skill}
 
 Skills were redone to a large extent in April 2003.  This document has been
 updated to reflect how the skills work.
@@ -253,7 +226,6 @@ know immediately the skill that was used (eg, melee combat, search, disarm,
 etc).  In cases of indirect death (spells), we set the skill in the spell
 object to the skill that it should get awarded to.
 
-------------------------
 8. Changes & Limitations
 ------------------------
 
