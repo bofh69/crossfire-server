@@ -3,10 +3,10 @@ Displays known relevant information.
 Without any parameter, displays this help text.
 
 When using  "knowledge list", you can see all you know. An additional parameter can restrict the output to a specific knowledge type. The available types are:
-- alchemy
-- god
-- message
-- monster
+- recipes
+- gods
+- messages
+- monsters
 
 With "knowledge show <number>", displays details about the specified item.
 
