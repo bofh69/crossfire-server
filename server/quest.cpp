@@ -395,7 +395,7 @@ static void quest_set_state(player* dm, player *pl, sstring quest_code, int stat
         if (quest->quest_restart)
             qs->state = QC_CAN_RESTART;
         else
-            qs->is_complete =1;
+            qs->is_complete = 1;
 
     } else {
         draw_ext_info_format(NDI_UNIQUE|NDI_DELAYED, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_QUESTS, "New objective for the quest '%s':", quest->quest_title);
@@ -458,7 +458,7 @@ static void quest_display(player *pl, quest_player *pq, int showall, const char*
             if (state->state == QC_CAN_RESTART) {
                 restart_count++;
                 completed_count++;
-            } else if(state->is_complete) {
+            } else if (state->is_complete) {
                 completed_count++;
             }
         }
@@ -498,7 +498,7 @@ static void quest_display(player *pl, quest_player *pq, int showall, const char*
         while (state) {
             quest = quest_find_by_code(state->code);
             if (quest->parent == NULL) {
-                if (state->state != QC_CAN_RESTART && state->is_complete==0) {
+                if (state->state != QC_CAN_RESTART && state->is_complete == 0) {
                     quest = quest_find_by_code(state->code);
                     draw_ext_info_format(NDI_UNIQUE, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_QUESTS,
                         "(%3d) %s", ++current_count, quest->quest_title);
