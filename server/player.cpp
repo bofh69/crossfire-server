@@ -362,7 +362,9 @@ player *get_player(player *p) {
 
     CLEAR_FLAG(op, FLAG_READY_SKILL);
 
-    /* we need to clear these to -1 and not zero - otherwise,
+    /* All the last_* values have been set to 0 via the memset
+     * above, however if the associated value could be 0 then
+     * we need to clear these to -1 and not zero - otherwise,
      * if a player quits and starts a new character, we wont
      * send new values to the client, as things like exp start
      * at zero.
@@ -376,12 +378,18 @@ player *get_player(player *p) {
     }
     p->last_stats.exp = -1;
     p->last_weight = (uint32_t)-1;
-    /* Set stats to invalid values so they are sent at first tick */
     p->last_applied_stats.Str = p->last_applied_stats.Int
             = p->last_applied_stats.Pow = p->last_applied_stats.Wis
             = p->last_applied_stats.Dex = p->last_applied_stats.Con
             = p->last_applied_stats.Cha = -1;
-    p->last_character_flags = 0xFFFF;
+    p->last_character_load = -1.0f;
+    p->last_weight_limit = (uint32_t)-1;
+    p->last_path_attuned = (uint32_t)-1;
+    p->last_path_repelled = (uint32_t)-1;
+    p->last_path_denied = (uint32_t)-1;
+    p->last_character_flags = (uint32_t)-1;
+    p->last_item_power = (uint16_t)-1;
+
     return p;
 }
 
