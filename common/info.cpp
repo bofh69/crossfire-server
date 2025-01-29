@@ -24,39 +24,26 @@
  */
 
 /**
- * Writes num ones and zeros to the given string based on the
+ * Writes num ones and zeros to standard output based on the
  * bits variable.
  *
  * @param bits
  * variable to convert to binary string
  * @param num
  * number of bits to dump. Values above 32 will be ignored.
- * @param str
- * string to write to. Must be long enough.
- *
- * @note
- * no check is done whether str has enough space to write or not.
- * Final \\0 is appended to str.
  */
-static void bitstostring(long bits, int num, char *str) {
-    int i, j = 0;
-
+static void bitstostring(long bits, int num) {
     if (num > 32)
         num = 32;
 
-    for (i = 0; i < num; i++) {
-        if (i && (i%3) == 0) {
-            str[i+j] = ' ';
-            j++;
-        }
+    for (int i = 0; i < num; i++) {
         if (bits&1)
-            str[i+j] = '1';
+            putchar('1');
         else
-            str[i+j] = '0';
+            putchar('0');
+        putchar(',');
         bits >>= 1;
     }
-    str[i+j] = '\0';
-    return;
 }
 
 /**
@@ -98,21 +85,27 @@ void dump_abilities(void) {
  * As dump_abilities(), but with an alternative way of output.
  */
 void print_monsters(void) {
+    // Generate CSV header
+    printf("monster,hp,dam,ac,wc,");
+    for (int i = 0; i < NROFATTACKS; i++) {
+        printf("%s,", attacktype_desc[i]);
+    }
+    for (int i = 0; i < NROFATTACKS; i++) {
+        printf("%s,", resist_plus[i]);
+    }
+    printf("exp,new exp\n");
 
-    printf("               |     |   |    |    |      attack       |                        resistances                                                                       |\n");
-    printf("monster        | hp  |dam| ac | wc |pmf ecw adw gpd ptf|phy mag fir ele cld cfs acd drn wmg ght poi slo par tud fer cnc dep dth chs csp gpw hwd bln int |  exp   | new exp |\n");
-    printf("---------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    // Monster data
     getManager()->archetypes()->each([] (const auto at) {
-        char attbuf[34];
         object *op = arch_to_object(at);
         if (QUERY_FLAG(op, FLAG_MONSTER)) {
-            bitstostring((long)op->attacktype, NROFATTACKS, attbuf);
-            printf("%-15s|%5d|%3d|%4d|%4d|%s|",
+            printf("%s,%d,%d,%d,%d,",
                    op->arch->name, op->stats.maxhp, op->stats.dam, op->stats.ac,
-                   op->stats.wc, attbuf);
+                   op->stats.wc);
+            bitstostring((long)op->attacktype, NROFATTACKS);
             for (int i = 0; i < NROFATTACKS; i++)
-                printf("%4d", op->resist[i]);
-            printf("|%8" FMT64 "|%9" FMT64 "|\n", op->stats.exp, new_exp(op));
+                printf("%d,", op->resist[i]);
+            printf("%" FMT64 ",%" FMT64 "\n", op->stats.exp, new_exp(op));
         }
         object_free_drop_inventory(op);
     });
