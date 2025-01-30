@@ -362,9 +362,6 @@ this protocol command or that)
         command, in which case the server will respond with a
         'mapsize 25x25' command - the data is functionally the same.
 
-        While the server in theory supports non square viewing regions,
-        this has not be tested.
-
         The server will send an updated map view when this command is sent.
 
 |notifications (int value)|
