@@ -14,14 +14,11 @@ CREPixmap.cpp \
  CRESettings.cpp \
  CRESettingsDialog.cpp \
  CREFilterDialog.cpp \
- CREReportDialog.cpp \
  CREReportDisplay.cpp \
  CREFilterDefinition.cpp \
  CREFilterDefinitionManager.cpp \
- CREReportDefinition.cpp \
  CREMapPanel.cpp \
  CREExperienceWindow.cpp \
- CREReportDefinitionManager.cpp \
  CREScriptEngine.cpp \
  CREQuestPanel.cpp \
  MessageManager.cpp \
@@ -118,14 +115,11 @@ CREPixmap.h \
  CRESettings.h \
  CRESettingsDialog.h \
  CREFilterDialog.h \
- CREReportDialog.h \
  CREReportDisplay.h \
  CREFilterDefinition.h \
  CREFilterDefinitionManager.h \
- CREReportDefinition.h \
  CREMapPanel.h \
  CREExperienceWindow.h \
- CREReportDefinitionManager.h \
  CREScriptEngine.h \
  CREQuestPanel.h \
  MessageManager.h \

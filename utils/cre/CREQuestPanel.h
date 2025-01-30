@@ -17,7 +17,6 @@
 #include <QtWidgets>
 
 #include "CREFilterDialog.h"
-#include "CREReportDialog.h"
 #include "assets/AssetWrapperPanel.h"
 
 class MessageManager;

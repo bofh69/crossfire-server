@@ -23,9 +23,7 @@
 
 #include "CRESettings.h"
 
-#include "CREReportDialog.h"
 #include "CREReportDisplay.h"
-#include "CREReportDefinition.h"
 
 #include "assets/AssetWrapperPanel.h"
 #include "animations/AnimationPanel.h"
@@ -96,11 +94,6 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     myFilterButton->setMenu(myFiltersMenu);
     buttons->addWidget(myFilterButton);
 
-    myReportsMenu = new QMenu(this);
-    QPushButton* report = new QPushButton(tr("Report"), this);
-    report->setMenu(myReportsMenu);
-    buttons->addWidget(report);
-
     auto exportCsv = new QPushButton(tr("Export as CSV"), this);
     buttons->addWidget(exportCsv);
     connect(exportCsv, SIGNAL(clicked()), this, SLOT(onExportAsCsv()));
@@ -150,8 +143,6 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
 
     connect(&myFiltersMapper, SIGNAL(mapped(QObject*)), this, SLOT(onFilterChange(QObject*)));
     updateFilters();
-    connect(&myReportsMapper, SIGNAL(mapped(QObject*)), this, SLOT(onReportChange(QObject*)));
-    updateReports();
 
     addPanel("Archetype", new ArchetypePanel(model, this));
     addPanel("Face", new CREFacePanel(this, model, myResources, myStore));
@@ -230,16 +221,6 @@ void CREResourcesWindow::onFilter()
     emit filtersModified();
 }
 
-void CREResourcesWindow::onReport()
-{
-    CREReportDialog dlg;
-    if (dlg.exec() != QDialog::Accepted)
-        return;
-
-    /* sending this signal will ultimately call our own updateReports() */
-    emit reportsModified();
-}
-
 void CREResourcesWindow::updateFilters()
 {
     CRESettings settings;
@@ -306,149 +287,6 @@ void CREResourcesWindow::setFilter(const QString &filter, const QString &name) {
     } else {
         myTree->setModel(nullptr);
     }
-}
-
-void CREResourcesWindow::updateReports()
-{
-    CRESettings settings;
-    settings.loadReports(myReports);
-
-    myReportsMenu->clear();
-
-    if (myReports.reports().size() > 0)
-    {
-        foreach(CREReportDefinition* report, myReports.reports())
-        {
-            QAction* a = new QAction(report->name(), this);
-            myReportsMenu->addAction(a);
-            myReportsMapper.setMapping(a, report);
-            connect(a, SIGNAL(triggered()), &myReportsMapper, SLOT(map()));
-        }
-
-        myReportsMenu->addSeparator();
-    }
-
-    QAction* dialog = new QAction(tr("Reports definition..."), this);
-    connect(dialog, SIGNAL(triggered()), this, SLOT(onReport()));
-    myReportsMenu->addAction(dialog);
-}
-
-void CREResourcesWindow::onReportChange(QObject* object)
-{
-    CREReportDefinition* report = qobject_cast<CREReportDefinition*>(object);
-    if (report == NULL)
-        return;
-
-    int count = myModel->rowCount(myTree->rootIndex());
-
-    QProgressDialog progress(tr("Generating report..."), tr("Abort report"), 0, count - 1, this);
-    progress.setWindowTitle(tr("Report: '%1'").arg(report->name()));
-    progress.setWindowModality(Qt::WindowModal);
-
-    QStringList headers = report->header().split("\n");
-    QStringList fields = report->itemDisplay().split("\n");
-    QString sort = report->itemSort();
-
-    QString text("<table><thead><tr>");
-
-    foreach(QString header, headers)
-    {
-        text += "<th>" + header + "</th>";
-    }
-    text += "</tr></thead><tbody>";
-
-    CREScriptEngine engine;
-    std::vector<QScriptValue> items;
-    for (int i = 0; i < count; i++) {
-        auto idx = myModel->index(i, 0, myTree->rootIndex());
-        if (!idx.isValid()) {
-            continue;
-        }
-        idx = myModel->mapToSource(idx);
-        auto w = static_cast<AssetWrapper *>(idx.internalPointer());
-        items.push_back(engine.newQObject(w));
-    }
-
-    if (!sort.isEmpty())
-    {
-        try
-        {
-            progress.setLabelText(tr("Sorting items..."));
-
-            engine.pushContext();
-
-            sort = "(function(left, right) { return " + sort + "; })";
-            QScriptValue sortFun = engine.evaluate(sort);
-            if (!sortFun.isValid() || engine.hasUncaughtException())
-                throw std::runtime_error("A script error happened while compiling the sort criteria:\n" + engine.uncaughtException().toString().toStdString());
-
-            std::sort(items.begin(), items.end(), [&sortFun, &engine](QScriptValue left, QScriptValue right) {
-                QScriptValueList args;
-                args.push_back(left);
-                args.push_back(right);
-                auto ret = sortFun.call(QScriptValue(), args);
-                if (!ret.isValid() || engine.hasUncaughtException())
-                {
-                    throw std::runtime_error("A script error happened while sorting items:\n" + engine.uncaughtException().toString().toStdString());
-                    return false;
-                }
-                return ret.isValid() ? ret.toBoolean() : true;
-            });
-            printf("complete");
-            engine.popContext();
-        }
-        catch (std::runtime_error& ex)
-        {
-            QMessageBox::critical(this, "Script error", ex.what(), QMessageBox::Ok);
-            return;
-        }
-    }
-
-    progress.setLabelText(tr("Generating items text..."));
-    foreach(QScriptValue item, items)
-    {
-        if (progress.wasCanceled())
-            return;
-
-        text += "<tr>";
-
-        engine.pushContext();
-        engine.globalObject().setProperty("item", item);
-
-        foreach(QString field, fields)
-        {
-            text += "<td>";
-            QString data = engine.evaluate(field).toString();
-            if (engine.hasUncaughtException())
-            {
-                QMessageBox::critical(this, "Script error", "A script error happened while display items:\n" + engine.uncaughtException().toString(), QMessageBox::Ok);
-                return;
-            }
-            text += data;
-            text += "</td>\n";
-        }
-        engine.popContext();
-        text += "</tr>\n";
-
-        progress.setValue(progress.value() + 1);
-    }
-    text += "</tbody>";
-
-    QStringList footers = report->footer().split("\n");
-    text += "<tfoot>";
-
-    foreach(QString footer, footers)
-    {
-        text += "<th>" + footer + "</th>";
-    }
-    text += "</tfoot>";
-
-    text += "</table>";
-    qDebug() << "report finished";
-
-    CREReportDisplay display(text, tr("Report: '%1'").arg(report->name()));
-    display.exec();
-    progress.hide();
 }
 
 void CREResourcesWindow::onExportAsCsv()

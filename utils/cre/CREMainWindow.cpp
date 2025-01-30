@@ -320,8 +320,6 @@ void CREMainWindow::doResourceWindow(int assets, const QByteArray& position)
     resources->setAttribute(Qt::WA_DeleteOnClose);
     connect(this, SIGNAL(updateFilters()), resources, SLOT(updateFilters()));
     connect(resources, SIGNAL(filtersModified()), this, SLOT(onFiltersModified()));
-    connect(this, SIGNAL(updateReports()), resources, SLOT(updateReports()));
-    connect(resources, SIGNAL(reportsModified()), this, SLOT(onReportsModified()));
     auto widget = myArea->addSubWindow(resources);
     widget->setAttribute(Qt::WA_DeleteOnClose);
     if (position.isEmpty()) {
@@ -397,11 +395,6 @@ void CREMainWindow::browsingFinished()
 void CREMainWindow::onFiltersModified()
 {
     emit updateFilters();
-}
-
-void CREMainWindow::onReportsModified()
-{
-    emit updateReports();
 }
 
 /**

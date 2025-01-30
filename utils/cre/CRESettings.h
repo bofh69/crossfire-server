@@ -16,7 +16,6 @@
 #include <QSettings>
 
 #include "CREFilterDefinitionManager.h"
-#include "CREReportDefinitionManager.h"
 
 class CRESettings : protected QSettings
 {
@@ -29,9 +28,6 @@ class CRESettings : protected QSettings
 
         void loadFilters(CREFilterDefinitionManager& filters);
         void saveFilters(const CREFilterDefinitionManager& filters);
-
-        void loadReports(CREReportDefinitionManager& reports);
-        void saveReports(const CREReportDefinitionManager& reports);
 
         QString facesetToDisplay() const;
         void setFacesetToDisplay(const QString& faceset);

@@ -17,7 +17,6 @@
 #include <QtWidgets>
 
 #include "CREFilterDefinitionManager.h"
-#include "CREReportDefinitionManager.h"
 #include "CREScriptEngine.h"
 
 class CREMapInformationManager;
@@ -40,11 +39,9 @@ class CREResourcesWindow : public QWidget
 
     public slots:
         void updateFilters();
-        void updateReports();
 
     signals:
         void filtersModified();
-        void reportsModified();
 
     protected:
         ScriptFilterAssetModel *myModel;
@@ -61,9 +58,6 @@ class CREResourcesWindow : public QWidget
         QMenu* myFiltersMenu;
         QSignalMapper myFiltersMapper;
         CREFilterDefinitionManager myFilters;
-        QMenu* myReportsMenu;
-        QSignalMapper myReportsMapper;
-        CREReportDefinitionManager myReports;
         CREScriptEngine myEngine;
 
         void addPanel(QString name, AssetWrapperPanel* panel);
@@ -75,8 +69,6 @@ class CREResourcesWindow : public QWidget
         void onFilterChange(QObject* object);
         void onQuickFilter();
         void clearFilter();
-        void onReport();
-        void onReportChange(QObject* object);
         void treeCustomMenu(const QPoint & pos);
         void addQuest(bool);
         void addMessage(bool);

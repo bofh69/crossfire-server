@@ -22,8 +22,6 @@
 
 #include "CREFilterDefinition.h"
 #include "CREFilterDefinitionManager.h"
-#include "CREReportDefinition.h"
-#include "CREReportDefinitionManager.h"
 
 #include "global.h"
 #include "quest.h"
@@ -48,8 +46,6 @@ int main(int argc, char **argv) {
 
     qRegisterMetaTypeStreamOperators<CREFilterDefinition>("CREFilterDefinition");
     qRegisterMetaTypeStreamOperators<CREFilterDefinitionManager>("CREFilterDefinitionManager");
-    qRegisterMetaTypeStreamOperators<CREReportDefinition>("CREReportDefinition");
-    qRegisterMetaTypeStreamOperators<CREReportDefinitionManager>("CREReportDefinitionManager");
 
     qRegisterMetaType<const Face *>("const Face*");
     qRegisterMetaType<const treasurelist *>("const treasurelist*");

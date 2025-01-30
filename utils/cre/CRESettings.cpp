@@ -69,18 +69,6 @@ void CRESettings::saveFilters(const CREFilterDefinitionManager& filters)
     setValue("filters", val);
 }
 
-void CRESettings::loadReports(CREReportDefinitionManager& reports)
-{
-    reports.copy(value("reports").value<CREReportDefinitionManager>());
-}
-
-void CRESettings::saveReports(const CREReportDefinitionManager& reports)
-{
-    QVariant val;
-    val.setValue(reports);
-    setValue("reports", val);
-}
-
 QString CRESettings::facesetToDisplay() const
 {
     return value("facesetToDisplay", "base").toString();
