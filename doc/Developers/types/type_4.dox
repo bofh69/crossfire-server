@@ -221,7 +221,7 @@ Type defined by:
 	</tr>
 	<tr>
 		<td>quality level</td>
-		<td>@ref object::level</td>
+		<td>@ref living::exp</td>
 		<td>            The maximum level of the generated item. Higher levels are better,
             but the specific behavior of &lt;level&gt; depends on the type of
             the item being generated. If zero/unset, the map difficulty will

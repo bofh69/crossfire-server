@@ -152,15 +152,6 @@
 	</tr>
 	<tr>
 		<td>
-@ref page_type_4
-		</td><td>            The maximum level of the generated item. Higher levels are better,
-            but the specific behavior of &lt;level&gt; depends on the type of
-            the item being generated. If zero/unset, the map difficulty will
-            instead be used. (Example for comparison: Shop floors generate
-            treasure of &lt;quality level&gt; 5 per default).</td>
-	</tr>
-	<tr>
-		<td>
 @ref page_type_109
 		</td><td>            The &lt;casting level&gt; of the wand determines it's power. An
             average level for wands in shops is about 10.</td>
