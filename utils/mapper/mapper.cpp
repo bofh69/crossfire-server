@@ -173,7 +173,7 @@ extern "C" {
 #include <map>
 #include <set>
 
-static gdImagePtr *gdfaces;
+static std::vector<gdImagePtr> gdfaces;
 
 /** Information about a NPC with a custom message. */
 struct struct_npc_info {
@@ -1703,6 +1703,9 @@ static void process_map(struct_map_info *info) {
                 if (needpic) {
                     int sx, sy, hx, hy;
 
+                    if (gdfaces.size() <= item->face->number)
+                        gdfaces.resize(item->face->number + 1, nullptr);
+
                     if (gdfaces[item->face->number] == NULL) {
                         face_sets *fs = find_faceset(get_face_fallback(tileset, item->face->number));
 
@@ -3050,7 +3053,7 @@ int main(int argc, char **argv) {
     }
 
     create_destination();
-    gdfaces = (gdImagePtr *)calloc(get_faces_count(), sizeof(gdImagePtr));
+    gdfaces.resize(get_faces_count(), nullptr);
 
     if (map_limit != -1)
         snprintf(max, sizeof(max), "%d", map_limit);
