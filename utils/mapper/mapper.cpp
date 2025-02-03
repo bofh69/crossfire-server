@@ -632,7 +632,7 @@ static void add_monster(object *monster, struct_map_info *map) {
     map->min_monster = MIN(monster->level, map->min_monster);
     map->max_monster = MAX(monster->level, map->max_monster);
 
-    race = get_race(monster->name);
+    race = get_race(monster->name ? monster->name : "(null race)");
     add_map(map, &race->origin);
     add_race_to_list(race, &map->monsters, 1);
 }
@@ -1133,8 +1133,8 @@ NPC-related stuff
 static struct_npc_info *create_npc_info(const object *npc) {
     struct_npc_info *info = (struct_npc_info *)calloc(1, sizeof(struct_npc_info));
 
-    info->name = strdup(npc->name);
-    info->message = strdup(npc->msg);
+    info->name = strdup(npc->name ? npc->name : "(null name)");
+    info->message = strdup(npc->msg ? npc->msg : "(null msg)");
     info->x = npc->x;
     info->y = npc->y;
 
