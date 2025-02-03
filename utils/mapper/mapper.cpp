@@ -2798,7 +2798,7 @@ static void dump_unused_maps(void) {
 /** Writes the exit information world map. */
 static void write_world_info(void) {
     FILE *file;
-    char path[strlen(root) + 10 + strlen(output_extensions[output_format])];
+    char path[strlen(root) + 150 + strlen(output_extensions[output_format])];
     int x, y;
     gdImagePtr elevationmap;
 
