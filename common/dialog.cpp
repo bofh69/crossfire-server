@@ -25,6 +25,8 @@
 #include "object.h"
 #include "dialog.h"
 
+const char *NPC_DIALOG_ARCH = "npc_dialog";
+
 /**
  * Frees obj::dialog_information.
  * @param op what to clean for.
@@ -99,6 +101,24 @@ static int matches(const char *exp, const char *text) {
 }
 
 /**
+ * Return true if the given message is detected as CFDialog JSON.
+ */
+static bool is_cfdialog(const char *msg) {
+    return msg[0] == '{';
+}
+
+void dialog_preparse(object *op) {
+    // Detect inline CFDialog JSON dialogs. Make sure there's a npc_dialog.
+    if (op->msg && is_cfdialog(op->msg)) {
+        if (!object_find_by_arch_name(op, NPC_DIALOG_ARCH)) {
+            object *tmp = create_archetype(NPC_DIALOG_ARCH);
+            object_insert_in_ob(tmp, op);
+            op->event_bitmask &= ~BITMASK_VALID; // must force update to make event work
+        }
+    }
+}
+
+/**
  * Parse the dialog information for op, and fills in obj::dialog_information.
  * Can be called safely multiple times (will just ignore the other calls).
  *
@@ -121,7 +141,7 @@ static void parse_dialog_information(object *op) {
     if (op->dialog_information == NULL)
         fatal(OUT_OF_MEMORY);
 
-    if (!op->msg)
+    if (!op->msg || is_cfdialog(op->msg))
         return;
 
     msg = strdup(op->msg);

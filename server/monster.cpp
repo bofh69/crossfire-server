@@ -2512,7 +2512,7 @@ void monster_npc_say(object *npc, const char *cp) {
  * @return 0 if text was handled by a plugin or not handled, 1 if handled internally by the server.
  */
 static int monster_talk_to_npc(object *npc, talk_info *info) {
-
+    dialog_preparse(npc);
     if (events_execute_object_say(npc, info) != 0)
         return 0;
 

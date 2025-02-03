@@ -59,5 +59,9 @@ struct talk_info {
     sstring npc_msgs[MAX_NPC];          /**< What the NPCs will say. */
 };
 
+extern void dialog_preparse(object *op);
+
+extern const char *NPC_DIALOG_ARCH;
+
 
 #endif /* DIALOG_H */

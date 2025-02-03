@@ -1371,7 +1371,7 @@ static int annotate_ob(int ax, int ay, const object *ob, SockList *sl, player *p
     int got_one = check_probe(ax, ay, ob, sl, ns, has_obj, alive_layer);
     // add NPC speech bubble
     if (QUERY_FLAG(ob, FLAG_ALIVE) && (QUERY_FLAG(ob, FLAG_UNAGGRESSIVE) || QUERY_FLAG(ob, FLAG_FRIENDLY)) && ob->type != PLAYER) {
-        if (ob->msg != NULL || object_find_by_arch_name(ob, "npc_dialog")) {
+        if (ob->msg != NULL || object_find_by_arch_name(ob, NPC_DIALOG_ARCH)) {
             archetype *dummy = try_find_archetype("speechbubble");
             if (dummy != NULL) {
                 got_one += map2_add_ob(ax, ay, MAP_LAYER_FLY2, &dummy->clone, sl, ns, has_obj, 0);
