@@ -998,10 +998,15 @@ StringBuffer *describe_item(const object *op, const object *owner, int use_media
             }
 
             if (!QUERY_FLAG(op, FLAG_CURSED)) {
-                if (op->stats.hp)
+                if (op->stats.hp > 0)
                     stringbuffer_append_string(buf, "(heals)");
-                if (op->stats.sp)
+                else if (op->stats.hp < 0)
+                    stringbuffer_append_string(buf, "(damages)");
+
+                if (op->stats.sp > 0)
                     stringbuffer_append_string(buf, "(spellpoint regen)");
+                else if (op->stats.sp < 0)
+                    stringbuffer_append_string(buf, "(spellpoint depletion)");
             } else {
                 if (op->stats.hp)
                     stringbuffer_append_string(buf, "(damages)");

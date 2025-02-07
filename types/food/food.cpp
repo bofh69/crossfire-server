@@ -67,8 +67,12 @@ static void check_heal_and_mana(object *who, object *food) {
             if (who->stats.sp < 0)
                 who->stats.sp = 0;
         } else {
-            draw_ext_info(NDI_UNIQUE, 0, who, MSG_TYPE_APPLY, MSG_TYPE_APPLY_SUCCESS,
-                "You feel a rush of magical energy!");
+            if (food->stats.sp > 0)
+                draw_ext_info(NDI_UNIQUE, 0, who, MSG_TYPE_APPLY, MSG_TYPE_APPLY_SUCCESS,
+                    "You feel a rush of magical energy!");
+            else
+                draw_ext_info(NDI_UNIQUE, 0, who, MSG_TYPE_APPLY, MSG_TYPE_APPLY_CURSED,
+                    "You are drained of mana!");
             who->stats.sp += food->stats.sp;
             /* place limit on max sp from food? */
         }
