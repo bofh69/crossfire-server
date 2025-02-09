@@ -80,6 +80,7 @@ class CREResourcesWindow : public QWidget
         void treeCustomMenu(const QPoint & pos);
         void addQuest(bool);
         void addMessage(bool);
+        void onExportAsCsv();
 };
 
 #endif // CRERESOURCESWINDOW_H

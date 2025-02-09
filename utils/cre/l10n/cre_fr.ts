@@ -79,7 +79,7 @@
         <translation>Archétypes</translation>
     </message>
     <message>
-        <location filename="../archetypes/ArchetypesWrapper.cpp" line="19"/>
+        <location filename="../archetypes/ArchetypesWrapper.cpp" line="28"/>
         <source>Add archetype</source>
         <translation>Ajouter un archétype</translation>
     </message>
@@ -419,7 +419,7 @@ Confirmez-vous vouloir utiliser de fichier ?</translation>
     <message>
         <location filename="../faces/FacePanel.cpp" line="39"/>
         <source>Magicmap color: </source>
-        <translation>Couleur sur la carte magique :</translation>
+        <translation type="unfinished">Couleur sur la carte magique :</translation>
     </message>
     <message>
         <location filename="../faces/FacePanel.cpp" line="48"/>
@@ -650,7 +650,7 @@ Confirmez-vous ?</translation>
     <message>
         <location filename="../CREMainWindow.cpp" line="86"/>
         <location filename="../CREMainWindow.cpp" line="297"/>
-        <location filename="../CREMainWindow.cpp" line="1810"/>
+        <location filename="../CREMainWindow.cpp" line="1812"/>
         <source>Crossfire Resource Editor</source>
         <translation>Éditeur de Ressources Crossfire</translation>
     </message>
@@ -1163,90 +1163,90 @@ Confirmez-vous ?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1186"/>
+        <location filename="../CREMainWindow.cpp" line="1188"/>
         <source>&lt;h1&gt;Player vs monsters&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;fv&lt;/strong&gt; is the level at which the first victory happened, &lt;strong&gt;hv&lt;/strong&gt; is the level at which at least 50% of fights were victorious.&lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1283"/>
+        <location filename="../CREMainWindow.cpp" line="1285"/>
         <source>&lt;h1&gt;Summoned pet statistics&lt;/h1&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1398"/>
+        <location filename="../CREMainWindow.cpp" line="1400"/>
         <source>&lt;h1&gt;Shop information&lt;/h1&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1531"/>
+        <location filename="../CREMainWindow.cpp" line="1533"/>
         <source>%1 completed out of %2 (%3%)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1566"/>
+        <location filename="../CREMainWindow.cpp" line="1568"/>
         <source>&lt;tr&gt;&lt;td&gt;%1&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1572"/>
+        <location filename="../CREMainWindow.cpp" line="1574"/>
         <source>&lt;h1&gt;%1&lt;/h1&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1573"/>
+        <location filename="../CREMainWindow.cpp" line="1575"/>
         <source>&lt;tr&gt;&lt;th rowspan=&apos;2&apos;&gt;Name&lt;/th&gt;&lt;th colspan=&apos;%1&apos;&gt;%2&lt;/th&gt;&lt;/tr&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1581"/>
+        <location filename="../CREMainWindow.cpp" line="1583"/>
         <source>&lt;tr&gt;&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1584"/>
+        <location filename="../CREMainWindow.cpp" line="1586"/>
         <source>&lt;td&gt;%1&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1633"/>
+        <location filename="../CREMainWindow.cpp" line="1635"/>
         <source>&lt;tr&gt;&lt;td&gt;&lt;img src=&apos;data:image/png;base64,%1&apos;&gt;&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1634"/>
+        <location filename="../CREMainWindow.cpp" line="1636"/>
         <source>unknown: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1765"/>
+        <location filename="../CREMainWindow.cpp" line="1767"/>
         <source>&lt;li&gt;%1 (%2)&lt;/li&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1811"/>
+        <location filename="../CREMainWindow.cpp" line="1813"/>
         <source>Really clear map cache?</source>
         <translation>Vraiment effacer le cache des cartes ?</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1812"/>
+        <location filename="../CREMainWindow.cpp" line="1814"/>
         <source>This will force cache rebuild at next application start.</source>
         <translation>Ceci entraîne la reconstruction du cache au prochain lancement de l&apos;application.</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1845"/>
+        <location filename="../CREMainWindow.cpp" line="1847"/>
         <source>Please select the &apos;sounds&apos; directory</source>
         <translation>Veuillez sélectionner le répertoire &quot;sounds&quot;</translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1873"/>
+        <location filename="../CREMainWindow.cpp" line="1875"/>
         <source>&amp;%1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../CREMainWindow.cpp" line="1875"/>
+        <location filename="../CREMainWindow.cpp" line="1877"/>
         <source>%1 %2</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1647,7 +1647,7 @@ A report consists of an optional header, a line for each item of the view option
     <name>CREResourcesWindow</name>
     <message>
         <location filename="../CREResourcesWindow.cpp" line="95"/>
-        <location filename="../CREResourcesWindow.cpp" line="285"/>
+        <location filename="../CREResourcesWindow.cpp" line="298"/>
         <source>Filter...</source>
         <translation>Filtrer...</translation>
     </message>
@@ -1657,63 +1657,118 @@ A report consists of an optional header, a line for each item of the view option
         <translation>Rapport</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="133"/>
+        <location filename="../CREResourcesWindow.cpp" line="104"/>
+        <source>Export as CSV</source>
+        <translation>Exporter en CSV</translation>
+    </message>
+    <message>
+        <location filename="../CREResourcesWindow.cpp" line="110"/>
+        <source>CSV export is not available for this type of ressources</source>
+        <translation>L&apos;export CSV n&apos;est pas disponible pour ces ressources
+</translation>
+    </message>
+    <message>
+        <location filename="../CREResourcesWindow.cpp" line="114"/>
+        <source>Export visible ressources to CSV file</source>
+        <translation>Exporter les ressources affichées au format CSV</translation>
+    </message>
+    <message>
+        <location filename="../CREResourcesWindow.cpp" line="146"/>
         <source>No details available.</source>
         <translation>Aucun détail disponible.</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="237"/>
+        <location filename="../CREResourcesWindow.cpp" line="250"/>
         <source>(none)</source>
         <translation>(aucun)</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="254"/>
+        <location filename="../CREResourcesWindow.cpp" line="267"/>
         <source>Quick filter...</source>
         <translation>Filtre rapide...</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="257"/>
+        <location filename="../CREResourcesWindow.cpp" line="270"/>
         <source>Filters definition...</source>
         <translation>Définition des filtres...</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="285"/>
+        <location filename="../CREResourcesWindow.cpp" line="298"/>
         <source>Filter: %1</source>
         <translation>Filtre : %1</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="318"/>
+        <location filename="../CREResourcesWindow.cpp" line="331"/>
         <source>Reports definition...</source>
         <translation>Définition des rapports...</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="331"/>
+        <location filename="../CREResourcesWindow.cpp" line="344"/>
         <source>Generating report...</source>
         <translation>Génération du rapport...</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="331"/>
+        <location filename="../CREResourcesWindow.cpp" line="344"/>
         <source>Abort report</source>
         <translation>Annuler le rapport</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="332"/>
-        <location filename="../CREResourcesWindow.cpp" line="436"/>
+        <location filename="../CREResourcesWindow.cpp" line="345"/>
+        <location filename="../CREResourcesWindow.cpp" line="449"/>
         <source>Report: &apos;%1&apos;</source>
         <translation>Rapport : « %1 »</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="363"/>
+        <location filename="../CREResourcesWindow.cpp" line="376"/>
         <source>Sorting items...</source>
         <translation>Tri des éléments...</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="394"/>
+        <location filename="../CREResourcesWindow.cpp" line="407"/>
         <source>Generating items text...</source>
         <translation>Génération du texte des éléments...</translation>
     </message>
     <message>
-        <location filename="../CREResourcesWindow.cpp" line="465"/>
+        <location filename="../CREResourcesWindow.cpp" line="460"/>
+        <source>Export as CSV...</source>
+        <translation>Exporter en CSV...</translation>
+    </message>
+    <message>
+        <location filename="../CREResourcesWindow.cpp" line="460"/>
+        <source>CSV file (*.csv);;All files (*.*)</source>
+        <translation>Fichier CSV (*.csv);;Tous les fichiers (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../CREResourcesWindow.cpp" line="481"/>
+        <source>Error writing CSV file %1</source>
+        <translation>Erreur durant l&apos;écriture du fichier CSV %1</translation>
+    </message>
+    <message>
+        <location filename="../CREResourcesWindow.cpp" line="481"/>
+        <source>Unable to write CSV file %1!</source>
+        <translation>Impossible d&apos;écrire le fichier CSV %1!</translation>
+    </message>
+    <message>
+        <location filename="../CREResourcesWindow.cpp" line="486"/>
+        <source>Ressources correctly exported to CSV file %1.</source>
+        <translation>Les ressources ont été correctement exportées dans le fichier CSV %1.</translation>
+    </message>
+    <message>
+        <source>Unable to write CSV file %1</source>
+        <translation type="vanished">Impossible d&apos;écrire le fichier CSV %1
+</translation>
+    </message>
+    <message>
+        <location filename="../CREResourcesWindow.cpp" line="486"/>
+        <source>Export complete</source>
+        <translation>Export terminé</translation>
+    </message>
+    <message>
+        <source>Ressources correctly exported to CSV file %1</source>
+        <translation type="vanished">Les ressources ont été correctement exportées dans le fichier CSV %1</translation>
+    </message>
+    <message>
+        <location filename="../CREResourcesWindow.cpp" line="513"/>
         <source>Quest %1 already exists!</source>
         <translation>La quête « %1 » existe déjà !</translation>
     </message>

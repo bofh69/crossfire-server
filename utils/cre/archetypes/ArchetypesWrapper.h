@@ -36,6 +36,10 @@ public:
 
     virtual void fillMenu(QMenu *menu) override;
 
+    virtual bool canExportAsCsv() const override { return true; }
+    virtual void fillCsvHeader(QString& contents) const;
+    virtual void exportAsCSV(const AssetWrapper *item, QString& contents) const override;
+
 protected:
     void addArchetype();
 

@@ -101,6 +101,19 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     report->setMenu(myReportsMenu);
     buttons->addWidget(report);
 
+    auto exportCsv = new QPushButton(tr("Export as CSV"), this);
+    buttons->addWidget(exportCsv);
+    connect(exportCsv, SIGNAL(clicked()), this, SLOT(onExportAsCsv()));
+    if (!root.isValid() || !static_cast<const AssetWrapper *>(root.internalPointer())->canExportAsCsv())
+    {
+        exportCsv->setEnabled(false);
+        exportCsv->setToolTip(tr("CSV export is not available for this type of ressources"));
+    }
+    else
+    {
+        exportCsv->setToolTip(tr("Export visible ressources to CSV file"));
+    }
+
     layout->addLayout(buttons);
 
     auto splitter = new QSplitter(this);
@@ -436,6 +449,41 @@ void CREResourcesWindow::onReportChange(QObject* object)
     CREReportDisplay display(text, tr("Report: '%1'").arg(report->name()));
     display.exec();
     progress.hide();
+}
+
+void CREResourcesWindow::onExportAsCsv()
+{
+    assert(myTreeRoot.isValid());
+    auto root = static_cast<const AssetWrapper *>(myTreeRoot.internalPointer());
+    assert(root->canExportAsCsv());
+
+    auto destination = QFileDialog::getSaveFileName(this, tr("Export as CSV..."), QString(), tr("CSV file (*.csv);;All files (*.*)"));
+    if (destination.isEmpty())
+        return;
+
+    QString contents;
+    root->fillCsvHeader(contents);
+
+    int count = myModel->rowCount(myTree->rootIndex());
+
+    for (int i = 0; i < count; i++) {
+        auto idx = myModel->index(i, 0, myTree->rootIndex());
+        if (!idx.isValid()) {
+            continue;
+        }
+        idx = myModel->mapToSource(idx);
+        auto w = static_cast<const AssetWrapper *>(idx.internalPointer());
+        root->exportAsCSV(w, contents);
+    }
+
+    QFile file(destination);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        QMessageBox::critical(this, tr("Error writing CSV file %1").arg(destination), tr("Unable to write CSV file %1!").arg(destination));
+        return;
+    }
+
+    file.write(contents.toLocal8Bit());
+    QMessageBox::information(this, tr("Export complete"), tr("Ressources correctly exported to CSV file %1.").arg(destination));
 }
 
 void CREResourcesWindow::treeCustomMenu(const QPoint & pos)
