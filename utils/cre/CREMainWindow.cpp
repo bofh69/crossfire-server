@@ -597,7 +597,7 @@ void CREMainWindow::onReportSpellDamage()
 
     getManager()->archetypes()->each([&caster, &spell, &damage] (archetype *arch)
     {
-        if (arch->clone.type == SPELL && arch->clone.subtype == SP_BULLET && arch->clone.skill && strcmp(arch->clone.skill, "praying") == 0)
+        if (arch->clone.type == SPELL && arch->clone.subtype == SP_BULLET)
         {
             spell.append(arch->clone.name);
             QStringList dam;
@@ -605,7 +605,7 @@ void CREMainWindow::onReportSpellDamage()
             {
                 caster->level = l;
                 int dm = arch->clone.stats.dam + SP_level_dam_adjust(caster, &arch->clone);
-                int cost = SP_level_spellpoint_cost(caster, &arch->clone, SPELL_GRACE);
+                int cost = SP_level_spellpoint_cost(caster, &arch->clone, SPELL_HIGHEST);
                 dam.append(tr("%1 [%2]").arg(dm).arg(cost));
             }
             damage.append(dam);
