@@ -42,7 +42,6 @@
 #include "assets/AssetModel.h"
 #include "ChangesDock.h"
 #include "HelpManager.h"
-#include "MonsterResistances.h"
 #include "sounds/SoundsDialog.h"
 
 const char *AssetWrapper::tipProperty = "_cre_internal";
@@ -253,12 +252,6 @@ void CREMainWindow::createMenus()
 
     myToolsMenu = menuBar()->addMenu(tr("&Tools"));
     myToolsMenu->addAction(createAction(tr("Edit monsters"), tr("Edit monsters in a table."), [this] { onToolEditMonsters(); }));
-    auto resist = createAction(tr("Monster resistances overview"), tr("Display an overview of resistances of monsters"));
-    connect(resist, &QAction::triggered, [&] {
-        MonsterResistances dlg(this);
-        dlg.exec();
-    });
-    myToolsMenu->addAction(resist);
     myToolsMenu->addAction(createAction(tr("Generate smooth face base"), tr("Generate the basic smoothed picture for a face."), [this] { onToolSmooth(); }));
     myToolsMenu->addAction(createAction(tr("Generate HP bar"), tr("Generate faces for a HP bar."), [this] { onToolBarMaker(); }));
     myToolsMenu->addAction(createAction(tr("Combat simulator"), tr("Simulate fighting between two objects."), [this] { onToolCombatSimulator(); }));

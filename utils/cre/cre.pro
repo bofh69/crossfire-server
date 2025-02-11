@@ -104,7 +104,6 @@ CREPixmap.cpp \
  HelpBrowser.cpp \
  HelpManager.cpp \
  MimeUtils.cpp \
- MonsterResistances.cpp \
  QuickFilterDialog.cpp
 HEADERS += CREMainWindow.h \
 CREPixmap.h \
@@ -211,7 +210,6 @@ CREPixmap.h \
  ChangesDock.h \
  HelpBrowser.h \
  HelpManager.h \
- MonsterResistances.h \
  QuickFilterDialog.h
 
 LIBS += ../../server/libserver.a ../../common/libcross.a ../../socket/libsocket.a ../../random_maps/librandom_map.a ../../types/libtypes.a -lcurl
