@@ -68,14 +68,18 @@ void ArchetypesWrapper::fillCsvHeader(QString& contents) const
 {
     for (int f = 0; f < csvFieldCount; f++)
         contents.append(f == 0 ? "" : ";").append(csvFields[f]);
+    for (int r = 0; r < NROFATTACKS; r++)
+        contents.append(";").append(resist_plus[r]);
     contents.append("\n");
 }
 
 void ArchetypesWrapper::exportAsCSV(const AssetWrapper *item, QString& contents) const
 {
     auto arch = const_cast<ArchetypeWrapper *>(dynamic_cast<const ArchetypeWrapper *>(item));
-    auto object = arch->clone();
+    auto object = static_cast<ObjectWrapper *>(arch->clone());
     for (int f = 0; f < csvFieldCount; f++)
         contents.append(f == 0 ? "" : ";").append(object->property(csvFields[f]).toString());
+    for (int r = 0; r < NROFATTACKS; r++)
+        contents.append(";").append(QString::number(object->getObject()->resist[r]));
     contents.append("\n");
 }
