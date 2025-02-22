@@ -2156,7 +2156,8 @@ void update_position(mapstruct *m, int x, int y) {
                                tmp, layers, map_layer_info[tmp->map_layer].honor_visibility);
             } else if (tmp->move_type&MOVE_FLYING) {
                 add_face_layer(MAP_LAYER_FLY1, MAP_LAYER_FLY2, tmp, layers, 1);
-            } else if ((tmp->type == PLAYER || QUERY_FLAG(tmp, FLAG_MONSTER))) {
+            } else if ((tmp->type == PLAYER || QUERY_FLAG(tmp, FLAG_MONSTER) || QUERY_FLAG(tmp, FLAG_CAN_ROLL))) {
+                // Put things that are likely to move on the LIVING layers
                 add_face_layer(MAP_LAYER_LIVING1, MAP_LAYER_LIVING2, tmp, layers, 1);
             } else if (QUERY_FLAG(tmp, FLAG_IS_FLOOR)) {
                 layers[MAP_LAYER_FLOOR] = tmp;
