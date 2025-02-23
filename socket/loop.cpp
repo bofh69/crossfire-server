@@ -464,7 +464,7 @@ bool connection_alive(const socket_struct *socket) {
  * @param pl player to send buffers for.
  */
 static void send_delayed_buffers(player *pl) {
-    for (uint16_t buf = 0; buf < pl->delayed_buffers_used; buf++) {
+    for (uint8_t buf = 0; buf < pl->delayed_buffers_used; buf++) {
         Send_With_Handling(pl->socket, pl->delayed_buffers[buf]);
     }
     pl->delayed_buffers_used = 0;

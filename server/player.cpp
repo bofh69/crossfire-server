@@ -4492,14 +4492,19 @@ void player_set_state(player *pl, uint8_t state) {
 SockList *player_get_delayed_buffer(player *pl) {
     SockList *sl;
     assert(pl);
+    const uint8_t to_alloc = 5;
     if (pl->delayed_buffers_used == pl->delayed_buffers_allocated) {
-        pl->delayed_buffers_allocated += 5;
+        if (pl->delayed_buffers_allocated >= UINT8_MAX - to_alloc) {
+            LOG(llevError, "Delay buffer limit exceeded for %s\n", pl->ob->name);
+            abort();
+        }
+        pl->delayed_buffers_allocated += to_alloc;
         pl->delayed_buffers = static_cast<SockList **>(realloc(pl->delayed_buffers, pl->delayed_buffers_allocated * sizeof(pl->delayed_buffers[0])));
         if (!pl->delayed_buffers) {
             LOG(llevError, "Unable to allocated %d delayed buffers, aborting\n", pl->delayed_buffers_allocated);
             fatal(OUT_OF_MEMORY);
         }
-        for (uint16_t s = pl->delayed_buffers_allocated - 5; s < pl->delayed_buffers_allocated; s++) {
+        for (uint8_t s = pl->delayed_buffers_allocated - to_alloc; s < pl->delayed_buffers_allocated; s++) {
             pl->delayed_buffers[s] = static_cast<SockList *>(calloc(1, sizeof(SockList)));
         }
     }
