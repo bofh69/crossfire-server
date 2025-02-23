@@ -1063,6 +1063,11 @@ static void process_players2(void) {
             pl->has_hit = 0;
         } else if (pl->ob->speed_left > pl->ob->speed)
             pl->ob->speed_left = pl->ob->speed;
+
+        // Send delayed buffers. This has to be here (after speed processing)
+        // because delayed messages can still be generated as result of a FIRE
+        // command.
+        send_delayed_buffers(pl);
     }
 }
 

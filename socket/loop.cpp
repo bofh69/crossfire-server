@@ -460,17 +460,6 @@ bool connection_alive(const socket_struct *socket) {
 }
 
 /**
- * Send all delayed buffers for a player.
- * @param pl player to send buffers for.
- */
-static void send_delayed_buffers(player *pl) {
-    for (uint8_t buf = 0; buf < pl->delayed_buffers_used; buf++) {
-        Send_With_Handling(pl->socket, pl->delayed_buffers[buf]);
-    }
-    pl->delayed_buffers_used = 0;
-}
-
-/**
  * Send updated stats, map, look, and inventory to the player.
  */
 static void send_updates(player *pl) {
@@ -666,7 +655,6 @@ void do_server(void) {
                     leave(pl, 1);
                     final_free_player(pl);
                 } else {
-                    send_delayed_buffers(pl);
                     send_updates(pl);
                 }
             }

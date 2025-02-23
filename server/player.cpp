@@ -4513,3 +4513,14 @@ SockList *player_get_delayed_buffer(player *pl) {
     SockList_Init(sl);
     return sl;
 }
+
+/**
+ * Send all delayed buffers for a player.
+ * @param pl player to send buffers for.
+ */
+void send_delayed_buffers(player *pl) {
+    for (uint8_t buf = 0; buf < pl->delayed_buffers_used; buf++) {
+        Send_With_Handling(pl->socket, pl->delayed_buffers[buf]);
+    }
+    pl->delayed_buffers_used = 0;
+}

@@ -450,6 +450,7 @@ void dragon_ability_gain(object *who, int atnr, int level);
 void player_unready_range_ob(player *pl, object *ob);
 void player_set_state(player *pl, uint8_t state);
 SockList *player_get_delayed_buffer(player *pl);
+void send_delayed_buffers(player *pl);
 void set_player_socket(player *p, socket_struct *ns);
 /* plugins.c */
 int plugins_init_plugin(const char *libfile);
