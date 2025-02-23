@@ -221,8 +221,8 @@ struct player {
     const char  *unarmed_skill;      /**< Prefered skill to use in unarmed combat */
     uint32_t      ticks_played;        /**< How many ticks this player has played */
 
-    uint8_t delayed_buffers_allocated;  /**< Number of items in delayed_buffers_used. */
-    uint8_t delayed_buffers_used;       /**< Used items in delayed_buffers_used. */
+    uint16_t delayed_buffers_allocated;  /**< Number of items in delayed_buffers_used. */
+    uint16_t delayed_buffers_used;       /**< Used items in delayed_buffers_used. */
     SockList **delayed_buffers;         /**< Buffers which will be sent after the player's tick completes. */
 };
 

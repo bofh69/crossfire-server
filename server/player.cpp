@@ -4499,7 +4499,7 @@ SockList *player_get_delayed_buffer(player *pl) {
             LOG(llevError, "Unable to allocated %d delayed buffers, aborting\n", pl->delayed_buffers_allocated);
             fatal(OUT_OF_MEMORY);
         }
-        for (uint8_t s = pl->delayed_buffers_allocated - 5; s < pl->delayed_buffers_allocated; s++) {
+        for (uint16_t s = pl->delayed_buffers_allocated - 5; s < pl->delayed_buffers_allocated; s++) {
             pl->delayed_buffers[s] = static_cast<SockList *>(calloc(1, sizeof(SockList)));
         }
     }
