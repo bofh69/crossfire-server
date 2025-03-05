@@ -829,8 +829,13 @@ void process_object(object *op) {
     if (QUERY_FLAG(op, FLAG_GENERATOR) && !QUERY_FLAG(op, FLAG_FRIENDLY))
         generate_monster(op);
 
-    /* If object can be used up, decrement 'food' and eventually remove it. */
-    if (QUERY_FLAG(op, FLAG_IS_USED_UP) && (--op->stats.food) <= 0) {
+    /* If object can be used up, decrement 'food' and eventually remove it.
+     * Well, unless the object has a duration, in which case that should
+     * dictate how long it lasts and not food.
+     * Otherwise, you end up with artifact foods creating forces
+     * that ultimately starve the player to death.
+     */
+    if (QUERY_FLAG(op, FLAG_IS_USED_UP) && (op->duration > 0 || (--op->stats.food) <= 0)) {
         if (QUERY_FLAG(op, FLAG_APPLIED)) {
             remove_force(op);
         } else {
