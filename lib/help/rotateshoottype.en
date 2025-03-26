@@ -4,7 +4,6 @@ Usage:
   rotateshoottype
   rotateshoottype -
   rotateshoottype +
-  rotateshoottype [number]
 
 
 For instance, if a spell has been prepared (cast), a bow equipped, a rod readied, etc., then rotateshoottype cycles through them to select which one will will be used when the player fires an attack.
@@ -39,11 +38,3 @@ An optional parameter may be specified, such as - (minus) or + (plus).
 For example, rotateshoottype - swaps the direction of the rotation.
 
 rotateshoottype with no parameters is similar to rotateshoottype +.
-
-Example:
-	rotateshoottype [number]
-
-[number] will rotate through the shoot-types for the designated number of iterations.
-[number] can be positive or negative to affect the direction of rotation.
-If [number] is greater than the number of shoot-types available, it will rotate as if [number] was -1.
-If no [number] is provided, 1 is used as a default.
