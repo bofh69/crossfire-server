@@ -300,7 +300,7 @@ int SP_level_dam_adjust(const object *caster, const object *spob) {
 /**
  * Adjust the duration of the spell based on level.
  * This is basically the same as SP_level_dam_adjust() above,
- * but instead looks at the level_modifier value.
+ * but instead looks at the duration_modifier value.
  *
  * @param caster
  * who is casting.
@@ -326,7 +326,7 @@ int SP_level_duration_adjust(const object *caster, const object *spob) {
 /**
  * Adjust the range of the spell based on level.
  * This is basically the same as SP_level_dam_adjust() above,
- * but instead looks at the level_modifier value.
+ * but instead looks at the range_modifier value.
  *
  * @param caster
  * who is casting.
