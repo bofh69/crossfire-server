@@ -2442,12 +2442,14 @@ static size_t get_index(int stat, size_t max_index) {
  * 0 on success, 1 on error.  In general, the error
  * will be too many or too few bonus values.
  */
-static int load_table_int(int **bonuses, FILE *fp, char *bonus_name)
+template <typename T>
+static int load_table(T **bonuses, FILE *fp, char *bonus_name)
 {
     char buf[MAX_BUF], *cp;
-    int on_stat = 0, tmp_bonus;
+    int on_stat = 0;
+    T tmp_bonus;
 
-    *bonuses = static_cast<int *>(calloc(settings.max_stat+1, sizeof(int)));
+    *bonuses = static_cast<T *>(calloc(settings.max_stat+1, sizeof(T)));
 
     while (fgets(buf, MAX_BUF-1, fp) != NULL) {
         if (buf[0] == '#')
@@ -2481,7 +2483,10 @@ static int load_table_int(int **bonuses, FILE *fp, char *bonus_name)
 
             if (*cp == 0) break;
 
-            tmp_bonus = atoi(cp);
+            if (std::is_same<T, float>::value)
+                tmp_bonus = atof(cp);
+            else
+                tmp_bonus = atoi(cp);
 
             if (on_stat > settings.max_stat) {
                 LOG(llevError,"Number of bonus entries exceed max stat (line=%s, bonus=%s)\n",
@@ -2492,7 +2497,7 @@ static int load_table_int(int **bonuses, FILE *fp, char *bonus_name)
             on_stat++;
 
             /* Skip over any digits, as that is the number we just processed */
-            while ((isdigit(*cp) || *cp=='-' || *cp=='+') && *cp != 0)
+            while (isdigit(*cp) || *cp=='-' || *cp=='+' || (*cp == '.' && std::is_same<T, float>::value))
                 cp++;
         }
     }
@@ -2500,86 +2505,6 @@ static int load_table_int(int **bonuses, FILE *fp, char *bonus_name)
     LOG(llevError,"Reached end of file without getting close brace?  bonus=%s\n", bonus_name);
     return 1;
 }
-
-/**
- * This loads up a stat table from the file - basically,
- * it keeps processing until it gets the closing brace.
- *
- * @param bonuses
- * an array will be allocated and the bonus put into this allocated
- * array.
- * @param fp
- * File to load the data from.
- * @param bonus_name
- * Used purely for error messages to make it easier to identify
- * where in the file an error is.
- *
- * @return
- * 0 on success, 1 on error.  In general, the error
- * will be too many or too few bonus values.
- */
-static int load_table_float(float **bonuses, FILE *fp, char *bonus_name)
-{
-    char buf[MAX_BUF], *cp;
-    int on_stat = 0;
-    float tmp_bonus;
-
-    *bonuses = static_cast<float *>(calloc(settings.max_stat+1, sizeof(float)));
-
-    while (fgets(buf, MAX_BUF-1, fp) != NULL) {
-        if (buf[0] == '#')
-            continue;
-
-        /* Skip over empty lines */
-        if (buf[0] == '\n')
-            continue;
-
-        /* Do not care about opening brace */
-        if (buf[0] == '{')
-            continue;
-
-        if (buf[0] == '}') {
-            if ((on_stat-1) != settings.max_stat) {
-                LOG(llevError,"Number of bonus does not match max stat (%d!=%d, bonus=%s)\n",
-                    on_stat, settings.max_stat, bonus_name);
-                return 1;
-            }
-            else return 0;
-        }
-
-        /* If not any of the above values, must be the stat table,
-         * or so we hope.
-         */
-        cp = buf;
-        while (*cp != 0) {
-            /* Skip over any non numbers */
-            while (!isdigit(*cp) && *cp!='.' && *cp!='-' && *cp!='+' && *cp != 0)
-                cp++;
-
-            if (*cp == 0) break;
-
-            tmp_bonus = atof(cp);
-
-            if (on_stat > settings.max_stat) {
-                LOG(llevError,"Number of bonus entries exceed max stat (line=%s, bonus=%s)\n",
-                    buf, bonus_name);
-                return 1;
-            }
-            (*bonuses)[on_stat] = tmp_bonus;
-            on_stat++;
-
-            /* Skip over any digits, as that is the number we just processed
-             * since this is floats, also skip over any dots.
-             */
-            while ((isdigit(*cp) || *cp=='-' || *cp=='+' || *cp=='.') && *cp != 0)
-                cp++;
-        }
-    }
-    /* This should never happen - we should always get the closing brace */
-    LOG(llevError,"Reached end of file without getting close brace?  bonus=%s\n", bonus_name);
-    return 1;
-}
-
 
 /**
  * This loads statistic bonus/penalties from the stat_bonus file.
@@ -2652,7 +2577,7 @@ void init_stats() {
 
         for (i=0; i<NUM_INT_BONUSES; i++) {
             if (!strncasecmp(cp, int_bonus_names[i], strlen(int_bonus_names[i]))) {
-                error = load_table_int(&new_int_bonuses[i], fp, cp);
+                error = load_table<>(&new_int_bonuses[i], fp, cp);
                 break;
             }
         }
@@ -2662,7 +2587,7 @@ void init_stats() {
         if (i == NUM_INT_BONUSES) {
             for (i=0; i<NUM_FLOAT_BONUSES; i++) {
                 if (!strncasecmp(cp, float_bonus_names[i], strlen(float_bonus_names[i]))) {
-                    error = load_table_float(&new_float_bonuses[i], fp, cp);
+                    error = load_table<>(&new_float_bonuses[i], fp, cp);
                     break;
                 }
             }
@@ -2716,5 +2641,24 @@ void init_stats() {
             float_bonuses[i] = new_float_bonuses[i];
             new_float_bonuses[i] = NULL;
         }
+    }
+}
+
+void dump_stat_bonuses() {
+    fprintf(stderr, "Int stat bonuses:\n");
+    for (int stat = 0; stat <= settings.max_stat+1; stat++) {
+        fprintf(stderr, "%d", stat);
+        for (int bonus = 0; bonus < NUM_INT_BONUSES; bonus++) {
+            fprintf(stderr, " %d", int_bonuses[bonus][stat]);
+        }
+        fprintf(stderr, "\n");
+    }
+    fprintf(stderr, "Float stat bonuses:\n");
+    for (int stat = 0; stat <= settings.max_stat+1; stat++) {
+        fprintf(stderr, "%d", stat);
+        for (int bonus = 0; bonus < NUM_FLOAT_BONUSES; bonus++) {
+            fprintf(stderr, " %g", float_bonuses[bonus][stat]);
+        }
+        fprintf(stderr, "\n");
     }
 }

@@ -343,6 +343,14 @@ static void server_dump_faces(void) {
     cleanup();
 }
 
+/**
+ * Dump all bonuses (from the stat_bonus file) then exit.
+ */
+static void server_dump_bonuses() {
+    dump_stat_bonuses();
+    cleanup();
+}
+
 /** Typedefs used when calling option handlers. */
 /*@{*/
 typedef void (*cmdlinefunc_args0)(void);
@@ -428,6 +436,7 @@ static struct Command_Line_Options options[] = {
     { "-dump-anims", 0, 3, (cmdlinefunc_args0)server_dump_animations },
     { "-dump-faces", 0, 3, (cmdlinefunc_args0)server_dump_faces },
     { "-pack-assets", 2, 3, (cmdlinefunc_args0)server_pack_assets },
+    { "-dump-stat-bonuses", 0, 3, (cmdlinefunc_args0)server_dump_bonuses },
 };
 
 /**
