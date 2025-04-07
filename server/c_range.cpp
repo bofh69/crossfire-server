@@ -252,6 +252,7 @@ int legal_range(object *op, int r) {
     case range_bow:
     case range_misc:
     case range_magic: /* cast spells */
+    case range_builder:
         if (op->contr->ranges[r])
             return 1;
         else
@@ -313,7 +314,8 @@ static void send_updated_shoottype(object *op) {
         break;
 
     case range_misc:
-        query_base_name(op->contr->ranges[range_misc], 0, name, MAX_BUF);
+    case range_builder:
+        query_base_name(op->contr->ranges[op->contr->shoottype], 0, name, MAX_BUF);
         draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_SUCCESS,
                              "Switched to %s.",
                              name);
