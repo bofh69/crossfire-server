@@ -1509,7 +1509,9 @@ static int hit_with_one_attacktype(object *op, object *hitter, int dam, uint32_t
              * by 200. This number may need tweaking for game balance.
              */
 
-            int dam_modifier = is_wraith_pl(hitter) ? 200 : 3000;
+            bool is_wraith = is_wraith_pl(hitter);
+
+            int dam_modifier = is_wraith ? 200 : 3000;
 
             /* You can't steal life from something undead or not alive. */
             if (op->type == GOLEM
@@ -1532,7 +1534,7 @@ static int hit_with_one_attacktype(object *op, object *hitter, int dam, uint32_t
                 hitter->stats.hp = new_hp;
 
             /* Wraith also get food through life stealing */
-            if (is_wraith_pl(hitter)) {
+            if (is_wraith) {
                 if (hitter->stats.food+dam >= MAX_FOOD)
                     hitter->stats.food = MAX_FOOD;
                 else

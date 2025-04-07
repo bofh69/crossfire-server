@@ -224,6 +224,8 @@ struct player {
     uint8_t delayed_buffers_allocated;  /**< Number of items in delayed_buffers_used. */
     uint8_t delayed_buffers_used;       /**< Used items in delayed_buffers_used. */
     SockList **delayed_buffers;         /**< Buffers which will be sent after the player's tick completes. */
+    bool is_wraith;                 /**< Whether this player is a wraith or not, initialized at load time. */
+    bool is_old_wraith;             /**< Whether this player is a "old" wraith, initialized at load time and updated when eating. */
 };
 
 /**

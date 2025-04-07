@@ -148,6 +148,7 @@ static method_ret food_type_apply(object *food, object *applier, int aflags) {
             if (skill) {
                 SET_FLAG(skill, FLAG_CAN_USE_SKILL);
                 link_player_skills(applier);
+                applier->contr->is_wraith = true;
 
                 snprintf(buf, sizeof(buf), "You have been dead for too long to taste %s, ", food->name);
                 draw_ext_info(NDI_UNIQUE, 0, applier, MSG_TYPE_APPLY, MSG_TYPE_APPLY_FAILURE,

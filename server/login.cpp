@@ -772,6 +772,9 @@ void check_login(object *op, const char *password) {
 
     CLEAR_FLAG(op, FLAG_NO_FIX_PLAYER);
 
+    pl->is_wraith = object_find_by_name(op, "wraith feed") != NULL;
+    pl->is_old_wraith = object_find_by_name(op, "Wraith_Force") != NULL;
+
     LOG(llevInfo, "login: %s from %s\n", op->name, op->contr->socket->host);
     strncpy(pl->title, op->arch->clone.name, sizeof(pl->title)-1);
     pl->title[sizeof(pl->title)-1] = '\0';

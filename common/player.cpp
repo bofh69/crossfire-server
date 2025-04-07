@@ -171,7 +171,7 @@ client_spell *get_client_spell_state(player *pl, object *spell) {
  * true if the adressed object 'ob' is a wraith player, false else.
  */
 int is_wraith_pl(object *op) {
-    return op != NULL && op->type == PLAYER && op->arch != NULL && object_find_by_name(op, "wraith feed") != NULL;
+    return op != NULL && op->type == PLAYER && op->arch != NULL && op->contr && op->contr->is_wraith;
 }
 
 /**
@@ -183,7 +183,7 @@ int is_wraith_pl(object *op) {
  * true if the adressed object 'ob' is an old wraith player, false else.
  */
 int is_old_wraith_pl(object *op) {
-    return op != NULL && op->type == PLAYER && op->arch != NULL && object_find_by_name(op, "Wraith_Force") != NULL && !is_wraith_pl(op);
+    return op != NULL && op->type == PLAYER && op->arch != NULL && op->contr && op->contr->is_old_wraith && !is_wraith_pl(op);
 }
 
 /**
