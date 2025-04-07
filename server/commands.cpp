@@ -160,6 +160,7 @@ void commands_init(void) {
     RN("rotateshoottype", command_rotateshoottype, 0.0);
     RN("rules", command_rules,            0.0);
     RN("save", command_save,              0.0);
+    RN("shoottype", command_shoottype,    0.0);
     RN("skills", command_skills,          0.0);   /* shows player list of skills */
     RN("use_skill", command_uskill,       1.0);
     RN("search", command_search,          1.0);

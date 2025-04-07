@@ -1,0 +1,29 @@
+The command allows your character to switch to a ranged attack that is readied.
+
+Usage:
+  shoottype none
+  shoottype bow
+  shoottype builder
+  shoottype golem
+  shoottype magic
+  shoottype misc
+  shoottype rod
+  shoottype skill
+  shoottype spell
+  shoottype wand
+
+The options are:
+
+  none: As you would expect.
+
+  bow: Switch to readied bow.
+
+  builder: Switch to readied builder tool.
+
+  golem: Switch to golem.
+
+  magic/spell: Switch to readied magic spell.
+
+  misc/rod/wand: Switch to readied misc item (includes rod/wand/horn).
+
+  skill: Switch to readied skill.

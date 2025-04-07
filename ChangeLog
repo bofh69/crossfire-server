@@ -1,3 +1,6 @@
+2025-04-06  Christopher Hayes
+  * Add command 'shoottype' to allow player to switch to a readied ranged attack.
+
 2024-04-04  Neila Hawkins
   * server/attack.cpp: Refactor death attacks again.
     This time, we divide the chance by 3 for non-specific (without a slaying field)

@@ -275,23 +275,13 @@ int legal_range(object *op, int r) {
 }
 
 /**
- * Rotate the selected range attack.
+ * Sends the updated range attack to the client.
  *
  * @param op
  * player.
- * @param k
- * '+' selects next range, other values previous range.
  */
-static void change_spell(object *op, char k) {
+static void send_updated_shoottype(object *op) {
     char name[MAX_BUF];
-
-    do {
-        op->contr->shoottype = static_cast<rangetype>((static_cast<int>(op->contr->shoottype) + ((k == '+') ? 1 : -1)));
-        if (op->contr->shoottype >= range_size)
-            op->contr->shoottype = range_none;
-        else if (op->contr->shoottype <= range_bottom)
-            op->contr->shoottype = (rangetype)(range_size-1);
-    } while (!legal_range(op, op->contr->shoottype));
 
     /* Legal range has already checked that we have an appropriate item
      * that uses the slot, so we don't need to be too careful about
@@ -346,11 +336,90 @@ static void change_spell(object *op, char k) {
  * @param op
  * player.
  * @param params
- * arguments to the command.
+ * arguments to the command. '+' selects next range, other values previous range.
  */
 void command_rotateshoottype(object *op, const char *params) {
-    if (*params == '\0')
-        change_spell(op, '+');
-    else
-        change_spell(op, params[0]);
+    char name[MAX_BUF];
+    int dir = ((*params == '\0') || (params[0] == '+')) ? 1 : -1;
+
+    /* Iterate through shoottypes in the given direction, until the first
+     * legal shoottype is found */
+    do {
+        op->contr->shoottype = static_cast<rangetype>((static_cast<int>(op->contr->shoottype) + dir));
+
+        if (op->contr->shoottype >= range_size)
+            op->contr->shoottype = range_none;
+        else if (op->contr->shoottype <= range_bottom)
+            op->contr->shoottype = static_cast<rangetype>(range_size-1);
+    } while (!legal_range(op, op->contr->shoottype));
+
+    send_updated_shoottype(op);
+}
+
+
+/**
+ * 'shoottype' command, set range attack.
+ *
+ * @param op
+ * player.
+ * @param params
+ * arguments to the command.
+ */
+void command_shoottype(object *op, const char *params) {
+    static struct {
+        const char *range;
+        rangetype shoottype;
+    } lookup[] = {
+        /* rangetypes from player.h */
+        { "none", range_none },
+        { "bow", range_bow },
+        { "magic", range_magic },
+        { "misc", range_misc },
+        { "golem", range_golem },
+        { "skill", range_skill },
+        { "builder", range_builder },
+
+        /* aliases for rangetypes */
+        { "spell", range_magic },
+        { "wand", range_misc },
+        { "rod", range_misc },
+
+        /* range_size indicates the end of lookups */
+        { "", range_size },
+    };
+
+    int ix;
+
+    /* No params, display current shoottype and return */
+    if (*params == '\0') {
+        for (ix = 0; lookup[ix].shoottype != range_size; ix++) {
+            if (op->contr->shoottype == lookup[ix].shoottype) {
+                draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_CONFIG,
+                    "shoottype is set to %s", lookup[ix].range);
+                break;
+            }
+        }
+
+        return;
+    }
+
+    /* Set shoottype from params */
+    for (ix = 0; lookup[ix].shoottype != range_size; ix++) {
+        if (!strcmp(params, lookup[ix].range)) {
+            /* matching shoottype found, set if legal */
+            if (legal_range(op, lookup[ix].shoottype)) {
+                op->contr->shoottype = lookup[ix].shoottype;
+                send_updated_shoottype(op);
+            } else {
+                draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_CONFIG,
+                    "shoottype not readied: %s", lookup[ix].range);
+            }
+
+            return;
+        }
+    }
+
+    /* Invalid shoottype, notify client */
+    draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_CONFIG,
+        "shoottype: Unknown shoottype option %s", params);
 }

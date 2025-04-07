@@ -230,6 +230,7 @@ void command_cast(object *op, const char *params);
 void command_cast_spell(object *op, const char *params, int cast_now);
 int legal_range(object *op, int r);
 void command_rotateshoottype(object *op, const char *params);
+void command_shoottype(object *op, const char *params);
 /* c_wiz.c */
 void command_loadtest(object *op, const char *params);
 void command_hide(object *op, const char *params);
