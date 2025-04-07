@@ -43,10 +43,11 @@ const char *i18n(const object *who, const char *code) {
     if (!who || !who->contr || !who->contr->language)
         return code;
 
-    sstring scode = add_string(code);
+    sstring scode = find_string(code);
+    if (!scode)
+        return code;
     i18n_file *file = static_cast<i18n_file *>(who->contr->language);
     auto found = file->messages.find(scode);
-    free_string(scode);
 
     return found == file->messages.end() ? code : found->second;
 }
