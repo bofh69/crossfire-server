@@ -1160,6 +1160,7 @@ void fix_object(object *op) {
          * well get filled in based on what the player has equipped.
          */
         op->contr->ranges[range_bow] = NULL;
+        op->contr->ranges[range_builder] = NULL;
         op->contr->ranges[range_misc] = NULL;
         op->contr->ranges[range_skill] = NULL;
     } /* If player */
@@ -1279,6 +1280,9 @@ void fix_object(object *op) {
 
                 if (tmp->type == WAND || tmp->type == ROD)
                     op->contr->ranges[range_misc] = tmp;
+
+                if (tmp->type == BUILDER)
+                    op->contr->ranges[range_builder] = tmp;
 
                 for (i = 0; i < NUM_STATS; i++) {
                     int8_t value;
