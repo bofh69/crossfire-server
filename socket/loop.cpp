@@ -654,8 +654,6 @@ void do_server(void) {
                     save_player(pl->ob, 0);
                     leave(pl, 1);
                     final_free_player(pl);
-                } else {
-                    send_updates(pl);
                 }
             }
         }
