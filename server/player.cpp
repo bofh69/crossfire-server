@@ -1404,6 +1404,7 @@ void key_change_class(object *op, char key) {
     object_update(op, UP_OBJ_FACE);
     esrv_update_item(UPD_FACE, op, op);
     fix_object(op);
+    op->contr->is_wraith = object_find_by_name(op, "wraith feed") != NULL;
     op->stats.hp = op->stats.maxhp;
     op->stats.sp = op->stats.maxsp;
     op->stats.grace = 0;
@@ -1584,6 +1585,7 @@ int apply_race_and_class(object *op, archetype *race, archetype *opclass, living
     esrv_send_inventory(op, op);
     esrv_update_item(UPD_FACE, op, op);
     esrv_add_spells(op->contr, NULL);
+    op->contr->is_wraith = object_find_by_name(op, "wraith feed") != NULL;
 
     return 0;
 
