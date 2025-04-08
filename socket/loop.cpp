@@ -654,6 +654,13 @@ void do_server(void) {
                     save_player(pl->ob, 0);
                     leave(pl, 1);
                     final_free_player(pl);
+                } else {
+                    // Send updates that may have resulted from processing the
+                    // latest command. This lets the client get a response to a
+                    // command without waiting for the current tick to finish
+                    // inside this select() loop. Note that we will call
+                    // send_updates() again later in process players(),
+                    send_updates(pl);
                 }
             }
         }
