@@ -721,7 +721,6 @@ void move_cmd(char *buf, int len, player *pl) {
     for (i = 0; i < 2; i++) {
         vals[i] = atoi(buf);
         if (!(buf = strchr(buf, ' '))) {
-            LOG(llevError, "Incomplete move command: %s\n", buf);
             return;
         }
         buf++;
