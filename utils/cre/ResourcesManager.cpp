@@ -67,7 +67,7 @@ void ResourcesManager::load()
 
     QStringList log;
     bool hasWarningOrError = false;
-    static std::function<void(LogLevel, const char *, va_list)> lc = [&] (LogLevel logLevel, const char *format, va_list va) {
+    auto log_callback = [&] (LogLevel logLevel, const char *format, va_list va) {
         if (logLevel > llevInfo) {
             return;
         }
@@ -79,7 +79,7 @@ void ResourcesManager::load()
             hasWarningOrError = true;
         }
     };
-    settings.log_callback = [] (LogLevel logLevel, const char *format, va_list va) { lc(logLevel, format, va); };
+    settings.log_callback = log_callback;
 
     init_globals();
     init_library();

@@ -233,7 +233,7 @@ extern socket_struct *init_sockets;
 
 typedef std::function<void(BufferReader *, const char *)> collectorHook;
 typedef std::function<void(enum fatal_error err)> fatalHook;
-typedef void(*logHook)(LogLevel, const char *, va_list);
+typedef std::function<void(LogLevel, const char *, va_list)> logHook;
 
 /**
  * Server settings.
