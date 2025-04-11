@@ -231,7 +231,7 @@ extern socket_struct *init_sockets;
 #define PERM_EXP(exptotal) (exptotal * settings.permanent_exp_ratio / 100 )
 #define MAX_TOTAL_EXPERIENCE (settings.permanent_exp_ratio ? (MAX_EXPERIENCE * 100 / settings.permanent_exp_ratio) : 0)
 
-typedef void(*collectorHook)(BufferReader *, const char *);
+typedef std::function<void(BufferReader *, const char *)> collectorHook;
 typedef std::function<void(enum fatal_error err)> fatalHook;
 typedef void(*logHook)(LogLevel, const char *, va_list);
 
