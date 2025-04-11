@@ -14,7 +14,6 @@
 #define ASSETCOLLECTOR_H
 
 #include <vector>
-#include <string>
 #include "AssetLoader.h"
 
 /**

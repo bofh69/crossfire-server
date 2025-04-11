@@ -28,7 +28,6 @@
 #include "sproto.h"
 #include <string.h>
 
-#include <string>
 #include <unordered_map>
 
 static int last_hr;

@@ -37,7 +37,6 @@
 #include "Faces.h"
 #include <string.h>
 
-#include <string>
 #include <set>
 #include <unordered_map>
 #include <memory>

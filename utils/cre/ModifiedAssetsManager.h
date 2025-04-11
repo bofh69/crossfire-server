@@ -13,9 +13,7 @@
 #ifndef MODIFIEDASSETSMANAGER_H
 #define MODIFIEDASSETSMANAGER_H
 
-#include <string>
 #include <set>
-#include <vector>
 #include <algorithm>
 #include "AssetWriter.h"
 #include <QFile>

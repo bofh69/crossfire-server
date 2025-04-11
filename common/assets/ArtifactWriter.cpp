@@ -15,9 +15,6 @@
 #include "string.h"
 #include "Utils.h"
 
-#include <string>
-#include <vector>
-
 void ArtifactWriter::write(const artifact *item, StringBuffer *buf) {
     stringbuffer_append_string(buf, "Allowed");
     if (item->allowed.empty()) {

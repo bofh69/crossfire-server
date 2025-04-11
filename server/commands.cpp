@@ -27,7 +27,6 @@
 #include "assert.h"
 
 #include <map>
-#include <string>
 
 /** Represents one command. */
 struct registered_command {

@@ -29,11 +29,9 @@
 
 #include <ctype.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "loader.h"
 
-#include <string>
 #include <map>
 #include "assets.h"
 #include "AssetsManager.h"

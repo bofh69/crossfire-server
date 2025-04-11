@@ -1,8 +1,6 @@
-#include <stdarg.h>
 #include "global.h"
 #include "events.h"
 #include <map>
-#include <string>
 
 #include "stats.h"
 

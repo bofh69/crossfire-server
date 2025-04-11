@@ -42,12 +42,9 @@
  * See this page for more information.
  */
 
-#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unordered_map>
-#include <vector>
-#include <string>
 
 #include <assert.h>
 #include "global.h"

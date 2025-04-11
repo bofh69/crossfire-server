@@ -3,9 +3,7 @@
 #include "string.h"
 #include "malloc.h"
 
-#include <string>
 #include <map>
-#include <vector>
 
 #include "sproto.h"
 #include "assets.h"

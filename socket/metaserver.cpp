@@ -20,7 +20,6 @@
 #include "global.h"
 
 #include <ctype.h>
-#include <string>
 #include <mutex>
 #include <thread>
 #include <system_error>

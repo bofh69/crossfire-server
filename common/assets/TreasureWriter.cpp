@@ -10,7 +10,6 @@
  * The authors can be reached via e-mail at <crossfire@metalforge.org>.
  */
 
-#include <string>
 #include "TreasureWriter.h"
 
 #define W(x, n) { if (item->x) { stringbuffer_append_printf(buf, "%s" n "\n", indentItems.c_str(), item->x); } }

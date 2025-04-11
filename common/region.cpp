@@ -29,7 +29,6 @@
 #endif /* win32 */
 
 #include <map>
-#include <string>
 
 /**
  * Gets a region by name.

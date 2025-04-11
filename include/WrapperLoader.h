@@ -15,8 +15,6 @@
 
 #include "AssetLoader.h"
 #include "Utils.h"
-#include <functional>
-#include <string>
 #include "global.h"
 
 /**

@@ -48,12 +48,11 @@
  */
 
 #include <set>
-#include <string>
+
+#include "global.h"
 
 /** Set of accounts names that are currently logged in. */
 static std::set<std::string> accounts_logged_in = std::set<std::string>();
-
-#include "global.h"
 
 #include <ctype.h>
 #include <stdlib.h>
