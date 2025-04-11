@@ -39,6 +39,7 @@
 #include <vector>
 #include <stdarg.h>
 #include <algorithm>
+#include <functional>
 
 /** Used for printf-like functions, mostly LOG and draw_ext_info_format */
 #define PRINTF_ARGS(x, y) __attribute__ ((format (printf, x, y)))
@@ -231,7 +232,7 @@ extern socket_struct *init_sockets;
 #define MAX_TOTAL_EXPERIENCE (settings.permanent_exp_ratio ? (MAX_EXPERIENCE * 100 / settings.permanent_exp_ratio) : 0)
 
 typedef void(*collectorHook)(BufferReader *, const char *);
-typedef void(*fatalHook)(enum fatal_error err);
+typedef std::function<void(enum fatal_error err)> fatalHook;
 typedef void(*logHook)(LogLevel, const char *, va_list);
 
 /**
