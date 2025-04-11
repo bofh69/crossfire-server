@@ -40,6 +40,7 @@
 #include <stdarg.h>
 #include <algorithm>
 #include <functional>
+#include <string>
 
 /** Used for printf-like functions, mostly LOG and draw_ext_info_format */
 #define PRINTF_ARGS(x, y) __attribute__ ((format (printf, x, y)))
@@ -330,18 +331,14 @@ struct Settings {
     char*   account_trusted_host;     /**< Trusted host for account creation, defaults to 127.0.0.1. */
     uint8_t crypt_mode;               /**< 0 for legacy behavior, 1 for always Traditional */
     uint8_t min_name;                         /**< Minimum characters for an account or player name */
-    uint8_t hooks_count;              /**< Number of items in hooks_filename and hooks. */
-    const char *hooks_filename[20];   /**< Filenames to process for each hook. */
-    collectorHook hooks[20];          /**< Collect hooks, called when the filename matches. */
+    std::vector<std::pair<std::string, collectorHook>> collector_hooks; /**< Collect hooks, as (filename, function) pairs */
     int     ignore_assets_errors;     /**< If set then go on running even if there are errors in assets. */
     class AssetsTracker *assets_tracker;    /**< If not NULL, called each time an asset is defined. */
     fatalHook fatal_hook;             /**< If not NULL then called when fatal() is called. */
     char* stat_file;
 
     void add_hook(const char *name, collectorHook hook) {
-        hooks_filename[hooks_count] = name;
-        hooks [hooks_count] = hook;
-        ++hooks_count;
+        collector_hooks.push_back(std::make_pair(name, hook));
     }
 };
 

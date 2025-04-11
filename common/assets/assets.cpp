@@ -139,8 +139,8 @@ void assets_collect(const char* datadir, int what) {
         collector.addLoader(new QuestLoader(manager->quests(), manager->faces(), settings.assets_tracker));
     if (what & ASSETS_REGIONS)
         collector.addLoader(new WrapperLoader("regions.reg", init_regions));
-    for (uint8_t hook = 0; hook < settings.hooks_count; hook++) {
-        collector.addLoader(new WrapperLoader(settings.hooks_filename[hook], settings.hooks[hook]));
+    for (const auto& hook : settings.collector_hooks) {
+        collector.addLoader(new WrapperLoader(hook.first, hook.second));
     }
     collector.addLoader(new TarLoader(&collector));
     collector.collect(datadir);
