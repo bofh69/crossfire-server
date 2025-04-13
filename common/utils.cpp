@@ -295,7 +295,7 @@ void transmute_materialname(object *op, const object *change) {
  * @param op item to set the material for.
  */
 void set_materialname(object *op) {
-    if (op->materialname != NULL)
+    if (op->materialname != NULL || op->material == 0)
         return;
 
     for (auto material : materials) {
