@@ -60,7 +60,7 @@ static void mark_inv_not_removed(object *item) {
 }
 
 void Archetypes::replace(archetype *existing, archetype *update) {
-    for (auto arch : m_assets) {
+    for (auto &arch : m_assets) {
         recursive_update(arch.second->clone.inv, update);
     }
     if (m_updateListener) {
