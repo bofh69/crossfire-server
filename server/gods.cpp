@@ -389,6 +389,7 @@ static void remove_special_prayers(object *op, const object *god) {
                                  "You lose knowledge of %s.",
                                  tmp->name);
             player_unready_range_ob(op->contr, tmp);
+            esrv_remove_spell(op->contr, tmp);
             object_remove(tmp);
             object_free_drop_inventory(tmp);
         }
