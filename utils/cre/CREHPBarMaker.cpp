@@ -100,7 +100,8 @@ void CREHPBarMaker::makeBar()
 
     for (int value = 1; value <= 30; value++)
     {
-        QString line = QString("Object %1_%2\nface %1_%2.111\nend\n").arg(myName->text()).arg(value);
+        char c = value < 10 ? '0' + value : 'a' + value - 10;
+        QString line = QString("Object %1_%2\nface %1.11%3\nend\n").arg(myName->text()).arg(value).arg(c);
         arc.write(line.toLocal8Bit());
 
         QPixmap pic(32, 32);
@@ -108,7 +109,7 @@ void CREHPBarMaker::makeBar()
         QPainter device(&pic);
         device.fillRect(1, shift, value, height, myColor);
 
-        QString picName = base + "_" + QString::number(value) + ".base.111.png";
+        QString picName = base + ".base.11" + c + ".png";
 
         if (!pic.save(picName, "PNG"))
         {
