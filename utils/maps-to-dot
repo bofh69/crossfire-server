@@ -12,11 +12,21 @@
 ; Generates a GraphViz visualization of interconnections between Crossfire maps.
 ; Outputs a different digraph for each region.
 ;
-; Convert to images with:
-;   for i in output-dir/*.dot; do neato -Tsvg $i > ${i%.dot}.svg; done
+; You can generate a quick and dirty HTML page containing all the graphs with:
 ;
-; To generate HTML server-side imagemaps, use:
-;   for i in output-dir/*.dot; do neato -Timap $i > ${i%.dot}.map; done
+;   for i in *.dot; do neato -T svg_inline -o ${i%.dot}.svg $i; done
+;   {
+;     echo '<base href="https://www.crossfireatlas.net/" />'
+;     echo '<head><style>svg { max-width: 100%; height: auto; }</style></head>'
+;     for i in *.svg; do
+;       name=${i%.svg}
+;       printf '%s<br>\n' $name
+;       cat $name.svg
+;       printf '\n<hr>\n'
+;     done
+;   } > index.html
+;
+; Each node will link to the corresponding map on Crossfire Atlas.
 
 (ns map-digraph
   (:require [clojure.java.io :as jio]
@@ -162,13 +172,14 @@
 (defn write-graph
   "Generate a graphviz file for the given region and write it to dest."
   [dest [region maps]]
-  (let [dest-file (jio/file (.toFile dest) (str region ".dot"))
+  (let [dot-name (string/replace region " " "_")
+        dest-file (jio/file (.toFile dest) (str dot-name ".dot"))
         edges (generate-edges maps)]
     (println "Writing: " (.toString dest-file))
     (spit
      dest-file
      (str
-      "digraph crossfire_" region " {\n"
+      "digraph crossfire_" dot-name " {\n"
       "  concentrate=true\n"
       "  overlap=false\n"
       "  "
