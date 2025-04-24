@@ -382,3 +382,7 @@ const char *time_format_time(const timeofday_t *tod, char *buf, size_t bufsize)
 unsigned int tick_length(float seconds) {
     return (int)ceil(seconds * 1000000 / tick_duration);
 }
+
+float ticks_to_seconds(int ticks) {
+    return ticks / (1000000.0 / tick_duration);
+}

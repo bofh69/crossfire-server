@@ -422,6 +422,7 @@ extern long seconds(void);
 extern const char *time_format_time(const timeofday_t *tod, char *buf, size_t bufsize);
 extern long timespec_diff(struct timespec *end, struct timespec *start);
 extern unsigned int tick_length(float seconds);
+extern float ticks_to_seconds(int ticks);
 /* treasure.cpp */
 extern void init_archetype_pointers(void);
 extern void load_treasures(void);
