@@ -321,6 +321,18 @@ int get_map_flags(mapstruct *oldmap, mapstruct **newmap, int16_t x, int16_t y, i
 }
 
 /**
+ * Basic macro to see if ob2 blocks ob1 from moving onto this space.
+ * Basically, ob2 has to block all of ob1 movement types.
+ */
+bool ob_move_block(object *ob1, object *ob2) {
+    if (ob1->move_type == 0) {
+        // ob1 doesn't move, so it is never blocked *by* ob2.
+        return false;
+    }
+    return (ob1->move_type&ob2->move_block) == ob1->move_type;
+}
+
+/**
  * Returns true if the given coordinate is blocked except by the
  * object passed is not blocking.  This is used with
  * multipart monsters - if we want to see if a 2x2 monster

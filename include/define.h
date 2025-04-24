@@ -415,13 +415,7 @@ struct typedata {
  * at anyways.
  */
 typedef unsigned char MoveType;
-
-/**
- * Basic macro to see if ob2 blocks ob1 from moving onto this space.
- * Basically, ob2 has to block all of ob1 movement types.
- */
-#define OB_MOVE_BLOCK(ob1, ob2) \
-    ((ob1->move_type&ob2->move_block) == ob1->move_type)
+#define OB_MOVE_BLOCK(ob1, ob2) ob_move_block(ob1, ob2)
 
 /**
  * Basic macro to see if if ob1 can not move onto a space based

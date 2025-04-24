@@ -186,6 +186,8 @@ extern const char *const map_layer_name[MAP_LAYERS];
  */
 #define GET_MAP_FACE_OBJS(M, X, Y) (map_space(M, X, Y)->faces_obj)
 
+extern bool ob_move_block(object *ob1, object *ob2);
+
 /** Gets the blocking state of a square. Not multitile aware. */
 #define GET_MAP_MOVE_BLOCK(M, X, Y) (map_space(M, X, Y)->move_block)
 /** Sets the blocking state of a square. Not multitile aware. */
