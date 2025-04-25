@@ -1179,8 +1179,10 @@ static int hit_with_drain(object *op, object *hitter, int dam) {
 
     // Victim loses 1/rate of their current XP, so this scales from 4%
     // of their XP at -100 resist drain, to 2% at no resistance, to 1%
-    // at 100% resist drain -- so even 100% resistance doesn't entirely
-    // protect you!
+    // at 100% resist drain.
+    // Note that this function is not actually called when a player has
+    // 100% resistance, as hit_with_one_attacktype() will skip attacks
+    // when the target has >= 100% resistance for a given attack type.
     if (op->resist[ATNR_DRAIN] >= 0)
         rate = 50+op->resist[ATNR_DRAIN]/2;
     else
