@@ -19,15 +19,21 @@
  */
 
 /**
- * @file mapper.cpp
- * This program generates, by default, map browsing web pages (but it can be customized for other things).
+ * @page mapper Crossfire Mapper
+ *
+ * @section mapper_overview Overview
+ *
+ * Crossfire Mapper is an offline tool, not required to host a server or play the game.
+ *
+ * This program generates web pages listing all maps, items, monsters, regions, and many more things.
+ * It can be customized to output almost any format.
  *
  * Quick run: without arguments, will make sensible choices.
  *
- * For help, try the -help option.
+ * For help, try the \b -help option.
  *
  * Since this program browses maps from the first map, only maps linked from there will be processed.
- * A command line parameter, "-addmap=", allows to specify more maps.
+ * A command line parameter, \b -addmap=, allows to specify more maps.
  *
  * Maps are generated as the server sees them, that is with weather effects, treasures instead of markers,
  * and things like that.
@@ -36,106 +42,130 @@
  * A list of files to process is specified on the command line (by default "index.html"),
  * and from there the program will generate all requested pages.
  *
- * Templates use the inja C++ template engine, found at https://github.com/pantor/inja
+ * Templates use the inja C++ template engine, found at https://github.com/pantor/inja as well as
+ * Nlohmann JSON, at https://github.com/nlohmann/json
+ *
  * Provided templates should give much samples of use, see "index.html" for entry point.
  *
- * The following objects exist:
- * - map: identified by a unique key, the following fields are defined:
- *  - _key: unique map key
- *  - name: map name as defined in the map itself
- *  - path: map path from the map root
- *  - region: key of the region this map is part of
- *  - level: map level as defined in the map
- *  - reest_group: reset group of the map, empty if not specified
- *  - lore: map lore as defined in the map
- *  - exits_to: array of map keys that this map contains exits to
- *  - exits_from: array of map keys that link to this map
- *  - npcs: array of npc objects that are on this map
- *  - readables: array of npc objects that represent books on this map
- *  - monsters: array of monster objects
- *  - quests: array of quest_in_map objects that this map is part of
- * - region: identified by a unique key, the following fields are defined:
- *  - _key: unique region identifier
- *  - name: region short name
- *  - longname: region long name
- *  - description: region description
- *  - maps: array of map keys that are part of the region
- *  - links: array of region keys this region has exits to
- * - item: contains the following fields:
- *  - name: item name as found on the map
- *  - power: item power as found on the map
- *  - calc_power: item power as computed by the game
- *  - diff: item specific fields, as an (CF) object difference with the archetype
- *  - maps: array of map keys the item is found on
- * - monster: contains the following fields:
- *  - name: monster's name
- *  - count: how many are found in the world
- *  - maps: array of map keys the monster is found on
- * - system_quest: information about a quest, with the following fields:
- *  - code: unique quest code
- *  - title: quest title as seen by the player
- *  - description: long description, as seen by the player
- *  - steps: only filled if the command-line parameter "-details-quests" is specified, array of steps:
+ * @section mapper_objects Available objects in templates
+ *
+ * In templates, the following objects are defined:
+ * - \b map: identified by a unique key, with the following fields:
+ *  - \em _key: unique map key
+ *  - \em name: map name as defined in the map itself
+ *  - \em path: map path from the map root
+ *  - \em region: key of the region this map is part of
+ *  - \em level: map level as defined in the map
+ *  - \em reset_group: reset group of the map, empty if not specified
+ *  - \em lore: map lore as defined in the map
+ *  - \em exits_to: array of map keys that this map contains exits to
+ *  - \em exits_from: array of map keys that link to this map
+ *  - \em npcs: array of npc objects that are on this map
+ *  - \em readables: array of npc objects that represent books on this map
+ *  - \em monsters: array of monster objects
+ *  - \em quests: array of quest_in_map objects that this map is part of
+ * - \b region: identified by a unique key, the following fields are defined:
+ *  - \em _key: unique region identifier
+ *  - \em name: region short name
+ *  - \em longname: region long name
+ *  - \em description: region description
+ *  - \em maps: array of map keys that are part of the region
+ *  - \em links: array of region keys this region has exits to
+ * - \b item: contains the following fields:
+ *  - \em name: item name as found on the map
+ *  - \em power: item power as found on the map
+ *  - \em calc_power: item power as computed by the game
+ *  - \em diff: item specific fields, as an (CF) object difference with the archetype
+ *  - \em maps: array of map keys the item is found on
+ * - \b monster: contains the following fields:
+ *  - \em name: monster's name
+ *  - \em count: how many are found in the world
+ *  - \em maps: array of map keys the monster is found on
+ * - \b system_quest: information about a quest, with the following fields:
+ *  - \em code: unique quest code
+ *  - \em title: quest title as seen by the player
+ *  - \em description: long description, as seen by the player
+ *  - \em steps: only filled if the command-line parameter "-details-quests" is specified, array of steps:
  *   - description: step description
  *   - is_completion: true if this step completes the quest, false else
- * - slaying: information about a key, detector and such, with the following fields:
- *  - slaying: unique code
- *  - doors: array of map keys that contain a door with this slaying
- *  - keys: array of map keys that contain a key with this slaying
- *  - containers: array of map keys that contain a container with this slaying
- *  - detectors: array of map keys that contain a detector with this slaying
- *  - connections: array of map keys that contain a connection with this slaying
- * - quests: information about a quest as defined in map parameters, with the following fields:
- *  - _key: unique quest key
- *  - number: unique quest number
- *  - name: quest name, may be empty
- *  - description: quest description, may be empty
- *  - main_map: key of the main map of the quest, may be empty
- *  - maps: array of quest_in_map objects
- * - quest_in_map: information about a link between a map and a quest
- *  - map: map key
- *  - description: relationship between the quest and the map
- *  - quest: quest name
- *  - number: unique quest number *
- * - npc: information about a NPC or a readable (book, sign, message...), fields:
- *  - name: NPC or readable name as defined in the map
- *  - x: coordinate in the map
- *  - y: coordinate in the map
- *  - message: NPC or readable message
- * - monster: information about a monster, fields:
- *  - name: monster name
- *  - count: number on the map
+ * - \b slaying: information about a key, detector and such, with the following fields:
+ *  - \em slaying: unique code
+ *  - \em doors: array of map keys that contain a door with this slaying
+ *  - \em keys: array of map keys that contain a key with this slaying
+ *  - \em containers: array of map keys that contain a container with this slaying
+ *  - \em detectors: array of map keys that contain a detector with this slaying
+ *  - \em connections: array of map keys that contain a connection with this slaying
+ * - \b quests: information about a quest as defined in map parameters, with the following fields:
+ *  - \em _key: unique quest key
+ *  - \em number: unique quest number
+ *  - \em name: quest name, may be empty
+ *  - \em description: quest description, may be empty
+ *  - \em main_map: key of the main map of the quest, may be empty
+ *  - \em maps: array of quest_in_map objects
+ * - \b quest_in_map: information about a link between a map and a quest
+ *  - \em map: map key
+ *  - \em description: relationship between the quest and the map
+ *  - \em quest: quest name
+ *  - \em number: unique quest number *
+ * - \b npc: information about a NPC or a readable (book, sign, message...), fields:
+ *  - \em name: NPC or readable name as defined in the map
+ *  - \em x: coordinate in the map
+ *  - \em y: coordinate in the map
+ *  - \em message: NPC or readable message
+ * - \b monster: information about a monster, fields:
+ *  - \em name: monster name
+ *  - \em count: number on the map
  *
  * The following variables are available to the templates:
- * - maps: list of maps
- * - regions: list of regions
- * - items: list of special equipment
- * - monsters: list of monster objects
- * - system_quests: list of system quest objects
- * - slaying: list of slaying information objects
- * - quests: list of quests defined in map objects
+ * - \b maps: list of maps
+ * - \b regions: list of regions
+ * - \b items: list of special equipment
+ * - \b monsters: list of monster objects
+ * - \b system_quests: list of system quest objects
+ * - \b slaying: list of slaying information objects
+ * - \b quests: list of quests defined in map objects
+ * - \b has_search: only true if mapper should generate [browser-side search data](@ref mapper_search).
  *
  * As well as default callbacks provided by inja, mapper adds the following ones:
- * - link_to_page(page_name[, param]): process the "page_name" template, and return a link
+ * - <b>link_to_page(page_name[, param])</b>: process the "page_name" template, and return a link
  *   to the file. "param" is an optional string that the template will be able to access via the
  *   "param" variable. Pages with the same "page_name" and "param" are considered equal.
- * - substr(what, start[, length]): return the substring from "start", of a specified length or
+ * - <b>substr(what, start[, length])</b>: return the substring from "start", of a specified length or
  *   the end of the string.
- * - picture(item_key[, size]): return the path to the picture of the specified item. "size" is 1 to 5,
+ * - <b>picture(item_key[, size])</b>: return the path to the picture of the specified item. "size" is 1 (default) to 5,
  *   with 1 real size and 5 the smallest size. Only map keys are allowed for now.
- * - pad(val, digits): pad "val" to a string of "length" characters, adding 0 in front if needed.
- * - path_to_root: return the relative path, without final /, to the output root of generated files.
- * - sort(list, keys[, invert[, ignore_case]]): sort the specified list by the value of 'keys', which
+ * - <b>pad(val, digits)</b>: pad "val" to a string of "length" characters, adding 0 in front if needed.
+ * - <b>path_to_root</b>: return the relative path, without final /, to the output root of generated files.
+ * - <b>sort(list, keys[, invert[, ignore_case]])</b>: sort the specified list by the value of 'keys', which
  *   may include multiple field names separated by a comma. If 'invert' is true then invert order. Strings are
  *   compared in a case-unsensitive manner unless 'ignore_case' is false.
- * - get_by_field(list, field, value): return the first item in the list having a field 'field' with value 'value'.
- * - get_list_by_field(list, field, value): return all items in the list having a field 'field'
+ * - <b>get_by_field(list, field, value)</b>: return the first item in the list having a field 'field' with value 'value'.
+ * - <b>get_list_by_field(list, field, value)</b>: return all items in the list having a field 'field'
  *   with a value in the list 'value' (if value a list) or the value 'value' (if value a single value).
  *
  * For maps, 5 pictures are generated, with sizes of 32, 16, 8, 4 and 2 pixels for tiles.
  *
- * To build this program, add the '--enable-mapper' flag to 'configure' then run
- * 'make' at the server root. It requires the GD library and its development files.
+ * @section mapper_building Building
+ *
+ * This program was only tested under Linux.
+ *
+ * To build this program, add the \b --enable-mapper flag to \b configure then run
+ * \b make at the server root. Compilation requires the GD library and its development files.
+ *
+ * @section mapper_search Browser-side search
+ *
+ * With the HTML output, mapper can generate browser-side search facilities, using [LunaJS](https://lunrjs.com/).
+ *
+ * The easiest was to generate the search index is to use the provided \a mapper-with-search.sh script, which uses
+ * Docker to run the required JS parts.
+ *
+ * When mapper is run with the \b -build-search-data option, \a has_search is defined to true in the templates.
+ *
+ * The search index uses files from "templates/search-links" to generate links for results, depending on the type.
+ */
+/**
+ * @file mapper.cpp
+ * Main file for [Crossfire Mapper](@ref mapper).
  *
  * @todo
  * - split this file in multiple ones for easier maintenance
@@ -261,6 +291,26 @@ static struct_race_list races;     /**< Monsters found in maps. */
 
 static std::set<std::string> reset_groups;  /**< All defined reset groups. */
 
+/** Search values, for the JS search engine. */
+enum class SearchType {
+    Region = 1,
+    Map,
+    Item,
+    Monster,
+    Quest,
+    Count
+};
+
+/** Search names for types, for the JS search engine. */
+static std::string SearchName[int(SearchType::Count)] = {
+    "(invalid)",
+    "region",
+    "map",
+    "item",
+    "monster",
+    "quest",
+};
+
 /**
  * Blanks a struct_race_list.
  * @param list
@@ -321,6 +371,7 @@ static int tileset = 0;           /**< Tileset to use to generate pics. */
 static bool detail_quests = false;  /**< Whether to show all quests details or not. */
 static bool list_system_quests = false;     /**< Whether to show 'system' quests or not. */
 static bool display_rendered_template = false;  /**< Whether to display the template to be rendered or not. */
+static bool build_search_file = false;          /**< If set, will build the 'search_data.js' file. */
 
 /** Picture statistics. */
 static int created_pics = 0; /**< Total created pics. */
@@ -2272,6 +2323,11 @@ static nlohmann::json create_map_in_quest_array(struct_map_in_quest_list &list) 
     return ret;
 }
 
+static const char *remove_trailing_slash(const char *path)
+{
+    return path && path[0] == '/' ? path + 1 : path;
+}
+
 /**
  * Return a JSON map object.
  * @param map map to return the JSON of.
@@ -2282,7 +2338,7 @@ static nlohmann::json create_map_object(struct_map_info *map, const std::string 
     return {
         { "_key", key },
         { "name", map->name },
-        { "path", map->path },
+        { "path", remove_trailing_slash(map->path) },
         { "region", map->cfregion ? reverse_regions[map->cfregion] : "reg_ffff" },
         { "level", map->level },
         { "reset_group", map->reset_group ? map->reset_group : "" },
@@ -2357,6 +2413,17 @@ static nlohmann::json create_region_array(const std::set<region *> &regions) {
     return ret;
 }
 
+static inja::TemplateStorage templateCache;
+static inja::Template get_template(const std::string &filename) {
+    auto find = templateCache.find(filename);
+    if (find != templateCache.end()) {
+        return find->second;
+    }
+    inja::Template parsed = env->parse_template(filename);
+    templateCache[filename] = parsed;
+    return parsed;
+}
+
 /**
  * Add all global variables to the data available to templates.
  * @param json what to fill.
@@ -2366,6 +2433,7 @@ static void fill_json(nlohmann::json &json) {
     char buf[10];
     struct_map_list all_maps;
     bool need_unknown_region = false;
+    nlohmann::json search;
 
     init_map_list(&all_maps);
     append_map_list(all_maps, maps_list);
@@ -2383,24 +2451,42 @@ static void fill_json(nlohmann::json &json) {
     for (size_t reg = 0; reg < region_count; reg++) {
         auto region = regions[reg];
         qsort(region->maps_list.maps, region->maps_list.count, sizeof(struct_map_info *), sort_map_info);
-
-        json["regions"].push_back({
+        nlohmann::json r = {
             { "_key", reverse_regions[region->reg] },
+            { "_index", reg },
             { "name", region->reg->name },
             { "longname", region->reg->longname },
             { "description", region->reg->msg ? region->reg->msg : "" },
             { "maps", create_maps_array(region->maps_list) },
             { "links", create_region_array(region_links[region->reg]) },
-        });
+        };
+        json["regions"].push_back(r);
+        auto link = env->render(get_template("search-links/region"), r);
+        search["reg_" + std::to_string(reg)] = {
+            { "type" , SearchType::Region },
+            { "name", region->reg->longname },
+            { "text", std::string(region->reg->msg ? region->reg->msg : "") },
+            { "url", link },
+        };
     }
 
+    size_t map_index = 0;
     for (auto map : reverse_maps) {
         auto cur = map.first;
         if (cur->tiled_group)
             continue;
         if (cur->cfregion == nullptr)
             need_unknown_region = true;
-        json["maps"].push_back(create_map_object(cur, map.second));
+        auto m = create_map_object(cur, map.second);
+        m["_index"] = map_index;
+        json["maps"].push_back(m);
+        auto link = env->render(get_template("search-links/map"), m);
+        search["map_" + std::to_string(map_index++)] = {
+            { "type", SearchType::Map },
+            { "name", cur->name },
+            { "text", std::string(cur->lore ? cur->lore : "") },
+            { "url", link },
+        };
     }
 
     if (need_unknown_region) {
@@ -2422,12 +2508,20 @@ static void fill_json(nlohmann::json &json) {
     json["items"] = nlohmann::json::array();
     for (size_t idx = 0; idx < special_equipment.size(); idx++) {
         auto eq = special_equipment[idx];
-        json["items"][idx] = {
+        nlohmann::json item = {
+            { "_index", idx },
             { "name", eq->name },
             { "power", eq->power },
             { "calc_power", eq->calc_power },
             { "diff", eq->diff },
             { "maps", create_maps_array(eq->origin) },
+        };
+        json["items"][idx] = item;
+        auto link = env->render(get_template("search-links/item"), item);
+        search["item_" + std::to_string(idx)] = {
+            { "type", SearchType::Item },
+            { "name", eq->name },
+            { "url", link },
         };
     }
 
@@ -2435,17 +2529,26 @@ static void fill_json(nlohmann::json &json) {
     for (size_t item = 0; item < races.count; item++) {
         auto race = races.races[item];
         qsort(race->origin.maps, race->origin.count, sizeof(struct_map_info *), sort_map_info);
-        json["monsters"].push_back({
+        nlohmann::json m = {
+            { "_index", item },
             { "name", race->name },
             { "count", race->count },
             { "maps", create_maps_array(race->origin) },
-        });
+        };
+        json["monsters"].push_back(m);
+        auto link = env->render(get_template("search-links/monster"), m);
+        search["monster_" + std::to_string(item)] = {
+            { "type", SearchType::Monster },
+            { "name", race->name },
+            { "url", link },
+        };
     }
 
     json["system_quests"] = nlohmann::json::array();
     for (size_t q = 0; q < system_quests.size(); q++) {
         auto quest = system_quests[q];
         nlohmann::json j({
+            { "_index", q },
             { "code", quest->quest_code },
             { "title", quest->quest_title },
             { "description", quest->quest_description ? quest->quest_description : "" },
@@ -2476,6 +2579,12 @@ static void fill_json(nlohmann::json &json) {
             }
         }
         json["system_quests"].push_back(j);
+        search["quest_" + std::to_string(q)] = {
+            { "type", SearchType::Quest },
+            { "name", quest->quest_title ? quest->quest_title : "" },
+            { "text", quest->quest_description ? quest->quest_description : "" },
+            { "url", "system_quests.html#q" + std::to_string(q) },
+        };
     }
 
     json["slaying"] = nlohmann::json::array();
@@ -2497,6 +2606,21 @@ static void fill_json(nlohmann::json &json) {
         char buf[100];
         snprintf(buf, sizeof(buf), "quest_%d", quests[quest]->number);
         json["quests"].push_back(create_quest_object(quests[quest], buf));
+    }
+
+    json["has_search"] = build_search_file;
+    if (build_search_file) {
+        std::string out(root);
+        out += "/search_data.js";
+        std::ofstream sf(out, std::ios_base::trunc);
+        sf << "var search_data = " << search << ";" << std::endl;
+        sf << "var search_type = { ";
+        std::string sep;
+        for (int i = 1; i < int(SearchType::Count); i++) {
+            sf << sep << i << ": \"" << SearchName[i] << "\"";
+            sep = ", ";
+        }
+        sf << " };" << std::endl;
     }
 }
 
@@ -2548,7 +2672,8 @@ static nlohmann::json generate_page_and_link(inja::Arguments &args) {
         }
     }
 
-    add_template_to_render(template_name, output_name, param);
+    if (template_name != "search_data.js" && template_name != "search_index.js")
+        add_template_to_render(template_name, output_name, param);
     return path_from_current(output_name);
 }
 
@@ -2640,13 +2765,16 @@ static void init_renderer_env() {
         return std::string(buf);
     });
     env->add_callback("path_to_root", 0, [] (inja::Arguments &) {
-        std::string r(root);
-        char rel[1000];
-        auto current(path_stack.back() + '/');
-        if (current[0] != '/')
-            current = '/' + current;
-        relative_path(current.c_str(), r.c_str(), rel);
-        return std::string(rel);
+        std::string root;
+        auto current(path_stack.back());
+        if (current[0] == '/')
+            current = current.substr(1);
+        size_t start = 0;
+        while ((start = current.find('/', start)) != std::string::npos) {
+            start++;
+            root += "../";
+        }
+        return root;
     });
     env->add_callback("get_by_field", 3, [] (inja::Arguments &args) {
         const auto &src = args.at(0);
@@ -2959,6 +3087,8 @@ static void do_parameters(int argc, char **argv) {
             templates.push_back(argv[arg] + 14);
         } else if (strcmp(argv[arg], "-list-template-to-process") == 0) {
             display_rendered_template = 1;
+        } else if (strncmp(argv[arg], "-build-search-data", 18) == 0) {
+            build_search_file = true;
         } else
             do_help(argv[0]);
         arg++;
@@ -2998,17 +3128,6 @@ static void create_destination(void) {
  */
 static const char *yesno(int value) {
     return (value ? "yes" : "no");
-}
-
-static inja::TemplateStorage templateCache;
-static inja::Template get_template(const std::string &filename) {
-    auto find = templateCache.find(filename);
-    if (find != templateCache.end()) {
-        return find->second;
-    }
-    inja::Template parsed = env->parse_template(filename);
-    templateCache[filename] = parsed;
-    return parsed;
 }
 
 int main(int argc, char **argv) {

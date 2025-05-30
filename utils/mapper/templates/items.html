@@ -12,7 +12,7 @@
   </tr>{% set iss = sort(items, "name") %}
   {% for item in iss %}
   <tr>
-    <td>{{ item.name }}</td>
+    <td id="i{{ item._index }}">{{ item.name }}</td>
     <td>{% if length(item.maps) %}
       <ul>{% set im = sort(get_list_by_field(maps, "_key", item.maps), "name,path") %}
         {% for map in im %}

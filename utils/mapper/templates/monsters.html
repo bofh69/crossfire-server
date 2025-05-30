@@ -10,7 +10,7 @@
     </tr>
     {% for monster in monsters %}
     <tr>
-      <td>{{ monster.name }}</td>
+      <td id="m{{ monster._index }}">{{ monster.name }}</td>
       <td>{{ monster.count }}</td>
       <td>Found on {{ length(monster.maps) }} maps:
         <ul>
