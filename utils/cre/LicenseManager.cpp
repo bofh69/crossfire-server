@@ -73,18 +73,26 @@ void LicenseManager::parseLicenseFile(BufferReader *reader, const char *filename
 }
 
 LicenseManager::LicenseItems LicenseManager::getForFace(const std::string &face) {
-    auto search = m_licenses.find(licenseNameFromFaceName(face));
-    if (search != m_licenses.end()) {
-        return search->second;
+    for (auto wall : { false, true }) {
+        auto search = m_licenses.find(licenseNameFromFaceName(face, wall));
+        if (search != m_licenses.end()) {
+            return search->second;
+        }
     }
     return LicenseItems();
 }
 
-std::string LicenseManager::licenseNameFromFaceName(const std::string &face) {
+std::string LicenseManager::licenseNameFromFaceName(const std::string &face, bool tryWall) {
     auto dot = face.find('.');
-    if (dot == std::string::npos)
-    {
+    if (dot == std::string::npos) {
         return std::string();
     }
-    return face.substr(0, dot);
+    auto result = face.substr(0, dot);
+    if (tryWall && result.length() > 2 && result[result.length() - 2] == '_') {
+        auto letter = result[result.length() - 1];
+        if ((letter >= '0' && letter <= '9') || (letter >= 'A' && letter <= 'F')) {
+            return result.substr(0, result.length() - 2);
+        }
+    }
+    return result;
 }

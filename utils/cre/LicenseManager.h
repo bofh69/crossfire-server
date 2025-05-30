@@ -61,9 +61,10 @@ public:
   /**
    * Get the expected license name from a face name.
    * @param face face name, with the suffix.
+   * @param tryWall if true, then a trailing _[0-9A-F] from the name will be removed.
    * @return expected license file name, empty if face is invalid.
    */
-  static std::string licenseNameFromFaceName(const std::string &face);
+  static std::string licenseNameFromFaceName(const std::string &face, bool tryWall);
 
   static void parseLicenseFile(BufferReader *reader, const char *filename, std::vector<LicenseItem> &items);
 

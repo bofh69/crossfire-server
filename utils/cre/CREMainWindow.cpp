@@ -1660,7 +1660,8 @@ void CREMainWindow::onReportLicenses()
   });
   getManager()->faces()->each([&faces] (const Face *face)
   {
-    faces.erase(LicenseManager::licenseNameFromFaceName(face->name));
+    faces.erase(LicenseManager::licenseNameFromFaceName(face->name, false));
+    faces.erase(LicenseManager::licenseNameFromFaceName(face->name, true));
   });
 
   if (facesets.empty())
