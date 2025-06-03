@@ -1657,6 +1657,13 @@ void key_confirm_quit(object *op, char key) {
     }
 
     play_again(op);
+
+    // Fields in op are not cleared until the client plays a different
+    // character or disconnects. Therefore, after deleting a character,
+    // immediately creating a new character with the same name as the deleted
+    // one fails because verify_player() thinks this player is still playing.
+    // So we do a little hacking by clearing the name now.
+    FREE_AND_CLEAR_STR(op->name);
 }
 
 /**
