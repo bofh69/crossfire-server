@@ -25,12 +25,13 @@
  * Makes sure that weight reduction in containers correctly updates 'carrying'.
  */
 
-#include <check.h>
 #include <global.h>
 #include <sproto.h>
 #include <stdlib.h>
 #include <string.h>
 #include <toolkit_common.h>
+
+#include <check.h>
 
 static void setup(void) {
 }

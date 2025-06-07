@@ -31,9 +31,10 @@
  */
 
 #include <stdlib.h>
-#include <check.h>
 #include <global.h>
 #include <toolkit_common.h>
+
+#include <check.h>
 
 static void setup(void) {
     cctk_setdatadir(SOURCE_ROOT "lib");

@@ -30,7 +30,6 @@
  * This is the unit tests file for common/utils.c
  */
 
-#include <check.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,6 +37,7 @@
 #include "global.h"
 #include "toolkit_common.h"
 
+#include <check.h>
 
 static void setup(void) {
     /* put any initialisation steps here, they will be run before each testcase */

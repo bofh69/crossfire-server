@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <string.h>
-#include <check.h>
 #include "global.h"
 #include <toolkit_common.h>
 #include <math.h>
@@ -17,6 +16,8 @@
 #include "Quests.h"
 #include "QuestLoader.h"
 #include "QuestWriter.h"
+
+#include <check.h>
 
 static void setup(void) {
     init_hash_table();

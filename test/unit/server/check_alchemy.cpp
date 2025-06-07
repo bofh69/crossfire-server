@@ -31,10 +31,11 @@
  */
 
 #include <stdlib.h>
-#include <check.h>
 #include <global.h>
 #include <assert.h>
 #include "toolkit_common.h"
+
+#include <check.h>
 
 static void setup(void) {
     /* put any initialisation steps here, they will be run before each testcase */

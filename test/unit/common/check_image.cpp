@@ -30,12 +30,13 @@
  */
 
 #include <stdlib.h>
-#include <check.h>
 #include "global.h"
 #include <toolkit_common.h>
 #include "image.h"
 #include "assets.h"
 #include "AssetsManager.h"
+
+#include <check.h>
 
 void setup(void) {
     cctk_setdatadir(SOURCE_ROOT "lib");

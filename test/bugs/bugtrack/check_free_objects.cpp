@@ -25,12 +25,13 @@
  * Makes sure that inventory objects are freed correctly.
  */
 
-#include <check.h>
 #include <global.h>
 #include <sproto.h>
 #include <stdlib.h>
 #include <string.h>
 #include <toolkit_common.h>
+
+#include <check.h>
 
 static object *find_arch_at(mapstruct *map, int x, int y, const char *arch_name) {
     FOR_MAP_PREPARE(map, x, y, op) {

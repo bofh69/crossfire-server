@@ -31,11 +31,12 @@
  */
 
 #include <stdlib.h>
-#include <check.h>
 #include <global.h>
 #include <libproto.h>
 #include "tod.h"
 #include <toolkit_common.h>
+
+#include <check.h>
 
 static void setup(void) {
     cctk_setdatadir(SOURCE_ROOT"lib");  // Somehow it's required to link correctly...

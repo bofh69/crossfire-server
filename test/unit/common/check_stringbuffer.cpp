@@ -26,9 +26,10 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <check.h>
 #include "global.h"
 #include "sproto.h"
+
+#include <check.h>
 
 static void setup(void) {
     init_hash_table();

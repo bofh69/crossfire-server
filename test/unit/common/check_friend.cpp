@@ -30,11 +30,12 @@
  */
 
 #include <stdlib.h>
-#include <check.h>
 
 #include "global.h"
 #include "libproto.h"
 #include "toolkit_common.h"
+
+#include <check.h>
 
 void setup(void) {
 }

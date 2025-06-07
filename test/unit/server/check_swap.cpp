@@ -31,12 +31,13 @@
  */
 
 #include <stdlib.h>
-#include <check.h>
 
 #include "global.h"
 #include "sproto.h"
 #include "map.h"
 #include "toolkit_common.h"
+
+#include <check.h>
 
 void setup(void) {
     /* put any initialisation steps here, they will be run before each testcase */

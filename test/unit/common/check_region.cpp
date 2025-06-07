@@ -25,10 +25,11 @@
  */
 
 #include <stdlib.h>
-#include <check.h>
 #include <global.h>
 #include <assert.h>
 #include <toolkit_common.h>
+
+#include <check.h>
 
 void setup(void) {
     cctk_setdatadir(SOURCE_ROOT "lib");

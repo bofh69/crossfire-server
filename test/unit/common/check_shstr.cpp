@@ -32,9 +32,10 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <check.h>
 #include "global.h"
 #include "toolkit_common.h"
+
+#include <check.h>
 
 /*
 extern const char *add_string(const char *str);
