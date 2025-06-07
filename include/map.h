@@ -381,4 +381,6 @@ extern MapSpace *map_space(const mapstruct *m, int x, int y);
 
 extern void map_reset_swap(mapstruct *m);
 
+extern int map_light_on(mapstruct *m, int x, int y);
+
 #endif /* MAP_H */

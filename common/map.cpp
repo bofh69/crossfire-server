@@ -2692,3 +2692,31 @@ MapSpace *map_space(const mapstruct *m, int x, int y) {
         abort();
     return &m->spaces[x + m->width * y];
 }
+
+/**
+ * Return the light level at position (X, Y) on map M. Currently either 1 (lit)
+ * or 0 (unlit).
+ */
+int map_light_on(mapstruct *m, int x, int y) {
+    /* Check the spaces with the max light radius to see if any of them
+     * have lights, and if any of them light the player enough, then return 1.
+     */
+    for (int i = x - MAX_LIGHT_RADII; i <= x + MAX_LIGHT_RADII; i++) {
+        for (int j = y - MAX_LIGHT_RADII; j <= y + MAX_LIGHT_RADII; j++) {
+            int16_t nx = i;
+            int16_t ny = j;
+            m = get_map_from_coord(m, &nx, &ny);
+            if (m == nullptr)
+                continue;
+
+            int light = GET_MAP_LIGHT(m, nx, ny);
+            if (light == 0)
+                continue;
+
+            if (ihypot(i - x, i - y) < light)
+                return 1;
+        }
+    }
+
+    return 0;
+}
