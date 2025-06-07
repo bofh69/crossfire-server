@@ -344,6 +344,7 @@
 /test/unit/server/check_weather
 /test/unit/server/check_win32
 /test/unit/server/comet_perf
+/test/unit/server/perf_tests
 /test/unit/socket/*.a
 /test/unit/socket/.autorun.xml
 /test/unit/socket/.deps
@@ -556,5 +557,6 @@ plugins/cfpython/pyi-generate
 test/unit/common/check_artifact
 test/unit/common/check_mapsave
 configure~
+doxygen.err
 *.qm
 *.gmon
