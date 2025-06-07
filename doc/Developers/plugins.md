@@ -1,7 +1,5 @@
 # Plugins {#plugins}
-An enhanced version of this documentation is in the plugins.ps file (PostScript format).
-
-The latest version can be found at http://wiki.cross-fire.org/doku.php/server_plugin
+The latest version can be found at: https://wiki.cross-fire.org/server_plugin
 
 - @subpage plugin_python "Python"
 
