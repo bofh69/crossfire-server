@@ -50,5 +50,10 @@ AssetWrapper::PossibleUse RegionWrapper::uses(const AssetWrapper *asset, std::st
 void RegionWrapper::mapBrowsingFinished() {
     markModified(BeforeLayoutChange);
     myMaps = myResourcesManager->getMapInformationManager()->getMapsForRegion(myWrappedItem->name);
+    std::sort(myMaps.begin(), myMaps.end(), [] (const auto& left, const auto& right) {
+       return (left->name().compare(right->name(), Qt::CaseInsensitive) < 0) ||
+               (left->name().compare(right->name(), Qt::CaseInsensitive) == 0 &&
+                left->path().compare(right->path(), Qt::CaseInsensitive) < 0);
+    });
     markModified(AfterLayoutChange);
 }
