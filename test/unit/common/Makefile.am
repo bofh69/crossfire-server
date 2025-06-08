@@ -6,10 +6,10 @@ CHECK_PARENT_NAME=Unit
 
 noinst_LIBRARIES = libstubs.a
 libstubs_a_SOURCES=stubs_common.cpp
-LDADD = $(top_builddir)/test/toolkit/libtoolkit_common.a $(top_builddir)/common/libcross.a libstubs.a @CHECK_LIBS@
+LDADD = $(top_builddir)/test/toolkit/libtoolkit_common.a $(top_builddir)/common/libcross.la libstubs.a @CHECK_LIBS@
 
-$(top_builddir)/common/libcross.a:
-	( cd $(top_builddir)/common ; make libcross.a )
+$(top_builddir)/common/libcross.la:
+	( cd $(top_builddir)/common ; make libcross.la )
 
 $(top_builddir)/test/toolkit/libtoolkit_common.a:
 	( cd $(top_builddir)/test/toolkit/; make libtoolkit_common.a)

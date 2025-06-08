@@ -212,7 +212,7 @@ CREPixmap.h \
  HelpManager.h \
  QuickFilterDialog.h
 
-LIBS += ../../server/libserver.a ../../common/libcross.a ../../socket/libsocket.a ../../random_maps/librandom_map.a ../../types/libtypes.a -lcurl
+LIBS += ../../server/.libs/libserver.a ../../common/.libs/libcross.a ../../random_maps/.libs/librandom_map.a -lcurl
 QMAKE_CXXFLAGS += -Wcast-qual
 # -Wold-style-cast
 

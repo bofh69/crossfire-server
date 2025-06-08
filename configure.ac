@@ -172,8 +172,6 @@ AC_CONFIG_FILES([Makefile
                  lib/Makefile
                  random_maps/Makefile
                  server/Makefile
-                 socket/Makefile
-                 types/Makefile
                  utils/Makefile
                  utils/scores.pl utils/player_dl.pl
                  utils/crossloop

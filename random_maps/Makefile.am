@@ -2,9 +2,9 @@ pkglibexec_PROGRAMS = random_map
 
 random_map_SOURCES = main.cpp
 
-noinst_LIBRARIES = librandom_map.a
+pkglib_LTLIBRARIES = librandom_map.la
 
-librandom_map_a_SOURCES = \
+librandom_map_la_SOURCES = \
 	decor.cpp \
 	door.cpp \
 	exit.cpp \
@@ -36,6 +36,6 @@ AM_CPPFLAGS = -I$(top_srcdir)/include -I${top_srcdir}/include/random_maps
 LEX_OUTPUT_ROOT = lex.rmap
 AM_LFLAGS = -Prmap -i
 
-random_map_LDADD = ../common/libcross.a librandom_map.a
+random_map_LDADD = ../common/libcross.la librandom_map.la
 
 CLEANFILES = reader.cpp

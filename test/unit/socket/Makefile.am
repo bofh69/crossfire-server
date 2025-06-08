@@ -1,13 +1,11 @@
 noinst_LIBRARIES = libstubs.a
 libstubs_a_SOURCES=stubs_socket.cpp
-LDADD = ../../../common/libcross.a  ../../../socket/libsocket.a libstubs.a @CHECK_LIBS@
+LDADD = ../../../common/libcross.la libstubs.a @CHECK_LIBS@
 
 ../../logs/unit/socket:
 	(mkdir ../../logs; mkdir ../../logs/unit; mkdir ../../logs/unit/socket)
-../../../common/libcross.a:
-	( cd ../../../common ; make libcross.a )
-../../../socket/libsocket.a:
-	( cd ../../../socket ; make libsocket.a )
+../../../common/libcross.la:
+	( cd ../../../common ; make libcross.la )
 
 
 #test unimplemented for now

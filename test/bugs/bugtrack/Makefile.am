@@ -4,32 +4,23 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
         --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
        $(LDFLAGS) -o $@
 
-LDADD = $(top_builddir)/server/libserver.a \
-        $(top_builddir)/common/libcross.a \
-        $(top_builddir)/random_maps/librandom_map.a \
-        $(top_builddir)/socket/libsocket.a \
-        $(top_builddir)/types/libtypes.a \
-        $(top_builddir)/types/libtypes.a \
+LDADD = $(top_builddir)/server/libserver.la \
+        $(top_builddir)/common/libcross.la \
+        $(top_builddir)/random_maps/librandom_map.la \
         $(top_builddir)/test/toolkit/libtoolkit_common.a \
         @CHECK_LIBS@
-
-$(top_builddir)/types/libtypes.a:
-	( cd $(top_builddir)/types ; make libtypes.a )
 
 # ../../logs/unit/server:
 # 	(mkdir ../../logs; mkdir ../../logs/unit; mkdir ../../logs/unit/server)
 
-$(top_builddir)/common/libcross.a:
-	( cd $(top_builddir)/common ; make libcross.a )
+$(top_builddir)/common/libcross.la:
+	( cd $(top_builddir)/common ; make libcross.la )
 
-$(top_builddir)/socket/libsocket.a:
-	( cd $(top_builddir)/socket ; make libsocket.a )
+$(top_builddir)/random_maps/librandom_map.la:
+	( cd $(top_builddir)/random_maps ; make librandom_map.la )
 
-$(top_builddir)/random_maps/librandom_map.a:
-	( cd $(top_builddir)/random_maps ; make librandom_map.a )
-
-$(top_builddir)/server/libserver.a:
-	( cd $(top_builddir)/server ; make libserver.a )
+$(top_builddir)/server/libserver.la:
+	( cd $(top_builddir)/server ; make libserver.la )
 
 $(top_builddir)/test/toolkit/libtoolkit_common.a:
 	( cd $(top_builddir)/test/toolkit/; make libtoolkit_common.a)

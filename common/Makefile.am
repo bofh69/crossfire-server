@@ -1,6 +1,6 @@
-noinst_LIBRARIES = libcross.a
+pkglib_LTLIBRARIES = libcross.la
 
-libcross_a_SOURCES = \
+libcross_la_SOURCES = \
 	anim.cpp \
 	arch.cpp\
 	arch_types_valid.cpp \
