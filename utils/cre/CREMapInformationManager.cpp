@@ -719,7 +719,7 @@ CREMapInformation* CREMapInformationManager::getOrCreateMapInformation(const QSt
 void CREMapInformationManager::addArchetypeUse(const QString& name, CREMapInformation* map)
 {
     QMutexLocker lock(&myLock);
-    if (!myArchetypeUse.values(name).contains(map))
+    if (!myArchetypeUse.contains(name, map))
         myArchetypeUse.insert(name, map);
 }
 
