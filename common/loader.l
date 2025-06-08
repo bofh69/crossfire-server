@@ -834,6 +834,7 @@ A       .+
 ^casting_time{S}    op->casting_time = FVAL;
 ^smoothlevel{S}     op->smoothlevel = IVAL;
 ^smoothface{S}      {
+                        LOG(llevError, "'smoothface' in archetype/artifact is deprecated and will be removed\n");
                         /** @todo fix evil const cast */
                         char *p = strchr(yval(), ' ');
                         if (!p)
