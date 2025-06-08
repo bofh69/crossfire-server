@@ -68,13 +68,20 @@ int AssetModel::rowCount(const QModelIndex &parent) const {
 }
 
 QVariant AssetModel::data(const QModelIndex& index, int role) const {
-    if ((Qt::DisplayRole != role && Qt::DecorationRole != role) || !index.isValid() || !index.internalPointer()) {
+    if (!index.isValid() || !index.internalPointer()) {
         return QVariant();
     }
 
-    auto wrapper = static_cast<AssetWrapper *>(index.internalPointer());
+    if (Qt::DisplayRole != role && Qt::DecorationRole != role && Qt::ToolTipRole != role) {
+        return QVariant();
+    }
+
+    auto wrapper = static_cast<const AssetWrapper *>(index.internalPointer());
     if (Qt::DecorationRole == role) {
         return wrapper->displayIcon();
+    }
+    if (Qt::ToolTipRole == role) {
+        return wrapper->tooltip();
     }
     return wrapper->displayName();
 }

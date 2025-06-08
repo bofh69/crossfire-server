@@ -46,6 +46,8 @@ public:
     AssetWrapper *displayParent() const { return myParent; }
     void setDisplayParent(AssetWrapper *parent) { myParent = parent; }
 
+    virtual QString tooltip() const { return QString(); }
+
     virtual int childrenCount() const { return 0; }
     virtual AssetWrapper *child(int) { return nullptr; }
     virtual int childIndex(AssetWrapper *) { return -1; }

@@ -55,6 +55,8 @@ class CREMapInformation : public AssetWrapper
         const QString& name() const;
         void setName(const QString& name);
 
+        QString tooltip() const { return myPath; }
+
         const QString& backgroundMusic();
         void setBackgroundMusic(const QString& music);
 
