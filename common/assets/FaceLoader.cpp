@@ -128,6 +128,8 @@ void FaceLoader::load(BufferReader *buffer, const std::string& filename) {
         }
 
         if (!strncmp(buf, "animation ", 10)) {
+            if (on_face)
+                LOG(llevError, "faces: 'animation' in 'face' block is deprecated in %s\n", filename.c_str());
             loadAnimationBlock(buffer, filename, buf + 10);
             continue;
         }
