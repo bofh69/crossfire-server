@@ -2705,15 +2705,15 @@ int map_light_on(mapstruct *m, int x, int y) {
         for (int j = y - MAX_LIGHT_RADII; j <= y + MAX_LIGHT_RADII; j++) {
             int16_t nx = i;
             int16_t ny = j;
-            m = get_map_from_coord(m, &nx, &ny);
-            if (m == nullptr)
+            auto real = get_map_from_coord(m, &nx, &ny);
+            if (real == nullptr)
                 continue;
 
-            int light = GET_MAP_LIGHT(m, nx, ny);
+            int light = GET_MAP_LIGHT(real, nx, ny);
             if (light == 0)
                 continue;
 
-            if (ihypot(i - x, i - y) < light)
+            if (ihypot(i - x, j - y) < light)
                 return 1;
         }
     }
