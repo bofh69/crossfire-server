@@ -53,7 +53,7 @@ protected:
     QList<CREMapInformation *> myMaps;
 
 protected slots:
-    void mapAdded(CREMapInformation *map);
+    void mapBrowsingFinished();
 };
 
 #endif /* REGION_WRAPPER_H */

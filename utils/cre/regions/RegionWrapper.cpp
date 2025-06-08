@@ -18,7 +18,7 @@
 
 RegionWrapper::RegionWrapper(AssetWrapper *parent, region *reg, ResourcesManager *resources) : AssetTWrapper(parent, "Region", reg),
         myResourcesManager(resources) {
-    connect(resources->getMapInformationManager(), SIGNAL(mapAdded(CREMapInformation *)), this, SLOT(mapAdded(CREMapInformation *)));
+    connect(resources->getMapInformationManager(), SIGNAL(finished()), this, SLOT(mapBrowsingFinished()));
 }
 
 int RegionWrapper::childrenCount() const {
@@ -47,10 +47,8 @@ AssetWrapper::PossibleUse RegionWrapper::uses(const AssetWrapper *asset, std::st
             ) ? ChildrenMayUse : DoesntUse;
 }
 
-void RegionWrapper::mapAdded(CREMapInformation *map) {
-    if (map->region() == myWrappedItem->name) {
-        markModified(BeforeLayoutChange);
-        myMaps = myResourcesManager->getMapInformationManager()->getMapsForRegion(myWrappedItem->name);
-        markModified(AfterLayoutChange);
-    }
+void RegionWrapper::mapBrowsingFinished() {
+    markModified(BeforeLayoutChange);
+    myMaps = myResourcesManager->getMapInformationManager()->getMapsForRegion(myWrappedItem->name);
+    markModified(AfterLayoutChange);
 }
