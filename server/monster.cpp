@@ -26,6 +26,7 @@
 #include "skills.h"
 #include "spells.h"
 #include "sproto.h"
+#include "shop.h"
 #include "minheap.h"
 
 static int monster_can_hit(object *ob1, object *ob2, rv_vector *rv);
@@ -50,10 +51,17 @@ static void monster_pace_moveh(object *ob);
 static void monster_pace2_movev(object *ob);
 static void monster_pace2_moveh(object *ob);
 static void monster_rand_move(object *ob);
+static void shopkeeper_move(object *ob);
 static int monster_talk_to_npc(object *npc, talk_info *info);
 
 /** Minimum monster detection radius. */
 #define MIN_MON_RADIUS 3
+
+/*@{*/
+const char *key_shopkeeper = "shopkeeper";
+const char *key_shopkeeper_debug = "shopkeeper_debug";
+const char *key_shopkeeper_pilesize = "shopkeeper_pilesize";
+/*@}*/
 
 /**
  * Checks npc->enemy and returns that enemy if still valid,
@@ -792,6 +800,11 @@ static int monster_move_no_enemy(object *op) {
        * stand still and a movement type set.
            */
     if (!QUERY_FLAG(op, FLAG_STAND_STILL))  {
+        if (object_value_set(op, key_shopkeeper)) {
+            shopkeeper_move(op);
+            return 0;
+        }
+
         if (op->attack_movement&HI4) {
             switch (op->attack_movement&HI4) {
             case PETMOVE:
@@ -2252,6 +2265,111 @@ static void monster_rand_move(object *ob) {
             if (move_object(ob, ob->move_status))
                 return;
         }
+}
+
+/**
+ * Special move for shopkeepers. Walk around randomly but also:
+ * - Liquidates (deletes) items that a shop will no longer buy
+ * - Spread out items when a pile gets too tall
+ */
+static void shopkeeper_move(object *ob) {
+    const bool debug = object_value_set(ob, key_shopkeeper_debug);
+    char buf[MAX_BUF], buf2[MAX_BUF];
+    const bool on_shop_tile = coords_in_shop(ob->map, ob->x, ob->y);
+    // count number of visible, pickable items above floor
+    int nbelow = 0;
+    int cum_client_type = 0; // for calculating average client_type
+    FOR_BELOW_PREPARE(ob, tmp) {
+        if (!LOOK_OBJ(tmp) || QUERY_FLAG(tmp, FLAG_NO_PICK))
+            continue;
+        if (QUERY_FLAG(tmp, FLAG_IS_FLOOR))
+            break;
+        if (QUERY_FLAG(tmp, FLAG_UNPAID) && !QUERY_FLAG(tmp, FLAG_UNIQUE)) {
+            // Belongs to shop, but we're no longer interested. Liquidate
+            uint64_t price = price_base(tmp);
+            if (ob->map->shopmin && price < ob->map->shopmin) {
+                if (debug) {
+                    query_short_name(tmp, buf, sizeof(buf));
+                    snprintf(buf2, sizeof(buf2), "Liquidating %s (price %lu < shopmin %lu)", buf, price, ob->map->shopmin);
+                    monster_npc_say(ob, buf2);
+                }
+                object_remove(tmp);
+                object_free(tmp, 0);
+                continue;
+            }
+        }
+        cum_client_type += tmp->client_type;
+        nbelow++;
+    } FOR_BELOW_FINISH();
+
+    // Update running average
+    float newavg = 0;
+    if (on_shop_tile) {
+        const char *curr = object_get_value(ob, key_shopkeeper_pilesize);
+        float last = 1; // initial average pile size guess, if not set
+        if (curr != NULL) {
+            sscanf(curr, "%f", &last);
+        }
+        const float alpha = 1.0/50; // 1/(number of tiles to average over)
+        newavg = alpha*nbelow + (1-alpha)*last;
+        snprintf(buf, sizeof(buf), "%f", newavg);
+        object_set_value(ob, key_shopkeeper_pilesize, buf, 1);
+    }
+
+    if (debug) {
+        snprintf(buf2, sizeof(buf2), "%d items below, shop avg %.1f", nbelow, newavg);
+        monster_npc_say(ob, buf2);
+    }
+
+    // Keep shop tiles average or below and clear walkways
+    const int want_pile = on_shop_tile ? MAX(1, newavg) : 0;
+    if (nbelow > want_pile) {
+        // pick up until the pile is smaller
+        int npicked = 0;
+        FOR_BELOW_PREPARE(ob, tmp) {
+            if (!LOOK_OBJ(tmp) || QUERY_FLAG(tmp, FLAG_NO_PICK))
+                continue;
+            if (QUERY_FLAG(tmp, FLAG_IS_FLOOR))
+                break;
+            if (pick_up(ob, tmp)) {
+                npicked++;
+                if (nbelow - npicked <= want_pile)
+                    break;
+            }
+        } FOR_BELOW_FINISH();
+
+        if (debug) {
+            snprintf(buf2, sizeof(buf2), "picked up %d items", npicked);
+            monster_npc_say(ob, buf2);
+        }
+    } else if (on_shop_tile) {
+        // Drop stuff on shop tiles
+        int ndropped = 0;
+        FOR_INV_PREPARE(ob, tmp) {
+            // Skip our own spells, skills, etc.
+            if (!LOOK_OBJ(tmp))
+                continue;
+
+            // Try to drop similar items based on client_type
+            int dtype = 0;
+            if (nbelow > 0)
+                dtype = abs(tmp->client_type - cum_client_type/nbelow);
+            dtype = MAX(1, dtype); // no divide by zero
+            if (chance(50, dtype)) {
+                drop(ob, tmp);
+                ndropped++;
+                if (nbelow + ndropped >= want_pile)
+                    break;
+            }
+        } FOR_INV_FINISH();
+
+        if (debug) {
+            snprintf(buf2, sizeof(buf2), "dropped %d items", ndropped);
+            monster_npc_say(ob, buf2);
+        }
+    }
+
+    monster_rand_move(ob);
 }
 
 /**
