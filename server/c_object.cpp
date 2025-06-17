@@ -451,7 +451,7 @@ static void pick_up_object(object *pl, object *op, object *tmp, int nrof) {
     }
     query_name(tmp, name, MAX_BUF);
 
-    if (QUERY_FLAG(tmp, FLAG_UNPAID)) {
+    if (pl->type == PLAYER && QUERY_FLAG(tmp, FLAG_UNPAID)) {
         char *value = cost_str(shop_price_buy(tmp, pl));
         if (op == pl) {
             snprintf(buf, sizeof(buf), "%s will cost you %s.", name, value);
