@@ -511,6 +511,7 @@
 /utils/crossloop.web
 /utils/depcomp
 /utils/install-sh
+/utils/itemdump
 /utils/ltmain.sh
 /utils/metaserver.pl
 /utils/missing
