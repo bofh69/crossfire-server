@@ -92,4 +92,6 @@ struct treasurelist {
     treasure *items;                    /**< Items in this list, linked */
 };
 
+extern bool chance(int a, int b);
+
 #endif /* TREASURE_H */
