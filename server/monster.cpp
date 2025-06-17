@@ -2242,9 +2242,11 @@ static void monster_pace2_moveh(object *ob) {
 static void monster_rand_move(object *ob) {
     int i;
 
+    // change direction when stuck, or 1/8 of the time
     if (ob->move_status < 1
     || ob->move_status > 8
-    || !(move_object(ob, ob->move_status || !(RANDOM()%9))))
+    || !move_object(ob, ob->move_status) || (RANDOM()%9 == 0))
+        // change direction
         for (i = 0; i < 5; i++) {
             ob->move_status = RANDOM()%8+1;
             if (move_object(ob, ob->move_status))
