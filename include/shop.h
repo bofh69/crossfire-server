@@ -106,6 +106,8 @@ void sell_item(object *op, object *pl);
  */
 double shop_approval(const mapstruct *map, const object *player);
 
+bool coords_in_shop(mapstruct *map, int x, int y);
+
 /**
  * Check if an object is in a shop.
  */

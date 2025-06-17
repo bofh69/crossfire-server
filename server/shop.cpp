@@ -1290,7 +1290,7 @@ int shop_describe(const object *op) {
 /**
  * Check if the given map coordinates are in a shop.
  */
-static bool coords_in_shop(mapstruct *map, int x, int y) {
+bool coords_in_shop(mapstruct *map, int x, int y) {
     FOR_MAP_PREPARE(map, x, y, floor)
         if (floor->type == SHOP_FLOOR) return true;
     FOR_MAP_FINISH();
