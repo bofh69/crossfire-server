@@ -515,8 +515,9 @@ static void pick_up_object(object *pl, object *op, object *tmp, int nrof) {
  * object trying to pick up.
  * @param alt
  * optional object op is trying to pick. If NULL, try to pick first item under op.
+ * @return false on failure, true on success
  */
-void pick_up(object *op, object *alt) {
+bool pick_up(object *op, object *alt) {
 /* modified slightly to allow monsters use this -b.t. 5-31-95 */
     object *tmp = NULL, *tmp1;
     mapstruct *tmp_map = NULL;
@@ -528,14 +529,14 @@ void pick_up(object *op, object *alt) {
             draw_ext_info_format(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
                                  "You can't pick up the %s.",
                                  alt->name);
-            return;
+            return false;
         }
         tmp = alt;
     } else {
         if (op->below == NULL || !object_can_pick(op, op->below)) {
             draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
                           "There is nothing to pick up here.");
-            return;
+            return false;
         }
         tmp = op->below;
     }
@@ -554,7 +555,7 @@ void pick_up(object *op, object *alt) {
     tmp_map = tmp->map;
     tmp1 = stop_item(tmp);
     if (tmp1 == NULL)
-        return;
+        return false;
 
     /* If it is a thrown object, insert it back into the map here.
      * makes life easier further along.  Do no merge so pick up code
@@ -565,10 +566,10 @@ void pick_up(object *op, object *alt) {
     }
 
     if (tmp == NULL)
-        return;
+        return false;
 
     if (!object_can_pick(op, tmp))
-        return;
+        return false;
 
     /* Establish how many of the object we are picking up */
     if (op->type == PLAYER) {
@@ -582,7 +583,7 @@ void pick_up(object *op, object *alt) {
     if (op->container) {
         alt = op->container;
         if (alt != tmp->env && !sack_can_hold(op, alt, tmp, count))
-            return;
+            return false;
     } else {
         /* non container pickup.  See if player has any
          * active containers.
@@ -639,12 +640,13 @@ void pick_up(object *op, object *alt) {
     && QUERY_FLAG(tmp, FLAG_STARTEQUIP)) {
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
                       "This object cannot be put into containers!");
-        return;
+        return false;
     }
 
     pick_up_object(op, alt, tmp, count);
     if (op->type == PLAYER)
         op->contr->count = 0;
+    return true;
 }
 
 /**

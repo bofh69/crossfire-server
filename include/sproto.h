@@ -200,7 +200,7 @@ void command_disarm(object *op, const char *params);
 void command_throw(object *op, const char *params);
 void command_apply(object *op, const char *params);
 int sack_can_hold(const object *pl, const object *sack, const object *op, uint32_t nrof);
-void pick_up(object *op, object *alt);
+bool pick_up(object *op, object *alt);
 void command_take(object *op, const char *params);
 void put_object_in_sack(object *op, object *sack, object *tmp, uint32_t nrof);
 object *drop_object(object *op, object *tmp, uint32_t nrof);
