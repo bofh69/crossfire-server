@@ -1706,7 +1706,7 @@ static void cfapi_object_get_property(int *type, ...) {
 
     case CFAPI_OBJECT_PROP_NROF:
         rint = va_arg(args, int *);
-        *rint = op->nrof;
+        *rint = NROF(op);
         *type = CFAPI_INT;
         break;
 
