@@ -913,7 +913,7 @@ static void shop_pay_unpaid_callback(object *op, void *data) {
         char *value = cost_str(price - reduction);
 
         CLEAR_FLAG(op, FLAG_UNPAID);
-        events_execute_global_event(EVENT_GBOUGHT, op, pl);
+        events_execute_global_event(EVENT_GBOUGHT, op, pl, price);
         CLEAR_FLAG(op, FLAG_PLAYER_SOLD);
         query_name(op, name_op, MAX_BUF);
 
@@ -980,8 +980,6 @@ void sell_item(object *op, object *pl) {
     if (events_execute_object_event(op, EVENT_SELLING, pl, NULL, NULL, SCRIPT_FIX_ALL) != 0)
         return;
 
-    events_execute_global_event(EVENT_GSOLD, op, pl);
-
     object_set_value(op, CUSTOM_NAME_FIELD, NULL, 0);
 
     uint64_t price = shop_price_sell(op, pl);
@@ -992,6 +990,7 @@ void sell_item(object *op, object *pl) {
                              obj_name);
         return;
     }
+    events_execute_global_event(EVENT_GSOLD, op, pl, price);
 
     int64_t extra_gain = compute_price_variation_with_bargaining(pl, price, MAX_SELL_EXTRA);
     char *value_str = cost_str(price + extra_gain);

@@ -195,11 +195,12 @@ void events_execute_global_event(int eventcode, ...) {
     case EVENT_GBOUGHT:
         // fall through: these have the same arguments
     case EVENT_GSOLD:
-        /*GBOUGHT/GSOLD: item activator*/
+        /*GBOUGHT/GSOLD: item activator price*/
         op = va_arg(args, object *);
         op2 = va_arg(args, object *);
+        uint64_t price = va_arg(args, uint64_t);
         for (auto gh = global_handlers[eventcode].begin(); gh != global_handlers[eventcode].end(); gh++) {
-            (*(*gh).second)(&rt, eventcode, op, op2);
+            (*(*gh).second)(&rt, eventcode, op, op2, price);
         }
         break;
     }

@@ -1832,6 +1832,7 @@ CF_PLUGIN int cfpython_globalEventListener(int *type, ...) {
     case EVENT_GSOLD:
         context->who = Crossfire_Object_wrap(va_arg(args, object *)); // op
         context->activator = Crossfire_Object_wrap(va_arg(args, object *)); // pl
+        context->third = PyLong_FromUnsignedLong(va_arg(args, uint64_t)); // price
         break;
     }
     va_end(args);
