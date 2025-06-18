@@ -1626,7 +1626,8 @@ static void freeEventFiles(char **eventFiles) {
  * @return list of event files that must be deleted by calling freeEventFiles().
  */
 static char **getEventFiles(CFPContext *context) {
-    char **eventFiles = NULL;
+    char **eventFiles = static_cast<char **>(calloc(1, sizeof(eventFiles[0])));
+    eventFiles[0] = NULL;
     char name[HUGE_BUF], path[NAME_MAX + 1];
 
     int allocated = 0, current = 0;
@@ -1639,8 +1640,6 @@ static char **getEventFiles(CFPContext *context) {
 
     dp = opendir(path);
     if (dp == NULL) {
-        eventFiles = static_cast<char **>(calloc(1, sizeof(eventFiles[0])));
-        eventFiles[0] = NULL;
         return eventFiles;
     }
 
