@@ -108,6 +108,7 @@ extern void write_todclock(void);
 extern void init_attackmess(BufferReader *reader, const char *filename);
 /* item.cpp */
 extern int get_power_from_ench(int ench);
+extern int calc_item_enhancement(const object *op);
 extern int calc_item_power(const object *op);
 extern const typedata *get_typedata(int itemtype);
 extern const typedata *get_typedata_by_name(const char *name);

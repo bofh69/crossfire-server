@@ -222,17 +222,7 @@ static int bits_set(uint32_t x) {
     return xs.count();
 }
 
-/**
- * This takes an object 'op' and figures out what its item_power
- * rating should be.  This should only really be used by the treasure
- * generation code, and when loading legacy objects.  It returns
- * the item_power it calculates.
- *
- * @param op
- * object of which to compute the item_power
- * @return op's item power.
- */
-int calc_item_power(const object *op) {
+int calc_item_enhancement(const object *op) {
     int i, tmp, enc;
 
     // If we get, for example, a pile of gypsum here,
@@ -311,7 +301,21 @@ int calc_item_power(const object *op) {
     if (QUERY_FLAG(op, FLAG_MAKE_INVIS))
         enc += 1;
 
-    return get_power_from_ench(enc);
+    return enc;
+}
+
+/**
+ * This takes an object 'op' and figures out what its item_power
+ * rating should be.  This should only really be used by the treasure
+ * generation code, and when loading legacy objects.  It returns
+ * the item_power it calculates.
+ *
+ * @param op
+ * object of which to compute the item_power
+ * @return op's item power.
+ */
+int calc_item_power(const object *op) {
+    return get_power_from_ench(calc_item_enhancement(op));
 }
 
 /**
