@@ -173,7 +173,7 @@ static void do_single_item(treasure *t, object *op, int flag, int difficulty) {
  * @ingroup page_treasure_list
  */
 static void create_all_treasures(treasure *t, object *op, int flag, int difficulty, int tries) {
-    if ((int)t->chance >= 100 || (RANDOM()%100+1) < t->chance) {
+    if (chance(t->chance, 100)) {
         if (t->name) {
             if (strcmp(t->name, "NONE") && difficulty >= t->magic)
                 create_treasure(find_treasurelist(t->name), op, flag, t->list_magic_value ? t->list_magic_value : difficulty + t->list_magic_adjustment, tries);
