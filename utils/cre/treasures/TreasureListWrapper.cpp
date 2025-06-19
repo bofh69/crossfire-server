@@ -118,7 +118,7 @@ void TreasureListWrapper::drop(const QMimeData *data, int row) {
     for (auto arch : archs) {
         markModified(BeforeChildAdd, row);
         auto item = treasure_insert(myWrappedItem, row);
-        item->item = arch;
+        item->item = arch->head ? arch->head : arch;
         markModified(AfterChildAdd, row);
         row++;
     }
