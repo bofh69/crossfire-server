@@ -50,6 +50,7 @@
 #include "global.h"
 #include "object.h"
 #include "sproto.h"
+#include "server.h"
 
 /** Module name for the event system. */
 #define CITYLIFE_NAME   "citylife"
@@ -421,7 +422,7 @@ static void load_citylife(BufferReader *reader, const char *filename) {
 
 static event_registration c, m;
 
-void citylife_init(Settings *settings) {
+void citylife_init(Settings *settings, ServerSettings *serverSettings) {
     c = events_register_global_handler(EVENT_CLOCK, citylife_globalEventListener);
     m = events_register_global_handler(EVENT_MAPLOAD, citylife_globalEventListener);
     events_register_object_handler(CITYLIFE_NAME, eventListener);
@@ -429,7 +430,7 @@ void citylife_init(Settings *settings) {
     settings->add_hook(".citylife", load_citylife);
 
     /* Disable the plugin in case it's still there */
-    settings->disabled_plugins.push_back(strdup("citylife"));
+    serverSettings->disabled_plugins.push_back(strdup("citylife"));
 }
 
 void citylife_close() {

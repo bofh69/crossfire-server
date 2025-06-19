@@ -325,7 +325,6 @@ struct Settings {
     uint8_t   roll_stat_points;         /**< How many stat points legacy (rolled) chars start with */
     uint8_t   max_stat;                 /**< Maximum stat value - 255 should be sufficient */
     uint8_t   special_break_map;        /**< If set, then submaps in random maps can break the walls. */
-    std::vector<char *> disabled_plugins;     /**< List of disabled plugins, 'All' means all. */
     uint8_t   ignore_plugin_compatibility;    /**< If set, don't check plugin version. */
     uint8_t   account_block_create;           /** Block account creation for untrusted hosts. */
     char*   account_trusted_host;     /**< Trusted host for account creation, defaults to 127.0.0.1. */
@@ -343,7 +342,7 @@ struct Settings {
 };
 
 /**
- * Server settings.
+ * Global settings.
  */
 extern Settings settings;
 

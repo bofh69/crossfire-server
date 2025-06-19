@@ -39,6 +39,8 @@ static void help(void);
 static void init_beforeplay(void);
 static void init_startup(void);
 
+ServerSettings serverSettings;
+
 /** If set after command line argument parsing, then the server will exit. */
 static int should_exit = 0;
 
@@ -46,7 +48,7 @@ struct module_information {
     const char *name;           /**< Module name, without space. */
     char const *description;    /**< Module long description. */
     bool enabled;               /**< Whether the module is enabled or not. */
-    void (*init)(Settings *);   /**< Initialisation function. */
+    void (*init)(Settings *, ServerSettings *);   /**< Initialisation function. */
     void (*close)();            /**< Cleanup function. */
 };
 
@@ -68,7 +70,7 @@ void init_modules() {
         if (!mod->enabled) {
             LOG(llevInfo, "  %s (%s): disabled\n", mod->name, mod->description);
         } else {
-            mod->init(&settings);
+            mod->init(&settings, &serverSettings);
             LOG(llevInfo, "  %s (%s): activated\n", mod->name, mod->description);
         }
     }
@@ -288,7 +290,7 @@ static void set_csport(const char *val) {
  * @param name plugin's name, without extension.
  */
 static void set_disable_plugin(const char *name) {
-    settings.disabled_plugins.push_back(strdup(name));
+    serverSettings.disabled_plugins.push_back(strdup(name));
 }
 
 /**
@@ -1137,8 +1139,8 @@ void free_server(void) {
     free_materials();
     free_races();
     free_quest();
-    std::for_each(settings.disabled_plugins.begin(), settings.disabled_plugins.end(), [] (char *item) { free(item); });
-    settings.disabled_plugins.clear();
+    std::for_each(serverSettings.disabled_plugins.begin(), serverSettings.disabled_plugins.end(), [] (char *item) { free(item); });
+    serverSettings.disabled_plugins.clear();
 }
 
 /**

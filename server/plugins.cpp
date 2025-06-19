@@ -40,6 +40,7 @@
 #include "timers.h"
 #include "assets.h"
 #include "AssetsManager.h"
+#include "server.h"
 
 #ifdef WIN32
 #include "libloaderapi.h"
@@ -4588,7 +4589,7 @@ void initPlugins(void) {
             if (strcmp(currentfile->d_name+l-strlen(PLUGIN_SUFFIX), PLUGIN_SUFFIX) != 0)
                 continue;
 
-            for (auto disable = settings.disabled_plugins.cbegin(); disable != settings.disabled_plugins.cend(); ++disable) {
+            for (auto disable = serverSettings.disabled_plugins.cbegin(); disable != serverSettings.disabled_plugins.cend(); ++disable) {
                 if (strcmp(*disable, "All") == 0) {
                     LOG(llevInfo, "plugins: disabling (all) %s\n", currentfile->d_name);
                     ignore = 1;

@@ -215,7 +215,6 @@ struct Settings settings = {
     .roll_stat_points = 115,
     .max_stat = 0,     /* max_stat - will be loaded from stats file */
     .special_break_map = 1,     /* 1 for historical reasons */
-    .disabled_plugins = { },
     .ignore_plugin_compatibility = 0,
     .account_block_create = 0,
     .account_trusted_host = nullptr,

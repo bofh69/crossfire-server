@@ -39,6 +39,7 @@
 #include "global.h"
 #include "object.h"
 #include "sproto.h"
+#include "server.h"
 
 /** Link between a map and the exits to generate for it. */
 struct house_zone_struct {
@@ -207,7 +208,7 @@ static event_registration eg;
 /**
  * Module initialisation.
 */
-void random_house_generator_init(Settings *settings) {
+void random_house_generator_init(Settings *, ServerSettings *settings) {
     eg = events_register_global_handler(EVENT_MAPLOAD, cfrhg_globalEventListener);
 
     /* Disable the plugin in case it's still there */

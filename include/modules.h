@@ -18,13 +18,13 @@
 #ifndef MODULES_H
 #define MODULES_H
 
-void cfcitybell_init(Settings *settings);
+void cfcitybell_init(Settings *settings, ServerSettings *serverSettings);
 void cfcitybell_close();
 
-void citylife_init(Settings *settings);
+void citylife_init(Settings *settings, ServerSettings *serverSettings);
 void citylife_close();
 
-void random_house_generator_init(Settings *settings);
+void random_house_generator_init(Settings *settings, ServerSettings *serverSettings);
 void random_house_generator_close();
 
 #endif /* MODULES_H */
