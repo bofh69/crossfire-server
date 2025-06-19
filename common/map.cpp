@@ -325,11 +325,9 @@ int get_map_flags(mapstruct *oldmap, mapstruct **newmap, int16_t x, int16_t y, i
  * Basically, ob2 has to block all of ob1 movement types.
  */
 bool ob_move_block(object *ob1, object *ob2) {
-    if (ob1->move_type == 0) {
-        // ob1 doesn't move, so it is never blocked *by* ob2.
-        return false;
-    }
-    return (ob1->move_type&ob2->move_block) == ob1->move_type;
+    // Special case: if ob1 has no move type, but we're here, then we're being
+    // pushed by something. Assume "walk".
+    return ((ob1->move_type ? ob1->move_type : MOVE_WALK) & ~ob2->move_block) == 0;
 }
 
 /**
