@@ -90,6 +90,12 @@ uint64_t price_base(const object *obj) {
         return val;
     }
 
+    // Assume that good items, e.g. artifacts have that priced into their
+    // value. Bad items may not.
+    if (calc_item_enhancement(obj) < 0) {
+        return 0;
+    }
+
     // If unidentified, price item based on its archetype.
     if (!identified && obj->arch) {
         val = obj->arch->clone.value * number;
