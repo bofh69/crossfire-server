@@ -51,6 +51,7 @@
 #include "object.h"
 #include "sproto.h"
 #include "server.h"
+#include "assets.h"
 
 /** Module name for the event system. */
 #define CITYLIFE_NAME   "citylife"
@@ -422,12 +423,12 @@ static void load_citylife(BufferReader *reader, const char *filename) {
 
 static event_registration c, m;
 
-void citylife_init(Settings *settings, ServerSettings *serverSettings) {
+void citylife_init(Settings *, ServerSettings *serverSettings) {
     c = events_register_global_handler(EVENT_CLOCK, citylife_globalEventListener);
     m = events_register_global_handler(EVENT_MAPLOAD, citylife_globalEventListener);
     events_register_object_handler(CITYLIFE_NAME, eventListener);
 
-    settings->add_hook(".citylife", load_citylife);
+    assets_add_collector_hook(".citylife", load_citylife);
 
     /* Disable the plugin in case it's still there */
     serverSettings->disabled_plugins.push_back(strdup("citylife"));

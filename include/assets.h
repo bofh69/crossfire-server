@@ -32,10 +32,13 @@
 #define ASSETS_ALL                        0xFFFF
 /*@}*/
 
+typedef std::function<void(BufferReader *, const char *)> collectorHook;
+
 void load_assets(void);
 
 void assets_init();
 void assets_free();
+void assets_add_collector_hook(const char *name, collectorHook hook);
 void assets_collect(const char* datadir, int what);
 void assets_end_load();
 

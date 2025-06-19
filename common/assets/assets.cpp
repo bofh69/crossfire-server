@@ -57,6 +57,7 @@
 #include "TarLoader.h"
 
 static AssetsManager *manager = nullptr;
+static std::vector<std::pair<std::string, collectorHook>> collector_hooks; /**< Collect hooks, as (filename, function) pairs */
 
 /**
  * Init assets-related variables.
@@ -138,7 +139,7 @@ void assets_collect(const char* datadir, int what) {
         collector.addLoader(new QuestLoader(manager->quests(), manager->faces(), settings.assets_tracker));
     if (what & ASSETS_REGIONS)
         collector.addLoader(new WrapperLoader("regions.reg", init_regions));
-    for (const auto& hook : settings.collector_hooks) {
+    for (const auto& hook : collector_hooks) {
         collector.addLoader(new WrapperLoader(hook.first, hook.second));
     }
     collector.addLoader(new TarLoader(&collector));
@@ -541,4 +542,13 @@ void quest_for_each(quest_op op, void *user) {
 
 size_t quests_count(bool includeSystem) {
     return includeSystem ? manager->quests()->count() : manager->quests()->visibleCount();
+}
+
+void load_assets(void) {
+    assets_collect(settings.datadir, ASSETS_ALL);
+    assets_end_load();
+}
+
+void assets_add_collector_hook(const char *name, collectorHook hook) {
+    collector_hooks.push_back(std::make_pair(name, hook));
 }

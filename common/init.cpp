@@ -220,7 +220,6 @@ struct Settings settings = {
     .account_trusted_host = nullptr,
     .crypt_mode = 0,
     .min_name = 0,
-    .collector_hooks = {},
     .ignore_assets_errors = 0,
     .assets_tracker = nullptr,
     .fatal_hook = nullptr,
@@ -304,11 +303,6 @@ static void init_emergency_mappath(void) {
                 settings.emergency_mapname,
                 settings.emergency_x, settings.emergency_y);
     }
-}
-
-void load_assets(void) {
-    assets_collect(settings.datadir, ASSETS_ALL);
-    assets_end_load();
 }
 
 /**

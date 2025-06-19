@@ -27,6 +27,7 @@
 #include "object.h"
 #include "sproto.h"
 #include "server.h"
+#include "assets.h"
 
 #include <string.h>
 #include <unordered_map>
@@ -149,13 +150,13 @@ static event_registration global_handler;
  * Citybells module initialisation.
  * @param settings server settings.
  */
-void cfcitybell_init(Settings *settings, ServerSettings *serverSettings) {
+void cfcitybell_init(Settings *, ServerSettings *serverSettings) {
     timeofday_t tod;
     get_tod(&tod);
     last_hr = tod.hour;
     global_handler = events_register_global_handler(EVENT_CLOCK, clock_listener);
 
-    settings->add_hook(".bells", load_bells);
+    assets_add_collector_hook(".bells", load_bells);
 
     /* Disable the plugin in case it's still there */
     serverSettings->disabled_plugins.push_back(strdup("cfcitybell"));

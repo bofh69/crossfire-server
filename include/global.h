@@ -232,7 +232,6 @@ extern socket_struct *init_sockets;
 #define PERM_EXP(exptotal) (exptotal * settings.permanent_exp_ratio / 100 )
 #define MAX_TOTAL_EXPERIENCE (settings.permanent_exp_ratio ? (MAX_EXPERIENCE * 100 / settings.permanent_exp_ratio) : 0)
 
-typedef std::function<void(BufferReader *, const char *)> collectorHook;
 typedef std::function<void(enum fatal_error err)> fatalHook;
 typedef std::function<void(LogLevel, const char *, va_list)> logHook;
 
@@ -330,15 +329,10 @@ struct Settings {
     char*   account_trusted_host;     /**< Trusted host for account creation, defaults to 127.0.0.1. */
     uint8_t crypt_mode;               /**< 0 for legacy behavior, 1 for always Traditional */
     uint8_t min_name;                         /**< Minimum characters for an account or player name */
-    std::vector<std::pair<std::string, collectorHook>> collector_hooks; /**< Collect hooks, as (filename, function) pairs */
     int     ignore_assets_errors;     /**< If set then go on running even if there are errors in assets. */
     class AssetsTracker *assets_tracker;    /**< If not NULL, called each time an asset is defined. */
     fatalHook fatal_hook;             /**< If not NULL then called when fatal() is called. */
     char* stat_file;
-
-    void add_hook(const char *name, collectorHook hook) {
-        collector_hooks.push_back(std::make_pair(name, hook));
-    }
 };
 
 /**

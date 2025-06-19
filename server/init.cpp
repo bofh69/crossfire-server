@@ -1084,8 +1084,8 @@ static void load_settings(void) {
 }
 
 void add_server_collect_hooks() {
-    settings.add_hook("/materials", load_materials);
-    settings.add_hook("/races", load_races);
+    assets_add_collector_hook("/materials", load_materials);
+    assets_add_collector_hook("/races", load_races);
 }
 
 /**

@@ -60,8 +60,8 @@ void ResourcesManager::load()
 
     settings.assets_tracker = this;
     add_server_collect_hooks();
-    settings.add_hook(".LICENSE", [this] (BufferReader *reader, const char *filename) { myLicenseManager.readLicense(reader, filename); });
-    settings.add_hook("", [] (BufferReader *, const char *) { QCoreApplication::processEvents(); });
+    assets_add_collector_hook(".LICENSE", [this] (BufferReader *reader, const char *filename) { myLicenseManager.readLicense(reader, filename); });
+    assets_add_collector_hook("", [] (BufferReader *, const char *) { QCoreApplication::processEvents(); });
     settings.fatal_hook = onFatalInit;
     settings.ignore_assets_errors = 1;
 
