@@ -111,7 +111,7 @@ CREMainWindow::CREMainWindow(const QString &helpRoot)
 void CREMainWindow::closeEvent(QCloseEvent* event)
 {
     if (myResourcesManager->hasPendingChanges()) {
-        if (QMessageBox::question(this, "Discard changes?", "You have unsaved changes, really discard them?") != QMessageBox::Yes) {
+        if (QMessageBox::question(this, tr("Discard changes?"), tr("You have unsaved changes, really discard them?")) != QMessageBox::Yes) {
             event->ignore();
             return;
         }
