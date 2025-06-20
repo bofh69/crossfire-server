@@ -217,6 +217,23 @@ object *pets_get_enemy(object *pet, rv_vector *rv) {
 }
 
 /**
+ * Removes a pet, taking care of clearning the owner's fields if needed.
+ *
+ * @param pet object to clear, must not be null
+ */
+void pets_terminate(object *pet)
+{
+    if (pet->owner && pet->owner->contr && pet->owner->contr->ranges[range_golem] == pet) {
+        pet->owner->contr->ranges[range_golem] = nullptr;
+        pet->owner->contr->golem_count = 0;
+    }
+    if (!QUERY_FLAG(pet, FLAG_REMOVED))
+        object_remove(pet);
+    remove_friendly_object(pet);
+    object_free_drop_inventory(pet);
+}
+
+/**
  * Removes all pets someone owns.
  *
  * @param owner
@@ -228,11 +245,7 @@ void pets_terminate_all(object *owner) {
         return;
     }
     for (cur = link; cur != NULL; cur = cur->next) {
-        object *ob = cur->ob;
-        if (!QUERY_FLAG(ob, FLAG_REMOVED))
-            object_remove(ob);
-        remove_friendly_object(ob);
-        object_free_drop_inventory(ob);
+        pets_terminate(cur->ob);
     }
 
     free_objectlink(link);

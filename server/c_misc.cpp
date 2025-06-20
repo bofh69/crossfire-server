@@ -2207,10 +2207,7 @@ void command_kill_pets(object *op, const char *params) {
             object *ob = obl->ob;
             if (object_get_owner(ob) == op) {
                 if (++counter == target || (target == 0 && !strcasecmp(ob->name, params))) {
-                    if (!QUERY_FLAG(ob, FLAG_REMOVED))
-                        object_remove(ob);
-                    remove_friendly_object(ob);
-                    object_free_drop_inventory(ob);
+                    pets_terminate(ob);
                     removecount++;
                 }
             }

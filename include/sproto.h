@@ -386,6 +386,7 @@ void party_send_message(object *op, const char *message);
 const char *party_get_leader(const partylist *party);
 /* pets.c */
 object *pets_get_enemy(object *pet, rv_vector *rv);
+void pets_terminate(object *pet);
 void pets_terminate_all(object *owner);
 void pets_attempt_follow(object *for_owner, int force);
 void pets_follow_owner(object *ob, object *owner);
