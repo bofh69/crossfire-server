@@ -2099,6 +2099,12 @@ void examine(object *op, object *tmp) {
                       buf);
         if (in_shop) {
             if (QUERY_FLAG(tmp, FLAG_UNPAID)) {
+                if (object_value_set(tmp, "pshop_owner")) {
+                    const char *seller = object_get_value(tmp, "pshop_owner");
+                    snprintf(buf, sizeof(buf), "%s is selling this item.", seller);
+                    draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_EXAMINE, buf);
+                }
+
                 value = cost_str(shop_price_buy(tmp, op));
                 snprintf(buf, sizeof(buf), "%s would cost you %s.", tmp->nrof > 1 ? "They" : "It", value);
                 free(value);

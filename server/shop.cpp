@@ -195,6 +195,11 @@ float shop_efficiency(const object *player) {
 
 uint64_t shop_price_buy(const object *tmp, object *who) {
     assert(who != NULL && who->type == PLAYER);
+    // price tags override any buy price
+    if (object_value_set(tmp, "price")) {
+        const char *price = object_get_value(tmp, "price");
+        return NROF(tmp)*strtol(price, NULL, 10);
+    }
     const uint64_t val = price_base(tmp);
     const char *key = object_get_value(tmp, "price_adjustment_buy");
     float adj = 1;
@@ -896,7 +901,11 @@ static void shop_pay_unpaid_callback(object *op, void *data) {
     object *pl = (object *)data;
     char name_op[MAX_BUF];
     uint64_t price = shop_price_buy(op, pl);
-    uint64_t reduction = compute_price_variation_with_bargaining(pl, price, MAX_BUY_REDUCTION);
+    uint64_t reduction = 0;
+    if (!object_value_set(op, "price")) {
+        // only items without a player-set price can be bargained for
+        reduction = compute_price_variation_with_bargaining(pl, price, MAX_BUY_REDUCTION);
+    }
     if (!pay_for_item(op, pl, reduction)) {
         uint64_t i = price - query_money(pl);
         char *missing = cost_str(i);
