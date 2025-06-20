@@ -39,7 +39,6 @@ int main(int argc, char *argv[]) {
     fprintf(spread, "P2\n%d %d\n%d\n", m->width, m->height, 2); // blocked (0), unlit (1), lit (2)
     for (int y = 0; y < m->height; y++) {
         for (int x = 0; x < m->width; x++) {
-            MapSpace *s = map_space(m, x, y);
             fprintf(spread, "%d ", GET_MAP_FLAGS(m, x, y) & P_BLOCKSVIEW ? 0 : map_light_on(m, x, y) + 1);
         }
         fprintf(spread, "\n");

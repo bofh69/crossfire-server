@@ -341,7 +341,6 @@ static void send_updated_shoottype(object *op) {
  * arguments to the command. '+' selects next range, other values previous range.
  */
 void command_rotateshoottype(object *op, const char *params) {
-    char name[MAX_BUF];
     int dir = ((*params == '\0') || (params[0] == '+')) ? 1 : -1;
 
     /* Iterate through shoottypes in the given direction, until the first
