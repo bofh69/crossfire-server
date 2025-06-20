@@ -36,7 +36,7 @@ CREFacePanel::CREFacePanel(QWidget* parent, AssetModel *model, ResourcesManager 
     myLayout->addWidget(myLicenses, 1, 3, 3, 2);
 
     myColor = new QComboBox(this);
-    myLayout->addWidget(new QLabel(tr("Magicmap color: ")), 4, 1);
+    myLayout->addWidget(new QLabel(tr("Magicmap color:")), 4, 1);
     myLayout->addWidget(myColor, 4, 2, 1, 3);
 
     const char *name;
@@ -45,7 +45,7 @@ CREFacePanel::CREFacePanel(QWidget* parent, AssetModel *model, ResourcesManager 
 
     myFile = new QLineEdit(this);
     myFile->setReadOnly(true);
-    myLayout->addWidget(new QLabel(tr("Face file: ")), 5, 1);
+    myLayout->addWidget(new QLabel(tr("Face file:")), 5, 1);
     myLayout->addWidget(myFile, 5, 2, 1, 3);
 
     mySave = new QPushButton(tr("Save face"));
