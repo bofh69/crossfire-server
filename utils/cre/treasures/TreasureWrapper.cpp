@@ -296,6 +296,11 @@ void TreasureWrapper::setArtifact(const QString &art) {
 
 
 void TreasureWrapper::fillMenu(QMenu *menu) {
+    if (myParent) {
+        myParent->fillMenu(menu);
+        menu->addSeparator();
+    }
+
     connect(menu->addAction(tr("Delete")), &QAction::triggered, [this] () { myParent->removeChild(this); });
     if (myNextYes || myNextNo) {
         connect(menu->addAction(tr("Swap 'yes' and 'no'")), &QAction::triggered, this, &TreasureWrapper::swapYesNo);

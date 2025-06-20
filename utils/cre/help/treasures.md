@@ -29,10 +29,11 @@ Editing treasure is done by selecting the list or item to edit in the resources 
 
  * a list can be toggled from single to multiple through the `Single item` checkbox
  * properties of items can be changed using the various fields
-     * to select an archetype for an item, drag and drop an archetype to the item's panel
-     * to select another list for an item, drag and drop a list (from another
-treasure window, as clicking will change the displayed panel) to the item's panel
+ * to add a new item from an archetype, drag and drop an archetype to the treasure list on the tree view
+ * to add a new item from a treasure list, drag and drop a list (from another
+treasure window, as clicking will change the displayed panel) to the treasure list on the tree view
  * to add a yes or no sub-item to an item, drag and drop an archetype or treasure
-list on this item. You can switch yes and no by right-clicking on the yes, no or the item with sub-items
+list on this item. You can switch yes and no by right-clicking on the yes, no or the item with sub-items and
+selecting `Swap 'yes' and 'no'`
  * to remove items or sub-items, right-click and select `delete`
- * note: you can not add or remove treasure lists for now
+ * to add a treasure list, right-click on a treasure list or item and select `Add treasure list`

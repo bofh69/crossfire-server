@@ -160,3 +160,9 @@ AssetWrapper::PossibleUse TreasureListWrapper::uses(const AssetWrapper *asset, s
             || dynamic_cast<const TreasureListWrapper *>(asset)
             ? ChildrenMayUse : DoesntUse;
 }
+
+void TreasureListWrapper::fillMenu(QMenu *menu) {
+    if (myParent) {
+        myParent->fillMenu(menu);
+    }
+}

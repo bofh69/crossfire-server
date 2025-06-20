@@ -56,6 +56,8 @@ public:
 
     virtual PossibleUse uses(const AssetWrapper *, std::string &) const override;
 
+    virtual void fillMenu(QMenu *menu) override;
+
 protected:
     ResourcesManager *myResources;
 

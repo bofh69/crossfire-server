@@ -1,3 +1,7 @@
+# 2025-06-20
+
+**Implement treasure list creation**, right-click on a treasure list or item and select *Add treasure list*.
+
 # 2023-02-05
 
 Add **auto-completion suggestions** for resource filters, in both quick filter and filter dialog.

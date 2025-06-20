@@ -114,6 +114,8 @@ class ResourcesManager : public QObject, AssetsTracker
         std::string originOfQuest(const quest_definition *quest) const { return myQuests.originOf(quest); }
         std::vector<std::string> questFiles() const { return myQuests.files(); }
 
+        std::vector<std::string> treasureFiles() const { return myTreasures.files(); }
+
         static void archetypeUse(const archetype* item, CREMapInformationManager* store, AssetUseCallback callback);
 
         std::string originOf(const Face *face) const { return myFaces.originOf(face); }

@@ -2688,12 +2688,12 @@ face %1.111
         <translation>%1 (%2%3%)</translation>
     </message>
     <message>
-        <location filename="../treasures/TreasureWrapper.cpp" line="299"/>
+        <location filename="../treasures/TreasureWrapper.cpp" line="304"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../treasures/TreasureWrapper.cpp" line="301"/>
+        <location filename="../treasures/TreasureWrapper.cpp" line="306"/>
         <source>Swap &apos;yes&apos; and &apos;no&apos;</source>
         <translation>Échanger « oui » et « non »</translation>
     </message>
@@ -2701,12 +2701,12 @@ face %1.111
 <context>
     <name>TreasureYesNo</name>
     <message>
-        <location filename="../treasures/TreasureWrapper.cpp" line="341"/>
+        <location filename="../treasures/TreasureWrapper.cpp" line="346"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../treasures/TreasureWrapper.cpp" line="342"/>
+        <location filename="../treasures/TreasureWrapper.cpp" line="347"/>
         <source>Swap &apos;yes&apos; and &apos;no&apos;</source>
         <translation>Échanger « oui » et « non »</translation>
     </message>
@@ -2714,14 +2714,19 @@ face %1.111
 <context>
     <name>TreasuresWrapper</name>
     <message>
-        <location filename="../treasures/TreasuresWrapper.h" line="29"/>
+        <location filename="../treasures/TreasuresWrapper.h" line="31"/>
         <source>Treasures</source>
         <translation>Trésors</translation>
     </message>
     <message>
-        <location filename="../treasures/TreasuresWrapper.h" line="29"/>
+        <location filename="../treasures/TreasuresWrapper.h" line="32"/>
         <source>Display all treasures.</source>
         <translation>Affiche tous les trésors.</translation>
+    </message>
+    <message>
+        <location filename="../treasures/TreasuresWrapper.h" line="40"/>
+        <source>Add treasure list</source>
+        <translation>Créer une liste de trésors</translation>
     </message>
 </context>
 </TS>
