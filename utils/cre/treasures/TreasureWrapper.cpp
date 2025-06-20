@@ -176,9 +176,9 @@ void TreasureWrapper::addChild(treasurelist *tl, archetype *arch) {
 }
 
 bool TreasureWrapper::canDrop(const QMimeData *data, int) const {
-    return
-            data->hasFormat(MimeUtils::Archetype)
-            || data->hasFormat(MimeUtils::TreasureList)
+    return (!myNextYes || !myNextNo) &&
+            (data->hasFormat(MimeUtils::Archetype)
+            || data->hasFormat(MimeUtils::TreasureList))
         ;
 }
 
