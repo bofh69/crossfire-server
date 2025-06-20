@@ -126,8 +126,11 @@ CREResourcesWindow::CREResourcesWindow(CREMapInformationManager* store, MessageM
     myTree->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(myTree, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(treeCustomMenu(const QPoint&)));
     connect(myTree->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(currentRowChanged(const QModelIndex&, const QModelIndex&)));
-    connect(myModel, &QAbstractItemModel::rowsInserted, [this](const QModelIndex &parent, int /*first*/, int /*last*/) {
+    connect(myModel, &QAbstractItemModel::rowsInserted, [this](const QModelIndex &parent, int first, int /*last*/) {
         myTree->expand(parent);
+        auto child = myModel->index(first, 0, parent);
+        myTree->selectionModel()->select(child, QItemSelectionModel::ClearAndSelect);
+        myTree->setCurrentIndex(child);
     });
 
     QWidget* w = new QWidget(splitter);
