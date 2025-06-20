@@ -70,8 +70,6 @@ class CREResourcesWindow : public QWidget
         void onQuickFilter();
         void clearFilter();
         void treeCustomMenu(const QPoint & pos);
-        void addQuest(bool);
-        void addMessage(bool);
         void onExportAsCsv();
 };
 

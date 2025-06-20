@@ -343,28 +343,3 @@ void CREResourcesWindow::treeCustomMenu(const QPoint & pos)
         return;
     menu.exec(myTree->mapToGlobal(pos) + QPoint(5, 5));
 }
-
-void CREResourcesWindow::addQuest(bool)
-{
-    auto name = QInputDialog::getText(this, "Create new quest", "New quest code").toStdString();
-    if (name.empty()) {
-        return;
-    }
-    if (getManager()->quests()->find(name)) {
-        QMessageBox::critical(this, "Quest already exists", tr("Quest %1 already exists!").arg(name.data()));
-        return;
-    }
-
-    auto quest = quest_create(name.data());
-    quest->face = getManager()->faces()->get("quest_generic.111");
-    getManager()->quests()->define(name, quest);
-}
-
-void CREResourcesWindow::addMessage(bool)
-{
-#if 0
-    MessageFile* file = new MessageFile("<new file>");
-    file->setModified();
-    myMessages->messages().append(file);
-#endif
-}
