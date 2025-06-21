@@ -199,6 +199,7 @@ mapstruct *generate_random_map(const char *OutFileName, RMParms *RP, char **use_
 
     theMap->msg = buf;
 
+    theMap->outdoor = RP->outdoor;
     if (theMap->outdoor) {
         set_darkness_map(theMap);
     } else {
