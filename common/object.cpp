@@ -470,21 +470,6 @@ int object_can_merge(object *ob1, object *ob2) {
          */
     }
 
-    /* If the objects have been identified, set the BEEN_APPLIED flag.
-     * This is to the comparison of the flags below will be OK.  We
-     * just can't ignore the been applied or identified flags, as they
-     * are not equal - just if it has been identified, the been_applied
-     * flags lose any meaning.
-     */
-
-    /*TODO is this hack on BEEN_APPLIED really needed? */
-    if (QUERY_FLAG(ob1, FLAG_IDENTIFIED))
-        SET_FLAG(ob1, FLAG_BEEN_APPLIED);
-
-    if (QUERY_FLAG(ob2, FLAG_IDENTIFIED))
-        SET_FLAG(ob2, FLAG_BEEN_APPLIED);
-
-
     /* Note: FLAG_INV_LOCKED is ignored for merging purposes */
     if ((ob1->arch != ob2->arch)
     || (ob1->flags[0] != ob2->flags[0])

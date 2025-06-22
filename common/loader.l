@@ -198,8 +198,15 @@ static void check_loaded_object(object *op, bool arch_init) {
         object_set_flag_inv(op, FLAG_IS_A_TEMPLATE);
     }
 
+    // If an object is always identifiable (e.g. money), it should not have FLAG_IDENTIFIED set to
+    // make sure objects stack. However, older versions of this were not so careful about this, and
+    // identifiability may change, so fix that here.
+    if (!is_identifiable_type(op)) {
+        CLEAR_FLAG(op, FLAG_IDENTIFIED);
+    }
+
     /* if the item is identified, ensure we got the correct face */
-    if (QUERY_FLAG(op, FLAG_IDENTIFIED))
+    if (is_identified(op))
         object_give_identified_properties(op);
 
     /* Here we'll handle custom monsters. In order to handle them correctly, especially in the fix_object

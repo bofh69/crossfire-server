@@ -1363,6 +1363,22 @@ int is_identified(const object *op) {
  * @param op object to process.
  */
 void object_give_identified_properties(object *op) {
+    // Make sure identified objects stack correctly
+    CLEAR_FLAG(op, FLAG_KNOWN_MAGICAL);
+    CLEAR_FLAG(op, FLAG_NO_SKILL_IDENT);
+    CLEAR_FLAG(op, FLAG_BEEN_APPLIED);
+
+    // The rest only apply to identifiable items. We don't want, e.g. shop
+    // floors to show up as 'damned'.
+    if (!is_identifiable_type(op))
+        return;
+
+    if (QUERY_FLAG(op, FLAG_CURSED) || QUERY_FLAG(op, FLAG_DAMNED))
+        SET_FLAG(op, FLAG_KNOWN_CURSED);
+
+    if (QUERY_FLAG(op, FLAG_BLESSED))
+        SET_FLAG(op, FLAG_KNOWN_BLESSED);
+
     sstring key;
 
     key = object_get_value(op, "identified_face");
@@ -1431,19 +1447,7 @@ object *identify(object *op) {
     object *pl, *op1;
 
     SET_FLAG(op, FLAG_IDENTIFIED);
-    CLEAR_FLAG(op, FLAG_KNOWN_MAGICAL);
-    CLEAR_FLAG(op, FLAG_NO_SKILL_IDENT);
-
     object_give_identified_properties(op);
-
-    /*
-     * We want autojoining of equal objects:
-     */
-    if (QUERY_FLAG(op, FLAG_CURSED) || QUERY_FLAG(op, FLAG_DAMNED))
-        SET_FLAG(op, FLAG_KNOWN_CURSED);
-
-    if (QUERY_FLAG(op, FLAG_BLESSED))
-        SET_FLAG(op, FLAG_KNOWN_BLESSED);
 
     if (op->type == POTION) {
         if (op->inv && op->randomitems) {

@@ -258,7 +258,7 @@ struct typedata {
 /*#define FLAG_FLY_ON           26*//* As WALK_ON, but only with FLAG_FLYING */
 /*#define FLAG_FLY_OFF          27*//* As WALK_OFF, but only with FLAG_FLYING */
 #define FLAG_IS_USED_UP         28 /**< When (--food<0) the object will exit */
-#define FLAG_IDENTIFIED         29 /**< Player knows full info about item */
+#define FLAG_IDENTIFIED         29 /**< Item is identifiable (e.g. not money) and identified. Query using is_identified(). */
 #define FLAG_REFLECTING         30 /**< Object reflects from walls (lightning) */
 #define FLAG_CHANGING           31 /**< Changes to other_arch when anim is done*/
 
@@ -320,7 +320,7 @@ struct typedata {
 #define FLAG_KNOWN_CURSED       78 /**< The object is known to be cursed */
 #define FLAG_CAN_USE_SKILL      79 /**< The monster can use skills */
 
-#define FLAG_BEEN_APPLIED       80 /**< The object has been applied */
+#define FLAG_BEEN_APPLIED       80 /**< Object was ever applied, for identification purposes. Cleared when identified. */
 #define FLAG_READY_SCROLL       81 /**< monster has scroll in inv and can use it */
 /*#define FLAG_USE_ROD          82 unused (Monster) can apply and use rods */
 /*#define FLAG_READY_HORN       83 unused (Monster) has a horn readied */
