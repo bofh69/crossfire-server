@@ -2284,7 +2284,7 @@ static void shopkeeper_move(object *ob) {
             continue;
         if (QUERY_FLAG(tmp, FLAG_IS_FLOOR))
             break;
-        if (QUERY_FLAG(tmp, FLAG_UNPAID) && !QUERY_FLAG(tmp, FLAG_UNIQUE)) {
+        if (QUERY_FLAG(tmp, FLAG_UNPAID) && !QUERY_FLAG(tmp, FLAG_UNIQUE) && !object_value_set(tmp, "price")) {
             // Belongs to shop, but we're no longer interested. Liquidate
             uint64_t price = price_base(tmp);
             if (ob->map->shopmin && price < ob->map->shopmin) {
