@@ -365,7 +365,7 @@ void add_abilities(object *op, const object *change) {
      *
      * 2018-01-08
      */
-    if (op->arch && (is_identified(op) || QUERY_FLAG(change, FLAG_IDENTIFIED)))
+    if (op->arch && is_identified(op))
         object_give_identified_properties(op);
 
     for (i = 0; i < NUM_STATS; i++)
