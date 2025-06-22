@@ -2787,6 +2787,7 @@ static void cfapi_object_set_property(int *type, ...) {
                     SET_FLAG(op, iarg);
                 else
                     CLEAR_FLAG(op, iarg);
+                send_changed_object(op);
             }
             break;
 
