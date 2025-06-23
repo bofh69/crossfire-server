@@ -136,25 +136,43 @@ static void change_treasure(treasure *t, object *op) {
  * map difficulty.
  * @ingroup page_treasure_list
  */
-static void do_single_item(treasure *t, object *op, int flag, int difficulty) {
-    if (t->item && (t->item->clone.invisible != 0 || !(flag&GT_INVISIBLE))) {
-        object *tmp = arch_to_object(t->item);
-        if (t->nrof && tmp->nrof <= 1)
-            tmp->nrof = RANDOM()%((int)t->nrof)+1;
-        if (t->artifact) {
-            const artifact *art = find_artifact(tmp, t->artifact);
-            if (!art || !legal_artifact_combination(tmp, art)) {
-                LOG(llevError, "Invalid artifact %s for treasure %s\n", t->artifact, tmp->arch->name);
-                object_free(tmp, FREE_OBJ_FREE_INVENTORY | FREE_OBJ_NO_DESTROY_CALLBACK);
-                return;
-            }
-            give_artifact_abilities(tmp, art->item);
+static bool do_single_item(treasure *t, object *op, int flag, int difficulty) {
+    if (!(t->item))
+        return false;
+
+    object *tmp = arch_to_object(t->item);
+    if (t->nrof && tmp->nrof <= 1)
+        tmp->nrof = RANDOM()%((int)t->nrof)+1;
+    if (t->artifact) {
+        const artifact *art = find_artifact(tmp, t->artifact);
+        if (!art || !legal_artifact_combination(tmp, art)) {
+            LOG(llevError, "Invalid artifact %s for treasure %s\n", t->artifact, tmp->arch->name);
+            goto reject;
         } else {
-            fix_generated_item(tmp, op, difficulty, t->magic, flag);
-            change_treasure(t, tmp);
+            give_artifact_abilities(tmp, art->item);
         }
-        put_treasure(tmp, op, flag);
+    } else {
+        fix_generated_item(tmp, op, difficulty, t->magic, flag);
+        change_treasure(t, tmp);
     }
+
+    // We need to apply artifact changes before we know the properties of the final item. Previous
+    // versions of this code only checked the arch 'clone' object, which is not correct.
+    if (flag&GT_ONLY_GOOD && (QUERY_FLAG(tmp, FLAG_CURSED) || QUERY_FLAG(tmp, FLAG_DAMNED)))
+        goto reject;
+
+    if (op->type == SHOP_FLOOR && price_base(tmp) < (op->map ? MAX(op->map->shopmin, 1) : 1))
+        goto reject;
+
+    if (flag&GT_INVISIBLE && tmp->invisible)
+        goto reject;
+
+    put_treasure(tmp, op, flag);
+    return true;
+
+reject:
+    object_free(tmp, FREE_OBJ_FREE_INVENTORY | FREE_OBJ_NO_DESTROY_CALLBACK);
+    return false;
 }
 
 /**
@@ -178,7 +196,11 @@ static void create_all_treasures(treasure *t, object *op, int flag, int difficul
             if (strcmp(t->name, "NONE") && difficulty >= t->magic)
                 create_treasure(find_treasurelist(t->name), op, flag, t->list_magic_value ? t->list_magic_value : difficulty + t->list_magic_adjustment, tries);
         } else {
-            do_single_item(t, op, flag, difficulty);
+            while (tries < 100) {
+                if (do_single_item(t, op, flag, difficulty))
+                    break;
+                tries++;
+            }
         }
         if (t->next_yes != NULL)
             create_all_treasures(t->next_yes, op, flag, difficulty, tries);
@@ -235,14 +257,16 @@ static void create_one_treasure(treasurelist *tl, object *op, int flag, int diff
             create_one_treasure(tl, op, flag, difficulty, tries);
         return;
     }
-    if ((t->item) && (flag&GT_ONLY_GOOD)) { /* Generate only good items, damnit !*/
-        if (QUERY_FLAG(&(t->item->clone), FLAG_CURSED)
-        || QUERY_FLAG(&(t->item->clone), FLAG_DAMNED)) {
-            create_one_treasure(tl, op, flag, difficulty, tries+1);
-            return;
+    bool got_one = false;
+    while (tries < 100) {
+        if (do_single_item(t, op, flag, difficulty)) {
+            got_one = true;
+            break;
         }
+        tries++;
     }
-    do_single_item(t, op, flag, difficulty);
+    if (!got_one)
+        LOG(llevError, "create_one_treasure failed to create at least one treasure for item %s on list %s\n", t->item->name, tl->name);
 }
 
 /**
@@ -1154,6 +1178,11 @@ void fix_generated_item(object *op, object *creator, int difficulty, int max_mag
             break;
 
         case SCROLL:
+            if (!op->inv) {
+                // Somehow generated a scroll without a spell...
+                LOG(llevError, "Generated a scroll without a spell\n");
+                break;
+            }
             op->level = level_for_item(op, difficulty);
             op->value = op->value*op->inv->value*(op->level+50)/(op->inv->level+50);
             /* add exp so reading them properly gives xp */

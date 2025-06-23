@@ -1398,30 +1398,24 @@ int apply_special(object *who, object *op, int aflags) {
  * 1 if object was initialized, 0 else.
  */
 int apply_auto(object *op) {
-    object *tmp;
-
     switch (op->type) {
     case SHOP_FLOOR:
         if (!HAS_RANDOM_ITEMS(op))
             return 0;
-        do {
-            int i;
-
-            i = 10; /* let's give it 10 tries */
-            while ((tmp = generate_treasure(op->randomitems, op->stats.exp ? (int)op->stats.exp : MAX(op->map->difficulty, 5))) == NULL
-            && --i)
-                ;
-            if (tmp == NULL)
-                return 0;
-            if (QUERY_FLAG(tmp, FLAG_CURSED) || QUERY_FLAG(tmp, FLAG_DAMNED)) {
-                object_free(tmp, FREE_OBJ_NO_DESTROY_CALLBACK);
-                tmp = NULL;
-            }
-        } while (!tmp);
-        SET_FLAG(tmp, FLAG_UNPAID);
-        object_insert_in_map_at(tmp, op->map, NULL, 0, op->x, op->y);
+        {
+        int difficulty = op->stats.exp ? (int)op->stats.exp : MAX(op->map->difficulty, 5);
+        // create all treasures, inserting it into the shop floor
+        create_treasure(op->randomitems, op, GT_ONLY_GOOD, difficulty, 0);
+        }
+        FOR_INV_PREPARE(op, tmp) {
+            SET_FLAG(tmp, FLAG_UNPAID);
+            identify(tmp);
+            // then drop it on the floor
+            object_remove(tmp);
+            object_insert_in_map_at(tmp, op->map, op, INS_NO_WALK_ON, op->x, op->y);
+        } FOR_INV_FINISH();
+        op->randomitems = NULL;
         CLEAR_FLAG(op, FLAG_AUTO_APPLY);
-        identify(tmp);
         return 1;
         break;
 
@@ -1532,6 +1526,12 @@ void apply_auto_fix(mapstruct *m) {
                 if (tmp->inv) {
                     auto_apply_fix_inventory(m, tmp);
                 }
+
+                if (tmp->type == SHOP_FLOOR && !QUERY_FLAG(tmp, FLAG_AUTO_APPLY)) {
+                    LOG(llevDebug, "shop floor without auto apply set\n");
+                    SET_FLAG(tmp, FLAG_AUTO_APPLY);
+                }
+
                 if (QUERY_FLAG(tmp, FLAG_AUTO_APPLY))
                     apply_auto(tmp);
                 else if ((tmp->type == TREASURE || tmp->type == CONTAINER)

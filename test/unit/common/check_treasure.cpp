@@ -122,17 +122,14 @@ END_TEST
 
 START_TEST(test_create_treasure_all) {
     const char *items[] = {
-        "arrow",
-        "bow",
-        "ring",
-        "plate mail",
-        "long sword",
-        "use magic item",
+        "scroll",
+        "silver coin",
+        "dagger",
         NULL,
     };
-    cf_srandom(94);
-    treasurelist *list = find_treasurelist("c_knight");
-    FAIL_UNLESS(list, "missing list 'c_knight'");
+    cf_srandom(54);
+    treasurelist *list = find_treasurelist("standard_old");
+    FAIL_UNLESS(list, "missing list 'standard_old'");
     object *k = create_archetype("kobold");
     FAIL_UNLESS(k, "missing kobold");
     check_treasure_inv(k, empty);
@@ -188,7 +185,7 @@ START_TEST(test_magic_limit) {
     FAIL_UNLESS(list, "missing list");
     for (int i = 0; i < 1000; i++) {
         object *k = create_archetype("kobold");
-        create_treasure(list, k, GT_INVISIBLE, 0, 0);
+        create_treasure(list, k, 0, 0, 0);
         if (!k->inv) {
             continue;
         }
@@ -198,7 +195,7 @@ START_TEST(test_magic_limit) {
     int nastier = 0;
     for (int i = 0; i < 1000; i++) {
         object *k = create_archetype("kobold");
-        create_treasure(list, k, GT_INVISIBLE, 6, 0);
+        create_treasure(list, k, 0, 6, 0);
         if (check_treasure_arch(k, allTraps + 12, allTraps + 22)) {
             nastier++;
         }
@@ -226,7 +223,7 @@ static void do_magic(int difficulty, uint8_t value, int8_t adjustment) {
     int nastier = 0;
     for (int i = 0; (i < 1000) && (nastier == 0); i++) {
         object *k = create_archetype("kobold");
-        create_treasure(&tl, k, GT_INVISIBLE, difficulty, 0);
+        create_treasure(&tl, k, 0, difficulty, 0);
         if (!k->inv) {
             continue;
         }
