@@ -385,4 +385,11 @@ extern void map_reset_swap(mapstruct *m);
 
 extern int map_light_on(mapstruct *m, int x, int y);
 
+extern bool coords_in_shop(mapstruct *map, int x, int y);
+
+/**
+ * Check if an object is in a shop.
+ */
+extern bool shop_contains(object *ob);
+
 #endif /* MAP_H */

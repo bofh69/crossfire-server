@@ -125,6 +125,14 @@ extern int is_identifiable_type(const object *op);
 extern int is_identified(const object *op);
 extern void object_give_identified_properties(object *op);
 extern object *identify(object *op);
+/**
+ * Determine the base (intrinsic) value of an item. This should not include
+ * adjustments such as bargaining, charisma, or shop specialization.
+ *
+ * @param obj item in question.
+ * @return base price.
+ */
+extern uint64_t price_base(const object *obj);
 /* languages.cpp */
 extern const char *i18n(const object *who, const char *code);
 extern language_t i18n_find_language_by_code(const char *code);

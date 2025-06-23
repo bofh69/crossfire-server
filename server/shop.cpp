@@ -68,74 +68,6 @@ static const char *const coins[] = {
     NULL
 };
 
-/**
- * Price an item based on its value or archetype value, type, identification/BUC
- * status, and other heuristics.
- */
-uint64_t price_base(const object *obj) {
-    // When there are zero objects, there is really one.
-    const int number = NROF(obj);
-    const bool identified = is_identified(obj);
-    uint64_t val = (uint64_t)obj->value * number;
-
-    // Objects with price adjustments skip the rest of the calculations.
-    const char *key = object_get_value(obj, "price_adjustment");
-    if (key != NULL) {
-        float ratio = atof(key);
-        return val * ratio;
-    }
-
-    // Money and gems have fixed prices at shops.
-    if (obj->type == MONEY || obj->type == GEM) {
-        return val;
-    }
-
-    // Assume that good items, e.g. artifacts have that priced into their
-    // value. Bad items may not.
-    if (calc_item_enhancement(obj) < 0) {
-        return 0;
-    }
-
-    // If unidentified, price item based on its archetype.
-    if (!identified && obj->arch) {
-        val = obj->arch->clone.value * number;
-    }
-
-    /**
-     * Shopkeepers always know the BUC status of items. Adjust the base price
-     * of items based on their BUC status. Note that religious players can
-     * readily uncurse items, so don't make this too drastic.
-     */
-    if (QUERY_FLAG(obj, FLAG_BLESSED)){
-        val *= 1.15;
-    } else if (QUERY_FLAG(obj, FLAG_CURSED)) {
-        val *= 0.8;
-    } else if (QUERY_FLAG(obj, FLAG_DAMNED)) {
-        val *= 0.6;
-    }
-
-    // If an item is identified to have an enchantment above its archetype
-    // enchantment, increase price exponentially.
-    if (obj->arch != NULL && identified) {
-        int diff = obj->magic - obj->arch->clone.magic;
-        val *= pow(1.15, diff);
-    }
-
-    // FIXME: Is the 'baseline' 50 charges per wand?
-    if (obj->type == WAND) {
-        val *= obj->stats.food / 50.0;
-    }
-
-    /* we need to multiply these by 4.0 to keep buy costs roughly the same
-     * (otherwise, you could buy a potion of charisma for around 400 pp.
-     * Arguable, the costs in the archetypes should be updated to better
-     * reflect values (potion charisma list for 1250 gold)
-     */
-    val *= 4; // FIXME
-
-    return val;
-}
-
 uint64_t price_approx(const object *tmp, object *who) {
     uint64_t val = price_base(tmp);
 
@@ -1299,19 +1231,4 @@ int shop_describe(const object *op) {
                              "There is no shop nearby.");
 
     return 1;
-}
-
-/**
- * Check if the given map coordinates are in a shop.
- */
-bool coords_in_shop(mapstruct *map, int x, int y) {
-    FOR_MAP_PREPARE(map, x, y, floor)
-        if (floor->type == SHOP_FLOOR) return true;
-    FOR_MAP_FINISH();
-    return false;
-}
-
-bool shop_contains(object *ob) {
-    if (!ob->map) return 0;
-    return coords_in_shop(ob->map, ob->x, ob->y);
 }

@@ -12,15 +12,6 @@
 uint64_t price_approx(const object *obj, object *who);
 
 /**
- * Determine the base (intrinsic) value of an item. This should not include
- * adjustments such as bargaining, charisma, or shop specialization.
- *
- * @param obj item in question.
- * @return base price.
- */
-uint64_t price_base(const object *obj);
-
-/**
  * Adjust the value of an item to be bought based on the player's bargaining skill and
  * charisma. This should only be used if the player is in a shop.
  *
@@ -105,13 +96,6 @@ void sell_item(object *op, object *pl);
  * @return Approval ratio between 0 and 1
  */
 double shop_approval(const mapstruct *map, const object *player);
-
-bool coords_in_shop(mapstruct *map, int x, int y);
-
-/**
- * Check if an object is in a shop.
- */
-bool shop_contains(object *ob);
 
 /**
  * Give the player a description of the shop on their current map. This is

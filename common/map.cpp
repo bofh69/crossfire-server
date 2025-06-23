@@ -2730,3 +2730,18 @@ int map_light_on(mapstruct *m, int x, int y) {
 
     return 0;
 }
+
+/**
+ * Check if the given map coordinates are in a shop.
+ */
+bool coords_in_shop(mapstruct *map, int x, int y) {
+    FOR_MAP_PREPARE(map, x, y, floor)
+        if (floor->type == SHOP_FLOOR) return true;
+    FOR_MAP_FINISH();
+    return false;
+}
+
+bool shop_contains(object *ob) {
+    if (!ob->map) return 0;
+    return coords_in_shop(ob->map, ob->x, ob->y);
+}
