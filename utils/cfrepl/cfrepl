@@ -1,0 +1,7 @@
+#!/bin/sh
+export LD_LIBRARY_PATH="../../common/.libs/:."
+args=""
+if [ -n "$1" ]; then
+    args="--shell $1"
+fi
+exec rlwrap ecl --load cfrepl.fas --eval "(init)" $args
