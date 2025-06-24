@@ -1348,21 +1348,22 @@ static int check_probe(int ax, int ay, const object *ob, SockList *sl, socket_st
     return got_one;
 }
 
-static void map2_add_label(socket_struct *ns, SockList *sl, enum map2_label subtype, const char *label) {
+static bool map2_add_label(socket_struct *ns, SockList *sl, enum map2_label subtype, const char *label) {
     // protect old clients from label with additive length, which can cause them to crash
     if (ns->sc_version < 1030)
-        return;
+        return false;
 
     int len = strlen(label);
     if (len > 256 - 2 - 1) {
         LOG(llevError, "The label '%s' is too long to send to the client.", label);
-        return;
+        return false;
     }
     SockList_AddChar(sl, MAP2_ADD_LENGTH | MAP2_TYPE_LABEL); // label with additive length
     SockList_AddChar(sl, len + 2); // length of payload (subtype + lstring)
     SockList_AddChar(sl, subtype);
     SockList_AddChar(sl, len); // lstring length prefix
     SockList_AddString(sl, label);
+    return true;
 }
 
 static int annotate_ob(int ax, int ay, const object *ob, SockList *sl, player *plyr, int *has_obj, int *alive_layer) {
@@ -1388,8 +1389,7 @@ static int annotate_ob(int ax, int ay, const object *ob, SockList *sl, player *p
                 subtype = MAP2_LABEL_PLAYER_PARTY;
             }
         }
-        map2_add_label(ns, sl, subtype, ob->name);
-        got_one += 1;
+        got_one += map2_add_label(ns, sl, subtype, ob->name);
     }
     return got_one;
 }
