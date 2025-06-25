@@ -54,6 +54,7 @@
  * Map label subtypes
  */
 enum map2_label {
+    MAP2_LABEL_NONE = 0,
     MAP2_LABEL_PLAYER = 1,
     MAP2_LABEL_PLAYER_PARTY = 2,
     MAP2_LABEL_DM = 3,

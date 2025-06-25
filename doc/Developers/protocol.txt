@@ -1340,6 +1340,7 @@ LSB):
    *** subtype: _int8_, extra data about the type of label. The client can use
    this to color the text or display it differently.
 
+   **** 0: None (clear labels from this tile, see below)
    **** 1: Player
    **** 2: Player in the same party
    **** 3: DM
@@ -1350,6 +1351,11 @@ LSB):
 
    *** label: _lstring_, the label text. Note that the length prefix is still
    required even though it equals _len - 2_.
+
+   Labels are not attached to any layer. Multiple labels may be present on one
+   tile. All labels on a tile are sent at once within a coord block, i.e. if a
+   client receives a label, it should first clear all existing labels on that
+   tile.
 
 ** 0x3 - 0xf: Reserved for future extensions.
 

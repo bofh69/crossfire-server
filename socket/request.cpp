@@ -1348,21 +1348,51 @@ static int check_probe(int ax, int ay, const object *ob, SockList *sl, socket_st
     return got_one;
 }
 
-static bool map2_add_label(socket_struct *ns, SockList *sl, enum map2_label subtype, const char *label) {
+/**
+ * Return true if an update was sent to the client.
+ */
+static bool map2_add_label(int ax, int ay, socket_struct *ns, SockList *sl, enum map2_label subtype, sstring label) {
+    // label can only be null if subtype is none
+    assert(subtype != MAP2_LABEL_NONE ? label != NULL : 1);
+
     // protect old clients from label with additive length, which can cause them to crash
     if (ns->sc_version < 1030)
         return false;
 
-    int len = strlen(label);
-    if (len > 256 - 2 - 1) {
-        LOG(llevError, "The label '%s' is too long to send to the client.", label);
+    if (ax == 12 && ay == 11) {
+        LOG(llevDebug, "Breakpoint\n");
+    }
+
+    // Check if there is any change to last sent data
+    struct map_cell_struct *cell = &ns->lastmap.cells[ax][ay];
+    if (cell->label_subtype == subtype &&
+            (subtype == 0 || cell->label_text == label)) { // none label skips string comparison
         return false;
     }
+
+    // Store change
+    if (cell->label_subtype != MAP2_LABEL_NONE)
+        free_string(cell->label_text);
+    cell->label_subtype = subtype;
+    cell->label_text = label;
+
+    int len = 0;
+    if (label) {
+        add_refcount(label);
+        len = strlen(label);
+        if (len > 256 - 2 - 1) {
+            LOG(llevError, "The label '%s' is too long to send to the client.", label);
+            return false;
+        }
+    }
+
+    // Send update
     SockList_AddChar(sl, MAP2_ADD_LENGTH | MAP2_TYPE_LABEL); // label with additive length
     SockList_AddChar(sl, len + 2); // length of payload (subtype + lstring)
     SockList_AddChar(sl, subtype);
     SockList_AddChar(sl, len); // lstring length prefix
-    SockList_AddString(sl, label);
+    if (label)
+        SockList_AddString(sl, label);
     return true;
 }
 
@@ -1379,6 +1409,14 @@ static int annotate_ob(int ax, int ay, const object *ob, SockList *sl, player *p
             }
         }
     }
+    return got_one;
+}
+
+/**
+ * Return true if there is a label present on this square.
+ */
+static bool add_labels(int ax, int ay, const object *ob, SockList *sl, player *plyr, int *got_one) {
+    socket_struct *ns = plyr->socket;
     // add player name label
     if (ob->type == PLAYER) {
         enum map2_label subtype = MAP2_LABEL_PLAYER;
@@ -1389,9 +1427,10 @@ static int annotate_ob(int ax, int ay, const object *ob, SockList *sl, player *p
                 subtype = MAP2_LABEL_PLAYER_PARTY;
             }
         }
-        got_one += map2_add_label(ns, sl, subtype, ob->name);
+        *got_one += map2_add_label(ax, ay, ns, sl, subtype, ob->name);
+        return true;
     }
-    return got_one;
+    return false;
 }
 
 /*
@@ -1575,6 +1614,7 @@ static void draw_client_map2(object *pl) {
                         have_darkness = 1;
                     }
 
+                    int got_label = 0;
                     for (layer = 0; layer < MAP_LAYERS; layer++) {
                         const object *ob = GET_MAP_FACE_OBJ(m, nx, ny, layer);
 
@@ -1592,8 +1632,10 @@ static void draw_client_map2(object *pl) {
                             got_one += map2_add_ob(ax, ay, layer, ob, &sl, plyr->socket, &has_obj, 0);
 
                             /* if we added the face, or it is a monster's head, check probe spell */
-                            if (got_one != old_got || ob->head == NULL)
+                            if (got_one != old_got || ob->head == NULL) {
                                 got_one += annotate_ob(ax, ay, ob, &sl, plyr, &has_obj, &alive_layer);
+                                got_label += add_labels(ax, ay, ob, &sl, plyr, &got_one);
+                            }
 
                             /* If we are just storing away the head
                              * for future use, then effectively this
@@ -1607,6 +1649,9 @@ static void draw_client_map2(object *pl) {
                             if (layer != alive_layer)
                                 del_one += map2_delete_layer(ax, ay, layer, &sl, plyr->socket);
                         }
+                    }
+                    if (got_label == 0) {
+                        got_one += map2_add_label(ax, ay, plyr->socket, &sl, MAP2_LABEL_NONE, NULL);
                     }
                     /* If nothing to do for this space, we
                      * can erase the coordinate bytes

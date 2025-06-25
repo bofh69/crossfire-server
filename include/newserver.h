@@ -31,6 +31,10 @@
 struct map_cell_struct {
     uint16_t faces[MAP_LAYERS];   /**< Face numbers. */
     int darkness;               /**< Cell's darkness. */
+    enum map2_label label_subtype; //< Type of last label, or 0 if no label
+    sstring label_text;            //< Text of last label as a shared string, invalid pointer if subtype = 0
+    // TODO: One cell can contain multiple labels, but this only stores the first one. So if there
+    // are multiple labels, the server resorts to sending all labels each tick.
 };
 
 /**
