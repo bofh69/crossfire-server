@@ -1072,7 +1072,7 @@ void fix_generated_item(object *op, object *creator, int difficulty, int max_mag
                 object_remove(op);
                 object_free_drop_inventory(op);
                 op = NULL;
-                break;
+                return;
             }
             if (op->arch != ring_arch && op->arch != amulet_arch)
                 /* It's a special artifact!*/
@@ -1134,6 +1134,10 @@ void fix_generated_item(object *op, object *creator, int difficulty, int max_mag
             break;
 
         case SPELLBOOK:
+            if (!op->inv) {
+                LOG(llevError, "Generated a spellbook without a spell\n");
+                break;
+            }
             op->value = op->value*op->inv->value;
             /* add exp so learning gives xp */
             op->level = op->inv->level;
@@ -1150,6 +1154,10 @@ void fix_generated_item(object *op, object *creator, int difficulty, int max_mag
             break;
 
         case WAND:
+            if (!op->inv) {
+                LOG(llevError, "Generated a wand without a spell\n");
+                break;
+            }
             /* nrof in the treasure list is number of charges,
              * not number of wands.  So copy that into food (charges),
              * and reset nrof.
