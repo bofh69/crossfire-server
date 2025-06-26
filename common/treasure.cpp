@@ -889,7 +889,7 @@ static void trap_adjust(object *trap, int difficulty) {
  */
 bool chance(int a, int b) {
     // Example: chance(2, 3). RANDOM%3 is 0, 1, or 2. 2/3 chance is the result < 2.
-    return RANDOM()%b < a;
+    return RANDOM() % uint32_t(b) < uint32_t(a);
 }
 
 static int dice2() {
