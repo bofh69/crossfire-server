@@ -4328,7 +4328,7 @@ key_value *object_get_key_value(const object *ob, const char *key) {
  * @note
  * The returned string is shared.
  */
-const char *object_get_value(const object *op, const char *const key) {
+sstring object_get_value(const object *op, const char *const key) {
     key_value *link;
     const char *canonical_key;
 
@@ -4398,7 +4398,7 @@ bool object_value_set_shared(const object *op, sstring key) {
  * @return
  * TRUE if key was updated or added, FALSE else.
  */
-static int object_set_value_s(object *op, const char *canonical_key, const char *value, int add_key) {
+static int object_set_value_s(object *op, sstring canonical_key, const char *value, int add_key) {
     key_value *field = NULL, *last = NULL;
 
     for (field = op->key_values; field != NULL; field = field->next) {

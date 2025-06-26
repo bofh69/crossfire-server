@@ -40,8 +40,8 @@ extern const char *const move_name[];
  * Exception is if you want to walk this list for some reason.
  */
 struct key_value {
-    const char *key;          /**< Name of the key. */
-    const char *value;        /**< Key's value. */
+    sstring key;          /**< Name of the key. */
+    sstring value;        /**< Key's value. */
     key_value  *next;  /**< Next key in the list. */
 };
 
