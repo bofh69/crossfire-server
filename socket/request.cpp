@@ -1429,6 +1429,10 @@ static bool add_labels(int ax, int ay, const object *ob, SockList *sl, player *p
         }
         *got_one += map2_add_label(ax, ay, ns, sl, subtype, ob->name);
         return true;
+    } else if (object_value_set(ob, "label")) {
+        const char *label = object_get_value(ob, "label");
+        *got_one += map2_add_label(ax, ay, ns, sl, MAP2_LABEL_SIGN, label);
+        return true;
     }
     return false;
 }
