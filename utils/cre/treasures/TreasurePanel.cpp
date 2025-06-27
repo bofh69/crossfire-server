@@ -46,7 +46,8 @@ void TreasurePanel::dragMoveEvent(QDragMoveEvent *event) {
 void TreasurePanel::dropEvent(QDropEvent *event) {
     auto archs = MimeUtils::extract(event->mimeData(), MimeUtils::Archetype, getManager()->archetypes());
     if (!archs.empty()) {
-        myArch->setArch(archs.front());
+        auto arch = archs.front();
+        myArch->setArch(HEAD(arch));
         event->acceptProposedAction();
     }
     auto lists = MimeUtils::extract(event->mimeData(), MimeUtils::TreasureList, getManager()->treasures());

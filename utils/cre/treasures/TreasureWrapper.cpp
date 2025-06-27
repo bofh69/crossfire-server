@@ -185,7 +185,7 @@ bool TreasureWrapper::canDrop(const QMimeData *data, int) const {
 void TreasureWrapper::drop(const QMimeData *data, int) {
     auto archs = MimeUtils::extract(data, MimeUtils::Archetype, getManager()->archetypes());
     for (auto arch : archs) {
-        addChild(nullptr, arch);
+        addChild(nullptr, HEAD(arch));
     }
 
     auto lists = MimeUtils::extract(data, MimeUtils::TreasureList, getManager()->treasures());
