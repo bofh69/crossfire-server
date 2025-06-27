@@ -1359,10 +1359,6 @@ static bool map2_add_label(int ax, int ay, socket_struct *ns, SockList *sl, enum
     if (ns->sc_version < 1030)
         return false;
 
-    if (ax == 12 && ay == 11) {
-        LOG(llevDebug, "Breakpoint\n");
-    }
-
     // Check if there is any change to last sent data
     struct map_cell_struct *cell = &ns->lastmap.cells[ax][ay];
     if (cell->label_subtype == subtype &&
