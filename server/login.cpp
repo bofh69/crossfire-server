@@ -215,6 +215,15 @@ void destroy_object(object *op) {
     object_free_drop_inventory(op);
 }
 
+void drop_all_unpaid(object *op) {
+    FOR_INV_PREPARE(op, tmp) {
+        if (QUERY_FLAG(tmp, FLAG_UNPAID)) {
+            object_remove(tmp);
+            object_insert_in_map_at(tmp, op->map, op, 0, op->x, op->y);
+        }
+    } FOR_INV_FINISH();
+}
+
 /**
  * Saves a player to disk.
  *
@@ -262,8 +271,10 @@ int save_player(object *op, int flag) {
     if (pl->state != ST_PLAYING && pl->state != ST_GET_PARTY_PASSWORD)
         return 0;
 
-    if (flag == 0)
+    if (flag == 0) {
         pets_terminate_all(op);
+        drop_all_unpaid(op);
+    }
 
     /* Update information on this character.  Only do it if it is eligible for
      * for saving.
