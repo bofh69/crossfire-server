@@ -1882,6 +1882,26 @@ mapstruct *ready_map_name(const char *name, int flags) {
         }
     }
 
+    /* Randomize monsters direction and animation state */
+
+    if (!(flags & MAP_STYLE)) {
+        for (int x = 0; x < MAP_WIDTH(m); x++)
+            for (int y = 0; y < MAP_HEIGHT(m); y++)
+                FOR_MAP_PREPARE(m, x, y, op) {
+                    if (!op->head && QUERY_FLAG(op, FLAG_MONSTER) && (op->direction == 0 || op->facing == 0)) {
+                        if (op->animation) {
+                            auto facings = NUM_FACINGS(op);
+                            op->facing = facings > 1 ? 1 + (cf_random() % facings) : 1;
+                            op->direction = op->facing;
+                            const int max_state = NUM_ANIMATIONS(op) / facings;
+                            op->state = max_state > 1 ? cf_random() % max_state : 0;
+                            animate_object(op, op->direction);
+                        }
+                    }
+                } FOR_MAP_FINISH();
+
+    }
+
     map_reset_swap(m);
     events_execute_global_event(EVENT_MAPREADY, m);
 
