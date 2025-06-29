@@ -135,7 +135,7 @@ extern object      *cf_create_object_by_name(const char *name);
 extern object      *cf_object_change_map(object *op, mapstruct *m, object *originator, int flag, int x, int y);
 extern int          cf_object_teleport(object *ob, mapstruct *map, int x, int y);
 extern void         cf_object_update(object *op, int flags);
-extern void         cf_object_pickup(object *op, object *what);
+extern int          cf_object_pickup(object *op, object *what);
 extern const char  *cf_object_get_key(object *op, const char *keyname);
 extern int          cf_object_set_key(object *op, const char *keyname, const char *value, int add_key);
 extern int16_t       cf_object_get_resistance(object *op, int rtype);

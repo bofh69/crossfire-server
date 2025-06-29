@@ -1431,11 +1431,11 @@ void cf_object_update(object *op, int flags) {
     cfapiObject_update(&type, op, flags);
 }
 
-void cf_object_pickup(object *op, object *what) {
-    int type;
-
-    cfapiObject_pickup(&type, op, what);
-    assert(type == CFAPI_NONE);
+int cf_object_pickup(object *op, object *what) {
+    int type, value;
+    cfapiObject_pickup(&type, op, what, &value);
+    assert(type == CFAPI_INT);
+    return value;
 }
 
 /**

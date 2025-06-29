@@ -4184,10 +4184,11 @@ static void cfapi_object_pickup(int *type, ...) {
     va_start(args, type);
     who = va_arg(args, object *);
     what = va_arg(args, object *);
+    int *res = va_arg(args, int *);
     va_end(args);
 
-    pick_up(who, what);
-    *type = CFAPI_NONE;
+    *type = CFAPI_INT;
+    *res = pick_up(who, what);
 }
 
 /* Archetype-related functions */

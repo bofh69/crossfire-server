@@ -837,9 +837,10 @@ static PyObject *Crossfire_Object_Take(Crossfire_Object *who, PyObject *args) {
     EXISTCHECK(who);
     TYPEEXISTCHECK(whoptr);
 
-    cf_object_pickup(who->obj, whoptr->obj);
-    Py_INCREF(Py_None);
-    return Py_None;
+    int val = cf_object_pickup(who->obj, whoptr->obj);
+    if (val)
+        Py_RETURN_TRUE;
+    Py_RETURN_FALSE;
 }
 
 static PyObject *Crossfire_Object_Teleport(Crossfire_Object *who, PyObject *args) {
