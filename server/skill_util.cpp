@@ -1201,7 +1201,7 @@ static void do_skill_attack(object *tmp, object *op, const char *string, object 
             /* Has ready weapon - make sure chosen_skill is set up properly */
             if (!op->chosen_skill || op->current_weapon->skill != op->chosen_skill->skill) {
                 object *found_skill = find_skill_by_name(op, op->current_weapon->skill);
-                assert(found_skill != NULL);
+                // found_skill can be NULL -- TOCTTOU when item has mutated, e.g. dipping a bottle in a fountain
                 change_skill(op, found_skill, 1);
             }
         }
