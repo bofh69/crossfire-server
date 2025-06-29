@@ -499,13 +499,13 @@ static long recipe_find_ingredient_cost(const char *name) {
             /* inefficient, but who cares? */
             snprintf(part1, sizeof(part1), "%s %s", at->clone.name, at->clone.title);
             if (!strcasecmp(part1, name)) {
-                value = at->clone.value;
+                value = price_base(&at->clone);
                 found = true;
                 return;
             }
         }
         if (!strcasecmp(at->clone.name, name)) {
-            value = at->clone.value;
+            value = price_base(&at->clone);
             found = true;
             return;
         }
@@ -531,7 +531,7 @@ static long recipe_find_ingredient_cost(const char *name) {
                     if (al->type == at->clone.type) {
                         for (const auto art : al->items) {
                             if (!strcasecmp(art->item->name, part2)) {
-                                value = at->clone.value * art->item->value;
+                                value = price_base(&at->clone) * art->item->value;
                                 found = true;
                                 return;
                             }
@@ -560,7 +560,7 @@ static long recipe_find_ingredient_cost(const char *name) {
                 if (at->clone.randomitems != NULL) {
                     auto at2 = find_treasure_by_name(at->clone.randomitems->items, part2, 0);
                     if (at2 != NULL) {
-                        value = at2->clone.value * isqrt(at->clone.level * 2);
+                        value = price_base(&at2->clone);
                         found = true;
                         return;
                     }
@@ -629,9 +629,9 @@ void dump_alchemy_costs(void) {
                                     tcost += cost;
                             }
                             if (art != NULL && art->item != NULL)
-                                cost = at->clone.value*art->item->value;
+                                cost = price_base(&at->clone)*art->item->value;
                             else
-                                cost = at->clone.value;
+                                cost = price_base(&at->clone);
                             fprintf(logfile, "\t\tBuying result costs: %5ld", cost);
                             if (formula->yield > 1) {
                                 fprintf(logfile, " to %ld (max %d items)\n", cost*formula->yield, formula->yield);
