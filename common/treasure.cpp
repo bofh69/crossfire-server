@@ -1129,7 +1129,8 @@ void fix_generated_item(object *op, object *creator, int difficulty, int max_mag
             /* for library, chained books.  Note that some monsters have
              * no_pick set - we don't want to set no pick in that case. */
             if (QUERY_FLAG(creator, FLAG_NO_PICK)
-                && !QUERY_FLAG(creator, FLAG_MONSTER))
+                && !QUERY_FLAG(creator, FLAG_MONSTER)
+                && creator->type != SHOP_MAT) // shop readables need to be pickable
                 SET_FLAG(op, FLAG_NO_PICK);
             break;
 
