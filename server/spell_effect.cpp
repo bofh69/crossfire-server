@@ -2604,10 +2604,7 @@ int cast_detection(object *op, object *caster, object *spell) {
              * down - that is easier than working up.
              */
 
-            last = NULL;
-            FOR_MAP_PREPARE(m, nx, ny, tmp)
-                last = tmp;
-            FOR_MAP_FINISH();
+            last = GET_MAP_TOP(m, nx, ny);
             /* Shouldn't happen, but if there are no objects on a space, this
              * would happen.
              */
