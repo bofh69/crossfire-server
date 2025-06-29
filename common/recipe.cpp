@@ -340,6 +340,8 @@ bool check_formulae(void) {
     return success;
 }
 
+static long recipe_find_ingredient_cost(const char *name);
+
 /**
  * Dumps alchemy recipes to output.
  * Borrowed (again) from the artifacts code for this.
@@ -353,10 +355,10 @@ void dump_alchemy(void) {
     linked_char *next;
     int num_ingred = 1;
 
-    fprintf(logfile, "\n");
+    fprintf(stdout, "name,index,num_ingreds,chance,skill,difficulty,exp,cauldron,yield,ingredients,ingred_price,result_price\n");
     while (fl) {
-        fprintf(logfile, "\n Formulae with %d ingredient%s  %d Formulae with total_chance=%d\n", num_ingred, num_ingred > 1 ? "s." : ".", fl->number, fl->total_chance);
         for (formula = fl->items; formula != NULL; formula = formula->next) {
+            const archetype *at = NULL;
             const artifact *art = NULL;
             char buf[MAX_BUF];
             size_t i;
@@ -364,7 +366,7 @@ void dump_alchemy(void) {
             for (i = 0; i < formula->arch_names; i++) {
                 const char *string = formula->arch_name[i];
 
-                if (try_find_archetype(string) != NULL) {
+                if ((at = try_find_archetype(string)) != NULL) {
                     art = locate_recipe_artifact(formula, i);
                     if (!art && strcmp(formula->title, "NONE"))
                         LOG(llevError, "Formula %s has no artifact\n", formula->title);
@@ -373,33 +375,34 @@ void dump_alchemy(void) {
                             snprintf(buf, sizeof(buf), "%s of %s", string, formula->title);
                         else
                             strlcpy(buf, string, sizeof(buf));
-                        fprintf(logfile, "%-30s(%d) bookchance %3d  ", buf, formula->index, formula->chance);
-                        fprintf(logfile, "skill %s", formula->skill);
-                        fprintf(logfile, "\n");
+                        fprintf(stdout, "%s,%d,%d,%d,%s,", buf, formula->index, num_ingred, formula->chance, formula->skill);
+                        fprintf(stdout, "%d,%d,", formula->diff, formula->exp);
+                        fprintf(stdout, "%s,%d,", formula->cauldron, formula->yield);
+                        int ingred_cost = 0;
                         if (formula->ingred != NULL) {
                             int nval = 0, tval = 0;
-                            fprintf(logfile, "\tIngred: ");
+                            fprintf(stdout, "\"");
                             for (next = formula->ingred; next != NULL; next = next->next) {
                                 if (nval != 0)
-                                    fprintf(logfile, ",");
-                                fprintf(logfile, "%s(%d)", next->name, (nval = strtoint(next->name)));
+                                    fprintf(stdout, ",");
+                                fprintf(stdout, "%s(%d)", next->name, (nval = strtoint(next->name)));
+                                ingred_cost += recipe_find_ingredient_cost(next->name);
                                 tval += nval;
                             }
-                            fprintf(logfile, "\n");
+                            fprintf(stdout, "\",");
                             if (tval != formula->index)
-                                fprintf(logfile, "WARNING:ingredient list and formula values not equal.\n");
+                                fprintf(stdout, "WARNING:ingredient list and formula values not equal.\n");
                         }
-                        if (formula->skill != NULL)
-                            fprintf(logfile, "\tSkill Required: %s", formula->skill);
-                        if (formula->cauldron != NULL)
-                            fprintf(logfile, "\tCauldron: %s\n", formula->cauldron);
-                        fprintf(logfile, "\tDifficulty: %d\t Exp: %d\n", formula->diff, formula->exp);
+                        fprintf(stdout, "%d,", ingred_cost);
+                        int result_price = price_base(&at->clone);
+                        if (art != NULL && art->item != NULL)
+                            result_price *= art->item->value;
+                        fprintf(stdout, "%d\n", result_price);
                     }
                 } else
                     LOG(llevError, "Can't find archetype:%s for formula %s\n", string, formula->title);
             }
         }
-        fprintf(logfile, "\n");
         fl = fl->next;
         num_ingred++;
     }
