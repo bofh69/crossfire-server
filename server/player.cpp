@@ -862,9 +862,6 @@ void give_initial_items(object *pl, treasurelist *items) {
             CLEAR_FLAG(op, FLAG_CURSED);
             CLEAR_FLAG(op, FLAG_DAMNED);
         }
-        /* lock all 'normal items by default */
-        else
-            SET_FLAG(op, FLAG_INV_LOCKED);
     } FOR_INV_FINISH(); /* for loop of objects in player inv */
 
     /* Need to set up the skill pointers */

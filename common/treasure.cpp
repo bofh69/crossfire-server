@@ -1221,8 +1221,10 @@ void fix_generated_item(object *op, object *creator, int difficulty, int max_mag
         if (op->nrof < 2
         && op->type != CONTAINER
         && op->type != MONEY
-        && !QUERY_FLAG(op, FLAG_IS_THROWN))
+        && !QUERY_FLAG(op, FLAG_IS_THROWN)) {
             SET_FLAG(op, FLAG_STARTEQUIP);
+            SET_FLAG(op, FLAG_INV_LOCKED); // make it harder to accidentally drop
+        }
         else if (op->type != MONEY)
             op->value = 0;
     }
