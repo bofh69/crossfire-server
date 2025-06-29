@@ -2653,7 +2653,7 @@ int cast_detection(object *op, object *caster, object *spell) {
                  */
 
                 /* detect magic */
-                if (QUERY_FLAG(spell, FLAG_KNOWN_MAGICAL)
+                if (object_value_set(spell, "spell_detect_magic")
                 && !QUERY_FLAG(tmp, FLAG_KNOWN_MAGICAL)
                 && !QUERY_FLAG(tmp, FLAG_IDENTIFIED)
                 && is_magical(tmp)) {
