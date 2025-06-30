@@ -150,15 +150,15 @@ START_TEST(test_describe_item) {
         "",
         "(wc+2)(dam+3)(Attacks: physical)",
         "",
-        "(dam+11)(weapon speed 9)(Attacks: physical)",
-        "(food+5)",
-        "(item_power +3)(lifesaving)",
+        "(dam+18)(weapon speed 8)(Attacks: physical)",
+        "(food+180)",
+        "(dam+15)(item_power +4)(weapon speed 7)(Attacks: physical, depletion)",
         "",
         "",
-        "(Con+2)(Cha-1)(dam+10)(item_power +15)(weapon speed 5)(regeneration+1)(Attacks: weaponmagic)[ul](resist drain +100)[/ul][color=green](resist poison +30)[/color]",
+        "(Str+1)(Cha+2)(dam+12)(item_power +15)(weapon speed 4)(Attacks: weaponmagic)[color=#930C76](resist magic +30)[/color][ul](resist drain +100)[/ul]",
         "",
-        "(dam+5)(item_power +4)(weapon speed 4)(slay troll)(Attacks: physical)",
-        "(dam+1)(weapon speed 5)(Attacks: physical)",
+        "(Str+1)(dam+10)(item_power +6)(weapon speed 6)(Attacks: physical, electricity)[color=blue](resist electricity +30)[/color]",
+        "(ac+1)[color=#FF15CD](armour +5)[/color]",
         NULL
     };
 
