@@ -40,6 +40,7 @@ int apply_auto(object *op);
 void apply_auto_fix(mapstruct *m);
 void scroll_failure(object *op, int failure, int power);
 void apply_changes_to_player(object *pl, object *change, int limit_stats);
+bool csv_contains(std::string list, std::string item, std::string delim=",");
 /* attack.c */
 void save_throw_object(object *op, uint32_t type, object *originator);
 int slow_living_by(object *op, const int speed_penalty);

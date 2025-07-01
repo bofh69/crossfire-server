@@ -297,6 +297,36 @@ void command_apply(object *op, const char *params) {
 }
 
 /**
+ * Split list by comma, then see if item matches anything in the list.
+ */
+bool csv_contains(std::string list, std::string item, std::string delim) {
+    int pos;
+    while (true) {
+        pos = list.find(delim);
+        auto match = list.substr(0, pos);
+        if (item == match)
+            return true;
+
+        if (pos == std::string::npos)
+            return false;
+        list.erase(0, pos + 1);
+    }
+    return false;
+}
+
+bool sack_race_can_contain(const object *sack, const object *ob) {
+    if (!sack->race)
+        // no restriction
+        return true;
+
+    if (!ob->race)
+        // sack restricted, but object not defined
+        return false;
+
+    return csv_contains(sack->race, ob->race);
+}
+
+/**
  * Check if an item op can be put into a sack. If pl exists then tell
  * a player the reason of failure.
  *
@@ -331,7 +361,7 @@ int sack_can_hold(const object *pl, const object *sack, const object *op, uint32
         return 0;
     }
     if (sack->race
-    && (sack->race != op->race || op->type == CONTAINER || (sack->stats.food && sack->stats.food != op->type))) {
+    && (!sack_race_can_contain(sack, op) || op->type == CONTAINER || (sack->stats.food && sack->stats.food != op->type))) {
         draw_ext_info_format(NDI_UNIQUE, 0, pl, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
                              "You can put only %s into the %s.",
                              sack->race,  name);

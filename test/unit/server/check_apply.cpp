@@ -30,19 +30,42 @@
  * This is the unit tests file for server/apply.c
  */
 
+#include "global.h"
+
 #include <stdlib.h>
 #include <check.h>
 
+#include "toolkit_common.h"
+#include "sproto.h"
+
 void setup(void) {
-    /* put any initialisation steps here, they will be run before each testcase */
+    cctk_setdatadir(SOURCE_ROOT "lib");
+    cctk_setlog(LOGDIR "/unit/server/check_apply.out");
+    cctk_init_std_archetypes();
 }
 
 void teardown(void) {
     /* put any cleanup steps here, they will be run after each testcase */
 }
 
-START_TEST(test_empty) {
-    /*TESTME test not yet developped*/
+START_TEST(test_csv_contains) {
+    ck_assert(csv_contains("Alice,Bob,Carol", "Alice"));
+    ck_assert(csv_contains("Alice,Bob,Carol", "Bob"));
+    ck_assert(csv_contains("Alice,Bob,Carol", "Carol"));
+    ck_assert(!csv_contains("Alice,Bob,Carol", "Mallory"));
+    ck_assert(csv_contains("Apple Pie", "Apple Pie"));
+}
+END_TEST
+
+START_TEST(test_pouch_holds_stuff) {
+    object *pouch = create_archetype("pouch");
+    object *money = create_archetype("silvercoin");
+    object *gem = create_archetype("gem");
+    object *junk = create_archetype("slag");
+    SET_FLAG(pouch, FLAG_APPLIED);
+    ck_assert(sack_can_hold(NULL, pouch, money, 1));
+    ck_assert(sack_can_hold(NULL, pouch, gem, 1));
+    ck_assert(!sack_can_hold(NULL, pouch, junk, 1));
 }
 END_TEST
 
@@ -54,7 +77,8 @@ Suite *apply_suite(void) {
     tcase_add_checked_fixture(tc_core, setup, teardown);
 
     suite_add_tcase(s, tc_core);
-    tcase_add_test(tc_core, test_empty);
+    tcase_add_test(tc_core, test_csv_contains);
+    tcase_add_test(tc_core, test_pouch_holds_stuff);
 
     return s;
 }
