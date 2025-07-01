@@ -81,12 +81,13 @@ available in your script.
 
 How do I hook a global event?
 -----------------------------
+Global event scripts go into SHARE/maps/python/events/<event name>, and are named
+freely by the developer. If the directory doesn't exist, nothing will happen.
+<event name> can be 'init', 'login', ... (the right part of the EVENT_xxx defines).
 
-Each global event is bound to a specific Python script file. Those files are
-located in the python/events/ subdirectory of your crossfire map directory.
-They have specific names, too: python_xxx.py, where xxx is the name of the
-global event you want to intercept. For example, a script that should be run
-each time a player logs in ("login" event) should be named python_login.py.
+The Python plugin supports all global events. The constant PYTHON_DEBUG
+defined at the start of the plugin_python.c file increases the verbosity of
+the plugin.
 
 
 What functions are currently supported?

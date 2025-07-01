@@ -1,17 +1,23 @@
 # Plugins {#plugins}
-The latest version can be found at: https://wiki.cross-fire.org/server_plugin
+Crossfire can be extended through dynamically-loadable shared library **plugins**. When starting,
+Crossfire tries to load all plugins in the server plugin directory, usually
+*LIBDIR/crossfire/plugins/*.
 
-- @subpage plugin_python "Python"
+Additional information can be found at: https://wiki.cross-fire.org/server_plugin
 
+See also:
 
-Plugin support
-==============
+- @subpage plugin_python "Python plugin (CFPython)"
 
-Crossfire can be extended through plugins. It's basically a library file, that gets loaded
-at server initialization.
-A plugin can be hooked to different events, either related to an object or global ones.
-(see list later on).
+## Plugin-Related DM Commands
 
+- pluglist
+- plugin
+- plugout
+
+For more information, see the in-game DM help.
+
+## Making Plugins
 You should always include two header files in your plugin projects:
 
 - plugin.h, which contains the declaration of most plugin-related constants and
@@ -28,15 +34,19 @@ Important: a plugin should *never* directly call malloc, free, or any function
 manipulating memory if the memory needs to be given to server. This breaks Windows
 compatibility. Hooks are provided in case of need.
 
-
 The technical documentation is in Developers/plugins.ps, and Developers/cfpython.ps
 for Python plugin.
 
-List of supported events.
-=========================
+## Events
+Plugins implement functionalities by "hooking" into events. There are two classes of events:
 
-Local events
-------------
+- **Local events**, which are defined for particular objects, e.g. a special apply event for a
+  particular artifact sword. Particular objects need to contain a event object in order for these
+  types of events to be dispatched.
+
+- **Global events**, which dispatch to all plugins that register to the event.
+
+## Local Events
 Those can be attached to a specific object in the game.
 
 APPLY
@@ -92,8 +102,7 @@ TIMER
 Tag: event_timer
 Generated when the timer connected triggered.
 
-Global events
--------------
+## Global Events
 Those concern the game as a whole or can't be bound to a specific object.
 Those events may be "registered" by a plugin (it means that the plugin requests
 to get a message each time one of those events happens).

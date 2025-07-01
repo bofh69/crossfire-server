@@ -1,6 +1,6 @@
 Usage: plugin <plugin name>
 
-This will load a new plugin into memory. Using this with no arguments, or invalid arguments will cause a server crash. The plugin name should be as it appears in your plugin directory. Double-check the names before using plugins.
+This will load a new plugin into memory. Using this with no arguments, or invalid arguments will cause a server crash. The plugin name should be as it appears in your plugin directory (including file extensions, e.g. ".so"). Double-check the names before using plugins.
 
 See Also: pluglist
 See Also: plugout
