@@ -19,12 +19,12 @@ static methodSignature unknown = { nullptr, nullptr, "any", nullptr };
 static propertySignature unknownProperty = { nullptr, "any", nullptr };
 
 static const methodSignature moduleMethods[] = {
-    { "FindPlayer", "name: str", "Player", "Find the specified player from its name.\n:param name Player's name, case-sensitive.\n:return Player, None if no player matches." },
+    { "FindPlayer", "name: str", "Player", "Find the specified player from its name.\n@param name Player's name, case-sensitive.\n@return Player, None if no player matches." },
     { nullptr, nullptr, nullptr, nullptr },
 };
 
 static const methodSignature objectMethods[] = {
-    { "WriteKey", "key: str, value: str, add_key: int=0", "bool", "Add a key with the specified value to the object.\n:param key Key name.\n:param value Value to give the key.\n:param add_key If 1 then the key is set, if 0 then the key is only updated if it exists.\n:return True if the key was added or updated, False else." },
+    { "WriteKey", "key: str, value: str, add_key: int=0", "bool", "Add a key with the specified value to the object.\n@param key Key name.\n@param value Value to give the key.\n@param add_key If 1 then the key is set, if 0 then the key is only updated if it exists.\n:return True if the key was added or updated, False else." },
     { nullptr, nullptr, nullptr, nullptr },
 };
 static const propertySignature objectProperties[] = {
@@ -78,7 +78,7 @@ const methodSignature *getSignature(const methodSignature *signatures, const cha
 
 void writeDescriptionAndBody(std::ofstream &pyi, const char *indent, const char *description) {
     if (description) {
-        pyi << std::endl << indent << "\t\"\"\"" << std::endl << description << std::endl << indent << "\t\"\"\"" << std::endl << indent << "..." << std::endl;
+        pyi << std::endl << indent << "\t\"\"\"" << std::endl << description << std::endl << indent << "\t\"\"\"!" << std::endl << indent << "..." << std::endl;
     } else {
         pyi << " ..." << std::endl;
     }

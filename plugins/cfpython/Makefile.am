@@ -32,3 +32,7 @@ pyi_generate_SOURCES = pyi-generate.cpp ${cfpython_la_SOURCES}
 pyi_generate_INCLUDES = -I ../include
 pyi_generate_CPPFLAGS = $(AM_CPPFLAGS) -O0 -g
 pyi_generate_LDFLAGS = @PYTHON_LIBS@
+
+.PHONY: Crossfire.pyi
+Crossfire.pyi: pyi-generate
+	./pyi-generate

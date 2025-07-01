@@ -291,7 +291,7 @@ OPTIMIZE_OUTPUT_VHDL   = NO
 # Note that for custom extensions you also need to set FILE_PATTERNS otherwise
 # the files are not read by doxygen.
 
-EXTENSION_MAPPING      =
+EXTENSION_MAPPING      = pyi=Python
 
 # If the MARKDOWN_SUPPORT tag is enabled then doxygen pre-processes all comments
 # according to the Markdown format, which allows for more readable
@@ -839,6 +839,7 @@ FILE_PATTERNS          = *.c \
                          *.cs \
                          *.php \
                          *.php3 \
+                         *.pyi \
                          *.inc \
                          *.m \
                          *.md \
