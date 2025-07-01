@@ -47,28 +47,28 @@ void Quests::added(quest_definition *quest) {
 }
 
 quest_step_definition *quest_create_step(void) {
-    quest_step_definition *step = new quest_step_definition();
+    quest_step_definition *step = static_cast<quest_step_definition *>(calloc(1, sizeof(quest_step_definition)));
     if (!step)
         fatal(OUT_OF_MEMORY);
     return step;
 }
 
 quest_condition *quest_create_condition(void) {
-    quest_condition *cond = new quest_condition();
+    quest_condition *cond = static_cast<quest_condition *>(calloc(1, sizeof(quest_condition)));
     if (!cond)
         fatal(OUT_OF_MEMORY);
     return cond;
 }
 
 quest_definition *quest_create(const char *name) {
-    quest_definition *quest = new quest_definition();
+    quest_definition *quest = static_cast<quest_definition *>(calloc(1, sizeof(quest_definition)));
     quest->quest_code = add_string(name);
     return quest;
 }
 
 void quest_destroy_condition(quest_condition *condition) {
     free_string(condition->quest_code);
-    delete condition;
+    free(condition);
 }
 
 void quest_destroy_step(quest_step_definition *step) {
@@ -77,7 +77,7 @@ void quest_destroy_step(quest_step_definition *step) {
         quest_destroy_condition(step->conditions.back());
         step->conditions.pop_back();
     }
-    delete step;
+    free(step);
 }
 
 void quest_clear(quest_definition *quest) {
@@ -94,7 +94,7 @@ void quest_clear(quest_definition *quest) {
 
 void quest_destroy(quest_definition *quest) {
     quest_clear(quest);
-    delete quest;
+    free(quest);
 }
 
 int quest_condition_from_string(quest_condition *condition, const char *buffer) {
