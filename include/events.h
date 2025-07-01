@@ -7,15 +7,23 @@
  */
 
 /**
- * @defgroup EVENT_xxx Event codes.
+ * @defgroup EVENT_xxx Events
  * To not have to check the whole inventory each time, each object has a
  * event_bitmask field which indicates whether the object has a handler
  * or not for this event. The bitmask is updated when an event hook is inserted
  * into another, and cleaned when a hook is removed from an object. In this
  * case is it recomputed the first time it is needed.
+ * There are @subpage local_events and @subpage global_events.
  */
-/*@{*/
-/* Local events. Those are always linked to a specific object. */
+
+/** @defgroup local_events Local events
+ * @ingroup EVENT_xxx
+ * Local events are linked to particular objects, for example, a special apply
+ * event for a particular artifact sword. These objects need to contain a event
+ * handler object specifying the plugin/module to run in order for these types
+ * of events to be dispatched.
+ * @{
+ */
 #define EVENT_NONE      0  /**< No event. This exists only to reserve the "0". */
 #define EVENT_APPLY     1  /**< Object applied-unapplied.                      */
 #define EVENT_ATTACKED  2  /**< Object attacked, with weapon or spell.         */
@@ -34,8 +42,13 @@
 #define EVENT_TRIGGER   10 /**< Button pushed, lever pulled, etc.              */
 #define EVENT_TIMER     12 /**< Timer connected triggered it.                  */
 #define EVENT_USER      31 /**< User-defined event.                            */
+/**@}*/
 
-/* Global events. Those are never linked to a specific object.*/
+/** @defgroup global_events Global events
+ * @ingroup EVENT_xxx
+ * Global events dispatch to all plugins that register to the event.
+ * @{
+ */
 #define EVENT_BORN      14 /**< A new character has been created.              */
 #define EVENT_CLOCK     15 /**< Global time event.                             */
 #define EVENT_CRASH     16 /**< Triggered when the server crashes. Not recursive */
@@ -56,7 +69,7 @@
 #define EVENT_TELL      26 /**< A player 'tell' something.                     */
 #define EVENT_GBOUGHT   36 /**< Player bought object in shop, but global.      */
 #define EVENT_GSOLD     37 /**< Player sold object in shop, but global.        */
-/*@}*/
+/**@}*/
 
 #define NR_EVENTS 38  /**< Number of events, maximum code + 1. */
 
