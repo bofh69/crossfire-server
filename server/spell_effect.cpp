@@ -2584,6 +2584,8 @@ int cast_detection(object *op, object *caster, object *spell) {
     int16_t x, y, nx, ny;
     mapstruct *m;
 
+    bool spell_detect_magic = object_value_set(spell, "spell_detect_magic");
+
     /* We precompute some values here so that we don't have to keep
      * doing it over and over again.
      */
@@ -2653,7 +2655,7 @@ int cast_detection(object *op, object *caster, object *spell) {
                  */
 
                 /* detect magic */
-                if (object_value_set(spell, "spell_detect_magic")
+                if (spell_detect_magic
                 && !QUERY_FLAG(tmp, FLAG_KNOWN_MAGICAL)
                 && !QUERY_FLAG(tmp, FLAG_IDENTIFIED)
                 && is_magical(tmp)) {
@@ -2747,11 +2749,11 @@ int cast_detection(object *op, object *caster, object *spell) {
 
 
     /* Now process objects in the players inventory if detect curse or magic */
-    if (QUERY_FLAG(spell, FLAG_KNOWN_CURSED) || QUERY_FLAG(spell, FLAG_KNOWN_MAGICAL)) {
+    if (QUERY_FLAG(spell, FLAG_KNOWN_CURSED) || spell_detect_magic) {
         done_one = 0;
         FOR_INV_PREPARE(op, tmp) {
             if (!tmp->invisible && !QUERY_FLAG(tmp, FLAG_IDENTIFIED)) {
-                if (QUERY_FLAG(spell, FLAG_KNOWN_MAGICAL)
+                if (spell_detect_magic
                 && is_magical(tmp)
                 && !QUERY_FLAG(tmp, FLAG_KNOWN_MAGICAL)) {
                     SET_FLAG(tmp, FLAG_KNOWN_MAGICAL);
