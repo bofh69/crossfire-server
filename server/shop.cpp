@@ -380,9 +380,7 @@ uint64_t query_money(const object *op) {
     FOR_INV_PREPARE(op, tmp) {
         if (tmp->type == MONEY) {
             total += (uint64_t)tmp->nrof*(uint64_t)tmp->value;
-        } else if (tmp->type == CONTAINER
-        && QUERY_FLAG(tmp, FLAG_APPLIED)
-        && (tmp->race == NULL || strstr(tmp->race, "gold"))) {
+        } else if (tmp->type == CONTAINER && QUERY_FLAG(tmp, FLAG_APPLIED)) {
             total += query_money(tmp);
         }
     } FOR_INV_FINISH();
@@ -412,9 +410,7 @@ int pay_for_amount(uint64_t to_pay, object *pl) {
     FOR_INV_PREPARE(pl, pouch) {
         if (to_pay <= 0)
             break;
-        if (pouch->type == CONTAINER
-        && QUERY_FLAG(pouch, FLAG_APPLIED)
-        && (pouch->race == NULL || strstr(pouch->race, "gold"))) {
+        if (pouch->type == CONTAINER && QUERY_FLAG(pouch, FLAG_APPLIED)) {
             to_pay = pay_from_container(pl, pouch, to_pay);
         }
     } FOR_INV_FINISH();
@@ -456,9 +452,7 @@ int pay_for_item(object *op, object *pl, uint64_t reduction) {
     FOR_INV_PREPARE(pl, pouch) {
         if (to_pay <= 0)
             break;
-        if (pouch->type == CONTAINER
-        && QUERY_FLAG(pouch, FLAG_APPLIED)
-        && (pouch->race == NULL || strstr(pouch->race, "gold"))) {
+        if (pouch->type == CONTAINER && QUERY_FLAG(pouch, FLAG_APPLIED)) {
             to_pay = pay_from_container(pl, pouch, to_pay);
         }
     } FOR_INV_FINISH();
@@ -961,30 +955,20 @@ void sell_item(object *op, object *pl) {
             LOG(llevError, "Could not find %s archetype\n", coins[count]);
         else if ((price/at->clone.value) > 0) {
             FOR_INV_PREPARE(pl, pouch) {
-                if (pouch->type == CONTAINER
-                && QUERY_FLAG(pouch, FLAG_APPLIED)
-                && pouch->race
-                && strstr(pouch->race, "gold")) {
-                    int w = at->clone.weight*(100-pouch->stats.Str)/100;
-                    int n = price/at->clone.value;
-
-                    if (w == 0)
-                        w = 1;    /* Prevent divide by zero */
-                    if (n > 0
-                    && (!pouch->weight_limit || pouch->carrying+w <= pouch->weight_limit)) {
-                        if (pouch->weight_limit
-                        && (pouch->weight_limit-pouch->carrying)/w < n)
-                            n = (pouch->weight_limit-pouch->carrying)/w;
-
-                        tmp = object_new();
-                        object_copy(&at->clone, tmp);
-                        tmp->nrof = n;
-                        price -= (uint64_t)tmp->nrof*(uint64_t)tmp->value;
-                        tmp = object_insert_in_ob(tmp, pouch);
-                        esrv_update_item(UPD_WEIGHT, pl, pl);
-                    }
+                // Try to put money in player's active container
+                int n = price/at->clone.value;
+                // pass NULL as PL to avoid sending player messages about things that don't fit
+                if (pouch->type == CONTAINER && sack_can_hold(NULL, pouch, &at->clone, n)) {
+                    tmp = object_new();
+                    object_copy(&at->clone, tmp);
+                    tmp->nrof = n;
+                    price -= (uint64_t)tmp->nrof*(uint64_t)tmp->value;
+                    tmp = object_insert_in_ob(tmp, pouch);
+                    esrv_update_item(UPD_WEIGHT, pl, pl);
                 }
             } FOR_INV_FINISH();
+            // Any left over get put into player's inventory
+            // TODO: This doesn't check the player's weight limit
             if (price/at->clone.value > 0) {
                 tmp = object_new();
                 object_copy(&at->clone, tmp);
