@@ -931,17 +931,6 @@ int monster_move(object *op) {
         }
     }
 
-    /* doppleganger code to change monster facing to that of the nearest
-     * player.  Hmm.  The code is here, but no monster in the current
-     * arch set uses it.
-     */
-    if (op->race != NULL && strcmp(op->race, "doppleganger") == 0) {
-        op->face = enemy->face;
-        if (op->name)
-            free_string(op->name);
-        add_refcount(op->name = enemy->name);
-    }
-
     /* Calculate range information for closest body part - this
      * is used for the 'skill' code, which isn't that smart when
      * it comes to figuring it out - otherwise, giants throw boulders
