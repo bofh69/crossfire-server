@@ -78,7 +78,7 @@ const methodSignature *getSignature(const methodSignature *signatures, const cha
 
 void writeDescriptionAndBody(std::ofstream &pyi, const char *indent, const char *description) {
     if (description) {
-        pyi << std::endl << indent << "\t\"\"\"" << std::endl << description << std::endl << indent << "\t\"\"\"!" << std::endl << indent << "..." << std::endl;
+        pyi << std::endl << indent << "\t\"\"\"!" << std::endl << description << std::endl << indent << "\t\"\"\"" << std::endl << indent << "..." << std::endl;
     } else {
         pyi << " ..." << std::endl;
     }
