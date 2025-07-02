@@ -233,6 +233,7 @@ extern const char *map_get_path(const object *item);
 extern method_ret ob_apply(object *op, object *applier, int aflags);
 extern method_ret ob_process(object *op);
 extern char *ob_describe(const object *op, const object *observer, int use_media_tags, char *buf, size_t size);
+extern method_ret ob_examine(const object *op, const object *observer, int use_media_tags, char *buf, size_t size);
 extern method_ret ob_move_on(object *op, object *victim, object *originator);
 extern method_ret ob_trigger(object *op, object *cause, int state);
 /* ob_types.cpp */
@@ -241,6 +242,7 @@ extern void init_ob_types(ob_methods *base_type);
 extern void register_apply(int ob_type, apply_func method);
 extern void register_process(int ob_type, process_func method);
 extern void register_describe(int ob_type, describe_func method);
+extern void register_examine(int ob_type, examine_func method);
 extern void register_move_on(int ob_type, move_on_func method);
 extern void register_trigger(int ob_type, trigger_func method);
 /* object.cpp */

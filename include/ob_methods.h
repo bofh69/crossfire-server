@@ -30,6 +30,7 @@ typedef char method_ret;
 typedef method_ret (*apply_func)(object *, object *, int);
 typedef method_ret (*process_func)(object *);
 typedef void (*describe_func)(const object *, const object *, int use_media_tags, char *buf, size_t size);
+typedef method_ret (*examine_func)(const object *, const object *, int use_media_tags, char *buf, size_t size);
 typedef method_ret (*move_on_func)(object *, object *, object *);
 typedef method_ret (*trigger_func)(object *, object *, int);
 
@@ -44,6 +45,7 @@ struct ob_methods {
     apply_func      apply;          /**< The apply method */
     process_func    process;        /**< The process method */
     describe_func   describe;       /**< The describe method */
+    examine_func    examine;
     move_on_func    move_on;        /**< The move_on method */
     trigger_func    trigger;        /**< When something is triggered via a button. */
     ob_methods     *fallback;    /**< ob_method structure to fallback to */

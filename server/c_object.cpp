@@ -2066,6 +2066,8 @@ void examine(object *op, object *tmp) {
                              custom_name);
     }
 
+    method_ret ret = ob_examine(tmp, op, 1, buf, sizeof(buf));
+    if (ret == METHOD_UNHANDLED) {
     switch (tmp->type) {
       case WAND:
         examine_wand_charge_level(op, tmp);
@@ -2090,6 +2092,7 @@ void examine(object *op, object *tmp) {
             if (tmp->weight_limit && tmp->stats.Str < 100)
                 snprintf(buf, sizeof(buf), "Its weight limit is %.1f kg.", tmp->weight_limit/(10.0*(100-tmp->stats.Str)));
         break;
+    }
     }
 
     if (buf[0] != '\0')

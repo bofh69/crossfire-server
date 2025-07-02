@@ -82,6 +82,15 @@ void register_describe(int ob_type, describe_func method) {
 }
 
 /**
+ * Registers the examine method for the given type.
+ * @param ob_type The type of object to register this method to
+ * @param method The method to link
+ */
+void register_examine(int ob_type, examine_func method) {
+    type_methods[ob_type].examine = method;
+}
+
+/**
  * Registers the move_on method for the given type.
  * @param ob_type The type of object to register this method to
  * @param method The method to link

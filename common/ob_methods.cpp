@@ -79,7 +79,8 @@ method_ret ob_process(object *op) {
 }
 
 /**
- * Returns the description of an object, as seen by the given observer.
+ * Returns the description (short item name) of an object, as seen by the given
+ * observer. For more detailed information, see ob_examine().
  * @param op The object to describe
  * @param observer The object to which the description is made
  * @param use_media_tags whether to add media tags or not on the description
@@ -99,6 +100,28 @@ char *ob_describe(const object *op, const object *observer, int use_media_tags, 
     }
     buf[0] = '\0';
     return buf;
+}
+
+/**
+ * Get examine text for OP as seen by OBSERVER.
+ * @param op Object to examine
+ * @param observer The object to which the description is made
+ * @param use_media_tags whether to add media tags or not on the description
+ * @param buf Buffer that will contain the description
+ * @param size Size of buf
+ */
+method_ret ob_examine(const object *op, const object *observer, int use_media_tags, char *buf, size_t size) {
+    method_ret ret;
+    ob_methods *methods;
+
+    for (methods = &type_methods[op->type]; methods; methods = methods->fallback) {
+        if (methods->examine) {
+            ret = methods->examine(op, observer, use_media_tags, buf, size);
+            if (ret != METHOD_UNHANDLED)
+                return ret;
+        }
+    }
+    return METHOD_UNHANDLED;
 }
 
 /**
