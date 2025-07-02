@@ -608,9 +608,6 @@ void query_name(const object *op, char *buf, size_t size) {
 
     if (QUERY_FLAG(op, FLAG_INV_LOCKED))
         safe_strcat(buf, " *", &len, size);
-    if (op->type == CONTAINER
-    && ((op->env && op->env->container == op) || (!op->env && QUERY_FLAG(op, FLAG_APPLIED))))
-        safe_strcat(buf, " (open)", &len, size);
 
     if (QUERY_FLAG(op, FLAG_KNOWN_CURSED)) {
         if (QUERY_FLAG(op, FLAG_DAMNED))

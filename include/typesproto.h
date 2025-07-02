@@ -18,6 +18,9 @@ void init_type_check_inv(void);
 void init_type_clock(void);
 /* container/container.c */
 void init_type_container(void);
+int set_object_face_main(object *op);
+int apply_container(object *op, object *sack, int aflags);
+int sack_can_hold(const object *pl, const object *sack, const object *op, uint32_t nrof);
 /* converter/converter.c */
 void init_type_converter(void);
 /* creator/creator.c */

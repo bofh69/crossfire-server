@@ -314,86 +314,6 @@ bool csv_contains(std::string list, std::string item, std::string delim) {
     return false;
 }
 
-bool sack_race_can_contain(const object *sack, const object *ob) {
-    if (!sack->race)
-        // no restriction
-        return true;
-
-    if (!ob->race)
-        // sack restricted, but object not defined
-        return false;
-
-    return csv_contains(sack->race, ob->race);
-}
-
-/**
- * Check if an item op can be put into a sack. If pl exists then tell
- * a player the reason of failure.
- *
- * @param pl
- * player.
- * @param sack
- * container to try to put into.
- * @param op
- * what to put in the sack.
- * @param nrof
- * number of objects (op) we want to put in. We specify it separately instead of
- * using op->nrof because often times, a player may have specified a
- * certain number of objects to drop, so we can pass that number, and
- * not need to use split_ob() and stuff.
- * @return
- * 1 if it will fit, 0 if it will not.
- */
-int sack_can_hold(const object *pl, const object *sack, const object *op, uint32_t nrof) {
-    char name[MAX_BUF];
-    query_name(sack, name, MAX_BUF);
-
-    if (!QUERY_FLAG(sack, FLAG_APPLIED)) {
-        draw_ext_info_format(NDI_UNIQUE, 0, pl, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
-                             "The %s is not active.",
-                             name);
-        return 0;
-    }
-    if (sack == op) {
-        draw_ext_info_format(NDI_UNIQUE, 0, pl, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
-                             "You can't put the %s into itself.",
-                             name);
-        return 0;
-    }
-    if (sack->race
-    && (!sack_race_can_contain(sack, op) || op->type == CONTAINER || (sack->stats.food && sack->stats.food != op->type))) {
-        draw_ext_info_format(NDI_UNIQUE, 0, pl, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
-                             "You can put only %s into the %s.",
-                             sack->race,  name);
-        return 0;
-    }
-    if (op->type == SPECIAL_KEY && sack->slaying && op->slaying) {
-        draw_ext_info_format(NDI_UNIQUE, 0, pl, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
-                             "You can't put the key into %s.",
-                             name);
-        return 0;
-    }
-    if (sack->weight_limit) {
-        int32_t new_weight;
-
-        new_weight = sack->carrying+(nrof ? nrof : 1)
-            /* Most non-containers should have op->carrying == 0. Icecubes, however, will not,
-             * and we need to handle those.
-             * Neila Hawkins 2021-01-21
-             */
-            *(op->weight+(op->type == CONTAINER ? op->carrying*op->stats.Str : op->carrying))
-            *(100-sack->stats.Str)/100;
-        if (new_weight > sack->weight_limit) {
-            draw_ext_info_format(NDI_UNIQUE, 0, pl, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
-                "That won't fit in the %s!",
-                name);
-            return 0;
-        }
-    }
-    /* All other checks pass, must be OK */
-    return 1;
-}
-
 /**
  * Try to pick up some item.
  *
@@ -2080,17 +2000,6 @@ void examine(object *op, object *tmp) {
       case BOOK:
         if (tmp->msg != NULL)
             snprintf(buf, sizeof(buf), "Something is written in it.");
-        break;
-
-      case CONTAINER:
-        if (tmp->race != NULL) {
-            if (tmp->weight_limit && tmp->stats.Str < 100)
-                snprintf(buf, sizeof(buf), "It can hold only %s and its weight limit is %.1f kg.", tmp->race, tmp->weight_limit/(10.0*(100-tmp->stats.Str)));
-            else
-                snprintf(buf, sizeof(buf), "It can hold only %s.", tmp->race);
-        } else
-            if (tmp->weight_limit && tmp->stats.Str < 100)
-                snprintf(buf, sizeof(buf), "Its weight limit is %.1f kg.", tmp->weight_limit/(10.0*(100-tmp->stats.Str)));
         break;
     }
     }
