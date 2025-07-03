@@ -70,6 +70,21 @@ START_TEST(test_artifact_key_value) {
 }
 END_TEST
 
+START_TEST(test_artifact_exact_allowed_match) {
+    auto quiver = create_archetype("quiver");
+    auto quiver_throwing = create_archetype("quiver_throwing");
+
+    // these are normal things
+    ck_assert(find_artifact(quiver, "Holding Arrows"));
+    ck_assert(find_artifact(quiver, "Holding Bolts"));
+    ck_assert(find_artifact(quiver_throwing, "Holding Throwing Weapons"));
+
+    // this would hold both throwing items and bolts, and also allow you to stuff a whole crossbow into it
+    ck_assert(find_artifact(quiver_throwing, "Holding Bolts") == NULL);
+
+    ck_assert(find_artifact(quiver_throwing, "Holding Arrows") == NULL);
+}
+
 static Suite *artifact_suite(void) {
     Suite *s = suite_create("artifact");
     TCase *tc_core = tcase_create("Core");
@@ -81,6 +96,7 @@ static Suite *artifact_suite(void) {
     suite_add_tcase(s, tc_core);
     tcase_add_test(tc_core, test_face_for_each_artifact);
     tcase_add_test(tc_core, test_artifact_key_value);
+    tcase_add_test(tc_core, test_artifact_exact_allowed_match);
 
     return s;
 }
