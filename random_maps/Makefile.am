@@ -24,6 +24,10 @@ librandom_map_la_SOURCES = \
 	treasure.cpp \
 	wall.cpp
 
+if PCH
+librandommap_la_CPPFLAGS = -include-pch $(top_srcdir)/include/global.h.gch
+endif
+
 EXTRA_DIST = \
 	README \
 	main.cpp

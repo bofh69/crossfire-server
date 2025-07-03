@@ -31,6 +31,10 @@ AC_ARG_ENABLE(check, [AS_HELP_STRING([--disable-check],
               [Disable the unit tests even if check is available])],
               [enable_check=${enableval}], [enable_check=yes])
 
+AC_ARG_ENABLE(pch, [AS_HELP_STRING([--enable-pch],
+              [Enable pre-compiled headers (experimental, Clang-only)])],
+              [enable_pch=${enableval}], [enable_pch=no])
+
 dnl Add support for dmalloc, if the user wants it.
 AM_WITH_DMALLOC
 
@@ -79,6 +83,8 @@ AS_IF([test "$enable_mapper" = "yes"], [
     PKG_CHECK_MODULES([GD], [gdlib])
 ])
 AM_CONDITIONAL(MAPPER, test "$enable_mapper" = "yes")
+
+AM_CONDITIONAL([PCH], [test "$enable_pch" = "yes"])
 
 dnl Unit tests
 AS_IF([test "$enable_check" = "yes"], [

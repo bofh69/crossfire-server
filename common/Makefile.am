@@ -80,6 +80,10 @@ AM_CPPFLAGS = -I$(top_srcdir)/include -DDATADIR=\"$(pkgdatadir)\" -DCONFDIR=\"$(
 	      -DLIBDIR=\"$(pkglibdir)\" -DLOCALDIR=\"$(pkgstatedir)\"
 AM_LFLAGS = -i -B -Cf
 
+if PCH
+AM_CPPFLAGS += -include-pch $(top_srcdir)/include/global.h.gch
+endif
+
 CLEANFILES = loader.cpp arch_types_valid.cpp
 
 arch_types_valid.cpp: is_valid_types_gen.py $(top_srcdir)/include/object.h

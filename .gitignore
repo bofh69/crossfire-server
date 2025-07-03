@@ -1,5 +1,6 @@
 *.core
 *.html
+*.gch
 *.kdev4
 *.la
 *.lo

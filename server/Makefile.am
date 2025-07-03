@@ -129,9 +129,13 @@ libserver_la_SOURCES = \
 	$(top_srcdir)/types/legacy/process.cpp
 libserver_la_LIBADD = ../random_maps/librandom_map.la
 
-AM_CPPFLAGS = -I$(top_srcdir)/include -DDATADIR=\"$(pkgdatadir)\" -DCONFDIR=\"$(pkgconfdir)\" \
+libserver_la_CPPFLAGS = -I$(top_srcdir)/include -DDATADIR=\"$(pkgdatadir)\" -DCONFDIR=\"$(pkgconfdir)\" \
 	      -DLIBDIR=\"$(pkglibdir)\" -DLOCALDIR=\"$(pkgstatedir)\" \
 	      -DPLUGIN_SUFFIX=\".so\"
+
+if PCH
+libserver_la_CPPFLAGS += -include-pch $(top_srcdir)/include/global.h.gch
+endif
 
 crossfire_server_LDFLAGS=$(LIBDL_LDFLAGS)
 
