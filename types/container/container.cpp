@@ -469,7 +469,7 @@ void container_describe(const object *op, const object *observer, int use_media_
         strncat(buf, " (open)", size);
 }
 
-method_ret container_examine(const object *op, const object *observer, int use_media_tags, char *buf, size_t size) {
+method_ret container_examine(const object *op, const object *, int, char *buf, size_t size) {
     if (op->race != NULL) {
         if (op->weight_limit && op->stats.Str < 100)
             snprintf(buf, size, "It can hold only %s and its weight limit is %.1f kg.", op->race, op->weight_limit/(10.0*(100-op->stats.Str)));
