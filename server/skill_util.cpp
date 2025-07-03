@@ -32,8 +32,6 @@
 /* define the following for skills utility debugging */
 /* #define SKILL_UTIL_DEBUG */
 
-#define WANT_UNARMED_SKILLS
-
 #include "global.h"
 
 #include <assert.h>

@@ -126,17 +126,11 @@ extern sstring skill_messages[MAX_SKILLS];
 
 extern int get_skill_client_code(const char *skill_name);
 
-#ifdef WANT_UNARMED_SKILLS
 /** Table of unarmed attack skills.  Terminated by 0.  This
  * is also the list that we should try to use skills when
  * automatically applying one for the player.
  * Note it is hardcoded in the skill_util.c that dragons always
  * want clawing if possible.
- * included in a #ifdef so we don't get bunches of warnings about
- * unused values.  it is located here instead of a .c file to make
- * updates easier and put it in a more central place - it shouldn't
- * change very often, but it make sense to have it with the enumerated
- * skill numbers above.
  * This should probably be removed and made a player preferance instead.
  */
 static uint8_t unarmed_skills[] = {
@@ -147,10 +141,5 @@ static uint8_t unarmed_skills[] = {
     SK_WRAITH_FEED,
     0
 };
-
-/* Just in case one file includes this more than once */
-#undef WANT_UNARMED_SKILLS
-
-#endif
 
 #endif /* SKILLS_H */

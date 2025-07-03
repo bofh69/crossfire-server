@@ -17,8 +17,6 @@
  * who, etc.
  */
 
-#define WANT_UNARMED_SKILLS
-
 #include "global.h"
 
 #include <assert.h>
