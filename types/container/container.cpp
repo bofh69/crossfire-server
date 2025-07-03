@@ -466,7 +466,7 @@ method_ret close_container_apply(object *op, object *applier, int aflags) {
 void container_describe(const object *op, const object *observer, int use_media_tags, char *buf, size_t size) {
     legacy_ob_describe(op, observer, use_media_tags, buf, size);
     if (((op->env && op->env->container == op) || (!op->env && QUERY_FLAG(op, FLAG_APPLIED))))
-        strlcat(buf, " (open)", size);
+        strncat(buf, " (open)", size);
 }
 
 method_ret container_examine(const object *op, const object *observer, int use_media_tags, char *buf, size_t size) {
