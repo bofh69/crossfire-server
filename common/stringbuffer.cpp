@@ -178,11 +178,6 @@ static void stringbuffer_ensure(StringBuffer *sb, size_t len) {
         return;
     }
 
-#if 0
-    putchar('.');
-    fflush(stdout);
-#endif
-
     do {
         sb->size *= 1.5;
     } while (newlen > sb->size);
