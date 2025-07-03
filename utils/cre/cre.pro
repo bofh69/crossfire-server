@@ -212,7 +212,10 @@ CREPixmap.h \
  HelpManager.h \
  QuickFilterDialog.h
 
-LIBS += ../../server/.libs/libserver.a ../../common/.libs/libcross.a ../../random_maps/.libs/librandom_map.a -lcurl
+# Set RPATH so we don't have to install the shared libraries (or set LD_LIBRARY_PATH) before we can run CRE
+QMAKE_RPATHDIR+=$$PWD/../../server/.libs $$PWD/../../common/.libs $$PWD/../../random_maps/.libs
+
+LIBS += ../../server/.libs/libserver.so ../../common/.libs/libcross.so ../../random_maps/.libs/librandom_map.so -lcurl
 QMAKE_CXXFLAGS += -Wcast-qual
 # -Wold-style-cast
 
