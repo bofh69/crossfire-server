@@ -7,6 +7,7 @@ AC_CONFIG_SRCDIR([server/main.cpp])
 AC_PREFIX_DEFAULT([/usr/games/crossfire])
 AM_INIT_AUTOMAKE([foreign subdir-objects])
 AM_SILENT_RULES([yes])
+LT_INIT([disable-static])
 
 dnl#############################################################################
 dnl Configuration Options
