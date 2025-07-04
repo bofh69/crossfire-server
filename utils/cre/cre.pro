@@ -215,12 +215,13 @@ CREPixmap.h \
 # Set RPATH so we don't have to install the shared libraries (or set LD_LIBRARY_PATH) before we can run CRE
 QMAKE_RPATHDIR+=$$PWD/../../server/.libs $$PWD/../../common/.libs $$PWD/../../random_maps/.libs
 
-LIBS += ../../server/.libs/libserver.a ../../common/.libs/libcross.a ../../random_maps/.libs/librandom_map.a -lcurl
+LIBS += -lcurl
 QMAKE_CXXFLAGS += -Wcast-qual
 # -Wold-style-cast
 
 linux-*|unix {
-LIBS += -lcrypt -ldl
+# Use shared libraries
+LIBS += -lcrypt -ldl ../../server/.libs/libserver.so ../../common/.libs/libcross.so ../../random_maps/.libs/librandom_map.so
 CONFIG += precompile_header
 PRECOMPILED_DIR = .pch
 PRECOMPILED_HEADER = cre_pch.h
@@ -242,6 +243,8 @@ UI_DIR = $$BDIR/u
 
 win* {
 CONFIG += release
+# Use static libraries, that's what MXE generates, may be changed if needed
+LIBS += ../../server/.libs/libserver.a ../../common/.libs/libcross.a ../../random_maps/.libs/librandom_map.a
 }
 
 RESOURCES += cre.qrc
