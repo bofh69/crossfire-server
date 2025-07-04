@@ -300,7 +300,7 @@ void command_apply(object *op, const char *params) {
  * Split list by comma, then see if item matches anything in the list.
  */
 bool csv_contains(std::string list, std::string item, std::string delim) {
-    int pos;
+    size_t pos;
     while (true) {
         pos = list.find(delim);
         auto match = list.substr(0, pos);
