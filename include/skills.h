@@ -126,6 +126,7 @@ extern sstring skill_messages[MAX_SKILLS];
 
 extern int get_skill_client_code(const char *skill_name);
 
+#define UNARMED_SKILLS_COUNT 6
 /** Table of unarmed attack skills.  Terminated by 0.  This
  * is also the list that we should try to use skills when
  * automatically applying one for the player.
@@ -133,13 +134,6 @@ extern int get_skill_client_code(const char *skill_name);
  * want clawing if possible.
  * This should probably be removed and made a player preferance instead.
  */
-static uint8_t unarmed_skills[] = {
-    SK_KARATE,
-    SK_CLAWING,
-    SK_FLAME_TOUCH,
-    SK_PUNCHING,
-    SK_WRAITH_FEED,
-    0
-};
+extern uint8_t unarmed_skills[UNARMED_SKILLS_COUNT];
 
 #endif /* SKILLS_H */

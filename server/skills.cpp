@@ -28,6 +28,15 @@
 #include "spells.h"
 #include "sproto.h"
 
+uint8_t unarmed_skills[UNARMED_SKILLS_COUNT] = {
+    SK_KARATE,
+    SK_CLAWING,
+    SK_FLAME_TOUCH,
+    SK_PUNCHING,
+    SK_WRAITH_FEED,
+    0
+};
+
 /**
  * Computes stealing chance.
  * Increased values indicate better attempts.
