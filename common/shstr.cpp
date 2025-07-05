@@ -16,6 +16,20 @@
  * This is a simple shared strings package with a simple interface.
  *
  * Author: Kjetil T. Homme, Oslo 1992.
+ *
+ * To minimize memory use, Crossfire uses a shared string mechanism. This is
+ * intended to be used for strings whose contents is not expected to change during
+ * the server's life. Using shared strings saves memory and improved performance.
+ *
+ * Those strings are used like regular const char*, but should not be changed via
+ * strcpy, snprintf or other means because it would affect all structures using
+ * the shared string. Internally, they use a counter to track at how many places
+ * they are used. When it reaches 0, string is freed.
+ *
+ * To alter such a string, the right behaviour is:
+ * - write new value in a char[] new_value variable
+ * - use free_string(str)
+ * - call str = add_string(new_value)
  */
 
 #include <stdio.h>
@@ -113,8 +127,7 @@ static shared_string *new_shared_string(const char *str) {
 }
 
 /**
- * This will add 'str' to the hash table. If there's no entry for this
- * string, a copy will be allocated, and a pointer to that is returned.
+ * Share a string. Looks for an existing string, and if it doesn't exist, copy and store it.
  *
  * @param str
  * string to share.
@@ -201,6 +214,7 @@ sstring add_string(const char *str) {
 }
 
 /**
+ * Like add_string(), but the string is already a shared string.
  * This will increase the refcount of the string str.
  * @param str
  * string which *must *have been returned from a previous add_string().
