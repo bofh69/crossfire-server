@@ -22,7 +22,7 @@
 		<td>
 @ref page_type_64
 		</td><td>            This string specifies the object we are looking for: We have a match
-            if the player's title is/isn't &lt;match title&gt;.</td>
+            if the player does/don't carry an object with a title &lt;match title&gt;.</td>
 	</tr>
 
 */

@@ -19,7 +19,12 @@ See @ref page_type_64
             <br>
             <br>
             As you can see, inventory checkers are quite powerful, holding a
-            great variety of possibilities. 
+            great variety of possibilities.
+            <br>
+            <br>
+            All conditions must be met for an object to match, it is not possible
+            with a single Inventory Checker to check eg for race or title.
+            
 
 
 
@@ -218,7 +223,7 @@ Type defined by:
 		<td>match title</td>
 		<td>@ref object::title</td>
 		<td>            This string specifies the object we are looking for: We have a match
-            if the player's title is/isn't &lt;match title&gt;.
+            if the player does/don't carry an object with a title &lt;match title&gt;.
 		</td>
 	</tr>
 	<tr>
@@ -233,6 +238,12 @@ Type defined by:
             players that carry any kind of melee weapon. To pass, a player is
             forced to leave behind all his weaponry... bad news for a warrior.
             ;)
+		</td>
+	</tr>
+	<tr>
+		<td>match unpaid items</td>
+		<td>@ref FLAG_UNPAID</td>
+		<td>            If true, matches unpaid items.
 		</td>
 	</tr>
 	<tr>
@@ -323,14 +334,6 @@ Type defined by:
             is checked: if it is zero, the change happens; otherwise &lt;food&gt;
             is decreased by one. I suggest you don't mess with this value -
             leave the default in place.
-		</td>
-	</tr>
-	<tr>
-		<td>unpaid</td>
-		<td>@ref FLAG_UNPAID</td>
-		<td>            An &lt;unpaid&gt; item cannot be used unless a player carried it
-            over a shop mat, paying the demanded price. Setting this flag makes
-            sense only for pickable items inside shops.
 		</td>
 	</tr>
 	<tr>

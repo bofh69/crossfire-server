@@ -44,6 +44,12 @@
 	</tr>
 	<tr>
 		<td>
+@ref page_type_68
+		</td><td>            Unique floor means that any items dropped on that spot will be saved
+            beyond map reset.</td>
+	</tr>
+	<tr>
+		<td>
 @ref page_type_21
 		</td><td>            Unique items exist only one time on a server. If the item is taken,
             lost or destroyed - it's gone for good.

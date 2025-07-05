@@ -290,6 +290,13 @@ Type defined by:
 		</td>
 	</tr>
 	<tr>
+		<td>unique</td>
+		<td>@ref FLAG_UNIQUE</td>
+		<td>            Unique floor means that any items dropped on that spot will be saved
+            beyond map reset.
+		</td>
+	</tr>
+	<tr>
 		<td>unpaid</td>
 		<td>@ref FLAG_UNPAID</td>
 		<td>            An &lt;unpaid&gt; item cannot be used unless a player carried it
