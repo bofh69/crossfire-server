@@ -54,26 +54,26 @@ enum fatal_error {
 
 /**
  * @defgroup TYPE_BUILDER Subtypes for ::BUILDER objects.
+ * @{
  */
-/*@{*/
 #define ST_BD_BUILD      1 /**< Builds an item */
 #define ST_BD_REMOVE     2 /**< Removes an item */
-/*@}*/
+/**@}*/
 
 /**
  * @defgroup TYPE_MATERIAL Subtypes for ::MATERIAL objects.
+ * @{
  */
-/*@{*/
 #define ST_MAT_FLOOR    1 /**< Floor. */
 #define ST_MAT_WALL     2 /**< Wall. */
 #define ST_MAT_ITEM     3 /**< Most other items, including doors & such. */
 #define ST_MAT_WINDOW   4 /**< Window. */
-/*@}*/
+/**@}*/
 
 /**
  * @defgroup TYPE_WEAPON Weapon types
+ * @{
  */
-/*@{*/
 #define WEAP_HIT        0  /**< the basic */
 #define WEAP_SLASH      1  /**< slash */
 #define WEAP_PIERCE     2  /**< arrows, stiletto */
@@ -83,7 +83,7 @@ enum fatal_error {
 #define WEAP_WHIP       6  /**< whips n chains */
 #define WEAP_CRUSH      7  /**< big hammers, flails */
 #define WEAP_BLUD       8  /**< bludgeoning, club, stick */
-/*@}*/
+/**@}*/
 
 /** Link an object type with skill needed to identify, and general name. */
 struct typedata {
@@ -100,8 +100,8 @@ struct typedata {
  * Definitions for detailed pickup descriptions.
  *   The objective is to define intelligent groups of items that the
  *   user can pick up or leave as he likes.
+ * @{
  */
-/*@{*/
 /* high bit as flag for new pickup options */
 #define PU_NOTHING              0x00000000
 
@@ -142,7 +142,7 @@ struct typedata {
 #define PU_FLESH                0x04000000
 #define PU_CONTAINER            0x08000000
 #define PU_CURSED               0x10000000
-/*@}*/
+/**@}*/
 
 /* Instead of using arbitrary constants for indexing the
  * freearr, add these values.  <= SIZEOFFREE1 will get you
@@ -158,8 +158,8 @@ struct typedata {
 
 /**
  * @defgroup IS_xxx Convenience macros to determine what kind of things we are dealing with.
+ * @{
  */
-/*@{*/
 #define IS_WEAPON(op) \
         (op->type == ARROW || op->type == BOW || op->type == WEAPON)
 
@@ -178,7 +178,7 @@ struct typedata {
 #define IS_ARROW(op) \
         (op->type == ARROW || \
         (op->type == SPELL_EFFECT && (op->subtype == SP_BULLET || op->subtype == SP_MAGIC_MISSILE)))
-/*@}*/
+/**@}*/
 
 /** This return TRUE if object has still randomitems which could be expanded. */
 #define HAS_RANDOM_ITEMS(op) (op->randomitems && (!QUERY_FLAG(op, FLAG_IS_A_TEMPLATE)))
@@ -200,14 +200,6 @@ struct typedata {
  * Flags now have FLAG as the prefix.  This to be clearer, and also
  * to make sure F_ names are not still being used anyplace.
  *
- * The macros below assume that the flag size for each element is 32
- * bits.  IF it is smaller, bad things will happen.  See structs.h
- * for more info.
- *
- * All functions should use the macros below.  In process of converting
- * to the new system, I find several files that did not use the previous
- * macros.
- *
  * If any FLAG's are or changed, make sure the flag_names structure in
  * common/loader.l is updated.
  *
@@ -219,13 +211,8 @@ struct typedata {
  * Values can go up to 127 before the size of the flags array in the
  * object structure needs to be enlarged.
  * So there are 18 available flags slots
+ * @{
  */
-/*@{*/
-#define SET_FLAG(xyz, p) set_flag(xyz, p)
-#define CLEAR_FLAG(xyz, p) clear_flag(xyz, p)
-#define QUERY_FLAG(xyz, p) query_flag(xyz, p)
-
-/* the flags themselves. */
 
 #define FLAG_ALIVE              0  /**< Object can fight (or be fought) */
 #define FLAG_WIZ                1  /**< Object has special privilegies */
@@ -377,7 +364,11 @@ struct typedata {
                                       * in common/loader.l
                                       */
 
-/*@}*/
+/**@}*/
+
+#define SET_FLAG(xyz, p) set_flag(xyz, p)
+#define CLEAR_FLAG(xyz, p) clear_flag(xyz, p)
+#define QUERY_FLAG(xyz, p) query_flag(xyz, p)
 
 /**
  * @defgroup MOVE_xxx Movement types and related macros.
@@ -387,8 +378,8 @@ struct typedata {
  * If you add new movement types, you may need to update
  * describe_item() so properly describe those types.
  * change_abil() probably should be updated also.
+ * @{
  */
-/*@{*/
 #define MOVE_WALK       0x1     /**< Object walks. */
 #define MOVE_FLY_LOW    0x2     /**< Low flying object. */
 #define MOVE_FLY_HIGH   0x4     /**< High flying object. */
@@ -396,6 +387,7 @@ struct typedata {
 #define MOVE_SWIM       0x8     /**< Swimming object. */
 #define MOVE_BOAT       0x10    /**< Boats/sailing. */
 #define MOVE_ALL        0x1f    /**< Mask of all movement types. */
+/**@}*/
 
 /**
  * The normal assumption is that objects are walking/flying.
@@ -425,7 +417,6 @@ typedef unsigned char MoveType;
  */
 #define OB_TYPE_MOVE_BLOCK(ob1, type) \
     ((type != 0) && (ob1->move_type&type) == ob1->move_type)
-/*@}*/
 
 #define GENERATE_TYPE(xyz)      ((xyz)->stats.sp)
 #define GENERATE_SPEED(xyz)     ((xyz)->stats.maxsp) /* if(!RANDOM()%<speed>) */
@@ -466,9 +457,7 @@ static const int32_t MAX_FOOD = 999;
  * @author kholland@sunlab.cit.cornell.edu
  *
  * if your monsters start acting wierd, mail me.
- */
-/*@{*/
-/*
+ *
  * The following definitions are for the attack_movement variable in monsters.
  * If the attack_variable movement is left out of the monster archetype, or is
  * set to zero, the standard mode of movement from previous versions of
@@ -481,6 +470,7 @@ static const int32_t MAX_FOOD = 999;
  *                                              +       DISTATT = 1
  *                                      -------------------
  *                      attack_movement = 33
+ * @{
  */
 #define DISTATT  1 /**< Move toward a player if far, but maintain some space,
                     * attack from a distance - good for missile users only.   */
@@ -523,15 +513,15 @@ static const int32_t MAX_FOOD = 999;
                     * This is VERTICAL movement.                              */
 #define LO4     15 /**< bitmasks for upper and lower 4 bits from 8 bit fields */
 #define HI4    240
-/*@}*/
+/**@}*/
 
 /**
  * @defgroup ST_xxx Player state.
  * Use of the state-variable in player objects.
  *
  * See the @ref page_connection "login process" page.
+ * @{
  */
-/*@{*/
 #define ST_PLAYING                  0   /**< Usual state. */
 #define ST_PLAY_AGAIN               1   /**< Player left through a bed of reality, and can login again. */
 #define ST_ROLL_STAT                2   /**< New character, rolling stats. */
@@ -544,7 +534,7 @@ static const int32_t MAX_FOOD = 999;
 #define ST_CHANGE_PASSWORD_OLD      11  /**< Player is entering old password to change password */
 #define ST_CHANGE_PASSWORD_NEW      12  /**< Player is entering new password */
 #define ST_CHANGE_PASSWORD_CONFIRM  13  /**< Player is confirming new password */
-/*@}*/
+/**@}*/
 
 #define BLANK_FACE_NAME "blank.111"
 #define EMPTY_FACE_NAME "empty.111"
@@ -561,8 +551,8 @@ static const int32_t MAX_FOOD = 999;
  * @defgroup AP_xxx Flags for apply_special().
  *
  * Those flags correspond to the aflags parameter of the apply_special() function.
+ * @{
  */
-/*@{*/
 /* Basic flags, always use one of these */
 #define AP_NULL         0   /**< Nothing specific. */
 #define AP_APPLY        1   /**< Item is to be applied. */
@@ -578,18 +568,18 @@ static const int32_t MAX_FOOD = 999;
                              * Note this is supported in all the functions */
 #define AP_NOPRINT      128 /**< Don't print messages - caller will do that
                              * may be some that still print */
-/*@}*/
+/**@}*/
 
 /**
  * @defgroup AC_PLAYER_STAT flags for apply_changes_to_player()
  *
  * These flags determine what apply_changes_to_player() does for
  * stat adjustment, if anything.
+ * @{
  */
-/*@{*/
-#define AC_PLAYER_STAT_LIMIT        1   /** Limit stats to racial maximum */
-#define AC_PLAYER_STAT_NO_CHANGE    2   /** Do not make any stat adjustments */
-/*@}*/
+#define AC_PLAYER_STAT_LIMIT        1   /**< Limit stats to racial maximum */
+#define AC_PLAYER_STAT_NO_CHANGE    2   /**< Do not make any stat adjustments */
+/**@}*/
 
 
 /**
@@ -619,15 +609,15 @@ static const int32_t MAX_FOOD = 999;
  *      this one can be applied.  Think of rings - human is wearing two
  *      rings and tries to apply one - there are two possible rings he
  *      could remove.
+ * @{
  */
-/*@{*/
 #define CAN_APPLY_NEVER             0x1
 #define CAN_APPLY_RESTRICTION       0x2
 #define CAN_APPLY_NOT_MASK          0xf
 #define CAN_APPLY_UNAPPLY           0x10
 #define CAN_APPLY_UNAPPLY_MULT      0x20
 #define CAN_APPLY_UNAPPLY_CHOICE    0x40
-/*@}*/
+/**@}*/
 
 /** Cut off point of when an object is put on the active list or not */
 #define MIN_ACTIVE_SPEED        0.00001

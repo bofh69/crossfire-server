@@ -9,8 +9,8 @@
 
 /**
  * @defgroup M_xxx Material types.
+ * @{
  */
-/*@{*/
 #define M_PAPER                 1     /**< Paper. */
 #define M_IRON                  2     /**< Iron. */
 #define M_GLASS                 4     /**< Glass. */
@@ -26,7 +26,7 @@
 #define M_ICE                   4096  /**< Ice. */
 #define M_SPECIAL               8192  /**< When displaying names, don't show the
                                            materialname. */
-/*@}*/
+/**@}*/
 
 /** One material type. */
 struct materialtype_t {

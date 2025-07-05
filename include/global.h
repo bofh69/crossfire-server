@@ -138,8 +138,8 @@ extern uint32_t pticks;              /**< Used by various function to determine
                                     * how often to save the character */
 /**
  * @defgroup GLOBAL_VARIABLES Misc global variables.
+ * @{
  */
-/*@{*/
 EXTERN FILE *logfile;                    /**< Used by server/daemon.c */
 extern int reopen_logfile;
 EXTERN int exiting;                      /**< True if the game is about to exit. */
@@ -153,9 +153,9 @@ EXTERN char first_map_ext_path[MAX_BUF]; /**< Path used for per-race start maps.
 EXTERN long ob_count;
 #define SPELL_MAPPINGS  206
 extern const char *const spell_mapping[SPELL_MAPPINGS];
-/*@}*/
+/**@}*/
 
-EXTERN const char *undead_name; /* Used in hit_player() in main.c */
+EXTERN const char *undead_name; /**< Used in hit_player() in main.c */
 EXTERN sstring blocks_prayer;   /**< For update_position() mostly. */
 
 /* Rotate right from bsd sum. This is used in various places for checksumming */
@@ -374,12 +374,12 @@ extern Statistics statistics;
 /**
  * @defgroup SCRIPT_FIX_xxx For plugin events
  * GROS: Those are used by plugin events (argument fixthem).
+ * @{
  */
-/*@{*/
 #define SCRIPT_FIX_ACTIVATOR 2
 #define SCRIPT_FIX_ALL 1
 #define SCRIPT_FIX_NOTHING 0
-/*@}*/
+/**@}*/
 
 #include "events.h"
 

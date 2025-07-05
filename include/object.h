@@ -49,14 +49,14 @@ struct key_value {
  * @defgroup WILL_APPLY_xxx What monsters apply
  * How monsters should handle some items they have or things on the ground.
  * Those flags correspond to the object::will_apply field.
+ * @{
  */
-/*@{*/
 #define WILL_APPLY_HANDLE       0x1   /**< Apply handles and triggers. */
 #define WILL_APPLY_TREASURE     0x2   /**< Open chests. */
 #define WILL_APPLY_EARTHWALL    0x4   /**< Destroy earthwalls. */
 #define WILL_APPLY_DOOR         0x8   /**< Open non-locked doors. */
 #define WILL_APPLY_FOOD         0x10  /**< Eat food (not drinks). */
-/*@}*/
+/**@}*/
 
 /**
  * Checks if an object still exists.
@@ -525,26 +525,26 @@ static inline void set_flag(object *op, int flag) {
  *
  * Used by object_update() to know if the object being passed is
  * being added or removed.
+ * @{
  */
-/*@{*/
 #define UP_OBJ_INSERT   1   /**< Object was inserted. */
 #define UP_OBJ_REMOVE   2   /**< Object was removed. */
 #define UP_OBJ_CHANGE   3   /**< Object changed. */
 #define UP_OBJ_FACE     4   /**< Only thing that changed was the face. In this case,
                              * we always update everything as that is easier than trying
                              * to look at what may have changed. */
-/*@}*/
+/**@}*/
 
 /**
  * @defgroup FREE_OBJ_xxx Object free flags
  *
  * Used by object_free() to specify options.
+ * @{
  */
-/*@{*/
 #define FREE_OBJ_FREE_INVENTORY      1 /**< Free inventory objects; if not set, drop inventory. */
 #define FREE_OBJ_NO_DESTROY_CALLBACK 2 /**< Do not run the destroy callback. */
 #define FREE_OBJ_DROP_ABOVE_FLOOR    4 /**< If FREE_OBJ_FREE_INVENTORY is not set, drop inventory just above ground instead on top. */
-/*@}*/
+/**@}*/
 
 /**
  * @defgroup INS_xxx Object insertion flags.
@@ -575,15 +575,15 @@ static inline void set_flag(object *op, int flag) {
  * should be considered undefined - while you may notice what happens
  * right now if you pass more than one, that could very well change
  * in future revisions of the code.
+ * @{
  */
-/*@{*/
 #define INS_NO_MERGE            0x0001  /**< Don't try to merge with other items. */
 #define INS_ABOVE_FLOOR_ONLY    0x0002  /**< Put object immediatly above the floor. */
 #define INS_NO_WALK_ON          0x0004  /**< Don't call check_walk_on against the originator. */
 #define INS_ON_TOP              0x0008  /**< Always put object on top. */
 #define INS_BELOW_ORIGINATOR    0x0010  /**< Insert new object immediately below originator. */
 #define INS_MAP_LOAD            0x0020  /**< Disable lots of checkings. */
-/*@}*/
+/**@}*/
 
 #define ARCH_SINGULARITY        "singularity"   /**< Archetype for singularity. */
 #define ARCH_DETECT_MAGIC       "detect_magic"  /**< Archetype for detect magic spell. */

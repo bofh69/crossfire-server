@@ -24,7 +24,7 @@
 #define MAGIC_MAP_SIZE 50
 #define MAGIC_MAP_HALF MAGIC_MAP_SIZE/2
 
-/* This correspondes to the map layers in the map2 protocol.
+/** This correspondes to the map layers in the map2 protocol.
  * The MAP_LAYER_... correspond to what goes on what layer -
  * this removes the need for hardcoding, and also makes sure
  * we don't overstep the number of layers.
@@ -35,8 +35,8 @@ extern const char *const map_layer_name[MAP_LAYERS];
 
 /**
  * @defgroup MAP_LAYER_xxx Map layers
+ * @{
  */
-/*@{*/
 #define MAP_LAYER_FLOOR         0
 #define MAP_LAYER_NO_PICK1      1   /**< Non pickable ground objects */
 #define MAP_LAYER_NO_PICK2      2   /**< Non pickable ground objects */
@@ -47,16 +47,19 @@ extern const char *const map_layer_name[MAP_LAYERS];
 #define MAP_LAYER_LIVING2       7
 #define MAP_LAYER_FLY1          8   /**< Flying objects - creatures, spells */
 #define MAP_LAYER_FLY2          9   /**< Arrows, etc */
-/*@}*/
+/**@}*/
 
 /**
+ * @defgroup MAP_SUBTYPES
  * These are map subtypes.  With new character
  * creation code, additional types are needed.
+ * @{
  */
 
 #define MAP_TYPE_LEGACY         1   /**< For old character creation method */
 #define MAP_TYPE_DEFAULT        2   /**< If no map is specified, where character starts */
 #define MAP_TYPE_CHOICE         3   /**< Choice of maps presented to player */
+/**@}*/
 
 /** This is when the map will reset */
 #define MAP_WHEN_RESET(m)       ((m)->reset_time)
@@ -86,14 +89,14 @@ extern const char *const map_layer_name[MAP_LAYERS];
 /**
  * @defgroup MAP_xxx Map loading flags
  * Options passed to ready_map_name() and load_original_map().
+ * @{
  */
-/*@{*/
 #define MAP_FLUSH           0x1     /**< Always load map from the map directory, and don't do unique items or the like. */
 #define MAP_PLAYER_UNIQUE   0x2     /**< This map is player-specific. Don't do any more name translation on it. */
 #define MAP_NO_DIFFICULTY   0x4     /**< If set then don't compute a map difficulty if it is 0. */
 #define MAP_STYLE           0x8     /**< Active objects shouldn't be put on active list. */
 #define MAP_OVERLAY         0x10    /**< Map to load is an overlay. Always put items above floor. */
-/*@}*/
+/**@}*/
 
 /**
  * @defgroup SAVE_FLAG_xxx Save object flags
@@ -101,41 +104,41 @@ extern const char *const map_layer_name[MAP_LAYERS];
  * Flags for save_object() and save_objects().
  * Can be combined for various effects.
  *
+ * @{
  */
-/*@{*/
 #define SAVE_FLAG_SAVE_UNPAID   1   /**< If set, unpaid items will be saved. */
 #define SAVE_FLAG_NO_REMOVE     2   /**< If set, objects are not removed while saving. */
-/*@}*/
+/**@}*/
 
 /**
  * @defgroup SAVE_MODE_xxx Save map flags
  *
  * How save_map() should save the map. Can't be combined.
+ * @{
  */
-/*@{*/
 #define SAVE_MODE_NORMAL    0   /**< No special handling. */
 #define SAVE_MODE_INPLACE   1   /**< Map is saved from where it was loaded.*/
 #define SAVE_MODE_OVERLAY   2   /**< Map is persisted as an overlay. */
-/*@}*/
+/**@}*/
 
 /**
  * @defgroup IN_MEMORY_xxx Values for mapstruct->in_memory field.
  * @todo rename to IM_xxx ?
+ * @{
  */
-/*@{*/
 #define MAP_IN_MEMORY   1   /**< Map is fully loaded. */
 #define MAP_SWAPPED     2   /**< Map spaces have been saved to disk. */
 #define MAP_LOADING     3   /**< This map is being loaded. */
 #define MAP_SAVING      4   /**< Map being saved. Will stop object_remove() from some processing. */
-/*@}*/
+/**@}*/
 
 /**
  * @defgroup SAVE_ERROR_xxx Save error values
  * Those values are returned by save_map(), save_object() and save_objects().
  *
  * Values under -10 are returned by swap_map() only.
+ * @{
  */
-/*@{*/
 #define SAVE_ERROR_OK                0   /**< No error. */
 #define SAVE_ERROR_RCREATION        -1  /**< Couldn't create the regular save file. */
 #define SAVE_ERROR_UCREATION        -2  /**< Couldn't create the file for unique objects. */
@@ -146,7 +149,7 @@ extern const char *const map_layer_name[MAP_LAYERS];
 /*                                  -7  (no longer used) */
 #define SAVE_ERROR_NOT_IN_MEMORY    -10 /**< Map to swap isn't in memory. */
 #define SAVE_ERROR_PLAYER           -11 /**< Player on map to save. */
-/*@}*/
+/**@}*/
 
 /* GET_MAP_FLAGS really shouldn't be used very often - get_map_flags should
  * really be used, as it is multi tile aware.  However, there are some cases
@@ -221,8 +224,8 @@ extern bool ob_move_block(object *ob1, object *ob2);
  *
  * These are used in the MapLook flags element.  They are not used in
  * in the object flags structure.
+ * @{
  */
-/*@{*/
 #define P_BLOCKSVIEW    0x01    /**< This spot blocks the player's view. */
 #define P_NO_MAGIC      0x02    /**< Spells (some) can't pass this object */
 
@@ -248,7 +251,7 @@ extern bool ob_move_block(object *ob1, object *ob2);
  */
 #define P_OUT_OF_MAP    0x100   /**< This space is outside the map. */
 #define P_NEW_MAP       0x200   /**< Coordinates passed result in a new tiled map.  */
-/*@}*/
+/**@}*/
 
 /**
  * This structure contains all information related to one map square.
