@@ -7,13 +7,11 @@
 #define ATTACK_H
 
 /**
- * @defgroup Attacktypes Attack types
  * - ATNR_xxx is the attack number that is indexed into the
  * the resist array in the object structure.
  * - ATM_xxx is the message number
  * - AT_xxx is the bitmask in the obj::attacktype field.
  */
-/*@{*/
 #define NROFATTACKS             26
 #define NROFATTACKMESS          21
 #define MAXATTACKMESS           21
@@ -73,34 +71,38 @@
 #define ATNR_LIFE_STEALING      24
 #define ATNR_DISEASE            25
 
-#define AT_PHYSICAL     0x00000001 /*       1 */
-#define AT_MAGIC        0x00000002 /*       2 */
-#define AT_FIRE         0x00000004 /*       4 */
-#define AT_ELECTRICITY  0x00000008 /*       8 */
-#define AT_COLD         0x00000010 /*      16 */
-#define AT_CONFUSION    0x00000020 /*      32 The spell will use this one */
-#define AT_ACID         0x00000040 /*      64 Things might corrode when hit */
-#define AT_DRAIN        0x00000080 /*     128 */
-#define AT_WEAPONMAGIC  0x00000100 /*     256 Very special, use with care */
-#define AT_GHOSTHIT     0x00000200 /*     512 Attacker dissolves */
-#define AT_POISON       0x00000400 /*    1024 */
-#define AT_SLOW         0x00000800 /*    2048 */
-#define AT_PARALYZE     0x00001000 /*    4096 */
-#define AT_TURN_UNDEAD  0x00002000 /*    8192 */
-#define AT_FEAR         0x00004000 /*   16384 */
-#define AT_CANCELLATION 0x00008000 /*   32768 ylitalo@student.docs.uu.se */
-#define AT_DEPLETE      0x00010000 /*   65536 vick@bern.docs.uu.se */
-#define AT_DEATH        0x00020000 /*  131072 peterm@soda.berkeley.edu */
-#define AT_CHAOS        0x00040000 /*  262144 peterm@soda.berkeley.edu*/
-#define AT_COUNTERSPELL 0x00080000 /*  524288 peterm@soda.berkeley.edu*/
-#define AT_GODPOWER     0x00100000 /* 1048576  peterm@soda.berkeley.edu */
-#define AT_HOLYWORD     0x00200000 /* 2097152 race selective attack thomas@astro.psu.edu */
-#define AT_BLIND        0x00400000 /* 4194304 thomas@astro.psu.edu */
-#define AT_INTERNAL     0x00800000 /* Only used for internal calculations */
+/**
+ * @defgroup Attacktypes Attack types
+ * @{
+ */
+#define AT_PHYSICAL     0x00000001 /**< Basic attack (1) */
+#define AT_MAGIC        0x00000002 /**< All magic spells, but not prayers (2) */
+#define AT_FIRE         0x00000004 /**< Can ignite objects (4) */
+#define AT_ELECTRICITY  0x00000008 /**< Can also ignite objects (8) */
+#define AT_COLD         0x00000010 /**< Can freeze objects into ice cubes (16) */
+#define AT_CONFUSION    0x00000020 /**< Movement/attack directions become random (32) */
+#define AT_ACID         0x00000040 /**< Random equipped item might corrode when hit (64) */
+#define AT_DRAIN        0x00000080 /**< Victim loses 2% exp, attacker gains half of that (128) */
+#define AT_WEAPONMAGIC  0x00000100 /**< Direct damage, very special, use with care (256) */
+#define AT_GHOSTHIT     0x00000200 /**< Attacker dissolves (512) */
+#define AT_POISON       0x00000400 /**< Some damage each turn thereafter (1024) */
+#define AT_SLOW         0x00000800 /**< Speed is reduced (2048) */
+#define AT_PARALYZE     0x00001000 /**< Speed is reduced to zero (4096) */
+#define AT_TURN_UNDEAD  0x00002000 /**< Like Fear, but for undead only (8192) */
+#define AT_FEAR         0x00004000 /**< (16384) */
+#define AT_CANCELLATION 0x00008000 /**< Removes magic from items (32768) ylitalo@student.docs.uu.se */
+#define AT_DEPLETE      0x00010000 /**< Lose one point from one stat, can be restored (65536) vick@bern.docs.uu.se */
+#define AT_DEATH        0x00020000 /**< Chance of instant death, otherwise nothing (131072) peterm@soda.berkeley.edu */
+#define AT_CHAOS        0x00040000 /**< None by itself, uses random other types (262144) peterm@soda.berkeley.edu*/
+#define AT_COUNTERSPELL 0x00080000 /**< Cancels magic spells (524288) peterm@soda.berkeley.edu*/
+#define AT_GODPOWER     0x00100000 /**< Adds relevant god's attacktype (1048576) peterm@soda.berkeley.edu */
+#define AT_HOLYWORD     0x00200000 /**< Damage based on race and caster's god. Enemies: X5, Undead: X1, others: none (2097152) thomas@astro.psu.edu */
+#define AT_BLIND        0x00400000 /**< Blinds victim (4194304) thomas@astro.psu.edu */
+#define AT_INTERNAL     0x00800000 /**< Only used for internal calculations */
 #define AT_LIFE_STEALING \
-                        0x01000000 /* 16777216 for hp drain */
-#define AT_DISEASE      0x02000000 /* 33554432 disease attacktypes */
-/*@}*/
+                        0x01000000 /**< 16777216 for hp drain */
+#define AT_DISEASE      0x02000000 /**< 33554432 disease attacktypes */
+/**@}*/
 
 /* attacktypes_load is suffixed to resist_ when saving objects.
  * (so the line may be 'resist_fire' 20 for example).  These are never

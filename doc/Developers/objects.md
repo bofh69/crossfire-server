@@ -143,36 +143,7 @@ used in the archetype file.  For example:  Attack type (attacktype)
 A. Attack Types (attacktype)
 ===============
 
-
-Attack types   bit		description
-
-Physical	1  		Basic attacktype.
-Magic		2  		All magic spells, but not prayers
-Fire		4  		Can ignite objects
-Electricity	8  		Can also ignite objects
-Cold		16  		Can freeze objects into ice cubes
-Confusion	32  		Movement/attack directions become random
-Acid		64  		Random equipped item gets -1 to magic attribute
-Drain		128  		Victim loses 2% exp, attacker gains half of that
-Weaponmagic	256  		Direct damage: Special, use with care
-Ghosthit	512  		Attacker dissolves (obsolete)
-Poison		1024  		Some damage each turn thereafter
-Slow	  	2048  		Speed is reduced
-Paralyze	4096  		Speed is reduced to zero
-Turn undead	8192  		Like Fear, but for undead only
-Fear		16384  		Like Turn Undead, but for living only
-Cancellation	32768  		Removes magic (+/-) from items
-Depletion	65536  		Lose one point from one stat (can be restored)
-Death		131072  	Chance of instant death, otherwise nothing
-Chaos		262144  	None by itself, uses random other types
-Counterspell	524288  	Cancels magic spells
-Godpower    	1048576  	Adds relevant god's attacktype
-Holy Word   	2097152  	Enemies: X5, Undead: X1 -unless friends, others: none
-Blind       	4194304  	Blinds victim
-
-Note that one archetype can have multiple attack types by adding
-these values together.  Thus, something with an attacktype of 65
-would attack with both acid and physical.
+See @ref Attacktypes
 
 B. Resistances
 ===========
