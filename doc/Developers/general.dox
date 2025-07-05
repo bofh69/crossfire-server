@@ -11,10 +11,10 @@ The aim of this page is to describe the general concepts used in the Crossfire s
 
 \subpage page_region Regions are groups of maps, linked to a geographical location in the Crossfire world. See @ref page_region "the page about regions" for detailed explanations.
 
-\subpage page_archetype are templates for the objects. Objects in maps reference one specific archetype, and only fields not equal to the archetype value need to be saved/loaded. See @ref page_archetype "the page about archetypes" for detailed explanations.
+\ref page_archetype are templates for the objects. Objects in maps reference one specific archetype, and only fields not equal to the archetype value need to be saved/loaded. See @ref page_archetype "the page about archetypes" for detailed explanations.
 
-\subpage page_artifact define variations from the predefined object, by providing for instance a different title, specific properties and such. See @ref page_artifact "the page about artifacts" for detailed explanations.
+\ref page_artifact define variations from the predefined object, by providing for instance a different title, specific properties and such. See @ref page_artifact "the page about artifacts" for detailed explanations.
 
-\subpage page_treasure_list define random objects to be found in other objects. This include what is found into chests, the traps that can be put on a door, items a monster can have, ... See @ref page_treasure_list "the page about treasure lists" for detailed explanations.
+\ref page_treasure_list define random objects to be found in other objects. This include what is found into chests, the traps that can be put on a door, items a monster can have, ... See @ref page_treasure_list "the page about treasure lists" for detailed explanations.
 
 */

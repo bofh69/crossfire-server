@@ -1,9 +1,7 @@
 /**
 @page page_treasure_list Treasure Lists
 
-@section sec_tl_intro Introduction
-
-Treasure lists specify what items an @ref page_object "object" can have when it is first created during a map initialisation.
+Treasure lists specify what items an @ref page_object "object" can have when it is first created during a map initialization.
 
 Treasure lists contain items with a certain probability of apparition. When the list is instancied, so that for instance a monster can receive its items, the items are randomly chosen based on this probability, and inserted at the desired location.
 
@@ -16,11 +14,6 @@ Each item in the list has a \e chance factor, that determines its probability to
 Treasure lists exist in two variations:
 - a \e treasure list will try to insert all its items in the object. Each item has a probability \e chance % to be generated.
 - a \e treasureone list will only select a random item to be inserted. An item has a probability of \e chance on (sum of all \e chance for the items in the list) to be generated
-
-@section sec_tl_files Treasure files
-
-Treasures are defined in .trs files in the archetypes tree. For historical reasons, many are groupes in <tt>treasures.trs</tt> at the root or archetypes.
-
 
 @section sec_tl_gen Treasure generation
 

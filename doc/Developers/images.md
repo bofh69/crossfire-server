@@ -1,5 +1,7 @@
 # Images {#images}
 
+@subpage smoothing
+
 ## Rules for image sets
 
   1. Image format for all images should

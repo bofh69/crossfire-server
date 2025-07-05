@@ -3,37 +3,30 @@
 @page page_assets Assets
 
 - @subpage asset_guide "Asset-Making Guide"
-- @subpage page_animations "Animations"
-- @subpage smoothing "Smoothing"
 
-<b>Assets</b> are @ref page_archetype "archetypes", @ref page_treasure_list "treasures", @ref page_artifact "artifacts", in short anything except @ref page_map "maps" and @ref page_region "regions".
-
-They reside in the <tt>arch</tt> project.
-
-The server can run directly using this <tt>arch</tt> project, or it may pack everything in consolidated files.
-
-The following files are recognized as assets.
+In Crossfire, assets include all the resources that make up the game, excluding @ref page_map "maps" and @ref page_region "regions", which for historical reasons, are maintained in a separate repository.
+Assets are stored in a directory called <code>arch</code>.
 
 <table>
 	<tr>
-		<th>Name</th>
-		<th>Packed to</th>
-		<th>Meaning</th>
+		<th>File Name/Extension</th>
+		<th>Packed To</th>
+		<th>Asset Type</th>
 	</tr>
 	<tr>
 		<td>*.arc</td>
 		<td>crossfire.arc</td>
-		<td>@ref page_archetype "archetype definition"</td>
+		<td>@subpage page_archetype</td>
 	</tr>
 	<tr>
 		<td>*.trs</td>
 		<td>crossfire.trs</td>
-		<td>@ref page_treasure_list "treasure definition"</td>
+		<td>@subpage page_treasure_list</td>
 	</tr>
 	<tr>
 		<td>*.face</td>
 		<td>crossfire.face</td>
-		<td>face and animation definition</td>
+		<td>@ref Face and @subpage page_animations definition</td>
 	</tr>
 	<tr>
 		<td>*.png (if the name conforms to the expected format)</td>
@@ -58,7 +51,7 @@ The following files are recognized as assets.
 	<tr>
 		<td>*.artifact and artifact</td>
 		<td>artifact</td>
-		<td>@ref page_artifact "artifacts"</td>
+		<td>@subpage page_artifact</td>
 	</tr>
 	<tr>
 		<td>*.quests</td>
@@ -66,6 +59,10 @@ The following files are recognized as assets.
 		<td>quest definition</td>
 	</tr>
 </table>
+
+@section packing Asset Packing
+
+The server can run directly using this <tt>arch</tt> project, or it may pack everything in consolidated files.
  
 The packing process is handled by the server binary itself, through the <code>-pack-assets</code> option.
 
