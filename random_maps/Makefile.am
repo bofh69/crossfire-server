@@ -24,10 +24,6 @@ librandom_map_la_SOURCES = \
 	treasure.cpp \
 	wall.cpp
 
-if PCH
-librandommap_la_CPPFLAGS = -include-pch $(top_srcdir)/include/global.h.gch
-endif
-
 EXTRA_DIST = \
 	README \
 	main.cpp
@@ -36,6 +32,10 @@ reader.cpp: reader.l
 	$(LEX) -P rm -o reader.cpp $(top_srcdir)/random_maps/reader.l
 
 AM_CPPFLAGS = -I$(top_srcdir)/include -I${top_srcdir}/include/random_maps
+
+if PCH
+librandom_map_la_CPPFLAGS = $(AM_CPPFLAGS) -include-pch $(top_srcdir)/include/global.h.gch
+endif
 
 LEX_OUTPUT_ROOT = lex.rmap
 AM_LFLAGS = -Prmap -i
