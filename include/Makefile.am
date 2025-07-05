@@ -77,7 +77,7 @@ svnversion.h: FORCE
 
 FORCE:
 
-if PCH
+if H_PCH
 BUILT_SOURCES += global.h.gch
 CLEANFILES += global.h.gch
 
