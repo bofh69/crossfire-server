@@ -1,7 +1,7 @@
 pkgstatedir = @pkgstatedir@
 pkgconfdir = @pkgconfdir@
 
-dist_noinst_SCRIPTS = collect util.pl
+dist_noinst_SCRIPTS = util.pl
 dist_pkgdata_DATA = \
 	arch/attackmess \
 	arch/formulae \
@@ -9,12 +9,16 @@ dist_pkgdata_DATA = \
 	arch/materials \
 	arch/messages \
 	arch/races \
-	def_help \
+	def_help
+
+if COLLECT
+dist_pkgdata_DATA += \
 	crossfire.arc \
 	crossfire.trs \
 	crossfire.face \
 	crossfire.tar \
 	crossfire.artifacts
+endif
 
 CONF_FILES = \
 	config/ban_file \
