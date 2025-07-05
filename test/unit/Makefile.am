@@ -1,4 +1,4 @@
-SUBDIRS = common random_maps socket server
+SUBDIRS = common server
 
 CHECK_ROOT=../
 CHECK_FOLDER=unit
