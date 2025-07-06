@@ -389,6 +389,11 @@ static object *attempt_recipe(object *caster, object *cauldron, int ability, con
                                  "The %s %s.",
                                  cauldron->name, cauldron_sound());
         }
+
+        // Give player knowledge of the recipe they just made
+        char buf[MAX_BUF];
+        formula_knowledge_code(rp, buf, sizeof(buf));
+        knowledge_give(caster->contr, buf, NULL);
     }
     return item;
 }

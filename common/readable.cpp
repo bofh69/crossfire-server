@@ -1632,6 +1632,14 @@ static StringBuffer *spellpath_msg(int level, size_t booksize, StringBuffer *buf
 }
 
 /**
+ * Store the textual knowledge marker code for recipe R in BUF.
+ * @todo this would be better in knowledge.c, except this is needed in common
+ */
+void formula_knowledge_code(const recipe *r, char *buf, size_t len) {
+    snprintf(buf, len, "alchemy:%d:%d:%s", r->ingred_count, r->index, r->title);
+}
+
+/**
  * Generate a message detailing the properties of a randomly selected alchemical formula.
  *
  * @param book
@@ -1755,8 +1763,7 @@ static void make_formula_book(object *book, int level) {
     free(final);
 
     /** knowledge marker */
-    /** @todo this would be better in knowledge.c, except this file is in server, not common... */
-    snprintf(km, sizeof(km), "alchemy:%d:%d:%s", count, formula->index, formula->title);
+    formula_knowledge_code(formula, km, sizeof(km));
     object_set_value(book, "knowledge_marker", km, 1);
 }
 

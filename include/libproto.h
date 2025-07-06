@@ -380,6 +380,7 @@ extern sstring get_message_title(const GeneralMessage *message);
 extern sstring get_message_body(const GeneralMessage *message);
 extern const Face *get_message_face(const GeneralMessage *message);
 extern void init_msgfile(FILE *file, const char *filename);
+extern void formula_knowledge_code(const recipe *r, char *buf, size_t len);
 /* recipe.cpp */
 extern recipelist *get_formulalist(int i);
 extern void init_formulae(BufferReader *reader, const char *filename);
