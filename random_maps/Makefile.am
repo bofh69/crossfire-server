@@ -35,6 +35,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/include -I${top_srcdir}/include/random_maps
 
 if PCH
 librandom_map_la_CPPFLAGS = $(AM_CPPFLAGS) -include-pch $(top_srcdir)/include/global.h.gch
+else
+librandom_map_la_CPPFLAGS = $(AM_CPPFLAGS)
 endif
 
 LEX_OUTPUT_ROOT = lex.rmap
