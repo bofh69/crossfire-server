@@ -8,7 +8,6 @@ LDADD = $(top_builddir)/server/libserver.la \
         $(top_builddir)/common/libcross.la \
         $(top_builddir)/random_maps/librandom_map.la \
         $(top_builddir)/test/toolkit/libtoolkit_common.a \
-        $(top_builddir)/test/toolkit/libtoolkit_server.a \
         @CHECK_LIBS@
 
 # ../../logs/unit/server:
@@ -23,14 +22,11 @@ $(top_builddir)/random_maps/librandom_map.la:
 $(top_builddir)/server/libserver.la:
 	( cd $(top_builddir)/server ; make libserver.la )
 
-$(top_builddir)/test/toolkit/libtoolkit_server.a:
-	( cd $(top_builddir)/test/toolkit/; make libtoolkit_server.a)
-
 $(top_builddir)/test/toolkit/libtoolkit_common.a:
 	( cd $(top_builddir)/test/toolkit/; make libtoolkit_common.a)
 
-check_account_char_SOURCES = check_account_char.cpp
-check_account_SOURCES = check_account.cpp
+check_account_char_SOURCES = check_account_char.cpp $(top_srcdir)/test/toolkit/toolkit_server.cpp
+check_account_SOURCES = check_account.cpp $(top_srcdir)/test/toolkit/toolkit_server.cpp
 check_alchemy_SOURCES = check_alchemy.cpp
 check_apply_SOURCES = check_apply.cpp
 check_attack_SOURCES = check_attack.cpp

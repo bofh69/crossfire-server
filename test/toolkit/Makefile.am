@@ -1,8 +1,4 @@
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(srcdir)/../include -DRESSOURCES=\"$(srcdir)/../../resources\" -DLOGDIR=\"$(top_builddir)/test/logs\" -DSOURCE_ROOT=\"$(srcdir)/../../\"
-noinst_LIBRARIES = libtoolkit_common.a libtoolkit_random_maps.a libtoolkit_socket.a libtoolkit_server.a
+noinst_LIBRARIES = libtoolkit_common.a
 
 libtoolkit_common_a_SOURCES = toolkit_common.cpp
-libtoolkit_random_maps_a_SOURCES = toolkit_random_maps.cpp
-libtoolkit_socket_a_SOURCES = toolkit_socket.cpp
-libtoolkit_server_a_SOURCES = toolkit_server.cpp
-
