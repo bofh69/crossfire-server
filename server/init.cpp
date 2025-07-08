@@ -1124,7 +1124,14 @@ void init(int argc, char **argv) {
     parse_args(argc, argv, 3);
 
     init_beforeplay();
-    init_server();
+    if (argc != 0) {
+        // Invocations from the command-line (e.g. crossfire-server) have the
+        // binary name in argv[0]. If that is not there, assume we are running
+        // as a test and don't create sockets.
+        init_server();
+    } else {
+        LOG(llevInfo, "Running server in test mode (no sockets).\n");
+    }
     metaserver2_init();
     accounts_load();
     reset_sleep();
