@@ -1824,7 +1824,7 @@ void examine_rod_charge_level(object *op, object *tmp) {
  */
 bool examine_fluff(object *op, object *tmp, bool output) {
     /* No message for stuff the player hasn't IDed. */
-    if (!is_identifiable_type(tmp) || !is_identified(tmp)) {
+    if (!is_identified(tmp)) {
         return false;
     }
 
