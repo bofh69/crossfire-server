@@ -25,12 +25,14 @@
 #include "sproto.h"
 
 static method_ret lighter_type_apply(object *lighter, object *applier, int aflags);
+static method_ret lighter_type_examine(const object *op, const object *, int, char *buf, size_t size);
 
 /**
  * Initializer for the LIGHTER object type.
  */
 void init_type_lighter(void) {
     register_apply(LIGHTER, lighter_type_apply);
+    register_examine(LIGHTER, lighter_type_examine);
 }
 
 /**
@@ -77,12 +79,16 @@ static method_ret lighter_type_apply(object *lighter, object *applier, int aflag
         }
     } else if (lighter->last_eat) { /* no charges left in lighter */
         draw_ext_info_format(NDI_UNIQUE, 0, applier, MSG_TYPE_APPLY, MSG_TYPE_APPLY_FAILURE,
-            "You fail to light the %s with a used up %s.",
-            item->name, lighter->name);
+            "The %s has no more uses left.", lighter->name);
         return METHOD_OK;
     }
 
     do_light(item, lighter->name, applier);
 
+    return METHOD_OK;
+}
+
+static method_ret lighter_type_examine(const object *op, const object *, int, char *buf, size_t size) {
+    snprintf(buf, size, "It has %d uses remaining.", op->stats.food);
     return METHOD_OK;
 }
