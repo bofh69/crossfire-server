@@ -431,7 +431,7 @@ void citylife_init(Settings *, ServerSettings *serverSettings) {
     assets_add_collector_hook(".citylife", load_citylife);
 
     /* Disable the plugin in case it's still there */
-    serverSettings->disabled_plugins.push_back(strdup("citylife"));
+    serverSettings->disabled_plugins.push_back("citylife");
 }
 
 void citylife_close() {

@@ -159,7 +159,7 @@ void cfcitybell_init(Settings *, ServerSettings *serverSettings) {
     assets_add_collector_hook(".bells", load_bells);
 
     /* Disable the plugin in case it's still there */
-    serverSettings->disabled_plugins.push_back(strdup("cfcitybell"));
+    serverSettings->disabled_plugins.push_back("cfcitybell");
 }
 
 void cfcitybell_close() {

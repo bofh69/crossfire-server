@@ -290,7 +290,7 @@ static void set_csport(const char *val) {
  * @param name plugin's name, without extension.
  */
 static void set_disable_plugin(const char *name) {
-    serverSettings.disabled_plugins.push_back(strdup(name));
+    serverSettings.disabled_plugins.push_back(std::string(name ? name : ""));
 }
 
 /**
@@ -1146,7 +1146,6 @@ void free_server(void) {
     free_materials();
     free_races();
     free_quest();
-    std::for_each(serverSettings.disabled_plugins.begin(), serverSettings.disabled_plugins.end(), [] (char *item) { free(item); });
     serverSettings.disabled_plugins.clear();
 }
 

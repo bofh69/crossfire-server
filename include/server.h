@@ -13,7 +13,7 @@ void login_check_shutdown(object* const op);
 bool can_follow(object*, player*);
 
 struct ServerSettings {
-    std::vector<char *> disabled_plugins;     /**< List of disabled plugins, 'All' means all. */
+    std::vector<std::string> disabled_plugins;  /**< List of disabled plugins, 'All' means all. */
 };
 
 extern ServerSettings serverSettings;

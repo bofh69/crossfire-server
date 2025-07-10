@@ -4592,12 +4592,12 @@ void initPlugins(void) {
                 continue;
 
             for (auto disable = serverSettings.disabled_plugins.cbegin(); disable != serverSettings.disabled_plugins.cend(); ++disable) {
-                if (strcmp(*disable, "All") == 0) {
+                if (strcmp(disable->c_str(), "All") == 0) {
                     LOG(llevInfo, "plugins: disabling (all) %s\n", currentfile->d_name);
                     ignore = 1;
                     break;
                 }
-                if (strncmp(*disable, currentfile->d_name, strlen(*disable)) == 0 && strlen(currentfile->d_name) == strlen(PLUGIN_SUFFIX) + strlen(*disable)) {
+                if (strncmp(disable->c_str(), currentfile->d_name, disable->length()) == 0 && strlen(currentfile->d_name) == strlen(PLUGIN_SUFFIX) + disable->length()) {
                     LOG(llevInfo, "plugins: disabling %s\n", currentfile->d_name);
                     ignore = 1;
                     break;

@@ -212,7 +212,7 @@ void random_house_generator_init(Settings *, ServerSettings *settings) {
     eg = events_register_global_handler(EVENT_MAPLOAD, cfrhg_globalEventListener);
 
     /* Disable the plugin in case it's still there */
-    settings->disabled_plugins.push_back(strdup("cfrhg"));
+    settings->disabled_plugins.push_back("cfrhg");
 }
 
 /**
