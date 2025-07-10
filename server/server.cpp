@@ -1029,6 +1029,7 @@ static void process_players1(void) {
                 has_action = 0;
             }
         }
+
         /* If the character is idle (standing around resting) increase
          * regen rates.
          */

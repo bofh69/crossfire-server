@@ -3162,6 +3162,14 @@ int handle_newcs_player(object *op) {
         else
             return 0;
     }
+
+    if (op->contr->repeat_func != NULL) {
+        bool ret = op->contr->repeat_func(op->contr, op->contr->repeat_func_data);
+        if (ret == false) {
+            player_cancel_repeat(op->contr);
+        }
+    }
+
     return 0;
 }
 
@@ -4529,4 +4537,46 @@ void send_delayed_buffers(player *pl) {
         Send_With_Handling(pl->socket, pl->delayed_buffers[buf]);
     }
     pl->delayed_buffers_used = 0;
+}
+
+/**
+ * Start repeating an action.
+ */
+void player_start_repeat(player *pl, const char *action, repeat_cb cb) {
+    if (pl->repeat_func_data) {
+        free(pl->repeat_func_data);
+        pl->repeat_func_data = NULL;
+    }
+    sstring old_action = pl->repeat_action;
+    pl->repeat_action = add_string(action);
+    if (old_action != pl->repeat_action) {
+        // Action different from previous one, tell player about it.
+        char buf[MAX_BUF];
+        snprintf(buf, sizeof(buf), "You start %s.", action);
+        draw_ext_info(NDI_UNIQUE, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_INFO, buf);
+    }
+    pl->repeat_func = cb;
+    if (old_action)
+        free_string(old_action);
+}
+
+/**
+ * If the player is repeating an action, cancel it.
+ */
+void player_cancel_repeat(player *pl) {
+    if (pl->repeat_func == NULL)
+        return;
+
+    char buf[MAX_BUF];
+    snprintf(buf, sizeof(buf), "You stop %s.", pl->repeat_action);
+    draw_ext_info(NDI_UNIQUE, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_INFO, buf);
+    pl->repeat_func = NULL;
+    if (pl->repeat_action) {
+        free_string(pl->repeat_action);
+        pl->repeat_action = NULL;
+    }
+    if (pl->repeat_func_data != NULL) {
+        free(pl->repeat_func_data);
+        pl->repeat_func_data = NULL;
+    }
 }

@@ -267,6 +267,9 @@ bool handle_client(socket_struct *ns, player *pl) {
      */
     int command_count = 0;
     while (command_count < 5 || (pl && command_count < 25)) {
+        if (pl && pl->state == ST_PLAYING && pl->ob != NULL)
+            player_cancel_repeat(pl);
+
         if (pl && pl->state == ST_PLAYING && pl->ob != NULL && pl->ob->speed_left < 0) {
             // Skip processing players with no turns left.
             return false;

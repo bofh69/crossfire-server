@@ -101,6 +101,8 @@ enum party_rejoin_mode {
     party_rejoin_always = 2     /**< If party doesn't exist, form it. */
 };
 
+typedef bool (*repeat_cb)(player *, void *data);
+
 /** One player. */
 struct player {
     player   *next;                  /**< Pointer to next player, NULL if this is last. */
@@ -226,6 +228,9 @@ struct player {
     SockList **delayed_buffers;         /**< Buffers which will be sent after the player's tick completes. */
     bool is_wraith;                 /**< Whether this player is a wraith or not, initialized at load time. */
     bool is_old_wraith;             /**< Whether this player is a "old" wraith, initialized at load time and updated when eating. */
+    repeat_cb repeat_func;          /**< If not NULL, automatically repeat the action repeat_func until interrupted. */
+    sstring repeat_action;          /**< Shared string with textual description of current repeat action (e.g. "praying"). */
+    void *repeat_func_data;         /**< Arguments to pass into repeat_func. */
 };
 
 /**
@@ -251,5 +256,7 @@ struct player {
 
 void commit_crime(object *op, const char *description);
 bool is_criminal(object *op);
+void player_start_repeat(player *pl, const char *action, repeat_cb cb);
+void player_cancel_repeat(player *pl);
 
 #endif /* PLAYER_H */

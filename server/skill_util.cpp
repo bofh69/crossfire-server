@@ -403,6 +403,20 @@ void clear_skill(object *who) {
     }
 }
 
+struct do_skill_cb_data {
+    object *op;
+    object *part;
+    object *skill;
+    int dir;
+    const char *string;
+};
+
+bool do_skill_cb(player *pl, void *data) {
+    struct do_skill_cb_data *args = (struct do_skill_cb_data *)data;
+    do_skill(args->op, args->part, args->skill, args->dir, args->string);
+    return true;
+}
+
 /**
  * Main skills use function-similar in scope to cast_spell().
  * We handle all requests for skill use outside of some combat here.
@@ -573,6 +587,12 @@ int do_skill(object *op, object *part, object *skill, int dir, const char *strin
         break;
 
     case SK_PRAYING:
+        if (op->contr) {
+            player_start_repeat(op->contr, "praying", do_skill_cb);
+            op->contr->repeat_func_data = calloc(1, sizeof(struct do_skill_cb_data));
+            struct do_skill_cb_data *data = (struct do_skill_cb_data *)op->contr->repeat_func_data;
+            *data = {op, part, skill, dir, string};
+        }
         success = pray(op, skill);
         break;
 
@@ -594,6 +614,12 @@ int do_skill(object *op, object *part, object *skill, int dir, const char *strin
         break;
 
     case SK_HARVESTING:
+        if (op->contr) {
+            player_start_repeat(op->contr, skill->name, do_skill_cb);
+            op->contr->repeat_func_data = calloc(1, sizeof(struct do_skill_cb_data));
+            struct do_skill_cb_data *data = (struct do_skill_cb_data *)op->contr->repeat_func_data;
+            *data = {op, part, skill, dir, string};
+        }
         do_harvest(op, dir, skill);
         success = 0;
         break;
