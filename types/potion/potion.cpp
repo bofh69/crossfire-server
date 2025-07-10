@@ -145,7 +145,10 @@ static method_ret potion_type_apply(object *potion, object *applier, int aflags)
             fball->stats.maxhp = random_roll(1, applier->level, applier, PREFER_LOW)/10+2;
             object_insert_in_map_at(fball, applier->map, NULL, 0, applier->x, applier->y);
         } else
-            cast_spell(applier, potion, applier->facing, potion->inv, NULL);
+            if (cast_spell(applier, potion, applier->facing, potion->inv, NULL) == 0) {
+                // Failed to cast, so don't deduct a usage
+                return METHOD_OK;
+            }
 
         object_decrease_nrof_by_one(potion);
         /* if youre dead, no point in doing this... */
