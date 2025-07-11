@@ -957,7 +957,8 @@ static void process_players1(void) {
     int flag;
     player *pl, *plnext;
 
-    /* Basically, we keep looping until all the players have done their actions. */
+    // Loop until no more players can do more actions. We have to do this because really fast
+    // players may be able to move twice in a tick.
     for (flag = 1; flag != 0; ) {
         flag = 0;
         for (pl = first_player; pl != NULL; pl = plnext) {
@@ -1010,6 +1011,9 @@ static void process_players1(void) {
 #endif
         } /* end of for loop for all the players */
     } /* for flag */
+
+    // Player processing that happen once per tick, regardless of player speed, e.g.  health
+    // regeneration.
     for (pl = first_player; pl != NULL; pl = pl->next) {
         int has_action = 1;
 
