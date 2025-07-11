@@ -113,7 +113,10 @@ static method_ret scroll_type_apply(object *scroll,
 
     /* need to keep the name, as the scroll may be destroyed when on the ground (reading a scroll of alchemy for instance) */
     name = scroll->inv->name;
-    cast_spell(applier, scroll, head->facing, scroll->inv, NULL);
+    if (cast_spell(applier, scroll, head->facing, scroll->inv, NULL) == 0) {
+        // Failed to cast, so don't deduct a usage
+        return METHOD_OK;
+    }
 
     if (QUERY_FLAG(scroll, FLAG_BLESSED) && die_roll(1, 100, applier, 1) < 10) {
         draw_ext_info_format(NDI_BLACK, 0, applier, MSG_TYPE_APPLY, MSG_TYPE_APPLY_SUCCESS,
