@@ -1198,12 +1198,6 @@ static void animate(void) {
     }
 }
 
-/**
- * Plugin initialisation function.
- * @param iversion server version.
- * @param gethooksptr function to get the hooks.
- * @return 0
- */
 extern "C"
 CF_PLUGIN int initPlugin(const char *iversion, f_plug_api gethooksptr) {
     (void)iversion;

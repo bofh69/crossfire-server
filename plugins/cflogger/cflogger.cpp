@@ -537,32 +537,12 @@ static void add_death(object *victim, object *killer) {
     sqlite3_free(sql);
 }
 
-/**
- * Main plugin entry point.
- *
- * @param iversion
- * server version.
- * @param gethooksptr
- * function to get hooks from.
- * @return
- * always 0.
- */
 extern "C" int initPlugin(const char *iversion, f_plug_api gethooksptr) {
     cf_init_plugin(gethooksptr);
     cf_log(llevInfo, "%s init\n", PLUGIN_VERSION);
     return 0;
 }
 
-/**
- * Gets a plugin property.
- *
- * @param type
- * ignored.
- * @return
- * @li the name, if asked for 'Identification'.
- * @li the version, if asked for 'FullName'.
- * @li NULL else.
- */
 extern "C" void *getPluginProperty(int *type, ...) {
     va_list args;
     const char *propname;
@@ -603,14 +583,6 @@ extern "C" int cflogger_runPluginCommand(object *op, char *params) {
     return -1;
 }
 
-/**
- * Handles an object-related event. Doesn't do anything.
- *
- * @param type
- * ignored.
- * @return
- * 0.
- */
 extern "C" int eventListener(int *type, ...) {
     return 0;
 }
@@ -686,14 +658,6 @@ extern "C" int cflogger_globalEventListener(int *type, ...) {
     return rv;
 }
 
-/**
- * Plugin was initialized, now to finish.
- *
- * Registers events, initializes the database.
- *
- * @return
- * 0.
- */
 extern "C" int postInitPlugin(void) {
     char path[500];
     const char *dir;

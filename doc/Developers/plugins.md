@@ -17,7 +17,7 @@ See also:
 
 For more information, see the in-game DM help.
 
-## Making Plugins
+## Making Plugins in C++
 You should always include two header files in your plugin projects:
 
 - plugin.h, which contains the declaration of most plugin-related constants and
@@ -36,3 +36,8 @@ compatibility. Hooks are provided in case of need.
 
 The technical documentation is in Developers/plugins.ps, and Developers/cfpython.ps
 for Python plugin.
+
+## Plugin Internals
+You can write a plugin for Crossfire in any language that supports a C FFI and variadic arguments.
+
+Crossfire plugins are dynamically-loadable shared libraries. Plugins must export all of the @ref PLUGIN_SYM.

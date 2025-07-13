@@ -289,20 +289,66 @@ struct crossfire_plugin {
 #define CFAPI_SYSTEM_PARTIES    204
 #define CFAPI_SYSTEM_FRIENDLY_LIST  205
 
-/*****************************************************************************/
-/* Exportable functions. Any plugin should define all those.                 */
-/* initPlugin        is called when the plugin initialization process starts.*/
-/* endPlugin         is called before the plugin gets unloaded from memory.  */
-/* getPluginProperty is currently unused.                                    */
-/* registerHook      is used to transmit hook pointers from server to plugin.*/
-/* triggerEvent      is called whenever an event occurs.                     */
-/*****************************************************************************/
-/*extern MODULEAPI CFParm *initPlugin(CFParm *PParm);
-extern MODULEAPI CFParm *endPlugin(CFParm *PParm);
-extern MODULEAPI CFParm *getPluginProperty(CFParm *PParm);
-extern MODULEAPI CFParm *registerHook(CFParm *PParm);
-extern MODULEAPI CFParm *triggerEvent(CFParm *PParm);
-*/
+/**
+ * @defgroup PLUGIN_SYM Required Plugin Symbols
+ *
+ * These symbols for callable functions should be defined by plugins. They are
+ * defined here so that plugins can include this header to type check their
+ * symbol definitions, and for document generation. The server should not
+ * define or use these symbols, since they are resolved at run time.
+ * @{
+ */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * The server calls this function after loading the plugin.
+ *
+ * @param iversion Plugin interface version. Currently "2.0".
+ * @param gethooksptr A function that the plugin can call to obtain symbol
+ * addresses for functions in the server that the plugin can call ("hooks").
+ * Use this interface to call functions in the server, because some platforms
+ * (e.g. Windows) does not support calling functions in the server directly
+ * from loaded libraries. (Is this still true now that we switched to shared
+ * libraries?)
+ * @return Unused. You can return any number here.
+ */
+int initPlugin(const char *iversion, f_plug_api gethooksptr);
+
+/**
+ * The server calls this function to get information about the plugin, notably the name and version.
+ *
+ * @param type
+ * ignored.
+ * @return
+ * @li the name, if asked for 'Identification'.
+ * @li the version, if asked for 'FullName'.
+ * @li NULL else.
+ */
+void *getPluginProperty(int *type, ...);
+
+/**
+ * Handles an object-related event.
+ */
+int eventListener(int *type, ...);
+
+/**
+ * The server calls this function to actually initialize the plugin here, after
+ * object handlers are registered. This is a good place for a plugin to
+ * register global events, initialize databases, etc.
+ */
+int postInitPlugin(void);
+
+/** called before the plugin gets unloaded from memory. */
+int closePlugin(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+/**@}*/
 
 /** One function the server exposes to plugins. */
 struct hook_entry {
