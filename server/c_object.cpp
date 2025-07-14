@@ -2033,7 +2033,7 @@ void examine(object *op, object *tmp) {
 
     int in_shop = shop_contains(op);
 
-    if (tmp->value && !QUERY_FLAG(tmp, FLAG_STARTEQUIP) && !QUERY_FLAG(tmp, FLAG_NO_PICK)) {
+    if (!QUERY_FLAG(tmp, FLAG_STARTEQUIP) && !QUERY_FLAG(tmp, FLAG_NO_PICK)) {
         char *value = cost_approx_str(tmp, op);
         snprintf(buf, sizeof(buf), "You reckon %s worth %s.", tmp->nrof > 1 ? "they are" : "it is", value);
         free(value);
