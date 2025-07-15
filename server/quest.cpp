@@ -71,6 +71,11 @@ static quest_player *player_states = NULL;
  * @return step, or NULL if no such step in which case a llevError is emitted.
  */
 static quest_step_definition *quest_get_step(quest_definition *quest, int step) {
+    if (step == 0) {
+        // No error message, because 0 means not started.
+        return NULL;
+    }
+
     for (const auto qs : quest->steps) {
         if (qs->step == step)
             return qs;
@@ -127,7 +132,7 @@ static void quest_read_player_data(quest_player *pq) {
 
         if (sscanf(read, "state %d\n", &state)) {
             qs->state = state;
-            if (quest != NULL && state != -1) {
+            if (quest != NULL && state != -1 && state != 0) {
                 quest_step_definition *step = quest_get_step(quest, state);
                 if (step == NULL) {
                     LOG(llevError, "invalid quest step %d for %s in %s\n", state, quest->quest_code, final);
@@ -342,7 +347,7 @@ static void update_quests(player *pl) {
  * @param dm if NULL then the player is actually playing, else a DM is changing the quest's state manually.
  * @param pl player to set the state for.
  * @param quest_code quest internal code.
- * @param state new state for the quest, must be greater than 0 else forced to 100 and a warning is emitted.
+ * @param state new state for the quest, 0 (not started) or greater
  * @param started if 1, quest must have been started first or a warning is emitted, else it doesn't matter.
  */
 static void quest_set_state(player* dm, player *pl, sstring quest_code, int state, int started) {
@@ -360,9 +365,9 @@ static void quest_set_state(player* dm, player *pl, sstring quest_code, int stat
         return;
     }
 
-    if (!dm && state <= 0) {
+    if (!dm && state < 0) {
         LOG(llevDebug, "quest_set_player_state: warning: called with invalid state %d for quest %s, player %s\n", state, pl->ob->name, quest_code);
-        state = 100;
+        state = 0;
     }
 
     if (started && qs->state == 0) {
@@ -374,20 +379,18 @@ static void quest_set_state(player* dm, player *pl, sstring quest_code, int stat
     qs->state = state;
     if (state == 0) {
         qs->is_complete = 0;
-        return;
     }
 
     step = quest_get_step(quest, state);
-    if (!step) {
+    if (!step && state != 0) {
         if (dm) {
             draw_ext_info_format(NDI_UNIQUE, 0, dm->ob, MSG_TYPE_ADMIN_DM, MSG_TYPE_COMMAND_FAILURE, "Couldn't find state definition %d for quest %s", state, quest_code);
         } else {
             LOG(llevError, "quest_set_player_state: couldn't find state definition %d for quest %s, player %s\n", state, quest_code, pl->ob->name);
         }
-        return;
     }
 
-    if (step->is_completion_step) {
+    if (step && step->is_completion_step) {
         /* don't send an update note if the quest was already completed, this is just to show the outcome afterwards. */
         if (!qs->is_complete)
             draw_ext_info_format(NDI_UNIQUE|NDI_DELAYED, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_QUESTS, "Quest %s completed.", quest->quest_title);
@@ -397,7 +400,7 @@ static void quest_set_state(player* dm, player *pl, sstring quest_code, int stat
         else
             qs->is_complete = 1;
 
-    } else {
+    } else if (step != 0) {
         draw_ext_info_format(NDI_UNIQUE|NDI_DELAYED, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_QUESTS, "New objective for the quest '%s':", quest->quest_title);
         draw_ext_info(NDI_UNIQUE|NDI_DELAYED, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_QUESTS, step->step_description);
     }
@@ -422,9 +425,12 @@ static void quest_set_state(player* dm, player *pl, sstring quest_code, int stat
         }
 
         SockList_AddChar(sl, (step == NULL || step->is_completion_step) ? 1 : 0);
-        assert(step != NULL);
-        SockList_AddLen16Data(sl, step->step_description,
-                strlen(step->step_description));
+        if (step) {
+            SockList_AddLen16Data(sl, step->step_description, strlen(step->step_description));
+        } else {
+            const char *not_started = "Not started.";
+            SockList_AddLen16Data(sl, not_started, strlen(not_started));
+        }
 
         qs->sent_to_client = 1;
     }
@@ -609,7 +615,7 @@ static void quest_info(player *pl, player* who, quest_state *qs, int level) {
         /* ie, if we are in progress or completed for a non-restartable quest */
         if (!step) {
             /* already warned by quest_get_step */
-            draw_ext_info_format(NDI_UNIQUE, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_QUESTS, " \nOutcome: (invalid quest)");
+            draw_ext_info_format(NDI_UNIQUE, 0, pl->ob, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_QUESTS, "Not started.");
             return;
         }
         if (level > 0) {
@@ -815,6 +821,20 @@ void command_quest(object *op, const char *params) {
         return;
     }
 
+    if (strncmp(params, "reset ", 6) == 0) {
+        int number = atoi(params+6);
+        quest_state *q = get_quest_by_number(who->contr, number);
+        if (q == NULL) {
+            draw_ext_info(NDI_UNIQUE, 0, who, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_FAILURE,
+                    "You cannot reset a quest that you haven't started.");
+            return;
+        }
+        quest_set_state(NULL, who->contr, q->code, 0, 0);
+        draw_ext_info(NDI_UNIQUE, 0, who, MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_SUCCESS,
+                "Quest progress reset.");
+        return;
+    }
+
     if (QUERY_FLAG(op, FLAG_WIZ) && strncmp(params, "set ", 4) == 0) {
         char *dup = strdup(params + 4);
         char *space = strrchr(dup, ' ');
@@ -924,7 +944,7 @@ void quest_send_initial_states(player *pl) {
     for (state = states->quests; state != NULL; state = state->next) {
 
         quest = quest_get_by_code(state->code);
-        if (state->state == -1)
+        if (state->state == -1 || state->state == 0)
             step = NULL;
         else
             step = quest_get_step(quest, state->state);
