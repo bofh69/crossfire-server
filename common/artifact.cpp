@@ -414,10 +414,6 @@ void add_abilities(object *op, const object *change) {
             op->speed = 0.0;
         object_update_speed(op);
     }
-    if (change->nrof != 0 && change->nrof != 1) {
-        LOG(llevDebug, "archetype %s has nrof set to %d, which will be ignored\n",
-                change->name, change->nrof);
-    }
     op->stats.exp += change->stats.exp; /* Speed modifier */
     op->stats.wc += change->stats.wc;
     op->stats.ac += change->stats.ac;
@@ -672,4 +668,21 @@ uint16_t artifact_get_face(const artifact *art) {
         arch = get_next_archetype(arch);
     }
     return (uint16_t)-1;
+}
+
+void artifact_check(const artifact *art) {
+    if (art->item->nrof != 0 && art->item->nrof != 1)
+        LOG(llevDebug, "Artifact with nonzero nrof: %s\n", art->item->name);
+    if (!art->chance)
+        LOG(llevDebug, "Artifact with no chance: %s\n", art->item->name);
+}
+
+void artifact_post_load() {
+    for (auto al = first_artifactlist; al != NULL; al = al->next) {
+        al->total_chance = 0;
+        for (auto art : al->items) {
+            artifact_check(art);
+            al->total_chance += art->chance;
+        }
+    }
 }

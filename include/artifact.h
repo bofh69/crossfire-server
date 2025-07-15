@@ -28,4 +28,7 @@ struct artifactlist {
     std::vector<artifact *> items;      /**< Artifacts for this type. Will never be NULL. */
 };
 
+void artifact_check(const artifact *art);
+void artifact_post_load();
+
 #endif /* ARTIFACT_H */

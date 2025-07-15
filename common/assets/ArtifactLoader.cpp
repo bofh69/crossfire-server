@@ -91,17 +91,4 @@ void ArtifactLoader::load(BufferReader *reader, const std::string &filename) {
         } else
             LOG(llevError, "Unknown input in artifact file %s:%zu: %s\n", filename.c_str(), bufferreader_current_line(reader), buf);
     }
-
-    for (al = first_artifactlist; al != NULL; al = al->next) {
-        al->total_chance = 0;
-        for (auto art : al->items) {
-            if (!art->chance)
-                LOG(llevDebug, "Artifact with no chance: %s\n", art->item->name);
-            else
-                al->total_chance += art->chance;
-        }
-#if 0
-        LOG(llevDebug, "Artifact list type %d has %d total chance\n", al->type, al->total_chance);
-#endif
-    }
 }

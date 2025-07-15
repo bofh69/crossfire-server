@@ -145,6 +145,10 @@ void assets_collect(const char* datadir, int what) {
     collector.addLoader(new TarLoader(&collector));
     collector.collect(datadir);
 
+    if (what & ASSETS_ARTIFACTS) {
+        artifact_post_load();
+    }
+
     LOG(llevInfo, "Finished collecting assets from %s\n", datadir);
 }
 
