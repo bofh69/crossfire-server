@@ -244,6 +244,11 @@ static void check_loaded_object(object *op, bool arch_init) {
         op->arch = temp;
         /* LOG(llevDebug, "created temporary archetype for %s at %d,%d\n", op->name, op->x, op->y); */
     }
+
+    if (arch_init && op->type == SHOP_FLOOR && !QUERY_FLAG(op, FLAG_AUTO_APPLY)) {
+        LOG(llevDebug, "shop floor %s does not have auto-apply set\n", op->name);
+        SET_FLAG(op, FLAG_AUTO_APPLY);
+    }
 }
 
 /**

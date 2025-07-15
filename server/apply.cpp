@@ -1189,11 +1189,6 @@ void apply_auto_fix(mapstruct *m) {
                     auto_apply_fix_inventory(m, tmp);
                 }
 
-                if (tmp->type == SHOP_FLOOR && !QUERY_FLAG(tmp, FLAG_AUTO_APPLY)) {
-                    LOG(llevDebug, "shop floor without auto apply set\n");
-                    SET_FLAG(tmp, FLAG_AUTO_APPLY);
-                }
-
                 if (QUERY_FLAG(tmp, FLAG_AUTO_APPLY))
                     apply_auto(tmp);
                 else if ((tmp->type == TREASURE || tmp->type == CONTAINER)
