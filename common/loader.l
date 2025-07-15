@@ -698,7 +698,6 @@ A       .+
                         if (IVAL) {
                             SET_FLAG(op, FLAG_FRIENDLY);
                             if (op->type != PLAYER && !arch_init) {
-                                LOG(llevDebug, " Adding friendly object %s.\n", op->name);
                                 add_friendly_object(op);
                             }
                         }

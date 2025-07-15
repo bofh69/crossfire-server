@@ -879,7 +879,6 @@ static shopitems *parse_shop_string(const char *input_string, const mapstruct *m
 
     shop_string = strdup_local(input_string);
     p = shop_string;
-    LOG(llevDebug, "parsing %s\n", input_string);
     /* first we'll count the entries, we'll need that for allocating the array shortly */
     while (p) {
         p = strchr(p, ';');
