@@ -74,7 +74,8 @@ void print_ext_msg(socket_struct *ns, int color, uint8_t type, uint8_t subtype, 
  * players or all DMs individually.
  *
  * @param pri Priority.  The lower the value, the more important it is.  Thus,
- * 0 gets sent no matter what.  Otherwise, the value must be less than the
+ * 0 gets sent no matter what. Messages with NDI_ALL are logged if priority is
+ * less than 10 (e.g. global chat). Otherwise, the value must be less than the
  * listening level that the player has set.  Unfortunately, there is no clear
  * guideline on what each level does what.
  *
@@ -108,7 +109,7 @@ void draw_ext_info(
         }
         // If NDI_NO_TRANSLATE is set, we assume the message was already printed to the log.
         // So we skip it in that case. Otherwise we print it.
-        if ((~flags)&NDI_NO_TRANSLATE)
+        if ((~flags)&NDI_NO_TRANSLATE && pri < 10)
             LOG(llevInfo, "-- %s\n", message);
         return;
     }
