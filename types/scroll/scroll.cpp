@@ -73,9 +73,9 @@ static method_ret scroll_type_apply(object *scroll,
         return METHOD_OK;
     }
 
+    int exp_gain;
     if (applier->type == PLAYER) {
         /* players need a literacy skill to read stuff! */
-        int exp_gain;
 
         /* hard code literacy - scroll->skill points to where the exp
          * should go for anything killed by the spell.
@@ -107,8 +107,7 @@ static method_ret scroll_type_apply(object *scroll,
             return METHOD_OK;
         }
 
-        if ((exp_gain = calc_skill_exp(applier, scroll, skapplier)))
-            change_exp(applier, exp_gain, skapplier->skill, 0);
+        exp_gain = calc_skill_exp(applier, scroll, skapplier);
     }
 
     /* need to keep the name, as the scroll may be destroyed when on the ground (reading a scroll of alchemy for instance) */
@@ -128,6 +127,9 @@ static method_ret scroll_type_apply(object *scroll,
             name);
 
         object_decrease_nrof_by_one(scroll);
+    }
+    if (applier->type == PLAYER) {
+        change_exp(applier, exp_gain, skapplier->skill, 0);
     }
     return METHOD_OK;
 }
