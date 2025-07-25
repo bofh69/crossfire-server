@@ -1,8 +1,40 @@
 Report a bug or ask for help from a dungeon master.
 
 Usage: report <description of issue>
+Usage: report list
+Usage: report list <SEARCH>
 
-If enabled, this command sends a bug report or request for help to the dungeon masters. The report contains your character name, current map location, and issue description.
+If enabled, this command sends a bug report or request for help to the dungeon masters. The report contains your character name, current map location, and issue description. It is preferred for the report to be made in the actual map and as close as possible to where the problem was encountered.
+
+Example:
+  'report the key I just found in this map won't open this door
+
+You are the player, will see:
+  Thank you for your report. Your report was assigned an ID of ###. Use " 'report list " to check the status of your reports.
+
+The server DM will see something like this:
+  <issue_no> | player_name | <date & time> | /path/to/map (x, y) | the key I just found in this map won't open this door
+
+Since each report is tracked by the player reporting the issue, you can also check the history and status of your reports.
+
+Example:
+  `report list
+
+This will show you all reports that you have created and their status of closed or fixed or new.
+
+You can also search for specific reports using the issue number or by text from the summary.
+
+Example:
+  `report list key
+
+You will see:
+  <issue_no> (closed|fixed|new) the key I just found in this map won't open this door
+
+If you use wording or use an issue number that does not exist or is invalid, you see a message like:
+
+  No reports found with the specified search pattern
+
+IMPORTANT: You can only view and access reports created by the character you are currently logged in as.
 
 If the command is not enabled, you will see:
   'report' is not a valid command.
