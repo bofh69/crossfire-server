@@ -1,0 +1,22 @@
+Manage a report submitted by other players.
+
+Usage: report fix <NUM>
+Usage: report close <NUM>
+
+This allows a DM to close out reports from players with a message of "closed" or "fixed".
+
+Your interaction with the report requires the issue number associated with the report.
+
+  Example: 'report fix 120
+
+This will mark issue number 120 as fixed, generally meaning the issue for the report has been corrected or solved.
+
+  Example: 'report close 120
+
+This will mark issue number 120 as closed, generally meaning the issue could not be resolved or the issue was addressed through other means.
+
+If you use an issue number that does not exist or is invalid, you see a message like:
+
+  No reports found with the specified search pattern
+
+See also: report
