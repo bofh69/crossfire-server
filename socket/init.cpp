@@ -437,6 +437,8 @@ void free_newsocket(socket_struct *ns) {
     FREE_AND_CLEAR(ns->stats.god);
     if (ns->host)
         FREE_AND_CLEAR(ns->host);
+    if (ns->client)
+        FREE_AND_CLEAR_STR(ns->client);
     if (ns->account_name) {
         account_logout(ns->account_name);
         FREE_AND_CLEAR(ns->account_name);

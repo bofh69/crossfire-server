@@ -102,6 +102,7 @@ struct socket_struct {
     struct statsinfo stats;
     SockList    inbuf;                  /**< If we get an incomplete packet, this is used to hold the data. */
     char        *host;                  /**< Which host it is connected from (ip address). */
+    sstring     client;                   /**< Client string sent by client */
     uint8_t       password_fails;         /**< How many times the player has failed to give the right password. */
     uint32_t      facecache:1;            /**< If true, client is caching images. */
     uint32_t      darkness:1;             /**< True if client wants darkness information. */

@@ -196,6 +196,7 @@ extern mapstruct   *cf_random_map_generate(const char *OutFileName, RMParms *RP,
 extern char        *cf_player_get_title(object *op, char *title, int size);
 extern void         cf_player_set_title(object *op, const char *title);
 extern sstring      cf_player_get_ip(object *op);
+extern sstring      cf_player_get_client(object *op);
 extern object      *cf_player_get_marked_item(object *op);
 extern void         cf_player_set_marked_item(object *op, object *ob);
 extern player      *cf_player_find(const char *plname);

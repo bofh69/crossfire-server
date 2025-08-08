@@ -102,6 +102,12 @@ static PyObject *Player_GetIP(Crossfire_Player *whoptr, void *closure) {
     return Py_BuildValue("s", cf_player_get_ip(whoptr->obj));
 }
 
+static PyObject *Player_GetClient(Crossfire_Player *whoptr, void *closure) {
+    (void)closure;
+    EXISTCHECK(whoptr);
+    return Py_BuildValue("s", cf_player_get_client(whoptr->obj));
+}
+
 static PyObject *Player_GetMarkedItem(Crossfire_Player *whoptr, void *closure) {
     (void)closure;
     EXISTCHECK(whoptr);
@@ -1572,6 +1578,7 @@ static PyGetSetDef Player_getseters[] = {
     { "CmdCount",      (getter)Player_GetIntProperty,NULL, NULL, (void*)CFAPI_PLAYER_PROP_COUNT},
     { "Title",         (getter)Player_GetTitle,         (setter)Player_SetTitle, NULL, NULL },
     { "IP",            (getter)Player_GetIP,            NULL, NULL, NULL },
+    { "Client",        (getter)Player_GetClient   ,     NULL, NULL, NULL },
     { "MarkedItem",    (getter)Player_GetMarkedItem,    (setter)Player_SetMarkedItem, NULL, NULL },
     { "Party",         (getter)Player_GetParty,         (setter)Player_SetParty,      NULL, NULL },
     { "BedMap",        (getter)Player_GetBedMap,        (setter)Player_SetBedMap, NULL, NULL },

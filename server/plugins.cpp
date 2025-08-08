@@ -2244,6 +2244,12 @@ static void cfapi_object_get_property(int *type, ...) {
         *type = CFAPI_SSTRING;
         break;
 
+    case CFAPI_PLAYER_PROP_CLIENT:
+        rsstring = va_arg(args, sstring *);
+        *rsstring = op->contr->socket->client;
+        *type = CFAPI_SSTRING;
+        break;
+
     case CFAPI_PLAYER_PROP_MARKED_ITEM:
         robject = va_arg(args, object **);
         *robject = find_marked_object(op);

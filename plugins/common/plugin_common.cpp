@@ -854,6 +854,15 @@ sstring cf_player_get_ip(object *op) {
     return value;
 }
 
+sstring cf_player_get_client(object *op) {
+    int type;
+    sstring value;
+
+    cfapiObject_get_property(&type, op, CFAPI_PLAYER_PROP_CLIENT, &value);
+    assert(type == CFAPI_SSTRING);
+    return value;
+}
+
 object *cf_player_get_marked_item(object *op) {
     int type;
     object *value;

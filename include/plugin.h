@@ -236,7 +236,8 @@ struct crossfire_plugin {
 #define CFAPI_PLAYER_PROP_NEXT              156
 #define CFAPI_PLAYER_PROP_TITLE             157
 #define CFAPI_PLAYER_PROP_TRANSPORT         158
-#define CFAPI_PLAYER_PROP_COUNT             159
+#define CFAPI_PLAYER_PROP_CLIENT            159
+#define CFAPI_PLAYER_PROP_COUNT             160
 
 #define CFAPI_PLAYER_QUEST_START            0
 #define CFAPI_PLAYER_QUEST_GET_STATE        1

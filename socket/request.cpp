@@ -673,9 +673,13 @@ void version_cmd(char *buf, int len, socket_struct *ns) {
 #endif
 
     if (rest != NULL) {
-        LOG(llevInfo, "Connection from %s (%s), CS %d, SC %d\n",
-            ns->host, rest, ns->cs_version, ns->sc_version);
+        ns->client = add_string(rest);
+    } else {
+        ns->client = add_string("unknown");
     }
+
+    LOG(llevInfo, "Connection from %s (%s), CS %d, SC %d\n",
+        ns->host, ns->client, ns->cs_version, ns->sc_version);
 }
 
 /**
