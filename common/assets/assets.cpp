@@ -386,7 +386,7 @@ static void build_filename(const char *name, const char *prefix, char *dest, siz
 static void add_to_tar(mtar_t *tar, void *data, size_t len, const char *filename) {
     mtar_header_t h;
     memset(&h, 0, sizeof(h));
-    strncpy(h.name, filename, sizeof(h.name));
+    strlcpy(h.name, filename, sizeof(h.name));
     h.size = len;
     h.type = MTAR_TREG;
     h.mode = 0664;
