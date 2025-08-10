@@ -42,7 +42,7 @@ void ArtifactWriter::write(const artifact *item, StringBuffer *buf) {
         item->item->name = name;
         /** @todo check why not included in get_ob_diff */
         if (item->item->anim_speed) {
-            stringbuffer_append_printf(buf, "anim_speed %ld\n", item->item->anim_speed);
+            stringbuffer_append_printf(buf, "anim_speed %uc\n", item->item->anim_speed);
         }
 
         auto inv = item->item->inv;

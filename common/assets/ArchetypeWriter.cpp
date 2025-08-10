@@ -17,7 +17,7 @@ static void doWrite(const archetype *arch, StringBuffer *buf) {
     get_ob_diff(buf, &arch->clone, &empty_archetype->clone);
     /** @todo check why not included in get_ob_diff */
     if (arch->clone.anim_speed) {
-        stringbuffer_append_printf(buf, "anim_speed %ld\n", arch->clone.anim_speed);
+        stringbuffer_append_printf(buf, "anim_speed %uc\n", arch->clone.anim_speed);
     }
     if (arch->clone.casting_time) {
         stringbuffer_append_printf(buf, "casting_time %d\n", arch->clone.casting_time);
