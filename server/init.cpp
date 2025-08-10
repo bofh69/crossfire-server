@@ -529,11 +529,13 @@ static materialtype_t *get_empty_mat(void) {
  */
 static void load_materials(BufferReader *reader, const char *filename) {
     char *buf, *cp, *next;
-    materialtype_t *mt;
+    materialtype_t *mt = NULL;
     int i, value;
     (void)filename;
+    int line = 0;
 
     while ((buf = bufferreader_next_line(reader)) != NULL) {
+        line++;
         if (*buf == '#')
             continue;
         cp = buf;
@@ -544,7 +546,14 @@ static void load_materials(BufferReader *reader, const char *filename) {
             materials.push_back(mt);
             mt->name = add_string(strchr(cp, ' ')+1);
             mt->description = add_refcount(mt->name);
-        } else if (!strncmp(cp, "description", 11)) {
+        }
+
+        if (mt == NULL) {
+            LOG(llevError, "%s:%d: fields must come after a name line\n", filename, line);
+            fatal(SEE_LAST_ERROR);
+        }
+
+        if (!strncmp(cp, "description", 11)) {
             FREE_AND_COPY_IF(mt->description, strchr(cp, ' ')+1);
         } else if (sscanf(cp, "material %d", &value)) {
             mt->material = value;
