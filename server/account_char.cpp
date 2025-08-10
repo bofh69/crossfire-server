@@ -141,7 +141,7 @@ Account_Chars *account_char_load(const char *account_name) {
     }
 
     Account_Chars *ac = new Account_Chars();
-    ac->ref_count++;
+    ac->ref_count = 1;
     ac->account_name = add_string(account_name);
     account_char_load_from_file(ac);
 
