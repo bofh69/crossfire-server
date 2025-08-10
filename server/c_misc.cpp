@@ -604,6 +604,8 @@ void list_players(object *op, region *reg, partylist *party) {
                                  "Total Players in party %s (%d) -- WIZ(%d) AFK(%d) BOT(%d)",
                                  party->partyname, num_players, num_wiz, num_afk, num_bot);
     }
+    if (chars == NULL)
+        return;
     qsort(chars, num_players, sizeof(chars_names), (int (*)(const void *, const void *))name_cmp);
     for (i = 0; i < num_players; i++)
         display_who_entry(op, find_player(chars[i].namebuf), format);
