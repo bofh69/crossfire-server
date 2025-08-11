@@ -20,14 +20,14 @@ The server DM will see something like this:
 Since each report is tracked by the player reporting the issue, you can also check the history and status of your reports.
 
 Example:
-  `report list
+  'report list
 
 This will show you all reports that you have created and their status of closed or fixed or new.
 
 You can also search for specific reports using the issue number or by text from the summary.
 
 Example:
-  `report list key
+  'report list key
 
 You will see:
   <issue_no> (closed|fixed|new) the key I just found in this map won't open this door
@@ -35,7 +35,7 @@ You will see:
 As the report owner, it is also possible for you to delete your own reports.
 
 Example:
-  `report delete <<###>
+  'report delete <<###>
 
 You will see:
   Report deleted.
