@@ -3,6 +3,7 @@ Report a bug or ask for help from a dungeon master.
 Usage: report <description of issue>
 Usage: report list
 Usage: report list <SEARCH>
+Usage: report delete <###>
 
 If enabled, this command sends a bug report or request for help to the dungeon masters. The report contains your character name, current map location, and issue description. It is preferred for the report to be made in the actual map and as close as possible to where the problem was encountered.
 
@@ -11,6 +12,7 @@ Example:
 
 You are the player, will see:
   Thank you for your report. Your report was assigned an ID of ###. Use " 'report list " to check the status of your reports.
+  Use 'report list <SEARCH. to search your reports by text or ID.
 
 The server DM will see something like this:
   <issue_no> | player_name | <date & time> | /path/to/map (x, y) | the key I just found in this map won't open this door
@@ -29,6 +31,14 @@ Example:
 
 You will see:
   <issue_no> (closed|fixed|new) the key I just found in this map won't open this door
+
+As the report owner, it is also possible for you to delete your own reports.
+
+Example:
+  `report delete <<###>
+
+You will see:
+  Report deleted.
 
 If you use wording or use an issue number that does not exist or is invalid, you see a message like:
 
