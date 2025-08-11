@@ -1,2 +1,9 @@
 Usage: shout <something>
-Sends a message to all players on the server.
+
+Sends a message to all players on the server. This is a server wide communication channel.
+
+NOTE: Dialog with NPCs, they will only use and respond to the say command, so make sure to reference that when interacting with them.
+
+See Also: chat
+See Also: say
+See Also: tell
