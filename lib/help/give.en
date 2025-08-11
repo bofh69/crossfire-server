@@ -1,0 +1,11 @@
+Used for advancing certain quests.
+
+Usage:
+
+    give <item>
+
+You need to have the item in your inventory, and you need to be standing next to the NPC and facing the direction they're in to use this command. It attempts to give the item to the NPC so they can examine it which will then progress the quest.
+
+Example:
+
+    give key
