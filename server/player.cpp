@@ -434,6 +434,7 @@ void set_player_socket(player *p, socket_struct *ns) {
      */
     ns->faces_sent = NULL;
     ns->host = strdup_local("");
+    ns->client = NULL;
     ns->account_name = strdup_local("");
     ns->account_chars = NULL;   // If not NULL, the reference is now kept by p
 
