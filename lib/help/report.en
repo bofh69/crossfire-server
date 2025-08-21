@@ -55,7 +55,7 @@ Example:
 
 The player will see the following output:
 
-The report command accepts the following subcommnds:
+The report command accepts the following subcommands:
 - delete
 - help
 - list
