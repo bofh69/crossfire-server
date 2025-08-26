@@ -1,0 +1,32 @@
+name: Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-automake:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - name: install deps
+      run: sudo apt install libcurl4 libcurl4-openssl-dev libgd-dev libgd-tools
+    - name: autoconf
+      run: autoreconf -i
+    - name: configure
+      run: ./configure --enable-gcc-pch --disable-collect --disable-check --enable-mapper
+    - name: make
+      run: make -j $(nproc)
+
+  build-cmake:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - name: install deps
+      run: sudo apt install libcurl4 libcurl4-openssl-dev libgd-dev libgd-tools
+    - name: configure
+      run: cmake -G Ninja .
+    - name: build
+      run: cmake --build .
