@@ -159,12 +159,12 @@ fi
 AM_CONDITIONAL(PROCESS_XSLT, [test -n "$xsltengine"])
 
 dnl Make sure 'arch' and 'maps' directories exist.
-if test "$cross_compiling" != "yes"; then
+AS_IF([test "$cross_compiling" != "yes" -a "$disable_collect" = "no"], [
   AC_CHECK_FILE([$srcdir/lib/arch], [],
                 [AC_MSG_ERROR([Could not find lib/arch directory.])])
   AC_CHECK_FILE([$srcdir/lib/maps], [],
                 [AC_MSG_ERROR([Could not find lib/maps directory.])])
-fi
+])
 
 case $host in
   *-*-msdos* | *-*-go32* | *-*-mingw32* | *-*-cygwin* | *-*-windows*)

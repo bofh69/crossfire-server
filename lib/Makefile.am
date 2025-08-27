@@ -3,16 +3,16 @@ pkgconfdir = @pkgconfdir@
 
 dist_noinst_SCRIPTS = util.pl
 dist_pkgdata_DATA = \
+	def_help
+
+if COLLECT
+dist_pkgdata_DATA += \
 	arch/attackmess \
 	arch/formulae \
 	arch/image_info \
 	arch/materials \
 	arch/messages \
 	arch/races \
-	def_help
-
-if COLLECT
-dist_pkgdata_DATA += \
 	crossfire.arc \
 	crossfire.trs \
 	crossfire.face \
