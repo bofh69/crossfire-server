@@ -458,7 +458,8 @@ static void quest_display(player *pl, quest_player *pq, int showall, const char*
     state = pq->quests;
     while (state) {
         quest = quest_find_by_code(state->code);
-        if (quest->parent == NULL) {
+        // include all quests, including subquests, in the count
+        {
             total_count++;
             /* count up the number of completed quests first */
             if (state->state == QC_CAN_RESTART) {
