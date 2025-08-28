@@ -863,34 +863,17 @@ void command_quest(object *op, const char *params) {
     command_help(op, "quest");
 }
 
-/** Structure used when dumping quests to stdout. */
-struct dump {
-    const quest_definition *parent; /**< Parent to dump from. */
-    int level;                      /**< Indentation level. */
-};
 /**
- * Dump one quest on the logfile, then its children. Will call itself through quest_for_each().
+ * Dump one quest on the logfile.
  * @param quest quest to dump.
- * @param user pointer to a ::dump struct.
  */
 static void output_quests(const quest_definition *quest, void *user) {
-    dump *d = (dump *)user;
-    if (d->parent != quest->parent)
-        return;
+    const char *parent = "";
+    if (quest->parent)
+        parent = quest->parent->quest_code;
 
-    char prefix[MAX_BUF];
-    prefix[0] = '\0';
-    for (int i = 0; i < d->level; i++) {
-        strncat(prefix, "-", MAX_BUF - 1);
-    }
-    prefix[MAX_BUF - 1] = '\0';
-
-    fprintf(logfile, "%s%s - %s - %zu steps (%srestartable)\n", prefix, quest->quest_code, quest->quest_title, quest->steps.size(), quest->quest_restart ? "" : "not ");
-
-    dump r;
-    r.parent = quest;
-    r.level = d->level + 1;
-    quest_for_each(output_quests, &r);
+    fprintf(logfile, "%s,%s,\"%s\",%zu,%d,%d\n",
+            quest->quest_code, parent, quest->quest_title, quest->steps.size(), quest->quest_restart, quest->quest_is_system);
 }
 
 /**
@@ -898,10 +881,8 @@ static void output_quests(const quest_definition *quest, void *user) {
  * quests are set up and recognised correctly.
  */
 void dump_quests(void) {
-    dump d;
-    d.parent = NULL;
-    d.level = 0;
-    quest_for_each(output_quests, &d);
+    fprintf(logfile, "code,parent,title,steps,restart,system\n");
+    quest_for_each(output_quests, NULL);
     exit(0);
 }
 
