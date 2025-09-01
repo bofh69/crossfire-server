@@ -834,8 +834,11 @@ void process_object(object *op) {
      * dictate how long it lasts and not food.
      * Otherwise, you end up with artifact foods creating forces
      * that ultimately starve the player to death.
+     *
+     * Additionally, there are some spell effects that use food and duration, so we need to exclude those here.
+     * Ball lightning and divine shock break when the duration check does not exclude spell effects.
      */
-    if (QUERY_FLAG(op, FLAG_IS_USED_UP) && (op->duration > 0 || (--op->stats.food) <= 0)) {
+    if (QUERY_FLAG(op, FLAG_IS_USED_UP) && ((op->type != SPELL_EFFECT && op->duration > 0) || (--op->stats.food) <= 0)) {
         if (QUERY_FLAG(op, FLAG_APPLIED)) {
             remove_force(op);
         } else {
