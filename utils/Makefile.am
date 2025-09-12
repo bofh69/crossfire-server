@@ -13,5 +13,4 @@ SUBDIRS = mapper
 
 noinst_PROGRAMS = test_weather
 test_weather_SOURCES = test_weather.cpp
-test_weather_LDADD = ../server/libserver.a ../common/libcross.a ../random_maps/librandom_map.a \
-		../socket/libsocket.a ../types/libtypes.a
+test_weather_LDADD = ../server/libserver.la ../common/libcross.la ../random_maps/librandom_map.la
