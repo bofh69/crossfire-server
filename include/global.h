@@ -24,6 +24,10 @@
  * used in newserver.h, which is used in all other files
  */
 #include <sys/socket.h>
+/**
+ * We need sys/time.h to have struct timeval when we include newserver.h
+ */
+#include <sys/time.h>
 #endif
 
 #ifdef HAVE_LIBDMALLOC
