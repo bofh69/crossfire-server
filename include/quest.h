@@ -29,7 +29,7 @@ struct quest_condition {
 struct quest_step_definition {
     int step = 0;                               /**< Step identifier. */
     sstring step_description = nullptr;         /**< Step description to show player. */
-    int is_completion_step:1;                   /**< Whether this step completes the quest (1) or not (0) */
+    bool is_completion_step:1;                   /**< Whether this step completes the quest (1) or not (0) */
     std::vector<quest_condition *> conditions;  /**< The conditions that must be satisfied to trigger the step */
 };
 

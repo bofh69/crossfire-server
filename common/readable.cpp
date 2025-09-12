@@ -1399,7 +1399,6 @@ static StringBuffer *mon_info_msg(int level, size_t booksize, object *book) {
  */
 static StringBuffer *artifact_describe(const artifact *art, const artifactlist *al, int message, int art_name, int separator) {
     object *tmp;
-    int chance;
     StringBuffer *desc = stringbuffer_new(), *sbuf;
 
     if (separator)
@@ -1434,7 +1433,7 @@ static StringBuffer *artifact_describe(const artifact *art, const artifactlist *
 
     /* chance of finding */
     stringbuffer_append_string(desc, " is ");
-    chance = 100*((float)art->chance/al->total_chance);
+    int chance = 100*((float)art->chance/al->total_chance);
     if (chance >= 20)
         stringbuffer_append_string(desc, "an uncommon");
     else if (chance >= 10)
@@ -1650,7 +1649,6 @@ void formula_knowledge_code(const recipe *r, char *buf, size_t len) {
 static void make_formula_book(object *book, int level) {
     recipelist *fl;
     recipe *formula;
-    int chance, count = 0;
     const char *op_name;
     archetype *at;
     StringBuffer *text, *title;
@@ -1671,7 +1669,7 @@ static void make_formula_book(object *book, int level) {
     }
 
     /* get a random formula, weighted by its bookchance */
-    chance = RANDOM()%fl->total_chance;
+    int chance = RANDOM()%fl->total_chance;
     for (formula = fl->items; formula != NULL; formula = formula->next) {
         chance -= formula->chance;
         if (chance <= 0 && formula->chance != 0 && !formula->is_combination)
@@ -1750,7 +1748,6 @@ static void make_formula_book(object *book, int level) {
         stringbuffer_append_printf(text, " may be made at %s using the following ingredients:\n", name);
 
         for (next = formula->ingred; next != NULL; next = next->next) {
-            count++;
             stringbuffer_append_printf(text, "%s\n", next->name);
         }
     } else {

@@ -446,7 +446,7 @@ int hit_map(object *op, int dir, uint32_t type, int full_hit) {
                 break;
         }
     } FOR_MAP_FINISH();
-    return 0;
+    return retflag;
 }
 
 /**
