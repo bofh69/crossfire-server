@@ -16,6 +16,11 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include "autoconf.h"
+/* PATH_MAX is sometimes defined in limits.h
+ * PATH_MAX is a mess regardless, but I think
+ * adding limits.h will make it build in musl libc
+ */
+#include <limits.h>
 #endif
 
 #include "global.h"
