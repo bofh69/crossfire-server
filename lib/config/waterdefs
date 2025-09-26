@@ -26,3 +26,5 @@ medium_stones, 0, -1
 large_stones, 0, -1
 crater, 0, -1
 steppe, 1, -2
+permanent_lava, 0, -5
+blackrock, 1, -2
