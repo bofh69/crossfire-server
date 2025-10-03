@@ -1777,7 +1777,7 @@ int cast_heal(object *op, object *caster, object *spell, int dir) {
 
             if (target->stats.hp >= target->stats.maxhp) {
                 draw_ext_info(NDI_UNIQUE, 0, target, MSG_TYPE_SPELL, MSG_TYPE_SPELL_HEAL,
-                              "You feel just fine!");
+                              "You feel completely healed!");
             } else if (heal > 50) {
                 draw_ext_info(NDI_UNIQUE, 0, target, MSG_TYPE_SPELL, MSG_TYPE_SPELL_HEAL,
                               "Your wounds close!");
