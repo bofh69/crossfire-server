@@ -51,24 +51,19 @@ static method_ret potion_type_apply(object *potion, object *applier, int aflags)
             potion = identify(potion);
     }
 
-    play_sound_map(SOUND_TYPE_ITEM, applier, 0, "drink");
-    apply_handle_yield(potion);
-
     /* Potion of restoration - only for players */
     if (applier->type == PLAYER && (potion->attacktype&AT_DEPLETE)) {
         if (QUERY_FLAG(potion, FLAG_CURSED) || QUERY_FLAG(potion, FLAG_DAMNED)) {
             drain_stat(applier);
             fix_object(applier);
-            object_decrease_nrof_by_one(potion);
-            return METHOD_OK;
+            goto applied;
         }
 
         if (remove_depletion(applier, potion->level) == 0)
             draw_ext_info(NDI_UNIQUE, 0, applier, MSG_TYPE_APPLY, MSG_TYPE_APPLY_FAILURE,
                 "Your potion had no effect.");
 
-        object_decrease_nrof_by_one(potion);
-        return METHOD_OK;
+        goto applied;
     }
 
     /* improvement potion - only for players */
@@ -123,8 +118,7 @@ static method_ret potion_type_apply(object *potion, object *applier, int aflags)
                 draw_ext_info(NDI_UNIQUE, 0, applier, MSG_TYPE_APPLY, MSG_TYPE_APPLY_CURSED,
                               "You are fortunate that you are so pathetic.");
         }
-        object_decrease_nrof_by_one(potion);
-        return METHOD_OK;
+        goto applied;
     }
 
     /* A potion that casts a spell.  Healing, restore spellpoint
@@ -150,11 +144,10 @@ static method_ret potion_type_apply(object *potion, object *applier, int aflags)
                 return METHOD_OK;
             }
 
-        object_decrease_nrof_by_one(potion);
         /* if youre dead, no point in doing this... */
         if (!QUERY_FLAG(applier, FLAG_REMOVED))
             fix_object(applier);
-        return METHOD_OK;
+        goto applied;
     }
 
     /* Deal with protection potions */
@@ -193,13 +186,12 @@ static method_ret potion_type_apply(object *potion, object *applier, int aflags)
         CLEAR_FLAG(potion, FLAG_APPLIED);
         SET_FLAG(force, FLAG_APPLIED);
         change_abil(applier, force);
-        object_decrease_nrof_by_one(potion);
 
         if (potion->other_arch != NULL && applier->map != NULL) {
             object_insert_in_map_at(arch_to_object(potion->other_arch), applier->map, NULL, INS_ON_TOP, applier->x, applier->y);
         }
 
-        return METHOD_OK;
+        goto applied;
     }
 
     /* Only thing left are the stat potions */
@@ -221,6 +213,10 @@ static method_ret potion_type_apply(object *potion, object *applier, int aflags)
      */
     CLEAR_FLAG(potion, FLAG_APPLIED);
     fix_object(applier);
+
+applied:
+    play_sound_map(SOUND_TYPE_ITEM, applier, 0, "drink");
+    apply_handle_yield(potion);
     object_decrease_nrof_by_one(potion);
     return METHOD_OK;
 }
