@@ -1363,7 +1363,6 @@ int is_identified(const object *op) {
 void object_give_identified_properties(object *op) {
     // Make sure identified objects stack correctly
     CLEAR_FLAG(op, FLAG_KNOWN_MAGICAL);
-    CLEAR_FLAG(op, FLAG_NO_SKILL_IDENT);
     CLEAR_FLAG(op, FLAG_BEEN_APPLIED);
 
     // The rest only apply to identifiable items. We don't want, e.g. shop
@@ -1445,6 +1444,7 @@ object *identify(object *op) {
     object *pl, *op1;
 
     SET_FLAG(op, FLAG_IDENTIFIED);
+    CLEAR_FLAG(op, FLAG_NO_SKILL_IDENT);
     object_give_identified_properties(op);
 
     if (op->type == POTION) {
