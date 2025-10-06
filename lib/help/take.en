@@ -15,5 +15,6 @@ Example:
 
 By default, take is bound to the comma (,) key with no parameters.
 
-See Also: pickup
-See Also: get
+  See Also: pickup
+  See Also: get
+  See Also: bind
