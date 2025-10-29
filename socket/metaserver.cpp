@@ -477,6 +477,9 @@ int metaserver2_init(void) {
         ms2_signal.lock();
         try {
           metaserver_thread = std::thread(metaserver2_thread);
+#ifndef WIN32
+          pthread_setname_np(metaserver_thread.native_handle(), "metaserver");
+#endif
         }
         catch (const std::system_error &err) {
           LOG(llevError, "metaserver2_init: failed to create thread, code %d, what %s\n", err.code().value(), err.what());
