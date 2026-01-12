@@ -1,0 +1,24 @@
+#!/bin/sh
+# run crossfire-server from build directory without installing
+set -e
+cd "@CMAKE_CURRENT_BINARY_DIR@"
+srcdir="@CMAKE_CURRENT_SOURCE_DIR@"
+datadir="$srcdir/lib"
+error=0
+if [ ! -e "$datadir/arch/attackmess" ]; then
+    echo "Could not find archs. Please install them to: $datadir/arch"
+    error=1
+fi
+if [ ! -e "$datadir/maps/HallOfSelection" ]; then
+    echo "Could not find maps. Please install them to: $datadir/maps"
+    error=1
+fi
+if [ $error -eq 1 ]; then
+    exit 1
+fi
+mkdir -p var
+exec ./crossfire-server \
+    -conf "$srcdir/lib/config/" \
+    -data "$datadir" \
+    -local var \
+    $@
