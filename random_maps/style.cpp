@@ -27,7 +27,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include "../include/autoconf.h"
+#include "autoconf.h"
 #endif /* win32 */
 
 #include "random_map.h"

@@ -212,19 +212,19 @@ extern socket_struct *init_sockets;
 #define FREE_AND_COPY_IF(sv, nv) { if (sv) free_string(sv); sv = nv ? add_string(nv) : NULL; }
 
 #ifndef WIN32 /* ---win32 we define this stuff in win32.h */
-#if HAVE_DIRENT_H
+#ifdef HAVE_DIRENT_H
 # include <dirent.h>
 # define NAMLEN(dirent) strlen((dirent)->d_name)
 #else
 # define dirent direct
 # define NAMLEN(dirent) (dirent)->d_namlen
-# if HAVE_SYS_NDIR_H
+# ifdef HAVE_SYS_NDIR_H
 #  include <sys/ndir.h>
 # endif
-# if HAVE_SYS_DIR_H
+# ifdef HAVE_SYS_DIR_H
 #  include <sys/dir.h>
 # endif
-# if HAVE_NDIR_H
+# ifdef HAVE_NDIR_H
 #  include <ndir.h>
 # endif
 #endif
