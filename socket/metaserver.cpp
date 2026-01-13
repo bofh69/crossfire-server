@@ -258,13 +258,13 @@ static void metaserver2_build_form(struct curl_httppost **formpost) {
 }
 #endif
 
+#ifdef HAVE_LIBCURL
 /**
  * This sends an update to the various metaservers.
  * It generates the form, and then sends it to the
  * server
  */
 static void metaserver2_updates(void) {
-#ifdef HAVE_LIBCURL
     struct curl_httppost *formpost = NULL;
     metaserver2_build_form(&formpost);
 
@@ -299,7 +299,6 @@ static void metaserver2_updates(void) {
     }
     /* then cleanup the formpost chain */
     curl_formfree(formpost);
-#endif
 }
 
 /**
@@ -313,6 +312,7 @@ void metaserver2_thread() {
     } while (!ms2_signal.try_lock_for(std::chrono::seconds(60)));
     ms2_signal.unlock();
 }
+#endif
 
 /**
  * This initializes the metaserver2 logic - it reads
@@ -473,6 +473,7 @@ int metaserver2_init(void) {
         if (!local_info.flags)
             local_info.flags = strdup("");
 
+#ifdef HAVE_LIBCURL
         ms2_signal.lock();
         try {
           metaserver_thread = std::thread(metaserver2_thread);
@@ -482,6 +483,7 @@ int metaserver2_init(void) {
           /* Effectively true - we're not going to update the metaserver */
           local_info.notification = 0;
         }
+#endif
     }
     return local_info.notification;
 }
@@ -490,8 +492,10 @@ int metaserver2_init(void) {
  * Stop metaserver updates.
  */
 void metaserver2_exit() {
+#ifdef HAVE_LIBCURL
     ms2_signal.unlock();
     if (metaserver_thread.joinable()) {
         metaserver_thread.join();
     }
+#endif
 }
