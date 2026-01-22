@@ -28,6 +28,8 @@
 #include <strings.h>
 #endif
 
+#include <filesystem>
+
 #include "loader.h"
 #include "version.h"
 #include "server.h"
@@ -1085,6 +1087,24 @@ void add_server_collect_hooks() {
 }
 
 /**
+ * Create empty directories in localdir that the server expects to exist (and
+ * writes to without checking that the directories already exist).
+ */
+static void mklocaldirs() {
+    auto dirs = {"account", "maps", "players", "template-maps", "unique-items"};
+    std::string localdir(settings.localdir);
+    try {
+        std::filesystem::create_directories(localdir);
+        for (auto dir : dirs) {
+            std::filesystem::create_directories(localdir + "/" + dir);
+        }
+    } catch (std::filesystem::filesystem_error e) {
+        LOG(llevError, "Could not create server save directories in %s (%s). Some server state may fail to save.\n",
+                settings.localdir, e.what());
+    }
+}
+
+/**
  * This is the main server initialization function.
  *
  * Called only once, when starting the program.
@@ -1100,6 +1120,7 @@ void init(int argc, char **argv) {
 
     add_server_collect_hooks();
 
+    mklocaldirs();
     init_library();     /* Must be called early */
     load_settings();    /* Load the settings file */
     parse_args(argc, argv, 2);

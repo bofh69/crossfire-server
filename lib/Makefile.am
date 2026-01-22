@@ -40,7 +40,6 @@ CONF_FILES = \
 	config/wreplacedefs \
 	config/wsettings
 
-VAR_FILES = highscore banish_file bookarch temp.maps clockdata
 EXTRA_DIST = README .collect-stamp $(CONF_FILES)
 
 helpdir=$(pkgdatadir)/help
@@ -102,16 +101,6 @@ install-data-local: util.pl
 	done
 
 	$(mkinstalldirs) $(DESTDIR)$(pkgstatedir)
-	for i in $(VAR_FILES) ; do \
-		touch $(DESTDIR)$(pkgstatedir)/$$i ; \
-	done
-
-	@for i in account datafiles players unique-items template-maps maps; do \
-	    if [ ! -d $(DESTDIR)$(pkgstatedir)/$$i ]; then \
-		echo "Creating directory $(pkgstatedir)/$$i"; \
-		$(mkinstalldirs) $(DESTDIR)$(pkgstatedir)/$$i; \
-	    fi; \
-	done
 
 
 # Uninstall unchanged config/var files so make distcheck is happy
@@ -123,14 +112,6 @@ uninstall-local:
 		fi ; \
 		if diff -q $(srcdir)/$$i $(DESTDIR)$(pkgconfdir)/$$i ; then \
 			rm -f $(DESTDIR)$(pkgconfdir)/$$i ; \
-		fi ; \
-	done
-	-for i in $(VAR_FILES) ; do \
-		if test ! -f $(DESTDIR)$(pkgstatedir)/$$i ; then \
-			continue ;\
-		fi ; \
-		if test `wc -c $(DESTDIR)$(pkgstatedir)/$$i|$(AWK) '{ print $$1 }'` -eq "0" ; then \
-			rm -f $(DESTDIR)$(pkgstatedir)/$$i ; \
 		fi ; \
 	done
 
