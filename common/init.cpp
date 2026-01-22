@@ -535,7 +535,7 @@ static void init_clocks(void) {
     snprintf(filename, sizeof(filename), "%s/clockdata", settings.localdir);
     fp = fopen(filename, "r");
     if (fp == NULL) {
-        LOG(llevError, "Can't open %s.\n", filename);
+        LOG(llevDebug, "clockdata not found, starting time at zero\n");
         todtick = 0;
         write_todclock();
         return;

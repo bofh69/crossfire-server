@@ -85,7 +85,7 @@ static void account_char_load_from_file(Account_Chars *chars) {
         /* This may not in fact be a critical error - for a new account, there
          * may not be any data associated with it.
          */
-        LOG(llevInfo, "Warning: Unable to open %s: %s\n", fname, strerror(errno));
+        LOG(llevDebug, "Could not open %s: %s (new account?)\n", fname, strerror(errno));
         return;
     }
     while (fgets(buf, VERY_BIG_BUF, fp)) {
