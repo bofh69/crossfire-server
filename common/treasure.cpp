@@ -86,8 +86,11 @@ static void put_treasure(object *op, object *creator, int flags) {
      * by another object.
      */
     if (flags&GT_ENVIRONMENT && op->type != SPELL) {
+        int flags = INS_NO_MERGE|INS_NO_WALK_ON;
         SET_FLAG(op, FLAG_OBJ_ORIGINAL);
-        object_insert_in_map_at(op, creator->map, op, INS_NO_MERGE|INS_NO_WALK_ON, creator->x, creator->y);
+        if (QUERY_FLAG(op, FLAG_IS_FLOOR))
+            flags |= INS_ABOVE_FLOOR_ONLY;
+        object_insert_in_map_at(op, creator->map, op, flags, creator->x, creator->y);
     } else
         object_insert_in_ob(op, creator);
 }
