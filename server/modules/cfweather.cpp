@@ -102,7 +102,7 @@ struct weathermap_t {
     uint32_t	rainfall;	/**< Cumulative rainfall. */
     uint8_t	darkness;	/**< Indicates level of darkness of map. */
     int8_t	water;		/**< -100 - 100 percentage of water tiles. < 0 means it is a droughty spot */
-    int8_t	forestry;	/**< Range of forestedness. 100 is full forested. 0 is no trees.
+    int8_t	forestry;	/**< Range of forestedness. 100 is full forested. 0 is no trees. */
     /*Dynamic parts*/
     int16_t  realtemp;		/**< Temperature at a given calculation step for this tile. */
 };
@@ -2335,10 +2335,10 @@ static uint8_t wind_blow_object(mapstruct * const m, const int x, const int y, c
     // Also, being on the ground makes the same wind increase affect you less as well.
     // Higher strength characters can also resist being blown by the wind when on the ground.
     if (!is_fly)
-        wt /= (10000 * (stats && stats->Str) ? stats->Str : 1);
+        wt /= 10000 * ((stats && stats->Str) ? stats->Str : 1);
     // When flying, we care about Dex over Str.
     else
-        wt /= (20000 * (stats && stats->Dex) ? stats->Dex : 1);
+        wt /= 20000 * ((stats && stats->Dex) ? stats->Dex : 1);
     // Massive things are pushed around less easily.
     if (windspeed*2 < wt)
         return 0;
@@ -4096,7 +4096,7 @@ static int read_rainfallmap(const Settings *settings) {
         LOG(llevInfo, "Initializing rainfall map...\n");
         init_rainfall();
         // If we write to file successfully, consider initialization a success.
-        if (write_rainfallmap(settings) != 0);
+        if (write_rainfallmap(settings) != 0)
             return -1;
         return 1;
     }
