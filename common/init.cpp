@@ -311,6 +311,7 @@ static void init_emergency_mappath(void) {
  * Good idea to also call init_hash_table if you are doing any object loading.
  */
 void init_library(void) {
+    init_log();
     init_environ();
     init_hash_table();
     init_globals();

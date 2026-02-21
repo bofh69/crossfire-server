@@ -21,6 +21,10 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
+#ifdef HAVE_SYSLOG_H
+#include <syslog.h>
+#endif
+
 #include "sproto.h"
 #include "stats.h"
 
@@ -29,18 +33,38 @@ int reopen_logfile = 0; /* May be set in SIGHUP handler */
 /**
  * Human-readable name of log levels.
  */
-const char *const loglevel_names[] = {
+const char *const loglevel_names[NRLOGLEVELS] = {
     "[EE] ",
+    "[WW] ",
+    "[NN] ",
     "[II] ",
     "[DD] ",
     "[MM] ",
 };
+
+#ifdef HAVE_SYSLOG_H
+const int syslog_pri_map[NRLOGLEVELS] = {
+    LOG_ERR,
+    LOG_WARNING,
+    LOG_NOTICE,
+    LOG_INFO,
+    LOG_DEBUG,
+    LOG_DEBUG,
+};
+#endif
 
 int maps_loaded_total = 0;
 int maps_saved_total = 0;
 int maps_swapped_total = 0;
 
 int log_total = 0;
+
+void init_log() {
+#ifdef HAVE_SYSLOG_H
+    // disable syslog, then only re-enable it if configured
+    setlogmask(0);
+#endif
+}
 
 /**
  * Logs a message to stderr, or to file.
@@ -88,6 +112,9 @@ void LOG(LogLevel logLevel, const char *format, ...) {
         }
 
         vsnprintf(buf, sizeof(buf), format, ap);
+#ifdef HAVE_SYSLOG_H
+        syslog(syslog_pri_map[logLevel], "%s", buf);
+#endif
 #ifdef WIN32 /* ---win32 change log handling for win32 */
         if (time_buf[0] != 0) {
             fputs(time_buf, logfile);

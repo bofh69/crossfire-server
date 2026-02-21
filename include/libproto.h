@@ -185,6 +185,7 @@ extern int get_fear_bonus(int stat);
 extern void init_stats();
 extern void dump_stat_bonuses();
 /* logger.cpp */
+extern void init_log(void);
 extern void LOG(LogLevel logLevel, const char *format, ...) PRINTF_ARGS(2, 3);
 /* los.cpp */
 extern void init_block(void);

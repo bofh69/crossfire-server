@@ -23,6 +23,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef HAVE_SYSLOG_H
+#include <syslog.h>
+#endif
+
 /* Needed for strcasecmp(). */
 #ifndef WIN32
 #include <strings.h>
@@ -227,6 +231,16 @@ static void set_regions(const char *path) {
     settings.regions = path;
 }
 
+static void set_syslog(const char *arg) {
+#ifdef HAVE_SYSLOG_H
+    int facility = atoi(arg);
+    openlog("crossfire-server", LOG_NDELAY, facility << 3);
+    setlogmask(LOG_UPTO(LOG_DEBUG)); // enable all logs, filtering is still done by LOG()
+#else
+    LOG(llevError, "syslog is not available in this build\n");
+#endif
+}
+
 /**
  * Command line option: set unique path.
  * @param path new path.
@@ -406,6 +420,7 @@ static struct Command_Line_Options options[] = {
     { "-n", 0, 1, (cmdlinefunc_args0)unset_debug },
     { "-playerdir", 1, 1, (cmdlinefunc_args0)set_playerdir },
     { "-regions", 1, 1, (cmdlinefunc_args0)set_regions },
+    { "-syslog", 1, 1, (cmdlinefunc_args0)set_syslog },
     { "-templatedir", 1, 1, (cmdlinefunc_args0)set_templatedir },
     { "-tmpdir", 1, 1, (cmdlinefunc_args0)set_tmpdir },
     { "-uniquedir", 1, 1, (cmdlinefunc_args0)set_uniquedir },
@@ -1113,6 +1128,10 @@ static void mklocaldirs() {
  */
 void init(int argc, char **argv) {
     logfile = stderr;
+#ifdef HAVE_SYSLOG_H
+    // disable syslog, then only re-enable it if configured
+    setlogmask(0);
+#endif
 
     /* First argument pass - right now it does nothing, but in the future specifying
      * the LibDir in this pass would be reasonable. */
@@ -1218,6 +1237,7 @@ static void help(void) {
     printf("                In this case the file will be in tar format.\n");
     printf(" -playerdir   Set the player files directory.\n");
     printf(" -regions     Set the region file.\n");
+    printf(" -syslog <no> Log to syslog with the given facility number (e.g. 16 for LOCAL0)\n");
     printf(" -templatedir Set the template map directory.\n");
     printf(" -tmpdir      Set the directory for temporary files (mostly maps.)\n");
     printf(" -uniquedir   Set the unique items/maps directory.\n");

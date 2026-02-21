@@ -299,6 +299,7 @@ check_include_files(gperftools/profiler.h HAVE_GPERFTOOLS_PROFILER_H)
 check_include_files(ndir.h HAVE_NDIR_H)
 check_include_files(sys/dir.h HAVE_SYS_DIR_H)
 check_include_files(sys/ndir.h HAVE_SYS_NDIR_H)
+check_include_files(syslog.h HAVE_SYSLOG_H)
 
 include(CheckFunctionExists)
 

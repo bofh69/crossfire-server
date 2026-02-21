@@ -112,6 +112,7 @@ dnl Checks for header files.
 AC_HEADER_DIRENT
 AC_CHECK_HEADERS([crypt.h])
 AC_CHECK_HEADERS([gperftools/profiler.h])
+AC_CHECK_HEADERS([syslog.h])
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 CF_CHECK_VISIBILITY()

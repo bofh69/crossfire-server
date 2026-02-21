@@ -5,6 +5,7 @@
 #cmakedefine HAVE_DIRENT_H
 #cmakedefine HAVE_GPERFTOOLS_PROFILER_H
 #cmakedefine HAVE_NDIR_H
+#cmakedefine HAVE_SYSLOG_H
 #cmakedefine HAVE_SYS_DIR_H
 #cmakedefine HAVE_SYS_NDIR_H
 
