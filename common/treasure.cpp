@@ -266,7 +266,7 @@ static void create_one_treasure(treasurelist *tl, object *op, int flag, int diff
         tries++;
     }
     if (!got_one)
-        LOG(llevError, "create_one_treasure failed to create at least one treasure for item %s on list %s\n", t->item->name, tl->name);
+        LOG(llevWarn, "create_one_treasure failed to create at least one treasure for item %s on list %s\n", t->item->name, tl->name);
 }
 
 /**
@@ -1189,7 +1189,7 @@ void fix_generated_item(object *op, object *creator, int difficulty, int max_mag
         case SCROLL:
             if (!op->inv) {
                 // Somehow generated a scroll without a spell...
-                LOG(llevError, "Generated a scroll without a spell\n");
+                LOG(llevWarn, "Generated a scroll without a spell\n");
                 break;
             }
             op->level = level_for_item(op, difficulty);

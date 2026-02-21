@@ -36,7 +36,7 @@ void add_friendly_object(object *op) {
      * the debugger here and see where the problem is happening.
      */
     if (is_friendly(op)) {
-        LOG(llevError, "add_friendly_object: Trying to add object already on list (%s)\n", op->name);
+        LOG(llevDebug, "add_friendly_object: Trying to add object already on list (%s)\n", op->name);
         return;
     }
 

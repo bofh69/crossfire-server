@@ -81,7 +81,7 @@ void esrv_send_face(socket_struct *ns, const Face *face, int nocache) {
     face_sets *fs = find_faceset(get_face_fallback(ns->faceset, face->number));
 
     if (!fs || face->number >= fs->allocated || fs->faces[face->number].data == NULL) {
-        LOG(llevError, "esrv_send_face: faces[%d].data == NULL\n", face->number);
+        LOG(llevWarn, "esrv_send_face: faces[%d].data == NULL\n", face->number);
         return;
     }
 
