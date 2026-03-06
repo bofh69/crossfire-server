@@ -676,6 +676,11 @@ void load_objects(mapstruct *m, FILE *fp, int mapflags) {
             break;
 
         case LL_MORE:
+            if (last_more == NULL) {
+                LOG(llevError, "Error loading map %s from file: multi-part object requires an object before 'more' parts can follow\n",
+                        m->path);
+                continue;
+            }
             object_insert_in_map_at(op, m, op, INS_NO_MERGE|INS_NO_WALK_ON|INS_ABOVE_FLOOR_ONLY, op->x, op->y);
             op->head = prev,
             last_more->more = op,
