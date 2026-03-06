@@ -57,6 +57,7 @@ static void bufferreader_init_for_length(BufferReader *br, size_t length) {
         br->allocated_size = needed;
     }
     br->buffer_length = length;
+    assert(br->buf != NULL); // silence static analyzer. if br->allocated_size>0 then br->buf is allocated.
     br->buf[br->buffer_length] = '\0';
     br->current_line = br->buffer_length > 0 ? br->buf : NULL;
     br->line_index = 0;
