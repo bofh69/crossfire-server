@@ -42,12 +42,15 @@ void ArchetypeLoader::load(BufferReader *reader, const std::string &filename) {
             break;
 
         case LL_MORE: /* Another part of the previous archetype, link it correctly */
+            if (last_more == NULL) {
+                LOG(llevError, "Error loading arch from %s: multi-part object requires an object before 'more' parts can follow\n", filename.c_str());
+                fatal(SEE_LAST_ERROR);
+            }
+
             at->head = head;
             at->clone.head = &head->clone;
-            if (last_more != NULL) {
-                last_more->more = at;
-                last_more->clone.more = &at->clone;
-            }
+            last_more->more = at;
+            last_more->clone.more = &at->clone;
             last_more = at;
 
             /* Set FLAG_MONSTER throughout parts if head has it */
