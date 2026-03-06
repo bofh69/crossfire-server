@@ -552,7 +552,7 @@ void list_players(object *op, region *reg, partylist *party) {
     int num_players = 0, num_wiz = 0, num_afk = 0, num_bot = 0;
     chars_names *chars = NULL;
 
-    if (op == NULL || QUERY_FLAG(op, FLAG_WIZ))
+    if (QUERY_FLAG(op, FLAG_WIZ))
         format = settings.who_wiz_format;
     else
         format = settings.who_format;
