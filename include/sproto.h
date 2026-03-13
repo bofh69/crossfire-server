@@ -251,7 +251,6 @@ void command_inventory(object *op, const char *params);
 void command_skills(object *op, const char *params);
 void command_dump(object *op, const char *params);
 void command_mon_aggr(object *op, const char *params);
-void command_possess(object *op, const char *params);
 void command_patch(object *op, const char *params);
 void command_recollect(object *op, const char *params);
 void command_remove(object *op, const char *params);

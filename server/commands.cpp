@@ -331,7 +331,6 @@ void commands_init(void) {
     RW("wizcast", command_wizcast,                0.0);
     RW("overlay_save", command_overlay_save,      0.0);
     RW("overlay_reset", command_overlay_reset,    0.0);
-    /*   RW("possess", command_possess, 0.0); */
     RW("mon_aggr", command_mon_aggr,              0.0);
     RW("loadtest", command_loadtest,              0.0);
 
