@@ -10,6 +10,7 @@
  * The authors can be reached via e-mail at <crossfire@metalforge.org>.
  */
 
+#include <assert.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
