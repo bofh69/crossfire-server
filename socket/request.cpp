@@ -1218,18 +1218,20 @@ static int map2_add_ob(int ax, int ay, int layer, const object *ob, SockList *sl
                 else
                     anim_speed = (int)(1.0/FABS(ob->speed));
 
-                if (ob->animation && !ns->anims_sent[ob->animation->num])
-                    esrv_send_animation(ns, ob->animation);
+                if (ob->animation) {
+                    if (!ns->anims_sent[ob->animation->num])
+                        esrv_send_animation(ns, ob->animation);
 
-                /* If smoothing, need to send smoothing information
-                 * for all faces in the animation sequence. Since
-                 * smoothlevel is an object attribute,
-                 * it applies to all faces.
-                 */
-                if (smoothlevel) {
-                    for (i = 0; i < NUM_ANIMATIONS(ob); i++) {
-                        if (!(ns->faces_sent[ob->animation->faces[i]->number]&NS_FACESENT_SMOOTH))
-                            send_smooth(ns, ob->animation->faces[i]);
+                    /* If smoothing, need to send smoothing information
+                     * for all faces in the animation sequence. Since
+                     * smoothlevel is an object attribute,
+                     * it applies to all faces.
+                     */
+                    if (smoothlevel) {
+                        for (i = 0; i < NUM_ANIMATIONS(ob); i++) {
+                            if (!(ns->faces_sent[ob->animation->faces[i]->number]&NS_FACESENT_SMOOTH))
+                                send_smooth(ns, ob->animation->faces[i]);
+                        }
                     }
                 }
             } else if (!(ns->faces_sent[face_num]&NS_FACESENT_FACE)) {
