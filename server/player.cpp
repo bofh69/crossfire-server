@@ -45,7 +45,7 @@
 static archetype *get_player_archetype(archetype *at);
 
 static void kill_player_not_permadeath(object *op);
-static void kill_player_permadeath(object *op);
+static void kill_player_permadeath(object *op, const char *reason);
 static int action_makes_visible(object *op);
 
 /**
@@ -3581,7 +3581,7 @@ void kill_player(object *op, const object *killer) {
     if (settings.not_permadeth == TRUE) {
         kill_player_not_permadeath(op);
     } else {
-        kill_player_permadeath(op);
+        kill_player_permadeath(op, buf);
     }
 }
 
@@ -3817,8 +3817,7 @@ static void kill_player_not_permadeath(object *op) {
  * @param op
  * the player to kill.
  */
-static void kill_player_permadeath(object *op) {
-    char buf[MAX_BUF];
+static void kill_player_permadeath(object *op, const char *buf) {
     char ac_buf[MAX_BUF];
     int x, y;
     mapstruct *map;
@@ -3890,6 +3889,7 @@ static void kill_player_permadeath(object *op) {
     /*  peterm:  added to create a corpse at deathsite.  */
     at = find_archetype("corpse_pl");
     if (at != NULL) {
+        char buf[MAX_BUF];
         tmp = arch_to_object(at);
         snprintf(buf, sizeof(buf), "%s", op->name);
         FREE_AND_COPY(tmp->name, buf);
