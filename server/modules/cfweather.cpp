@@ -532,7 +532,7 @@ static int worldmap_to_weathermap(const int x, const int y, int * const wx, int 
  */
 static object *avoid_weather(int * const av, const mapstruct *m, const int x, const int y, int * const gs, const int grow) {
     int avoid, gotsnow, i;
-    object *tmp, *snow;
+    object *tmp, *snow = NULL;
     const weather_avoids_t *cur;
 
     avoid = 0;
