@@ -529,6 +529,7 @@ static int worldmap_to_weathermap(const int x, const int y, int * const wx, int 
  * if 1, use the growth table, rather than the avoidance table.
  * @return
  * object pointer for any snow item it found, so you can destroy/melt it.
+ * If none are found, returns NULL
  */
 static object *avoid_weather(int * const av, const mapstruct *m, const int x, const int y, int * const gs, const int grow) {
     int avoid, gotsnow, i;
@@ -3099,6 +3100,9 @@ static void init_weather_settings(Settings *settings) {
                 wset.dynamiclevel = lev;
         }
     }
+
+    // Remember to clean up the file pointer
+    fclose(fp);
 }
 
 /********************************************************************************************
