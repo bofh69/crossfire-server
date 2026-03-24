@@ -162,7 +162,7 @@ static void attempt_do_alchemy(object *caster, object *cauldron) {
     float success_chance;
     int numb, ability = 1;
     int formula = 0;
-    object *item, *skop;
+    object *item;
 
     if (caster->type != PLAYER)
         return; /* only players for now */
@@ -200,18 +200,18 @@ static void attempt_do_alchemy(object *caster, object *cauldron) {
             int attempt_shadow_alchemy;
 
             /* the caster gets an increase in ability based on thier skill lvl */
-            if (rp->skill != NULL) {
-                skop = find_skill_by_name(caster, rp->skill);
-                if (!skop) {
-                    draw_ext_info(NDI_UNIQUE, 0, caster, MSG_TYPE_SKILL, MSG_TYPE_SKILL_MISSING,
-                                  "You do not have the proper skill for this recipe");
-                } else {
-                    ability += skop->level*((4.0+cauldron->magic)/4.0);
-                }
-            } else {
+            if (rp->skill == NULL) {
                 LOG(llevDebug, "Recipe %s has NULL skill!\n", rp->title);
                 return;
             }
+            object *skop = find_skill_by_name(caster, rp->skill);
+            if (!skop) {
+                draw_ext_info(NDI_UNIQUE, 0, caster, MSG_TYPE_SKILL, MSG_TYPE_SKILL_MISSING,
+                              "You do not have the proper skill for this recipe");
+                return;
+            }
+
+            ability += skop->level*((4.0+cauldron->magic)/4.0);
 
             if (rp->cauldron == NULL) {
                 LOG(llevDebug, "Recipe %s has NULL cauldron!\n", rp->title);
