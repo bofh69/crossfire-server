@@ -3044,7 +3044,7 @@ static void init_pressure() {
 }
 
 static void init_weather_settings(Settings *settings) {
-    char buf[MAX_BUF], *cp, dummy[1];
+    char buf[MAX_BUF], *cp, dummy[1] = {'\0'};
     FILE *fp;
     int has_val;
 
