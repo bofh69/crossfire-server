@@ -3050,7 +3050,7 @@ static void init_weather_settings(Settings *settings) {
     snprintf(buf, sizeof(buf), "%s/wsettings", settings->confdir);
 
     if ((fp = fopen(buf, "r")) == NULL) {
-        LOG(llevError, "Warning: No settings file found\n");
+        LOG(llevError, "Warning: No wsettings file found\n");
         return;
     }
     while (fgets(buf, MAX_BUF-1, fp) != NULL) {
@@ -3078,21 +3078,21 @@ static void init_weather_settings(Settings *settings) {
                 int size = atoi(cp);
 
                 if (size < 1)
-                    LOG(llevError, "load_settings: worldmaptilesizex must be greater than 1, %d is invalid\n", size);
+                    LOG(llevError, "init_weather_settings: worldmaptilesizex must be greater than 1, %d is invalid\n", size);
                 else
                     wset.worldmaptilesizex = size;
             } else if (!strcasecmp(buf, "worldmaptilesizey")) {
                 int size = atoi(cp);
 
                 if (size < 1)
-                    LOG(llevError, "load_settings: worldmaptilesizey must be greater than 1, %d is invalid\n", size);
+                    LOG(llevError, "init_weather_settings: worldmaptilesizey must be greater than 1, %d is invalid\n", size);
                 else
                     wset.worldmaptilesizey = size;
             } else if (!strcasecmp(buf, "dynamiclevel")) {
                 int lev = atoi(cp);
 
                 if (lev < 0)
-                    LOG(llevError, "load_settings: dynamiclevel must be at least 0, %d is invalid\n", lev);
+                    LOG(llevError, "init_weather_settings: dynamiclevel must be at least 0, %d is invalid\n", lev);
                 else
                     wset.dynamiclevel = lev;
             }
