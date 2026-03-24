@@ -349,7 +349,12 @@ void init_regions(BufferReader *reader, const char *filename) {
          */
         if (!strcmp(buf, "region")) {
             add = get_region_struct();
-            add->name = strdup_local(value);
+            if (value) {
+                add->name = strdup_local(value);
+            } else {
+                LOG(llevError, "region.c: malformated regions file: No value given for \"region\" key.\n");
+                fatal(SEE_LAST_ERROR);
+            }
         } else if (!strcmp(buf, "parent")) {
             /*
              * Note that this is in the initialisation code, so we don't actually
