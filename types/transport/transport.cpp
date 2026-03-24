@@ -135,14 +135,14 @@ static method_ret transport_type_apply(object *op, object *applier, int aflags) 
             } else {
                 draw_ext_info_format(NDI_UNIQUE, 0, applier, MSG_TYPE_APPLY, MSG_TYPE_APPLY_ERROR,
                     "You cannot drop the %s in a shop to use it.",
-                    name_old);
+                    name_op);
                 return METHOD_SILENT_ERROR;
             }
             /* Did it fail to drop? */
             if (!op) {
                 draw_ext_info_format(NDI_UNIQUE, 0, applier, MSG_TYPE_APPLY, MSG_TYPE_APPLY_ERROR,
                     "You need to drop the %s to use it.",
-                    name_old);
+                    name_op);
                 return METHOD_SILENT_ERROR;
             }
         }
