@@ -3044,9 +3044,8 @@ static void init_pressure() {
 }
 
 static void init_weather_settings(Settings *settings) {
-    char buf[MAX_BUF], *cp, dummy[1] = {'\0'};
+    char buf[MAX_BUF], *cp;
     FILE *fp;
-    int has_val;
 
     snprintf(buf, sizeof(buf), "%s/wsettings", settings->confdir);
 
@@ -3071,33 +3070,35 @@ static void init_weather_settings(Settings *settings) {
         if ((cp = strchr(buf, ' ')) != NULL) {
             while (*cp == ' ')
                 *cp++ = 0;
-            has_val = 1;
-        } else {
-            cp = dummy;
-            has_val = 0;
+
+            // These only matter when we have a value, only look when we have a value
+            // Even in the case of all trailing spaces and no value, cp points to a null-terminator,
+            // which resolves to 0 from atoi().
+            if (!strcasecmp(buf, "worldmaptilesizex")) {
+                int size = atoi(cp);
+
+                if (size < 1)
+                    LOG(llevError, "load_settings: worldmaptilesizex must be greater than 1, %d is invalid\n", size);
+                else
+                    wset.worldmaptilesizex = size;
+            } else if (!strcasecmp(buf, "worldmaptilesizey")) {
+                int size = atoi(cp);
+
+                if (size < 1)
+                    LOG(llevError, "load_settings: worldmaptilesizey must be greater than 1, %d is invalid\n", size);
+                else
+                    wset.worldmaptilesizey = size;
+            } else if (!strcasecmp(buf, "dynamiclevel")) {
+                int lev = atoi(cp);
+
+                if (lev < 0)
+                    LOG(llevError, "load_settings: dynamiclevel must be at least 0, %d is invalid\n", lev);
+                else
+                    wset.dynamiclevel = lev;
+            }
         }
-
-        if (!strcasecmp(buf, "worldmaptilesizex")) {
-            int size = atoi(cp);
-
-            if (size < 1)
-                LOG(llevError, "load_settings: worldmaptilesizex must be greater than 1, %d is invalid\n", size);
-            else
-                wset.worldmaptilesizex = size;
-        } else if (!strcasecmp(buf, "worldmaptilesizey")) {
-            int size = atoi(cp);
-
-            if (size < 1)
-                LOG(llevError, "load_settings: worldmaptilesizey must be greater than 1, %d is invalid\n", size);
-            else
-                wset.worldmaptilesizey = size;
-        } else if (!strcasecmp(buf, "dynamiclevel")) {
-            int lev = atoi(cp);
-
-            if (lev < 0)
-                LOG(llevError, "load_settings: dynamiclevel must be at least 0, %d is invalid\n", lev);
-            else
-                wset.dynamiclevel = lev;
+        else {
+            LOG(llevError, "init_weather_settings: line %s ends after specifier, skipping...\n", buf);
         }
     }
 
