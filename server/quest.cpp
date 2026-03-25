@@ -165,8 +165,10 @@ static void quest_read_player_data(quest_player *pq) {
         LOG(llevError, "quest: invalid line in %s: %s\n", final, read);
     }
 
-    if (qs)
+    if (qs) {
         LOG(llevError, "quest: missing end_quest in %s\n", final);
+        free(qs);
+    }
 
     fclose(file);
 }
