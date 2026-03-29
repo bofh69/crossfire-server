@@ -1,3 +1,11 @@
+2026-03-29  Neila Hawkins
+  * include/random_maps/random_map.h,
+    include/random_maps/rproto.h,
+    random_maps/Makefile.am,
+    random_maps/main.cpp,
+    random_maps/random_map.cpp,
+    random_maps/room_gen_crawl.cpp: New random map layout: Crawl
+
 2025-09-12  Neila Hawkins
   * .gitignore,
     common/init.cpp,

@@ -95,7 +95,8 @@ static layout layout_list[NROFLAYOUTS] = {
     { "sspiral", &make_square_spiral_layout },
     { "spiral",  &map_gen_spiral },
     { "maze",    &maze_gen },
-    { "onion",   &map_gen_onion }
+    { "onion",   &map_gen_onion },
+    { "crawl",   &map_gen_crawl }
 };
 
 /**
@@ -150,6 +151,7 @@ static void print_usage(void) {
         "  spiral  -- spiral map generator\n"
         "  maze    -- maze map generator\n"
         "  onion   -- onion map generator\n"
+        "  crawl   -- another maze map generator\n"
     );
 }
 

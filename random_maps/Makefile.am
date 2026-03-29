@@ -15,6 +15,7 @@ librandom_map_la_SOURCES = \
 	random_map.cpp \
 	reader.cpp \
 	rogue_layout.cpp \
+	room_gen_crawl.cpp \
 	room_gen_onion.cpp \
 	room_gen_spiral.cpp \
 	snake.cpp \

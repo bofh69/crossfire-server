@@ -277,6 +277,10 @@ char **layoutgen(RMParms *RP)
     if (strstr(RP->layoutstyle, "squarespiral")) {
         RP->map_layout_style = SQUARE_SPIRAL_LAYOUT;
     }
+
+    if (strstr(RP->layoutstyle, "crawl")) {
+        RP->map_layout_style = CRAWL_LAYOUT;
+    }
     /* No style found - choose one ranomdly */
     if (RP->map_layout_style == 0) {
         RP->map_layout_style = (RANDOM()%NROFLAYOUTS)+1;
@@ -330,6 +334,22 @@ char **layoutgen(RMParms *RP)
         maze = make_square_spiral_layout(RP->Xsize, RP->Ysize,/* unused: */0,0);
         if (RANDOM()%2) {
             roomify_layout(maze, RP);
+        }
+        break;
+
+    case CRAWL_LAYOUT:
+        // No symmetry in the crawl layout
+        // Like the rogue layout, it is just not a
+        // good idea to symmetrize.
+        RP->symmetry_used = NO_SYM;
+        // Undo the symmetry resize
+        RP->Ysize = oysize;
+        RP->Xsize = oxsize;
+        maze = map_gen_crawl(RP->Xsize, RP->Ysize, 0, 0);
+        // Only rarely add doors
+        // They tend to un-maze the layout, so don't do it often
+        if (RANDOM()%4 == 0) {
+            doorify_layout(maze, RP);
         }
         break;
     }

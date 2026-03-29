@@ -81,6 +81,8 @@ extern char **make_snake_layout(int xsize, int ysize, int _unused_options, int _
 /* square_spiral.c */
 extern void find_top_left_corner(char **maze, int *cx, int *cy);
 extern char **make_square_spiral_layout(int xsize, int ysize, int _unused_options, int _unused_layers);
+/* room_gen_crawl.c */
+extern char **map_gen_crawl(int xsize, int ysize, int iter, int hallway);
 /* expand2x.c */
 extern char **expand2x(char **layout, int xsize, int ysize);
 

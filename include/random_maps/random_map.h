@@ -116,7 +116,8 @@ int load_parameters(FILE *fp, int bufstate, RMParms *RP);
 #define ROGUELIKE_LAYOUT 4
 #define SNAKE_LAYOUT 5
 #define SQUARE_SPIRAL_LAYOUT 6
-#define NROFLAYOUTS 6
+#define CRAWL_LAYOUT 7
+#define NROFLAYOUTS 7
 /*@}*/
 
 /**
