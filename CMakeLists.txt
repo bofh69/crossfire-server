@@ -125,6 +125,7 @@ add_library(random_map_lib SHARED
 	random_maps/style.cpp
 	random_maps/treasure.cpp
 	random_maps/wall.cpp
+	random_maps/room_gen_crawl.cpp
 )
 set_target_properties(random_map_lib PROPERTIES OUTPUT_NAME random_map)
 
