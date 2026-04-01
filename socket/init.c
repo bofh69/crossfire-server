@@ -41,6 +41,7 @@
 #include <global.h>
 #ifndef __CEXTRACT__
 #include <sproto.h>
+#include <sockproto.h>
 #endif
 #ifndef WIN32 /* ---win32 exclude include files */
 #include <sys/types.h>
@@ -141,6 +142,15 @@ void init_connection(socket_struct *ns, const char *from_ip)
      * length of data.
      */
     memset(ns->inbuf.buf, 0, MAXSOCKRECVBUF);
+#ifdef HAVE_LIBWEBSOCKETS
+    /* is_websocket, wsi, ws_proxy_fd are set by the WebSocket callback
+     * before init_connection() is called.  For plain TCP connections,
+     * the caller must ensure these are initialised to their defaults. */
+    if (!ns->is_websocket) {
+        ns->wsi = NULL;
+        ns->ws_proxy_fd = -1;
+    }
+#endif
     memset(&ns->lastmap,0,sizeof(struct Map));
     if (!ns->faces_sent)
 	ns->faces_sent =  calloc(sizeof(*ns->faces_sent),
@@ -219,6 +229,11 @@ void init_ericserver(void)
     socket_info.nconns = 1;
     init_sockets = malloc(sizeof(socket_struct));
     init_sockets[0].faces_sent = NULL; /* unused */
+#ifdef HAVE_LIBWEBSOCKETS
+    init_sockets[0].is_websocket = 0;
+    init_sockets[0].wsi = NULL;
+    init_sockets[0].ws_proxy_fd = -1;
+#endif
     socket_info.allocated_sockets=1;
 
     protox = getprotobyname("tcp");
@@ -289,6 +304,9 @@ void init_ericserver(void)
     }
     init_sockets[0].status=Ns_Add;
     read_client_images();
+#ifdef HAVE_LIBWEBSOCKETS
+    init_ws_server(settings.wsport);
+#endif
 }
 
 
@@ -303,6 +321,9 @@ void free_all_newserver(void)
 {
     LOG(llevDebug,"Freeing all new client/server information.\n");
     free_socket_images();
+#ifdef HAVE_LIBWEBSOCKETS
+    free_ws_server();
+#endif
     free(init_sockets);
 }
 
@@ -315,6 +336,11 @@ void free_all_newserver(void)
 
 void free_newsocket(socket_struct *ns)
 {
+#ifdef HAVE_LIBWEBSOCKETS
+    /* Notify libwebsockets that the game side is closing, so it can
+     * cleanly close the WebSocket connection on the next service call. */
+    ws_cleanup_connection(ns);
+#endif
 #ifdef WIN32 /* ***win32: closesocket in windows style */
 	shutdown(ns->fd,SD_BOTH);
     if (closesocket(ns->fd)) {
@@ -327,6 +353,12 @@ void free_newsocket(socket_struct *ns)
 #endif
     }
     ns->fd = -1;
+#ifdef HAVE_LIBWEBSOCKETS
+    if (ns->ws_proxy_fd != -1) {
+        close(ns->ws_proxy_fd);
+        ns->ws_proxy_fd = -1;
+    }
+#endif
     if (ns->stats.range)
 	FREE_AND_CLEAR(ns->stats.range);
     if (ns->stats.title)

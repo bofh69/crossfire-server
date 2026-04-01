@@ -77,3 +77,8 @@ void monster_check_apply( object* ob, object* obt )
 void trap_adjust( object* ob, int x )
     {
     }
+
+int checkbanned(const char *login, const char *host)
+    {
+    return 0;
+    }

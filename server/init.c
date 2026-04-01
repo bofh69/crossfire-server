@@ -94,6 +94,18 @@ static void set_csport(char *val)
 #endif /* win32 */
 }
 
+#ifdef HAVE_LIBWEBSOCKETS
+static void set_wsport(char *val)
+{
+    settings.wsport=atoi(val);
+    if (settings.wsport < 0 || settings.wsport > 32765 ||
+	(settings.wsport > 0 && settings.wsport < 1024 && getuid() != 0)) {
+	LOG(llevError, "%d is an invalid wsport number.\n", settings.wsport);
+	exit(1);
+    }
+}
+#endif /* HAVE_LIBWEBSOCKETS */
+
 /** Most of this is shamelessly stolen from XSysStats.  But since that is
  * also my program, no problem.
  */
@@ -150,6 +162,9 @@ struct Command_Line_Options options[] = {
  * as they don't require much of anything to bet set up.
  */
 {"-csport", 1, 2, set_csport},
+#ifdef HAVE_LIBWEBSOCKETS
+{"-wsport", 1, 2, set_wsport},
+#endif
 
 /** Start of pass 3 information. In theory, by pass 3, all data paths
  * and defaults should have been set up.
@@ -821,6 +836,9 @@ static void help(void) {
 /*    usage();*/
     printf("Flags:\n");
     printf(" -csport <port> Specifies the port to use for the new client/server code.\n");
+#ifdef HAVE_LIBWEBSOCKETS
+    printf(" -wsport <port> Specifies the port to use for the WebSocket transport (0=disabled).\n");
+#endif
     printf(" -d          Turns on some debugging.\n");
     printf(" +d          Turns off debugging (useful if server compiled with debugging\n");
     printf("             as default).\n");

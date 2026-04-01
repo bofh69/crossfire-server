@@ -1,0 +1,8 @@
+Running suite websocket
+check_websocket.c:92:P:Core:test_socketpair_ws_to_game:0: Passed
+check_websocket.c:123:P:Core:test_socketpair_game_to_ws:0: Passed
+check_websocket.c:148:P:Core:test_socketpair_ws_close_signals_eof_to_game:0: Passed
+check_websocket.c:172:P:Core:test_socketpair_game_close_signals_eof_to_ws:0: Passed
+check_websocket.c:201:P:Core:test_socketpair_multiple_packets_queued:0: Passed
+Results for all suites run:
+100%: Checks: 5, Failures: 0, Errors: 0

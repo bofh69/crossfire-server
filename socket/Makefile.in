@@ -73,7 +73,8 @@ libsocket_a_AR = $(AR) $(ARFLAGS)
 libsocket_a_LIBADD =
 am_libsocket_a_OBJECTS = image.$(OBJEXT) info.$(OBJEXT) init.$(OBJEXT) \
 	item.$(OBJEXT) loop.$(OBJEXT) lowlevel.$(OBJEXT) \
-	metaserver.$(OBJEXT) request.$(OBJEXT) sounds.$(OBJEXT)
+	metaserver.$(OBJEXT) request.$(OBJEXT) sounds.$(OBJEXT) \
+	websocket.$(OBJEXT)
 libsocket_a_OBJECTS = $(am_libsocket_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/include
 depcomp = $(SHELL) $(top_srcdir)/utils/depcomp
@@ -248,7 +249,8 @@ libsocket_a_SOURCES = \
 	lowlevel.c\
 	metaserver.c\
 	request.c\
-	sounds.c
+	sounds.c\
+	websocket.c
 
 EXTRA_DIST = README
 AM_CPPFLAGS = -I$(top_srcdir)/include
@@ -308,6 +310,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/metaserver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/request.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sounds.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/websocket.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

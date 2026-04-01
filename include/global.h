@@ -321,6 +321,7 @@ extern socket_struct *init_sockets;
 typedef struct Settings {
     char    *logfilename;   /* logfile to use */
     uint16  csport;	    /* port for new client/server */
+    uint16  wsport;	    /* port for websocket client/server (0=disabled) */
     LogLevel debug;	    /* Default debugging level */
     uint8   dumpvalues;	    /* Set to dump various values/tables */
     char    *dumparg;       /* additional argument for some dump functions */

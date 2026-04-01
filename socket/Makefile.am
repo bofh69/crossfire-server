@@ -33,7 +33,8 @@ libsocket_a_SOURCES = \
 	lowlevel.c\
 	metaserver.c\
 	request.c\
-	sounds.c
+	sounds.c\
+	websocket.c
 
 EXTRA_DIST = README
 

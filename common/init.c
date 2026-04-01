@@ -37,6 +37,7 @@
 struct Settings settings = {
 LOGFILE,   /* Logfile */
 CSPORT,				/* Client/server port */
+0,					/* WebSocket port (disabled by default) */
 
 /* Debug level */
 #ifdef DEBUG

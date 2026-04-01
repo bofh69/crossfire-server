@@ -119,6 +119,14 @@ AC_CHECK_LIB(des, des_crypt)
 
 AC_CHECK_LIB(z, compress)
 AC_CHECK_LIB(pthread, pthread_create)
+
+dnl Check for libwebsockets (optional, provides WebSocket transport support)
+AC_CHECK_LIB(websockets, lws_create_context,
+    [AC_DEFINE(HAVE_LIBWEBSOCKETS, 1, [Define if libwebsockets is available])
+     LIBS="$LIBS -lwebsockets"],
+    [AC_MSG_NOTICE([libwebsockets not found; WebSocket transport will not be available])])
+AC_CHECK_HEADERS(libwebsockets.h)
+
 LIBCURL_CHECK_CONFIG()
 
 

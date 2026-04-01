@@ -162,6 +162,11 @@ typedef struct socket_struct {
                                  this number includes the prev/next group fake items.
                                  Can be set through "num_look_objects" setup option;
                                  defaults to DEFAULT_NUM_LOOK_OBJECTS. */
+#ifdef HAVE_LIBWEBSOCKETS
+    uint8   is_websocket;   /* 1 if this connection came in via WebSocket */
+    void   *wsi;            /* libwebsockets instance (cast to struct lws *) */
+    int     ws_proxy_fd;    /* WS-proxy side of socketpair used for this connection */
+#endif
 } socket_struct;
 
 
@@ -191,5 +196,20 @@ extern Socket_Info socket_info;
 #define VERSION_CS 1023    /* version >= 1023 understand setup cmd */
 #define VERSION_SC 1027
 #define VERSION_INFO "Crossfire Server"
+
+#ifdef HAVE_LIBWEBSOCKETS
+/** Initialize the WebSocket server on the given port (0 = disabled). */
+int init_ws_server(int port);
+/** Service pending WebSocket events (non-blocking). */
+void service_ws_connections(void);
+/** Schedule a writeable callback so queued data is sent to the WS client. */
+void ws_request_write(socket_struct *ns);
+/** Prepare a WebSocket connection for game-side closure. */
+void ws_cleanup_connection(socket_struct *ns);
+/** Returns 1 if the WebSocket server is active, 0 otherwise. */
+int ws_server_active(void);
+/** Shut down and free the WebSocket server. */
+void free_ws_server(void);
+#endif /* HAVE_LIBWEBSOCKETS */
 
 #endif /* NEWSERVER_H */

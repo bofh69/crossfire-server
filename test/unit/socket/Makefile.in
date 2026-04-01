@@ -36,7 +36,8 @@ host_triplet = @host@
 TESTS = check_image$(EXEEXT) check_info$(EXEEXT) check_init$(EXEEXT) \
 	check_item$(EXEEXT) check_loop$(EXEEXT) \
 	check_lowlevel$(EXEEXT) check_metaserver$(EXEEXT) \
-	check_request$(EXEEXT) check_sounds$(EXEEXT)
+	check_request$(EXEEXT) check_sounds$(EXEEXT) \
+	check_websocket$(EXEEXT)
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/check-fragment.am
 noinst_PROGRAMS = $(am__EXEEXT_1)
@@ -58,7 +59,8 @@ libstubs_a_OBJECTS = $(am_libstubs_a_OBJECTS)
 am__EXEEXT_1 = check_image$(EXEEXT) check_info$(EXEEXT) \
 	check_init$(EXEEXT) check_item$(EXEEXT) check_loop$(EXEEXT) \
 	check_lowlevel$(EXEEXT) check_metaserver$(EXEEXT) \
-	check_request$(EXEEXT) check_sounds$(EXEEXT)
+	check_request$(EXEEXT) check_sounds$(EXEEXT) \
+	check_websocket$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 check_image_SOURCES = check_image.c
 check_image_OBJECTS = check_image.$(OBJEXT)
@@ -105,6 +107,11 @@ check_sounds_OBJECTS = check_sounds.$(OBJEXT)
 check_sounds_LDADD = $(LDADD)
 check_sounds_DEPENDENCIES = ../../../common/libcross.a \
 	../../../socket/libsocket.a libstubs.a
+check_websocket_SOURCES = check_websocket.c
+check_websocket_OBJECTS = check_websocket.$(OBJEXT)
+check_websocket_LDADD = $(LDADD)
+check_websocket_DEPENDENCIES = ../../../common/libcross.a \
+	../../../socket/libsocket.a libstubs.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/include
 depcomp = $(SHELL) $(top_srcdir)/utils/depcomp
 am__depfiles_maybe = depfiles
@@ -119,10 +126,12 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(libstubs_a_SOURCES) check_image.c check_info.c \
 	check_init.c check_item.c check_loop.c check_lowlevel.c \
-	check_metaserver.c check_request.c check_sounds.c
+	check_metaserver.c check_request.c check_sounds.c \
+	check_websocket.c
 DIST_SOURCES = $(libstubs_a_SOURCES) check_image.c check_info.c \
 	check_init.c check_item.c check_loop.c check_lowlevel.c \
-	check_metaserver.c check_request.c check_sounds.c
+	check_metaserver.c check_request.c check_sounds.c \
+	check_websocket.c
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -360,6 +369,10 @@ check_sounds$(EXEEXT): $(check_sounds_OBJECTS) $(check_sounds_DEPENDENCIES)
 	@rm -f check_sounds$(EXEEXT)
 	$(LINK) $(check_sounds_OBJECTS) $(check_sounds_LDADD) $(LIBS)
 
+check_websocket$(EXEEXT): $(check_websocket_OBJECTS) $(check_websocket_DEPENDENCIES) 
+	@rm -f check_websocket$(EXEEXT)
+	$(LINK) $(check_websocket_OBJECTS) $(check_websocket_LDADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
@@ -375,6 +388,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_metaserver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_request.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_sounds.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_websocket.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stubs_socket.Po@am__quote@
 
 .c.o:

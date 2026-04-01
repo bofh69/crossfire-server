@@ -471,6 +471,18 @@ static void block_until_new_connection(void)
 	if (cycles%2 == 0)
 	    tick_the_clock();
 
+#ifdef HAVE_LIBWEBSOCKETS
+	/* Service WebSocket connections while waiting for a TCP connection.
+	 * A WebSocket client connecting breaks us out of the loop. */
+	if (ws_server_active()) {
+	    service_ws_connections();
+	    if (socket_info.nconns > 1) {
+		reset_sleep();
+		return;
+	    }
+	}
+#endif
+
 	FD_ZERO(&readfs);
 	FD_SET((uint32)init_sockets[0].fd, &readfs);
 
@@ -493,8 +505,18 @@ static void block_until_new_connection(void)
 	    Timeout.tv_sec=0;
 	    Timeout.tv_usec=50;
 	} else {
-	    Timeout.tv_sec=60;
-	    Timeout.tv_usec=0;
+#ifdef HAVE_LIBWEBSOCKETS
+	    /* Use a shorter timeout when WebSocket is active so we can
+	     * poll for new WebSocket connections regularly. */
+	    if (ws_server_active()) {
+		Timeout.tv_sec=0;
+		Timeout.tv_usec=100000;  /* 100ms */
+	    } else
+#endif
+	    {
+		Timeout.tv_sec=60;
+		Timeout.tv_usec=0;
+	    }
 	    if (cycles == 7) {
 		metaserver_update();
 		cycles=1;
@@ -539,6 +561,13 @@ void doeric_server(void)
 	write_cs_stats();
 #endif
 
+#ifdef HAVE_LIBWEBSOCKETS
+    /* Service any pending WebSocket events before entering the select loop.
+     * This fires callbacks for incoming WS data, which writes to socketpair
+     * game-side fds that the select() below will then detect as readable. */
+    service_ws_connections();
+#endif
+
     FD_ZERO(&tmp_read);
     FD_ZERO(&tmp_write);
     FD_ZERO(&tmp_exceptions);
@@ -556,6 +585,11 @@ void doeric_server(void)
 	    FD_SET((uint32)init_sockets[i].fd, &tmp_read);
 	    FD_SET((uint32)init_sockets[i].fd, &tmp_write);
 	    FD_SET((uint32)init_sockets[i].fd, &tmp_exceptions);
+#ifdef HAVE_LIBWEBSOCKETS
+	    /* Also watch the proxy fd so we know when the game wrote output */
+	    if (init_sockets[i].is_websocket && init_sockets[i].ws_proxy_fd != -1)
+		FD_SET((uint32)init_sockets[i].ws_proxy_fd, &tmp_read);
+#endif
 	}
     }
 
@@ -584,6 +618,11 @@ void doeric_server(void)
 	    FD_SET((uint32)pl->socket.fd, &tmp_read);
 	    FD_SET((uint32)pl->socket.fd, &tmp_write);
 	    FD_SET((uint32)pl->socket.fd, &tmp_exceptions);
+#ifdef HAVE_LIBWEBSOCKETS
+	    /* Watch proxy fd to detect outbound data from game to WS client */
+	    if (pl->socket.is_websocket && pl->socket.ws_proxy_fd != -1)
+		FD_SET((uint32)pl->socket.ws_proxy_fd, &tmp_read);
+#endif
 	    pl=pl->next;
 	}
     }
@@ -625,6 +664,11 @@ void doeric_server(void)
 	    init_sockets[newsocknum].faces_sent = calloc(1, nrofpixmaps*sizeof(*init_sockets[newsocknum].faces_sent));
 	    if (!init_sockets[newsocknum].faces_sent) fatal(OUT_OF_MEMORY);
 	    init_sockets[newsocknum].status = Ns_Avail;
+#ifdef HAVE_LIBWEBSOCKETS
+	    init_sockets[newsocknum].is_websocket = 0;
+	    init_sockets[newsocknum].wsi = NULL;
+	    init_sockets[newsocknum].ws_proxy_fd = -1;
+#endif
 	}
 	else {
 	    int j;
@@ -645,6 +689,11 @@ void doeric_server(void)
 	    socket_struct *ns;
 
 	    ns = &init_sockets[newsocknum];
+#ifdef HAVE_LIBWEBSOCKETS
+	    ns->is_websocket = 0;
+	    ns->wsi = NULL;
+	    ns->ws_proxy_fd = -1;
+#endif
 
 	    ip = ntohl(addr.sin_addr.s_addr);
 	    sprintf(buf, "%ld.%ld.%ld.%ld", (ip>>24)&255, (ip>>16)&255, (ip>>8)&255, ip&255);
@@ -676,7 +725,20 @@ void doeric_server(void)
 	if (FD_ISSET(init_sockets[i].fd, &tmp_write)) {
 	    init_sockets[i].can_write=1;
 	}
+#ifdef HAVE_LIBWEBSOCKETS
+	/* If the proxy side became readable, the game engine wrote data
+	 * destined for the WebSocket client - schedule a writeable callback */
+	if (init_sockets[i].is_websocket && init_sockets[i].ws_proxy_fd != -1
+	    && FD_ISSET((uint32)init_sockets[i].ws_proxy_fd, &tmp_read))
+	    ws_request_write(&init_sockets[i]);
+#endif
     }
+
+#ifdef HAVE_LIBWEBSOCKETS
+    /* Service WebSocket connections again so any scheduled writeable
+     * callbacks (triggered above) actually fire and send data out. */
+    service_ws_connections();
+#endif
 
     /* This does roughly the same thing, but for the players now */
     for (pl=first_player; pl!=NULL; pl=next) {
@@ -698,6 +760,13 @@ void doeric_server(void)
 	    if (pl->socket.status==Ns_Dead) continue;
 	}
 	else 	    pl->socket.can_write=0;
+
+#ifdef HAVE_LIBWEBSOCKETS
+	/* Schedule WS send if the game wrote data to the socketpair */
+	if (pl->socket.is_websocket && pl->socket.ws_proxy_fd != -1
+	    && FD_ISSET((uint32)pl->socket.ws_proxy_fd, &tmp_read))
+	    ws_request_write(&pl->socket);
+#endif
 
 	if (FD_ISSET(pl->socket.fd,&tmp_exceptions)) {
 	    save_player(pl->ob, 0);

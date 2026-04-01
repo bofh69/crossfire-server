@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="http://check.sourceforge.net/xml/check_unittest.xslt"?>
+<testsuites xmlns="http://check.sourceforge.net/ns">
+  <datetime>2026-04-01 15:21:01</datetime>
+  <suite>
+    <title>websocket</title>
+    <test result="success">
+      <path>.</path>
+      <fn>check_websocket.c:92</fn>
+      <id>test_socketpair_ws_to_game</id>
+      <iteration>0</iteration>
+      <duration>0.000038</duration>
+      <description>Core</description>
+      <message>Passed</message>
+    </test>
+    <test result="success">
+      <path>.</path>
+      <fn>check_websocket.c:123</fn>
+      <id>test_socketpair_game_to_ws</id>
+      <iteration>0</iteration>
+      <duration>0.000036</duration>
+      <description>Core</description>
+      <message>Passed</message>
+    </test>
+    <test result="success">
+      <path>.</path>
+      <fn>check_websocket.c:148</fn>
+      <id>test_socketpair_ws_close_signals_eof_to_game</id>
+      <iteration>0</iteration>
+      <duration>0.000021</duration>
+      <description>Core</description>
+      <message>Passed</message>
+    </test>
+    <test result="success">
+      <path>.</path>
+      <fn>check_websocket.c:172</fn>
+      <id>test_socketpair_game_close_signals_eof_to_ws</id>
+      <iteration>0</iteration>
+      <duration>0.000018</duration>
+      <description>Core</description>
+      <message>Passed</message>
+    </test>
+    <test result="success">
+      <path>.</path>
+      <fn>check_websocket.c:201</fn>
+      <id>test_socketpair_multiple_packets_queued</id>
+      <iteration>0</iteration>
+      <duration>0.000022</duration>
+      <description>Core</description>
+      <message>Passed</message>
+    </test>
+  </suite>
+  <duration>0.001760</duration>
+</testsuites>
