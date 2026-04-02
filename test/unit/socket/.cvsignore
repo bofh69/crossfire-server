@@ -10,4 +10,5 @@ check_lowlevel
 check_metaserver
 check_request
 check_sounds
+check_websocket
 .autorun.xml
