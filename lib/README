@@ -1,33 +1,23 @@
-Generated files:
+Collected files:
 ----------------
 
-The "collect.pl" file is a script to generate the other files in this section.
-To run it, one inserts a symlink to the arch directory in the current directory,
-and then runs "make collect".
+The server is able to run from the "arch" directory. This allows changing
+files and running without any script or operation to do.
 
-These files are moved into $PREFIX/share/crossfire by default.
+Sometimes it is useful to collect all those files from arch in big files,
+to speed up server start or for distribution purposes.
 
-The "archetypes" file contains lots of generalized objects which makes it
-easier for the program to use similar items over and over again.
+Those files are created by running "make do-collect" from this very directory.
 
-The "smooth" file contains data for the tile smoothing feature.
+The files are moved into $PREFIX/share/crossfire by default.
 
-The "animations" file contains named animations.
+The "crossfire.arc" file contains all archetypes.
 
-The "bmaps" file contains as list of which face name is associated with which
-face number.
+The "crossfire.face" file contains faces and animations.
 
-The "bmaps.paths" file contains as list of which image path is associated with
-which face number.
+The "crossfire.trs" file contains all kinds of randomized treasure.
 
-The "crossfire.0" and "crossfire.1" files contain all of the image files from
-the archetypes.
-
-The "faces" file contains a list of what magicmap colors are associated with
-which image faces.
-
-The "treasures.bld" file contains all kinds of randomized treasure. This file
-is created the "treasures" file in addition to the archetypes.
+The "crossfire.tar" file contains all PNG files.
 
 
 Non-generated game data files:
@@ -35,13 +25,8 @@ Non-generated game data files:
 
 These files are moved into $PREFIX/share/crossfire by default.
 
-The "treasures" file contains all kinds of randomized treasure, to be used when
-an archetype is generated from the "archetypes" file.
-
 The "artifacts" file defines artifacts, which are modified versions of normal
 objects, which randomly appear.
-
-The "image_info" file defines different tilesets.
 
 The "messages" file contains messages to be inserted in random books.
 

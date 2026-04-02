@@ -1,4 +1,2 @@
-
 noinst_HEADERS = \
-	plugin_common.h\
-	hashtable.h
+	plugin_common.h

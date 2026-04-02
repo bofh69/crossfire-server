@@ -11,7 +11,7 @@ xmlns:check="http://check.sourceforge.net/ns">
     <!-- ok, first read the configuration -->
     <html><head>
         <title>Automated test result</title>
-	<xsl:element name="LINK">
+	<xsl:element name="link">
 		<xsl:attribute name="rel">stylesheet</xsl:attribute>
 		<xsl:attribute name="type">text/css</xsl:attribute>
 		<xsl:attribute name="href"><xsl:value-of select="$baseUri"/>checkReport.css</xsl:attribute>
@@ -214,7 +214,7 @@ width="88" height="31" border="0" alt="SourceForge.net Logo" /></a>
     </xsl:variable>
     <xsl:element name="div">
         <xsl:attribute name="class">testBox <xsl:value-of select="$theClass"/></xsl:attribute>
-        <div class="testHead">    
+        <div class="testHead">
 	    <xsl:choose>
     		<xsl:when test="@result = 'error'">
 		    <xsl:call-template name="showErrorIcon"/>

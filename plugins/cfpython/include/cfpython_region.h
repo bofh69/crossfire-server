@@ -30,10 +30,11 @@
 #ifndef CFPYTHON_REGION_H
 #define CFPYTHON_REGION_H
 
-typedef struct {
+struct Crossfire_Region {
     PyObject_HEAD
-    region* reg;
-} Crossfire_Region;
+    region *reg;
+};
+
 extern PyTypeObject Crossfire_RegionType;
 
 extern PyObject *Crossfire_Region_wrap(region *what);

@@ -1,0 +1,257 @@
+lessThan(QT_MAJOR_VERSION, 5): error("This program requires Qt5. Make sure you use the 'qmake' command from version 5 and not 4, and/or try 'qmake -qt=5'.")
+
+TEMPLATE = app
+
+INCLUDEPATH += ../../include
+
+SOURCES += cre.cpp \
+CREMainWindow.cpp \
+CREPixmap.cpp \
+ CREUtils.cpp \
+ CREResourcesWindow.cpp \
+ CREMapInformation.cpp \
+ CREMapInformationManager.cpp \
+ CRESettings.cpp \
+ CRESettingsDialog.cpp \
+ CREFilterDialog.cpp \
+ CREReportDisplay.cpp \
+ CREFilterDefinition.cpp \
+ CREFilterDefinitionManager.cpp \
+ CREMapPanel.cpp \
+ CREExperienceWindow.cpp \
+ CREScriptEngine.cpp \
+ CREQuestPanel.cpp \
+ MessageManager.cpp \
+ CREMessagePanel.cpp \
+ MessageFile.cpp \
+ CREStringListPanel.cpp \
+ CREPrePostPanel.cpp \
+ CREMultilineItemDelegate.cpp \
+ QuestConditionScript.cpp \
+ CREHPBarMaker.cpp \
+ CRESmoothFaceMaker.cpp \
+ ResourcesManager.cpp \
+ CRECombatSimulator.cpp \
+ random_maps/RandomMap.cpp \
+ random_maps/RandomMapPanel.cpp \
+ FaceMakerDialog.cpp \
+ EditMonstersDialog.cpp \
+ ArchetypesModel.cpp \
+ CREMessageItemModel.cpp \
+ CREPrePostConditionDelegate.cpp \
+ CREPrePostList.cpp \
+ CREPlayerRepliesPanel.cpp \
+ CREPlayerRepliesDelegate.cpp \
+ CREStringListDelegate.cpp \
+ FaceComboBox.cpp \
+ LicenseManager.cpp \
+ animations/AnimationWrapper.cpp \
+ animations/AnimationControl.cpp \
+ animations/AnimationWidget.cpp \
+ animations/AnimationPanel.cpp \
+ archetypes/ArchetypeComboBox.cpp \
+ archetypes/ArchetypePanel.cpp \
+ archetypes/ArchetypeWrapper.cpp \
+ archetypes/ArchetypesWrapper.cpp \
+ archetypes/ObjectWrapper.cpp \
+ artifacts/ArtifactListPanel.cpp \
+ artifacts/ArtifactListWrapper.cpp \
+ artifacts/ArtifactPanel.cpp \
+ artifacts/ArtifactWrapper.cpp \
+ artifacts/ArtifactsWrapper.cpp \
+ assets/AssetModel.cpp \
+ assets/AssetOriginAndCreationDialog.cpp \
+ assets/AssetUseTree.cpp \
+ assets/AssetWrapperPanel.cpp \
+ attack_messages/AttackMessagePanel.cpp \
+ attack_messages/AttackMessagesWrapper.cpp \
+ faces/FacePanel.cpp \
+ faces/FaceWrapper.cpp \
+ faces/FacesetsPanel.cpp \
+ general_messages/GeneralMessagePanel.cpp \
+ general_messages/GeneralMessageWrapper.cpp \
+ quests/QuestWrapper.cpp \
+ quests/QuestComboBox.cpp \
+ quests/QuestsWrapper.cpp \
+ recipes/RecipeListWrapper.cpp \
+ recipes/RecipePanel.cpp \
+ recipes/RecipeWrapper.cpp \
+ recipes/RecipesWrapper.cpp \
+ regions/RegionPanel.cpp \
+ regions/RegionWrapper.cpp \
+ regions/RegionsWrapper.cpp \
+ scripts/ScriptFile.cpp \
+ scripts/ScriptFileManager.cpp \
+ scripts/ScriptFilePanel.cpp \
+ sounds/GameSound.cpp \
+ sounds/GameSoundPanel.cpp \
+ sounds/GameSounds.cpp \
+ sounds/GameSoundsPanel.cpp \
+ sounds/SoundFile.cpp \
+ sounds/SoundFilePanel.cpp \
+ sounds/SoundFilesPanel.cpp \
+ sounds/SoundFiles.cpp \
+ sounds/SoundsDialog.cpp \
+ treasures/TreasureListComboBox.cpp \
+ treasures/TreasureListPanel.cpp \
+ treasures/TreasureListWrapper.cpp \
+ treasures/TreasurePanel.cpp \
+ treasures/TreasureWrapper.cpp \
+ AllAssets.cpp \
+ AssetFieldCompleter.cpp \
+ AssetTextEdit.cpp \
+ ChangesDock.cpp \
+ HelpBrowser.cpp \
+ HelpManager.cpp \
+ MimeUtils.cpp \
+ QuickFilterDialog.cpp
+HEADERS += CREMainWindow.h \
+CREPixmap.h \
+ CREUtils.h \
+ CREResourcesWindow.h \
+ CREMapInformation.h \
+ CREMapInformationManager.h \
+ CRESettings.h \
+ CRESettingsDialog.h \
+ CREFilterDialog.h \
+ CREReportDisplay.h \
+ CREFilterDefinition.h \
+ CREFilterDefinitionManager.h \
+ CREMapPanel.h \
+ CREExperienceWindow.h \
+ CREScriptEngine.h \
+ CREQuestPanel.h \
+ MessageManager.h \
+ CREMessagePanel.h \
+ MessageFile.h \
+ CREStringListPanel.h \
+ CREPrePostPanel.h \
+ CREMultilineItemDelegate.h \
+ QuestConditionScript.h \
+ CREHPBarMaker.h \
+ CRESmoothFaceMaker.h \
+ ResourcesManager.h \
+ CRECombatSimulator.h \
+ random_maps/RandomMap.h \
+ random_maps/RandomMapPanel.h \
+ random_maps/RandomMaps.h \
+ FaceMakerDialog.h \
+ EditMonstersDialog.h \
+ ArchetypesModel.h \
+ CREMessageItemModel.h \
+ CREPrePostConditionDelegate.h \
+ CREPrePostList.h \
+ CREPlayerRepliesPanel.h \
+ CREPlayerRepliesDelegate.h \
+ CREStringListDelegate.h \
+ FaceComboBox.h \
+ LicenseManager.h \
+ animations/AnimationWrapper.h \
+ animations/AnimationControl.h \
+ animations/AnimationWidget.h \
+ animations/AnimationPanel.h \
+ animations/AnimationsWrapper.h \
+ archetypes/ArchetypeComboBox.h \
+ archetypes/ArchetypePanel.h \
+ archetypes/ArchetypeWrapper.h \
+ archetypes/ArchetypesWrapper.h \
+ archetypes/ObjectWrapper.h \
+ artifacts/ArtifactListPanel.h \
+ artifacts/ArtifactListWrapper.h \
+ artifacts/ArtifactPanel.h \
+ artifacts/ArtifactWrapper.h \
+ artifacts/ArtifactsWrapper.h \
+ assets/AssetModel.h \
+ assets/AssetOriginAndCreationDialog.h \
+ assets/AssetUseTree.h \
+ assets/AssetWrapper.h \
+ assets/AssetWrapperPanel.h \
+ attack_messages/AttackMessagePanel.h \
+ attack_messages/AttackMessagesWrapper.h \
+ faces/FacePanel.h \
+ faces/FaceWrapper.h \
+ faces/FacesWrapper.h \
+ faces/FacesetsPanel.h \
+ faces/FacesetsWrapper.h \
+ general_messages/GeneralMessagePanel.h \
+ general_messages/GeneralMessageWrapper.h \
+ general_messages/GeneralMessagesWrapper.h \
+ quests/QuestComboBox.h \
+ quests/QuestWrapper.h \
+ quests/QuestsWrapper.h \
+ recipes/RecipeListWrapper.h \
+ recipes/RecipePanel.h \
+ recipes/RecipeWrapper.h \
+ recipes/RecipesWrapper.h \
+ regions/RegionPanel.h \
+ regions/RegionWrapper.h \
+ regions/RegionsWrapper.h \
+ scripts/ScriptFile.cpp \
+ scripts/ScriptFileManager.h \
+ scripts/ScriptFilePanel.h \
+ sounds/GameSound.h \
+ sounds/GameSoundPanel.h \
+ sounds/GameSounds.h \
+ sounds/GameSoundsPanel.h \
+ sounds/SoundFile.h \
+ sounds/SoundFilePanel.h \
+ sounds/SoundFilesPanel.h \
+ sounds/SoundFiles.h \
+ sounds/SoundsDialog.h \
+ treasures/TreasureListComboBox.h \
+ treasures/TreasureListPanel.h \
+ treasures/TreasureListWrapper.h \
+ treasures/TreasurePanel.h \
+ treasures/TreasureWrapper.h \
+ treasures/TreasuresWrapper.h \
+ AllAssets.h \
+ AssetFieldCompleter.h \
+ AssetTextEdit.h \
+ ChangesDock.h \
+ HelpBrowser.h \
+ HelpManager.h \
+ QuickFilterDialog.h
+
+# Set RPATH so we don't have to install the shared libraries (or set LD_LIBRARY_PATH) before we can run CRE
+QMAKE_RPATHDIR+=$$PWD/../../server/.libs $$PWD/../../common/.libs $$PWD/../../random_maps/.libs
+
+LIBS += -lcurl
+QMAKE_CXXFLAGS += -Wcast-qual
+# -Wold-style-cast
+
+linux-*|unix {
+# Use shared libraries
+LIBS += -lcrypt -ldl ../../server/.libs/libserver.so ../../common/.libs/libcross.so ../../random_maps/.libs/librandom_map.so
+CONFIG += precompile_header
+PRECOMPILED_DIR = .pch
+PRECOMPILED_HEADER = cre_pch.h
+CONFIG += debug
+
+CONFIG(debug, debug|release) {
+    BDIR = build/debug
+}
+CONFIG(release, debug|release) {
+    BDIR = build/release
+}
+
+OBJECTS_DIR = $$BDIR/obj
+MOC_DIR = $$BDIR/moc
+RCC_DIR = $$BDIR/qrc
+UI_DIR = $$BDIR/u
+
+}
+
+win* {
+CONFIG += release
+# Use static libraries, that's what MXE generates, may be changed if needed
+LIBS += ../../server/.libs/libserver.a ../../common/.libs/libcross.a ../../random_maps/.libs/librandom_map.a
+}
+
+RESOURCES += cre.qrc
+
+CONFIG += thread
+CONFIG += c++14
+
+QT += concurrent script widgets help
+
+TRANSLATIONS = l10n/cre_fr.ts

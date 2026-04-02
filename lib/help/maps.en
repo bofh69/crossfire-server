@@ -1,0 +1,23 @@
+Use the maps command to check on whether or not a map or several maps are in use.
+
+Usage:
+  maps
+  maps <region short name>
+  maps <partial file name>
+  maps <partial folder path name>
+
+Examples:
+
+  'maps brest
+  'maps shop
+  'maps apart
+
+The headers shown are:
+
+Current time is = current real time on the server
+
+  Path = the map file path on the server
+  Reset In (HH:MM:SS) = real time on server when the map will reset
+  Pl = players
+  IM = in memory
+  TO = timeout until the map is saved to disk

@@ -1,0 +1,150 @@
+/*
+ * Crossfire -- cooperative multi-player graphical RPG and adventure game
+ *
+ * Copyright (c) 2022 the Crossfire Development Team
+ *
+ * Crossfire is free software and comes with ABSOLUTELY NO WARRANTY. You are
+ * welcome to redistribute it under certain conditions. For details, please
+ * see COPYING and LICENSE.
+ *
+ * The authors can be reached via e-mail at <crossfire@metalforge.org>.
+ */
+
+#include "MessageManager.h"
+#include "MessageFile.h"
+#include "QuestConditionScript.h"
+#include "quests/QuestWrapper.h"
+
+#include "global.h"
+
+#include <QDir>
+#include <QDebug>
+
+MessageManager::MessageManager(AssetWrapper *parent) : AssetWrapper(parent) {
+    setProperty(tipProperty, tr("Display all NPC dialogs."));
+}
+
+MessageManager::~MessageManager()
+{
+    qDeleteAll(myMessages);
+    qDeleteAll(myPreConditions);
+    qDeleteAll(myPostConditions);
+}
+
+void MessageManager::loadMessages()
+{
+    loadDirectory("");
+
+    /* get pre and post conditions */
+    findPrePost("pre", myPreConditions);
+    findPrePost("post", myPostConditions);
+}
+
+void MessageManager::saveMessages()
+{
+    foreach(MessageFile* file, myMessages)
+    {
+        file->save();
+    }
+}
+
+QList<MessageFile*>& MessageManager::messages()
+{
+    return myMessages;
+}
+
+const QList<MessageFile*>& MessageManager::messages() const
+{
+    return myMessages;
+}
+
+MessageFile* MessageManager::findMessage(const QString& path)
+{
+    foreach(MessageFile* file, myMessages)
+    {
+        if (file->path() == path)
+            return file;
+    }
+
+    return NULL;
+}
+
+void MessageManager::loadDirectory(const QString& directory)
+{
+    //qDebug() << "load" << directory;
+    QDir dir(QString("%1/%2/%3").arg(settings.datadir, settings.mapdir, directory));
+
+    // first messages
+    QStringList messages = dir.entryList(QStringList("*.msg"), QDir::Files);
+    //qDebug() << "found" << messages;
+    foreach(QString message, messages)
+    {
+        QString path = directory + QDir::separator() + message;
+        MessageFile* file = new MessageFile(this, path);
+        if (file->parseFile())
+        {
+            myMessages.append(file);
+        }
+        else
+        {
+            qDebug() << "dialog parse error" << path;
+            delete file;
+        }
+    }
+
+    // recurse
+    QStringList subdirs = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    foreach(QString sub, subdirs)
+        loadDirectory(directory + QDir::separator() + sub);
+}
+
+QList<QuestConditionScript*> MessageManager::preConditions() const
+{
+    return myPreConditions;
+}
+
+QList<QuestConditionScript*> MessageManager::postConditions() const
+{
+    return myPostConditions;
+}
+
+QString MessageManager::loadScriptComment(const QString& path) const
+{
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly))
+        return "";
+
+    QTextStream stream(&file);
+    QStringList lines = stream.readAll().split("\n");
+
+    QString comment, line;
+
+    /* by convention, the first 2 lines are encoding and script name */
+    for(int i = 2; i < lines.size(); i++)
+    {
+        line = lines[i];
+        if (!line.startsWith("# "))
+            break;
+        comment += line.mid(2) + "\n";
+    }
+
+    return comment.trimmed();
+}
+
+void MessageManager::findPrePost(const QString directory, QList<QuestConditionScript*>& list)
+{
+    QDir dir(QString("%1/%2/python/dialog/%3").arg(settings.datadir, settings.mapdir, directory));
+    QFileInfoList files = dir.entryInfoList(QStringList("*.py"));
+    foreach(QFileInfo file, files)
+    {
+        list.append(new QuestConditionScript(file.baseName(), loadScriptComment(file.absoluteFilePath())));
+    }
+}
+
+AssetWrapper::PossibleUse MessageManager::uses(const AssetWrapper *asset, std::string &) const {
+    auto quest = dynamic_cast<const QuestWrapper *>(asset);
+    if (quest) {
+        return ChildrenMayUse;
+    }
+    return DoesntUse;
+}

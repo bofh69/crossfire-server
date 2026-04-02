@@ -1,0 +1,6 @@
+Throw a marked, or random, item in the direction the character is facing.
+
+Usage:
+  throw
+
+Only items that have a throwing property to them can be used with the throw command. To name a few: throwing dagger, throwing star, spear, trident

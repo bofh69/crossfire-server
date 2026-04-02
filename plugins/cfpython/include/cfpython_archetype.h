@@ -32,8 +32,9 @@
 
 typedef struct {
     PyObject_HEAD
-    archetype* arch;
+    archetype *arch;
 } Crossfire_Archetype;
+
 extern PyTypeObject Crossfire_ArchetypeType;
 
 extern PyObject *Crossfire_Archetype_wrap(archetype *what);

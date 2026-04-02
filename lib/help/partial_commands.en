@@ -1,0 +1,13 @@
+Control whether commands can match partially or not.
+
+When disabled, a command must match exactly to be executed.
+
+When enabled, the first letters of a command are enough if there is no ambiguity with other commands.
+
+[color=#ff5500]Usage:[/color] partial_commands <1 or on, or 0 or off>
+
+Without any argument, displays the status.
+
+[color=#ff5500]Example:[/color]
+- when disabled, [color=#ff5500]pe[/color] and [color=#ff5500]pet[/color] are unknown commands
+- when enabled, [color=#ff5500]pe[/color] is an unknown command, because it can mean [color=#ff5500]peaceful[/color] or [color=#ff5500]petmode[/color], but [color=#ff5500]pet[/color] will be equivalent to [color=#ff5500]petmode[/color]

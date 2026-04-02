@@ -1,0 +1,36 @@
+The statistics command shows various useful information about your character.
+
+Usage
+  statistics
+
+The output displays:
+   How much experience your character has and what is needed for your next level
+   Shows natural, real, and maximum statistic values
+       Your natural stat is the stat without any items/spells applied
+       Real is what the current value is (same as in the stat window in the game client)
+       Maximum is the maximum value for your natural stat which is based on your character race
+   Attack mode, which is either peaceful or hostile
+   Dam/Sec is a calculation of your character's current Damage per Second (dps) that assumes every attack hits the target or foe and does *not* take into account partial resistance values, misses, or other protection such as Armor and Ac
+   The command will also display the total amount of time this particular character has been logged in to the server using the internal time tracking of the server (ticks) and also converting the ticks to hours and minutes.
+
+Example output:
+
+  Experience: 150
+  Next Level: 2000
+
+  Stat       Nat/Real/Max
+  Str         24/  24/ 23
+  Dex         18/  18/ 18
+  Con         25/  25/ 24
+  Int         10/  10/ 18
+  Wis          2/   2/ 19
+  Pow          1/   1/ 18
+  Cha          1/   1/ 19
+
+  Attack Mode: Peaceful
+
+  Dam/Sec:   80
+
+  You have played this character for 327 ticks, which amounts to 0 hours and 0 minutes.
+
+See Also: peaceful

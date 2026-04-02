@@ -1,0 +1,3 @@
+Usage: server_speed <newspeed>
+
+This command will set the tick rate of the server to <newspeed> in microseconds. The default setting is currently 120,000 microseconds (120ms). Use this command with extreme caution as you can easily “break” the default behavior of the server and cause all players to starve to death multiple times, or worse.

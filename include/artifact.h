@@ -1,19 +1,34 @@
+/**
+ * @file
+ * Artifact-related structures.
+ *
+ * See the @ref page_artifact "page on artifacts" for more information.
+ */
+
 #ifndef ARTIFACT_H
 #define ARTIFACT_H
 
-typedef struct artifactstruct {
-	object	*item;
-	uint16	chance;
-	uint8	difficulty;
-	struct artifactstruct *next;
-	linked_char *allowed;
-} artifact;
+/**
+ * This is one artifact, ie one special item.
+ */
+struct artifact {
+    object *item;                   /**< Special values of the artifact. Note that this object is malloc() ed. */
+    uint16_t chance;                  /**< Chance of the artifact to happen. */
+    uint8_t difficulty;               /**< Minimum map difficulty for the artifact to happen. */
+    std::vector<sstring> allowed;   /**< List of archetypes the artifact can affect. */
+};
 
-typedef struct artifactliststruct {
-	uint8	type;		/* Object type that this list represents */
-	uint16	total_chance;	/* sum of chance for are artifacts on this list */
-	struct artifactliststruct *next;
-	struct artifactstruct *items;
-} artifactlist;
+/**
+ * This represents all archetypes for one particular object type.
+ */
+struct artifactlist {
+    uint8_t type;                         /**< Object type that this list represents. */
+    uint16_t total_chance;                /**< Sum of chance for are artifacts on this list. */
+    artifactlist *next;    /**< Next list of artifacts. */
+    std::vector<artifact *> items;      /**< Artifacts for this type. Will never be NULL. */
+};
+
+void artifact_check(const artifact *art);
+void artifact_post_load();
 
 #endif /* ARTIFACT_H */

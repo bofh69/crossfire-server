@@ -1,0 +1,17 @@
+Lists the player's current language settings and the server-supported settings.
+
+  language
+    Your current language is set to: English
+    Available languages:
+    en: English
+    fr: Français
+    nl: Nederlands
+    it: Italiano
+    de: Deutsch
+
+To set the player's language, specify the language command with a two-letter language identifier after it.
+
+  language en
+    Your language setting has been changed to: English
+
+If translations for a particular language are missing or incomplete, English messages are output by default.

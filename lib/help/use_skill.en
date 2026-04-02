@@ -1,0 +1,16 @@
+The use_skill command will apply the designated skill to all objects in your inventory, or on objects located under your character. 
+
+
+Usage:
+  use_skill <skill name>
+
+The use_skill command is also used for crafting. For instance, by placing specific items in a cauldron, you would apply the alchemy skill to try and create something new in the cauldron.
+
+Example:
+  use_skill alchemy
+
+This command is best used with keybindings (see help bind), as it does not set the designated skill as your active skill (see help ready_skill).
+
+See Also: bind
+See Also: skills
+See Also: ready_skill

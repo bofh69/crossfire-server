@@ -1,0 +1,9 @@
+The whereabouts command gives a summary of the regions in which players are currently occupying.
+
+Usage:
+  whereabouts
+
+Example:
+  In the world currently there are:
+  3 players in The Kingdom of Scorn
+  4 players in The Sultanate of Darcap

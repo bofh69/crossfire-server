@@ -1,0 +1,7 @@
+Empty will put all contents of the specified container either on the ground or in your opened container.
+
+  Syntax: empty <item>
+
+<item> should be a container.
+
+If "all" is specified (i.e., empty all), all containers are emptied.

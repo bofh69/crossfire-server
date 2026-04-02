@@ -1,0 +1,18 @@
+The use command will try and apply the two specified items.
+
+Usage:
+  use <item1> with <item2>
+
+The result depends on the items themselves.
+
+The order is important.
+
+Example:
+  use slicing knife with apple
+
+This will turn a whole apple into two apple halves
+
+Example:
+  use file with silver bar
+
+This will turn the silver bar into 1000 silver filings

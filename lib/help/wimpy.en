@@ -1,0 +1,18 @@
+The wimpy command is a percentage of hitpoints left. When hitpoints drop below this level the character will blindly run away automatically.
+
+Usage:
+  wimpy
+  wimpy <#>
+
+wimpy without an argument shows the current setting.
+
+Example:
+  Your current wimpy level is 0.
+
+If a numeric argument is specified, the wimpy level is set and shown:
+
+Example:
+  wimpy 10
+  Your new wimpy level is 10.
+
+Your character will flee in a random direction when hit points fall to 10% total or lower.

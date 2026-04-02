@@ -1,71 +1,90 @@
-#
-# Makefile for crossfire 0.95.0 and beyond
-#
-# This file will eventually be replaced by a configure script.  But for
-# now, this simple makefile should do the job.
-#
-#   Copyright (C) 1992 Frank Tore Johansen
-#   Copyright (C) 2001 Mark Wedel
-#
-#   This program is free software; you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation; either version 2 of the License, or
-#   (at your option) any later version.
-#
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
-#
-#   You should have received a copy of the GNU General Public License
-#   along with this program; if not, write to the Free Software
-#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-#
-#   The author can be reached via e-mail to mwedel@scruz.net
+pkglib_LTLIBRARIES = libcross.la
 
-noinst_LIBRARIES = libcross.a
+libcross_la_SOURCES = \
+	anim.cpp \
+	arch.cpp\
+	arch_types_valid.cpp \
+	artifact.cpp \
+	assets/AnimationWriter.cpp \
+	assets/Animations.cpp \
+	assets/ArchetypeLoader.cpp \
+	assets/ArchetypeWriter.cpp \
+	assets/Archetypes.cpp \
+	assets/ArtifactLoader.cpp \
+	assets/ArtifactWriter.cpp \
+	assets/AssetCollector.cpp \
+	assets/AssetsManager.cpp \
+	assets/FaceLoader.cpp \
+	assets/FaceWriter.cpp \
+	assets/Faces.cpp \
+	assets/FacesetLoader.cpp \
+	assets/FacesetWriter.cpp \
+	assets/Facesets.cpp \
+	assets/FormulaeWriter.cpp \
+	assets/MessageLoader.cpp \
+	assets/MessageWriter.cpp \
+	assets/Messages.cpp \
+	assets/microtar.cpp \
+	assets/PngLoader.cpp \
+	assets/QuestLoader.cpp \
+	assets/QuestWriter.cpp \
+	assets/Quests.cpp \
+	assets/TarLoader.cpp \
+	assets/TreasureLoader.cpp \
+	assets/TreasureWriter.cpp \
+	assets/Treasures.cpp \
+	assets/Utils.cpp \
+	assets/assets.cpp\
+	bufferreader.cpp \
+	button.cpp \
+	cf_random.cpp \
+	dialog.cpp \
+	events.cpp \
+	exp.cpp \
+	friend.cpp \
+	holy.cpp \
+	info.cpp \
+	image.cpp \
+	init.cpp \
+	item.cpp \
+	languages.cpp \
+	links.cpp \
+	living.cpp \
+	loader.cpp \
+	logger.cpp \
+	los.cpp \
+	map.cpp \
+	minheap.cpp \
+	ob_methods.cpp \
+	ob_types.cpp \
+	object.cpp \
+	output_file.cpp \
+	path.cpp \
+	porting.cpp \
+	player.cpp \
+	re-cmp.cpp \
+	readable.cpp \
+	recipe.cpp \
+	region.cpp \
+	shstr.cpp \
+	stringbuffer.cpp \
+	time.cpp \
+	treasure.cpp \
+	utils.cpp
 
-libcross_a_SOURCES = \
-	anim.c \
-	arch.c\
-	button.c\
-	exp.c\
-	friend.c\
-	glue.c\
-	holy.c\
-	info.c\
-	image.c \
-	init.c\
-	item.c\
-	links.c\
-	living.c\
-	loader.l\
-	logger.c\
-	los.c\
-	map.c\
-	object.c\
-	path.c\
-	porting.c\
-	player.c\
-	quest.c\
-	re-cmp.c\
-	readable.c\
-	recipe.c\
-	region.c\
-	shstr.c\
-	stringbuffer.c\
-	time.c\
-	treasure.c\
-	utils.c
+loader.cpp: loader.l
+	$(LEX) $(AM_LFLAGS) -o loader.cpp $(top_srcdir)/common/loader.l
 
-EXTRA_DIST = README
+EXTRA_DIST = README is_valid_types_gen.py
 AM_CPPFLAGS = -I$(top_srcdir)/include -DDATADIR=\"$(pkgdatadir)\" -DCONFDIR=\"$(pkgconfdir)\" \
 	      -DLIBDIR=\"$(pkglibdir)\" -DLOCALDIR=\"$(pkgstatedir)\"
-AM_LFLAGS = -i
+AM_LFLAGS = -i -B -Cf
 
-proto:
-	cproto -e -o ../include/libproto.h.bak $(CPPFLAGS) $(AM_CPPFLAGS) \
-		`echo $(SOURCES) loader.c " " | $(AWK) -v RS=" " '/.c$$/ { print }'`
-	sed -e "s/__signed/signed/g" -e "/inline/d" -e "/YY_BUFFER/d" -e "/yy_size_t/d" < ../include/libproto.h.bak > ../include/libproto.h
-	chmod 644 ../include/libproto.h
-	rm -f ../include/libproto.h.bak
+if PCH
+AM_CPPFLAGS += -include-pch $(top_srcdir)/include/global.h.gch
+endif
+
+CLEANFILES = loader.cpp arch_types_valid.cpp
+
+arch_types_valid.cpp: is_valid_types_gen.py $(top_srcdir)/include/object.h
+	$(PY) $(top_srcdir)/common/is_valid_types_gen.py $(top_srcdir)/include/object.h > $(builddir)/arch_types_valid.cpp

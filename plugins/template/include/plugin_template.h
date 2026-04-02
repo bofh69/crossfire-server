@@ -25,49 +25,50 @@
 /*  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.                */
 /*                                                                           */
 /*****************************************************************************/
-
 #ifndef PLUGIN_TEMPLATE_H
 #define PLUGIN_TEMPLATE_H
 
 #define PLUGIN_NAME    "Template"
 #define PLUGIN_VERSION "Template Plugin 2.0"
 
-#ifndef __CEXTRACT__
 #include <plugin.h>
-#endif
 
 #undef MODULEAPI
 #ifdef WIN32
-#ifdef PYTHON_PLUGIN_EXPORTS
-#define MODULEAPI __declspec(dllexport)
+# ifdef PYTHON_PLUGIN_EXPORTS
+#  define MODULEAPI __declspec(dllexport)
+# else
+#  define MODULEAPI __declspec(dllimport)
+# endif
 #else
-#define MODULEAPI __declspec(dllimport)
+#ifdef HAVE_VISIBILITY
+# define MODULEAPI __attribute__((visibility("default")))
+#else
+# define MODULEAPI
 #endif
-
-#else
-#define MODULEAPI
 #endif
 
 #include <plugin_common.h>
 #include <plugin_template.h>
-#include <plugin_template_proto.h>
 
-typedef struct _cfpcontext
-{
-    struct _cfpcontext* down;
-    object*     who;
-    object*     activator;
-    object*     third;
+struct CFPContext {
+    CFPContext *down;
+    object     *who;
+    object     *activator;
+    object     *third;
+    object     *event;
     char        message[1024];
     int         fix;
     int         event_code;
     char        options[1024];
     int         returnvalue;
     int         parms[5];
-} CFPContext;
+};
 
 extern f_plug_api  gethook;
-extern CFPContext* context_stack;
-extern CFPContext* current_context;
+
+extern CFPContext *context_stack;
+
+extern CFPContext *current_context;
 
 #endif /* PLUGIN_TEMPLATE_H */

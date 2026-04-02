@@ -1,0 +1,5 @@
+The 'mapedit' client command obtains the map the player is currently on using 'mapinfo' and launches the map editor given by the environment variable CF_MAP_EDITOR on the path.
+
+This is intended to make launching the map editor easier.
+
+This is a GTKv2 Client only command.

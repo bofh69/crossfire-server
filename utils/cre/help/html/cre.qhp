@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QtHelpProject version="1.0">
+    <namespace>com.real-time.crossfire</namespace>
+    <virtualFolder>cre</virtualFolder>
+    <filterSection>
+        <toc>
+            <section title="Introduction" ref="index.html"></section>
+            <section title="Treasures" ref="treasures.html"></section>
+            <section title="Quests" ref="quests.html"></section>
+            <section title="Changes" ref="changes.html"></section>
+        </toc>
+        <keywords>
+            <keyword id="treasures" name="treasures" ref="treasures.html"/>
+            <keyword id="changes" name="changes" ref="changes.html"/>
+            <keyword id="quests" name="quests" ref="quests.html"/>
+        </keywords>
+        <files>
+            <file>*.html</file>
+        </files>
+    </filterSection>
+</QtHelpProject>

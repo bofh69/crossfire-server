@@ -1,0 +1,7 @@
+Usage: time
+
+The time command will display in-game time along with the month, day, and year.
+
+For DMs, it also displays additional time statistics about server performance such as min, avg, and max on ticks in milliseconds for the server session.
+
+The output also displays ticks longer than 120ms, and time (avg, max, min) on the last 100 ticks.

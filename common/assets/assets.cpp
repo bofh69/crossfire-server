@@ -1,0 +1,558 @@
+/*
+ * Crossfire -- cooperative multi-player graphical RPG and adventure game
+ *
+ * Copyright (c) 2020 the Crossfire Development Team
+ *
+ * Crossfire is free software and comes with ABSOLUTELY NO WARRANTY. You are
+ * welcome to redistribute it under certain conditions. For details, please
+ * see COPYING and LICENSE.
+ *
+ * The authors can be reached via e-mail at <crossfire@metalforge.org>.
+ */
+
+/**
+ * @file
+ * Handles asset collection.
+ */
+
+#ifndef WIN32 /* ---win32 exclude headers */
+#include <sys/stat.h>
+#include "autoconf.h"
+#endif
+
+#include "global.h"
+#include "compat.h"
+#include "assets.h"
+#include "AssetsManager.h"
+#include "AssetCollector.h"
+#include "TreasureLoader.h"
+#include "ArchetypeLoader.h"
+#include "PngLoader.h"
+#include "FacesetLoader.h"
+#include "FaceLoader.h"
+#include "WrapperLoader.h"
+#include "MessageLoader.h"
+#include "QuestLoader.h"
+#include "ArtifactLoader.h"
+#include "Faces.h"
+#include <string.h>
+
+#include <set>
+#include <unordered_map>
+#include <memory>
+
+#include "AssetWriter.h"
+#include "TreasureWriter.h"
+#include "FaceWriter.h"
+#include "AnimationWriter.h"
+#include "ArchetypeWriter.h"
+#include "MessageWriter.h"
+#include "image.h"
+#include "FacesetWriter.h"
+#include "ArtifactWriter.h"
+#include "FormulaeWriter.h"
+#include "QuestWriter.h"
+
+#include "microtar.h"
+#include "TarLoader.h"
+
+static AssetsManager *manager = nullptr;
+static std::vector<std::pair<std::string, collectorHook>> collector_hooks; /**< Collect hooks, as (filename, function) pairs */
+
+/**
+ * Init assets-related variables.
+ */
+void assets_init() {
+    manager = new AssetsManager();
+}
+
+/**
+ * Free all assets-related memory.
+ */
+void assets_free() {
+    delete manager;
+    manager = nullptr;
+}
+
+/**
+ * Number of treasure items, for malloc info.
+ */
+size_t nroftreasures = 0;
+
+/**
+ * Checks if a treasure if valid. Will also check its yes and no options.
+ *
+ * Will LOG() to error.
+ *
+ * @param t
+ * treasure to check.
+ * @param tl
+ * needed only so that the treasure name can be printed out.
+ * @ingroup page_treasure_list
+ */
+static void check_treasurelist(treasure *t, const treasurelist *tl) {
+    if (t->item == NULL && t->name == NULL)
+        LOG(llevError, "Treasurelist %s has element with no name or archetype\n", tl->name);
+    if (t->chance >= 100 && t->next_yes && (t->next || t->next_no))
+        LOG(llevError, "Treasurelist %s has element that has 100%% generation, next_yes field as well as next or next_no\n", tl->name);
+    if (t->name && strcmp(t->name, "NONE"))
+        find_treasurelist(t->name);
+    if (t->next)
+        check_treasurelist(t->next, tl);
+    if (t->next_yes)
+        check_treasurelist(t->next_yes, tl);
+    if (t->next_no)
+        check_treasurelist(t->next_no, tl);
+}
+
+/**
+ * Collect all assets from the specified directory and all its subdirectories.
+ * @param datadir directory to search from.
+ * @param what combination of @see ASSETS_xxx flags indicating what to collect.
+ */
+void assets_collect(const char* datadir, int what) {
+    LOG(llevInfo, "Starting to collect assets from %s\n", datadir);
+
+    AssetCollector collector;
+    if (what & ASSETS_TREASURES)
+        collector.addLoader(new TreasureLoader(manager->treasures(), manager->archetypes(), settings.assets_tracker));
+    if (what & ASSETS_ARCHETYPES)
+        collector.addLoader(new ArchetypeLoader(manager->archetypes(), settings.assets_tracker));
+    if (what & ASSETS_PNG)
+        collector.addLoader(new PngLoader(manager->faces(), manager->facesets()));
+    if (what & ASSETS_FACESETS)
+        collector.addLoader(new FacesetLoader(manager->facesets()));
+    if (what & ASSETS_FACES)
+        collector.addLoader(new FaceLoader(manager->faces(), manager->animations(), settings.assets_tracker));
+    if (what & ASSETS_MESSAGES)
+        collector.addLoader(new MessageLoader(manager->messages(), settings.assets_tracker));
+    if (what & ASSETS_ARTIFACTS) {
+        collector.addLoader(new ArtifactLoader(settings.assets_tracker));
+    }
+    if (what & ASSETS_FORMULAE) {
+        collector.addLoader(new WrapperLoader("/formulae", init_formulae));
+        collector.addLoader(new WrapperLoader(".formulae", init_formulae));
+    }
+    if (what & ASSETS_ATTACK_MESSAGES)
+        collector.addLoader(new WrapperLoader("/attackmess", init_attackmess));
+    if (what & ASSETS_QUESTS)
+        collector.addLoader(new QuestLoader(manager->quests(), manager->faces(), settings.assets_tracker));
+    if (what & ASSETS_REGIONS)
+        collector.addLoader(new WrapperLoader("regions.reg", init_regions));
+    for (const auto& hook : collector_hooks) {
+        collector.addLoader(new WrapperLoader(hook.first, hook.second));
+    }
+    collector.addLoader(new TarLoader(&collector));
+    collector.collect(datadir);
+
+    if (what & ASSETS_ARTIFACTS) {
+        artifact_post_load();
+    }
+
+    LOG(llevInfo, "Finished collecting assets from %s\n", datadir);
+}
+
+/**
+ * Check all generators have the other_arch set or something in inventory.
+ */
+static void check_generators(void) {
+    int abort = 0;
+
+    manager->archetypes()->each([&abort] (const auto& arch) {
+        if (!QUERY_FLAG(&arch->clone, FLAG_GENERATOR))
+            return;
+
+        if (!QUERY_FLAG(&arch->clone, FLAG_CONTENT_ON_GEN) && arch->clone.other_arch == NULL) {
+            LOG(llevError, "Fatal: %s is generator without content_on_gen but lacks other_arch.\n", arch->name);
+            abort = 1;
+            return;
+        }
+        if (QUERY_FLAG(&arch->clone, FLAG_CONTENT_ON_GEN) && arch->clone.inv == NULL) {
+            LOG(llevError, "Fatal: %s is generator with content_on_gen but lacks inventory.\n", arch->name);
+            abort = 1;
+            return;
+        }
+    });
+
+    if (abort)
+        fatal(SEE_LAST_ERROR);
+}
+
+/**
+ * This checks all summonable items for move_type and other things.
+ * Will call fatal() if an error is found.
+ */
+void check_summoned(void) {
+    manager->archetypes()->each([] (const auto& arch) {
+        if (arch->clone.type == SPELL && arch->clone.subtype == SP_SUMMON_GOLEM && arch->clone.other_arch) {
+            if (arch->clone.other_arch->clone.move_type == 0) {
+                LOG(llevError, "Summonable archetype %s [%s] has no move_type defined!\n", arch->clone.other_arch->name, arch->clone.other_arch->clone.name);
+                fatal(SEE_LAST_ERROR);
+            }
+        }
+    });
+}
+
+/**
+ * This ensures:
+ *  - all spells have a valid skill defined
+ *  - spell_mapping contains valid spells
+ * fatal() is called if any error was found.
+ */
+static void check_spells(void) {
+    int abort = 0;
+
+    manager->archetypes()->each([&abort] (const auto& arch) {
+        if (arch->clone.type == SPELL && arch->clone.skill) {
+            auto skill = manager->archetypes()->first([&arch] (const archetype *skill) {
+                return skill->clone.type == SKILL && arch->clone.skill == skill->clone.name;
+            });
+            if (!skill) {
+                LOG(llevError, "Spell %s has improper associated skill %s\n", arch->name, arch->clone.skill);
+                abort = 1;
+            }
+        }
+    });
+
+    for (size_t i = 0; i < sizeof(spell_mapping) / sizeof(spell_mapping[0]); i++) {
+        if (spell_mapping[i] && !try_find_archetype(spell_mapping[i])) {
+            LOG(llevError, "Unable to find spell mapping %s (%zu)\n", spell_mapping[i], i);
+            abort = 1;
+        }
+    }
+
+    if (abort)
+        fatal(SEE_LAST_ERROR);
+}
+
+/**
+ * Called after collect is complete, to check various things.
+ */
+void assets_end_load() {
+    check_generators();
+    check_spells();
+    check_summoned();
+    manager->treasures()->each([] (auto list) {
+        if (list->items) {
+            check_treasurelist(list->items, list);
+        }
+    });
+    check_recipes();
+    check_formulae();
+}
+
+/**
+ * Search for the given treasurelist by name.
+ *
+ * @param name
+ * treasure list to search.
+ * @return
+ * match, or NULL if treasurelist doesn't exist or is 'none'.
+ * @ingroup page_treasure_list
+ */
+treasurelist *find_treasurelist(const char *name) {
+    if (!strcmp(name, "none"))
+        return NULL;
+    return manager->treasures()->get(name);
+}
+
+size_t assets_number_of_treasures() {
+    return nroftreasures;
+}
+size_t assets_number_of_treasurelists() {
+    return manager->treasures()->count();
+}
+
+archetype *get_next_archetype(archetype *current) {
+    return manager->archetypes()->next(current);
+}
+
+archetype *find_archetype(const char *name) {
+    return manager->archetypes()->get(name);
+}
+
+archetype *try_find_archetype(const char *name) {
+    return manager->archetypes()->find(name);
+}
+
+Animations *find_animation(const char *name) {
+    return manager->animations()->get(name);
+}
+
+Animations *try_find_animation(const char *name) {
+    return manager->animations()->find(name);
+}
+
+const Face *find_face(const char *name) {
+    return manager->faces()->get(name);
+}
+
+const Face *try_find_face(const char *name, const Face *error) {
+    auto found = manager->faces()->find(name);
+    if (found)
+        return found;
+    return error;
+}
+
+size_t get_faces_count() {
+    return manager->faces()->count();
+}
+
+void faces_for_each(face_op op) {
+    manager->faces()->each(*op);
+}
+
+void archetypes_for_each(arch_op op) {
+    manager->archetypes()->each(*op);
+}
+
+AssetsManager *getManager() {
+    return manager;
+}
+
+/**
+ * Get a face from its unique identifier.
+ * @param id face identifier.
+ * @return matching face, NULL if no face with this identifier.
+ * @todo move back to image.c when migrated
+ */
+const Face *get_face_by_id(uint16_t id) {
+    return manager->faces()->findById(id);
+}
+
+/**
+ * Find the message from its identifier.
+ * @param identifier message's identifier.
+ * @return corresponding message, NULL if no such message.
+ */
+const GeneralMessage *get_message_from_identifier(const char *identifier) {
+    return manager->messages()->find(identifier);
+}
+
+face_sets *find_faceset(int id) {
+    return manager->facesets()->findById(id);
+}
+
+template<class T>
+static void do_pack(AssetWriter<T> *writer, AssetsCollection<T> *assets, StringBuffer *buf) {
+    assets->each([writer, buf] (T *asset) {
+       writer->write(asset, buf);
+    });
+    delete writer;
+}
+
+static void pack_artifacts(StringBuffer *buf) {
+    ArtifactWriter writer;
+    artifactlist *list = first_artifactlist;
+    while (list) {
+        for (const auto item : list->items) {
+            writer.write(item, buf);
+        }
+        list = list->next;
+    }
+}
+
+static void pack_formulae(StringBuffer *buf) {
+    FormulaeWriter writer;
+    recipelist *list = get_formulalist(1);
+    while (list) {
+        writer.write(list, buf);
+        list = list->next;
+    }
+}
+
+static void build_filename(const char *name, const char *prefix, char *dest, size_t max) {
+    auto dot = strrchr(name, '.');
+    // If name has no '.', then just name.prefix
+    if (!dot) {
+        snprintf(dest, max, "%s.%s", name, prefix);
+        return;
+    }
+
+    // filename for name.111 is name.prefix.111.png
+    memset(dest, 0, max);
+    dot++;
+
+    snprintf(dest, max, "%.*s%s.%s.png", (int)(dot - name), name, prefix, dot);
+}
+
+/**
+ * Add a file to a .tar file.
+ * @param tar where to add the file.
+ * @param data file content.
+ * @param len length of data.
+ * @param filename name in the .tar file.
+ */
+static void add_to_tar(mtar_t *tar, void *data, size_t len, const char *filename) {
+    mtar_header_t h;
+    memset(&h, 0, sizeof(h));
+    strlcpy(h.name, filename, sizeof(h.name));
+    h.size = len;
+    h.type = MTAR_TREG;
+    h.mode = 0664;
+    h.mtime = time(NULL);
+    /* Build raw header and write */
+    if (MTAR_ESUCCESS != mtar_write_header(tar, &h)) {
+        LOG(llevError, "Failed to write tar header for %s\n", filename);
+        fatal(SEE_LAST_ERROR);
+    }
+    if (MTAR_ESUCCESS != mtar_write_data(tar, data, len)) {
+        LOG(llevError, "Failed to write tar data for %s\n", filename);
+        fatal(SEE_LAST_ERROR);
+    }
+}
+
+/**
+ * Pack all client-side images in the specified tar file.
+ * @param tar where to pack images.
+ */
+static void pack_images(mtar_t *tar) {
+    manager->faces()->each([&tar] (const auto face) {
+        manager->facesets()->each([&tar, &face] (const auto fs) {
+            if (!fs->prefix || fs->allocated <= face->number || !fs->faces[face->number].datalen) {
+                return;
+            }
+            char filename[500];
+            build_filename(face->name, fs->prefix, filename, sizeof(filename));
+            add_to_tar(tar, fs->faces[face->number].data, fs->faces[face->number].datalen, filename);
+        });
+    });
+}
+
+void assets_pack(const char *what, const char *filename) {
+#define MAX_PACK    100
+    char *split[MAX_PACK];
+    char *dup = strdup_local(what);
+    size_t count = split_string(dup, split, MAX_PACK, '+');
+    if (count == 0) {
+        LOG(llevError, "Invalid pack type %s\n", what);
+        fatal(SEE_LAST_ERROR);
+    }
+    bool isTar = (count > 1) || (strcmp(split[0], "images") == 0);
+    mtar_t tar;
+    if (isTar) {
+        if (MTAR_ESUCCESS != mtar_open(&tar, filename, "w")) {
+            LOG(llevError, "Failed to open tar file %s\n", filename);
+            fatal(SEE_LAST_ERROR);
+        }
+    }
+
+    for (size_t t = 0; t < count; t++) {
+        const char *type = split[t];
+        const char *name = nullptr;
+
+        StringBuffer *buf = stringbuffer_new();
+        if (strcmp(type, "treasures") == 0) {
+            do_pack(new TreasureWriter(), manager->treasures(), buf);
+            name = "crossfire.trs";
+        } else if (strcmp(type, "faces") == 0) {
+            do_pack(new FaceWriter(), manager->faces(), buf);
+            do_pack(new AnimationWriter(), manager->animations(), buf);
+            name = "crossfire.face";
+        } else if (strcmp(type, "archs") == 0) {
+            do_pack(new ArchetypeWriter(), manager->archetypes(), buf);
+            name = "crossfire.arc";
+        } else if (strcmp(type, "messages") == 0) {
+            do_pack(new MessageWriter(), manager->messages(), buf);
+            name = "messages";
+        } else if (strcmp(type, "facesets") == 0) {
+            do_pack(new FacesetWriter(), manager->facesets(), buf);
+            name = "image_info";
+        } else if (strcmp(type, "artifacts") == 0) {
+            pack_artifacts(buf);
+            name = "artifacts";
+        } else if (strcmp(type, "formulae") == 0) {
+            pack_formulae(buf);
+            name = "formulae";
+        } else if (strcmp(type, "quests") == 0) {
+            do_pack(new QuestWriter(), manager->quests(), buf);
+            name = "crossfire.quests";
+        } else if (strcmp(type, "images") == 0) {
+            pack_images(&tar);
+            stringbuffer_delete(buf);
+            continue;   // Already stored in tar.
+        } else {
+            LOG(llevError, "Invalid asset type '%s'\n", type);
+            fatal(SEE_LAST_ERROR);
+        }
+
+        size_t length = stringbuffer_length(buf);
+        char *data = stringbuffer_finish(buf);
+
+        if (isTar) {
+            add_to_tar(&tar, data, length, name);
+        } else {
+            FILE *out = fopen(filename, "w+");
+            if (!out) {
+                LOG(llevError, "Failed to open file '%s'\n", filename);
+                fatal(SEE_LAST_ERROR);
+            }
+            if (fwrite(static_cast<void*>(data), 1, length, out) != length) {
+                LOG(llevError, "Failed to write all data for %s!\n", filename);
+                fclose(out);
+                fatal(SEE_LAST_ERROR);
+            }
+            fclose(out);
+        }
+        free(data);
+    }
+
+    if (isTar) {
+        if (MTAR_ESUCCESS != mtar_finalize(&tar)) {
+            LOG(llevError, "Failed to finalize tar file %s\n", filename);
+            fatal(SEE_LAST_ERROR);
+        }
+        if (MTAR_ESUCCESS != mtar_close(&tar)) {
+            LOG(llevError, "Failed to closed tar file %s\n", filename);
+            fatal(SEE_LAST_ERROR);
+        }
+    }
+    free(dup);
+}
+
+void assets_finish_archetypes_for_play() {
+    manager->archetypes()->each([] (archetype *arch) {
+        object *op = &arch->clone;
+        if (op->speed < 0) {
+            op->speed_left = op->speed_left - RANDOM() % 100 / 100.0;
+            op->speed = -op->speed; // Make this always positive
+        }
+    });
+}
+
+quest_definition *quest_find_by_code(sstring code) {
+    quest_definition *quest;
+
+    quest = quest_get_by_code(code);
+    if (!quest) {
+        LOG(llevError, "quest %s required but not found!\n", code);
+        return NULL;
+    }
+    return quest;
+}
+
+quest_definition *quest_get_by_code(sstring code) {
+    return manager->quests()->find(code);
+}
+
+/**
+ * Iterate over all quests.
+ * @param op function to call for each quest.
+ * @param user extra parameter to give the function.
+ */
+void quest_for_each(quest_op op, void *user) {
+    manager->quests()->each([&op, &user] (auto q) { op(q, user); });
+}
+
+size_t quests_count(bool includeSystem) {
+    return includeSystem ? manager->quests()->count() : manager->quests()->visibleCount();
+}
+
+void load_assets(void) {
+    assets_collect(settings.datadir, ASSETS_ALL);
+    assets_end_load();
+}
+
+void assets_add_collector_hook(const char *name, collectorHook hook) {
+    collector_hooks.push_back(std::make_pair(name, hook));
+}

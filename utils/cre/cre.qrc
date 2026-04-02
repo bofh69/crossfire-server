@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>resources/treasure_list.png</file>
+        <file>resources/treasureone_list.png</file>
+        <file>resources/treasure_yes.png</file>
+        <file>resources/treasure_no.png</file>
+        <file>resources/app_icon.png</file>
+        <file>resources/crossfirebanner.png</file>
+    </qresource>
+</RCC>

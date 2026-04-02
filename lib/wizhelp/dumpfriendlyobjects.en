@@ -1,0 +1,10 @@
+The command dumpfriendlyobjects prints out a list of all active friendly objects to stderr.
+
+Usage: dumpfriendlyobjects
+
+See Also: patch
+See Also: dumpabove
+See Also: dumpallarchtypes
+See Also: dumpallmaps
+See Also: dumpallobjects
+See Also: dumpbelow

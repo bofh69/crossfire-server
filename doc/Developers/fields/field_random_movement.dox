@@ -1,0 +1,15 @@
+/**
+@fn FLAG_RANDOM_MOVE
+# Use
+<table>
+	<tr>
+		<th>Type(s)</th>
+		<th>Description</th>
+	</tr>	<tr>
+		<td>
+@ref page_type_215, @ref page_type_28
+		</td><td>            Living things with the &lt;random_movement&gt; flag set
+            automatically move about in a random fashion.</td>
+	</tr>
+
+*/

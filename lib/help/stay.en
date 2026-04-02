@@ -1,0 +1,14 @@
+A direction command which indicates the space that the character is standing on.
+
+Usage:
+  stay
+
+For example, to fire a rod of heal on the character:
+
+  apply -a rod of heal
+  Readied skill: use magic item.
+  You ready rod of heal (lvl 60) * (readied).
+
+  stay fire
+
+  You are already fully healed.

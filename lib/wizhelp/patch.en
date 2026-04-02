@@ -1,0 +1,15 @@
+Using the patch command, you can radically modify the properties of objects in the game. Simply specify the object number (obtained through the dump command) to modify and the new values of its variables (or completely new variables).
+
+Usage: patch <tag> <variable> <value>
+
+Examples:
+
+ patch 19875 nrof 10
+
+This will change the quantity of items referenced by object number 19875 to 10
+
+ patch 49635 dam 200
+
+This will change the damage of a weapon referenced by object number 49635 to 200
+
+See Also: dump

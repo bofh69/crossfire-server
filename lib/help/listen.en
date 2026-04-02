@@ -1,0 +1,11 @@
+Listen, sets the level of messages you will hear.
+
+If no parameters are set, the current listen level is shown:
+
+listen
+  Set listen to what (presently 10)?
+
+If a numeric listen level is specified, the following message is the output:
+
+listen 10
+  Your verbose level is now 10.

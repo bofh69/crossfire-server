@@ -1,0 +1,22 @@
+The debug command will either print the current level of server log debugging. Or, allow the DM to adjust the level (verbosity) of details written to the server log file.
+
+Usage:
+  debug
+  debug <0 - 3>
+
+Example:
+  debug 1
+
+Summary:
+
+  debug: will simply print the current level of debugging.
+
+  debug 0: llevError = 0 includes server and metaserver interaction, server online status, buffer overflow alerts, character creation issues, object animation errors, and more.
+
+  debug 1: llevInfo = 1 includes failed connection attempts to the server, failed logins, blocked accounts trying to log in, player disconnections, errors and problems with books and scrolls, syntax errors with game objects, errors with map files, and more.
+
+  debug 2: llevDebug = 2 includes more logging related to player actions such as apply command and target item, lock and mark item actions, dropped items, inscribe command and actions, and more.
+
+  debug 3: llevMonster = 3 includes many, many details such as monster movements, pet information, object state & status, spell status, and more.
+
+The default value is debug 1

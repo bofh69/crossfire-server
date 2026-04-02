@@ -1,0 +1,26 @@
+Drop permet de déposer un ou plusieurs objets de votre inventaire sur le sol ou dans un conteneur ouvert.
+
+Plusieurs formats sont possibles.
+
+[color=blue]drop <nombre> nom[/color]
+
+[color=#aa007f]nom[/color] : nom de ou des objet(s) à déposer. La vérification de nom est insensible à la casse et se fait en partant du début de votre inventaire.
+
+Il existe quelques valeurs particulières pour le champ nom :
+
+    [color=#ff5500]all[/color] : n'importe quel objet
+    [color=#ff5500]unpaid[/color] : n'importe quel objet non payé
+    [color=#ff5500]cursed[/color] : n'importe quel objet maudit ou damné
+    [color=#ff5500]unlocked[/color] : n'importe quel objet non verrouillé
+
+[color=#aa007f]nombre[/color] : paramètre optionnel indiquant la quantité d'objets à déposer. Si une quantité inférieure à celle demandée est disponible, les objets ne seront pas déposés.
+
+[color=blue]drop *<type d'objet>[/color]
+
+Dépose tous les objets du type spécifié. Les types sont les mêmes que pour la commande "pickup".
+
+[color=blue]drop #<index d'objet>[/color]
+
+Dépose l'objet situé à l'index spécifié. L'index 1 est le dernier objet pris, et ainsi de suite.
+
+[color=green]Voir aussi[/color] : dropall, comment utiliser la souris pour déposer des objets.

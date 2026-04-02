@@ -1,0 +1,27 @@
+#define VERSION "@VERSION@"
+
+/** Headers */
+#cmakedefine HAVE_CRYPT_H
+#cmakedefine HAVE_DIRENT_H
+#cmakedefine HAVE_GPERFTOOLS_PROFILER_H
+#cmakedefine HAVE_NDIR_H
+#cmakedefine HAVE_SYSLOG_H
+#cmakedefine HAVE_SYS_DIR_H
+#cmakedefine HAVE_SYS_NDIR_H
+
+/** Functions */
+#cmakedefine HAVE_GETADDRINFO
+#cmakedefine HAVE_GETDTABLESIZE
+#cmakedefine HAVE_GETNAMEINFO
+#cmakedefine HAVE_STRCASESTR
+#cmakedefine HAVE_STRDUP
+#cmakedefine HAVE_STRLCAT
+#cmakedefine HAVE_STRLCPY
+#cmakedefine HAVE_SYSCONF
+#cmakedefine HAVE_TEMPNAM
+
+#cmakedefine HAVE_LIBCURL
+
+/* Define if __attribute__((visibility)) is supported */
+#cmakedefine HAVE_VISIBILITY 1
+

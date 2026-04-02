@@ -1,0 +1,26 @@
+{% extends "inc-page.html" %}
+{% block title %}Monster list{% endblock %}
+{% block contents %}
+  <h1>Monsters found in maps</h1>
+  <table border="1">
+    <tr>
+      <th>Name</th>
+      <th>Count</th>
+      <th>Map(s)</th>
+    </tr>
+    {% for monster in monsters %}
+    <tr>
+      <td id="m{{ monster._index }}">{{ monster.name }}</td>
+      <td>{{ monster.count }}</td>
+      <td>Found on {{ length(monster.maps) }} maps:
+        <ul>
+          {% set mm = sort(get_list_by_field(maps, "_key", monster.maps), "name,path") %}
+          {% for map in mm %}
+          <li><a href='{{ link_to_page("map.html", map._key) }}'>{{ map.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

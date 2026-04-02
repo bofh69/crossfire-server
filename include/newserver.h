@@ -1,38 +1,10 @@
-/*
- * static char *rcsid_newserver_h =
- *   "$Id$";
- */
-
-/*
-    CrossFire, A Multiplayer game for X-windows
-
-    Copyright (C) 2002 Mark Wedel & Crossfire Development Team
-    Copyright (C) 1992 Frank Tore Johansen
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    The author can be reached via e-mail to crossfire-devel@real-time.com
+/**
+ * @file
+ * Defines various structures and values that are used for the
+ * new client server communication method.  Values defined here are only
+ * used on the server side code.  For shared client/server values, see
+ * @ref newclient.h
 */
-
-/*
-    newserver.h defines various structures and values that are use for the
-    new client server communication method.  Values defined here are only
-    used on the server side code.  For shared client/server values, see
-    newclient.h
-*/
-
 
 #ifndef NEWSERVER_H
 #define NEWSERVER_H
@@ -55,146 +27,137 @@
  */
 #define MAX_NUM_LOOK_OBJECTS 100
 
+/** One map cell, as sent to the client. */
 struct map_cell_struct {
-  uint16 faces[MAP_LAYERS];
-  uint16 smooth[MAP_LAYERS];
-  int darkness;
+    uint16_t faces[MAP_LAYERS];   /**< Face numbers. */
+    int darkness;               /**< Cell's darkness. */
+    enum map2_label label_subtype; //< Type of last label, or 0 if no label
+    sstring label_text;            //< Text of last label as a shared string, invalid pointer if subtype = 0
+    // TODO: One cell can contain multiple labels, but this only stores the first one. So if there
+    // are multiple labels, the server resorts to sending all labels each tick.
 };
 
-/* This basically defines the largest size an
+/**
+ * This basically defines the largest size an
  * archetype may be - it is used for allocation of
  * some structures, as well as determining how far
  * we should look for the heads of big images.
  */
-#define MAX_HEAD_OFFSET	    8
+#define MAX_HEAD_OFFSET 8
 
-#define MAX_CLIENT_X (MAP_CLIENT_X + MAX_HEAD_OFFSET)
-#define MAX_CLIENT_Y (MAP_CLIENT_Y + MAX_HEAD_OFFSET)
+#define MAX_CLIENT_X (MAP_CLIENT_X+MAX_HEAD_OFFSET)
+#define MAX_CLIENT_Y (MAP_CLIENT_Y+MAX_HEAD_OFFSET)
 
+/** One map for a player. */
 struct Map {
-  struct map_cell_struct cells[MAX_CLIENT_X][MAX_CLIENT_Y];
+    struct map_cell_struct cells[MAX_CLIENT_X][MAX_CLIENT_Y];
 };
 
-/* True max is 16383 given current map compaction method */
+/** True max is 16383 given current map compaction method. */
 #define MAXANIMNUM  2000
 
+/** Contains the last range/title information sent to client. */
 struct statsinfo {
-    char *range, *title;
+    char *range, *title, *god;
 };
 
 
-/* This contains basic information on the socket structure.  status is its
- * current state.  we set up our on buffers for sending/receiving, so we can
- * handle some higher level functions.  fd is the actual file descriptor we
- * are using.
+/**
+ * What state a socket is in.
  */
+enum Sock_Status {
+    Ns_Avail,
+    Ns_Add,
+    Ns_Dead
+};
 
-enum Sock_Status {Ns_Avail, Ns_Add, Ns_Dead, Ns_Old};
-
-/* Reserver 0 for neither of these being set */
-enum Old_Mode {Old_Listen=1, Old_Player=2};
-
-/* Only one map mode can actually be used, so lets make it a switch
- * instead of having a bunch of different fields that needed to
- * get toggled.  Note ordering here is important -
- * Map2Cmd > Map1aCmd > Map1Cmd.  This way, when a new feature is
- * added, a simple > compare can be done instead a bunch of ==
+/**
+ * Contains parameters for socket() and bind() for listening sockets.
+ * This struct contains most fields of "struct addrinfo", but
+ * older systems do not know struct addrinfo yet.
  */
-enum MapMode {Map0Cmd = 0, Map1Cmd = 1, Map1aCmd=2, Map2Cmd = 3 };
+struct listen_info {
+    int family;
+    int socktype;
+    int protocol;
+    socklen_t addrlen;
+    struct sockaddr *addr;
+};
 
-/* The following is the setup for a ring buffer for storing outbut
- * data that the OS can't handle right away.
- */
-
-typedef struct buffer_struct {
-    char    data[SOCKETBUFSIZE];
-    int	    start;
-    int	    len;
-} buffer_struct;
-
-/* how many times we are allowed to give the wrong password before being kicked. */
+/** How many times we are allowed to give the wrong password before being kicked. */
 #define MAX_PASSWORD_FAILURES 5
 
-typedef struct socket_struct {
+/**
+ * Socket structure, represents a client-server connection.
+ */
+struct socket_struct {
     enum Sock_Status status;
-    int fd;
-    struct Map lastmap;
-    sint8 map_scroll_x, map_scroll_y;
-    size_t faces_sent_len;  /* This is the number of elements allocated in faces_sent[] */
-    uint8 *faces_sent;      /* This is a bitmap on sent face status */
-    uint8 anims_sent[MAXANIMNUM];
+    int         fd;
+    struct listen_info  *listen;
+    struct Map  lastmap;
+    int8_t       map_scroll_x, map_scroll_y;
+    size_t      faces_sent_len;         /**< This is the number of elements allocated in faces_sent[]. */
+    uint8_t       *faces_sent;            /**< This is a bitmap on sent face status. */
+    uint8_t       anims_sent[MAXANIMNUM]; /**< What animations we sent. */
     struct statsinfo stats;
-    /* If we get an incomplete packet, this is used to hold the data. */
-    SockList	inbuf;
-    char    *host;	    /* Which host it is connected from (ip address)*/
-    uint8   password_fails; /* how many times the player has failed to give the right password */
-    buffer_struct outputbuffer;   /* For undeliverable data */
-    uint32  facecache:1;    /* If true, client is caching images */
-    uint32  sent_scroll:1;
-    uint32  sound;	    /* Client sound mode */
-    uint32  exp64:1;	    /* Client wants 64 bit exp data, as well as skill data */
-    uint32  newmapcmd:1;    /* Send newmap command when entering new map SMACFIGGEN*/
-    uint32  darkness:1;	    /* True if client wants darkness information */
-    uint32  image2:1;	    /* Client wants image2/face2 commands */
-    uint32  update_look:1;  /* If true, we need to send the look window */
-    uint32  can_write:1;    /* Can we write to this socket? */
-    uint32  has_readable_type:1; /* If true client accept additional text information
-                                    used to arrange text in books, scrolls, or scripted dialogs */
-    uint32  monitor_spells:1; /* Client wishes to be informed when their spell list changes */
-    uint32  tick:1;	    /* Client wishes to get tick commands */
-    uint32  supported_readables; /* each bit is a readable supported by client */
-    uint32  cs_version, sc_version; /* versions of the client */
-    enum MapMode mapmode;   /* Type of map commands the client wants. */
-    uint16  look_position;  /* start of drawing of look window */
-    uint8   mapx, mapy;	    /* How large a map the client wants */
-    uint8   itemcmd;	    /* What version of the 'item' protocol command to use */
-    uint8   faceset;	    /* Set the client is using, default 0 */
-    uint32  ext_mapinfos:1;  /* If true client accept additionnal info on maps*/
-    uint32	is_bot:1;		/* Client shouldn't be reported to metaserver */
+    SockList    inbuf;                  /**< If we get an incomplete packet, this is used to hold the data. */
+    char        *host;                  /**< Which host it is connected from (ip address). */
+    sstring     client;                   /**< Client string sent by client */
+    uint8_t       password_fails;         /**< How many times the player has failed to give the right password. */
+    uint32_t      facecache:1;            /**< If true, client is caching images. */
+    uint32_t      darkness:1;             /**< True if client wants darkness information. */
+    uint32_t      update_look:1;          /**< If true, we need to send the look window. */
+    uint32_t      update_inventory:1;     /**< If true, we need to send the inventory list. */
+    uint32_t      tick:1;                 /**< Client wishes to get tick commands. */
+    uint32_t      is_bot:1;               /**< Client shouldn't be reported to metaserver. */
+    uint32_t      want_pickup:1;          /**< Client wants pickup information when logging in. */
+    uint32_t      extended_stats:1;       /**< Client wants base and maximum statistics information. */
+    uint32_t      monitor_spells;         /**< Client wishes to be informed when their spell list changes. */
+    uint32_t      sound;                  /**< Client sound mode. */
+    bool          heartbeat;              /**< Client will send hearbeats. */
+    uint32_t      cs_version, sc_version; /**< Versions of the client. */
+    uint16_t      look_position;          /**< Start of drawing of look window. */
+    uint16_t      container_position;     /**< Start of container contents to send to client. */
+    uint8_t       mapx, mapy;             /**< How large a map the client wants. */
+    uint8_t       faceset;                /**< Set the client is using, default 0. */
+
     /* Below are flags for extedend infos to pass to client
-     * with S->C mapextended command */
-    uint32  EMI_smooth:1;   /* Send smooth in extendmapinfos*/
-
-    /* Below here is information only relevant for old sockets */
-    char    *comment;	    /* name or listen comment */
-    enum Old_Mode old_mode;
-    uint8   num_look_objects; /* The maximum number of objects to show on the ground view;
-                                 this number includes the prev/next group fake items.
-                                 Can be set through "num_look_objects" setup option;
-                                 defaults to DEFAULT_NUM_LOOK_OBJECTS. */
+     * with S->C mapextended command (note: this comment seems incorrect?) */
+    int8_t       sounds_this_tick;       /**< Number of sounds sent this tick. */
+    uint8_t       num_look_objects;       /**< The maximum number of objects to show on the ground view;
+                                             this number includes the prev/next group fake items.
+                                             Can be set through "num_look_objects" setup option;
+                                             defaults to DEFAULT_NUM_LOOK_OBJECTS. */
+    char    *account_name;              /**< Name of the account logged in on this socket */
+    Account_Chars   *account_chars;     /**< Detailed information on characters on this account */
+    uint8_t login_method;   /**< Login method this client is using */
+    uint16_t notifications; /**< Notifications this client wants to get. */
+    uint32_t last_tick;     /**< Number of ticks since last communication. */
 #ifdef HAVE_LIBWEBSOCKETS
-    uint8   is_websocket;   /* 1 if this connection came in via WebSocket */
-    void   *wsi;            /* libwebsockets instance (cast to struct lws *) */
-    int     ws_proxy_fd;    /* WS-proxy side of socketpair used for this connection */
+    uint8_t  is_websocket;   /**< 1 if this connection came in via WebSocket */
+    void    *wsi;            /**< libwebsockets instance (cast to struct lws *) */
+    int      ws_proxy_fd;    /**< WS-proxy side of socketpair used for this connection */
 #endif
-} socket_struct;
+};
 
-
-#define CLIENT_SUPPORT_READABLES(__sockPtr,__type)\
-	( ((__type)>0) &&\
-	  ((__sockPtr)->has_readable_type) && \
-	  ((__sockPtr)->supported_readables & (1<<(__type))) )
-
-/* Bitmask for the faces_sent[] array - what
+/**
+ * Bitmask for the faces_sent[] array - what
  * portion of the face have we sent?
  */
-#define NS_FACESENT_FACE	0x1
-#define NS_FACESENT_SMOOTH	0x2
+#define NS_FACESENT_FACE        0x1
+#define NS_FACESENT_SMOOTH      0x2
 
-#define FACE_TYPES  1
-#define PNG_FACE_INDEX	0
-
-typedef struct Socket_Info {
-    struct timeval timeout;	/* Timeout for select */
-    int	    max_filedescriptor;	/* max filedescriptor on the system */
-    int	    nconns;		/* Number of connections */
-    int	    allocated_sockets;	/* number of allocated in init_sockets */
-} Socket_Info;
+/** Holds some system-related information. */
+struct Socket_Info {
+    struct timeval timeout;     /**< Timeout for select. */
+    int     max_filedescriptor; /**< max filedescriptor on the system. */
+    int     allocated_sockets;  /**< Number of allocated items in ::init_sockets. */
+};
 
 extern Socket_Info socket_info;
 
-#define VERSION_CS 1023    /* version >= 1023 understand setup cmd */
-#define VERSION_SC 1027
+#define VERSION_CS 1023    /**< Version >= 1023 understand setup cmd */
+#define VERSION_SC 1030
 #define VERSION_INFO "Crossfire Server"
 
 #ifdef HAVE_LIBWEBSOCKETS

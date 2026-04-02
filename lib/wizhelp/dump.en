@@ -1,0 +1,48 @@
+The dump command will let you see the attributes for any item in the game.
+
+Usage:
+ dump <object number>
+
+To find the object number of an item you wish to view, left-click on it.
+
+If this item is in your inventory, or you are standing over it, click on yourself and the object numbers will be displayed.
+
+Example:
+
+  Left-click on a fountain in Scorn town square
+
+  There you see:
+    fountain (20267).
+    cobbestones (20266)
+    no_spells (20265).
+
+To see all the attributes of the fountain, enter:
+
+  dump 20267
+
+Will produce this output:
+
+  Item stacked as 1.
+  arch fountain
+  name fountain
+  name_pl fountain
+  face fountain.111
+  animation fountain
+  x 5
+  y 35
+  type 67
+  move_on walk
+  no_pick 1
+  client_anim_random 1
+  is_animated 1
+  end
+  Object is marked original
+
+
+See Also: patch
+See Also: dumpabove
+See Also: dumpallarchtypes
+See Also: dumpallmaps
+See Also: dumpallobjects
+See Also: dumpbelow
+See Also: dumpfriendlyobjects

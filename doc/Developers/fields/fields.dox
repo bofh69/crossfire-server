@@ -1,0 +1,179 @@
+/**
+@page field_index Field index
+This page lists all attributes.
+
+- @subpage page_custom_attribute_accept_alive "accept_alive"
+- @subpage object::artifact
+- @subpage FLAG_BLOCKSVIEW
+- @subpage object::move_block
+- @subpage page_custom_attribute_blocks_prayer "blocks_prayer"
+- @subpage FLAG_CHANGING
+- @subpage FLAG_CLIENT_ANIM_RANDOM
+- @subpage FLAG_CLIENT_ANIM_SYNC
+- @subpage page_connected "connection value"
+- @subpage living::food
+- @subpage page_custom_attribute_elevation "elevation"
+- @subpage object::glow_radius
+- @subpage FLAG_IDENTIFIED
+- @subpage page_custom_attribute_identified_animation "identified_animation"
+- @subpage page_custom_attribute_identified_anim_speed "identified_anim_speed"
+- @subpage page_custom_attribute_identified_face "identified_face"
+- @subpage page_custom_attribute_identified_anim_random "identified_anim_random"
+- @subpage page_custom_attribute_identified_name "identified_name"
+- @subpage page_custom_attribute_identified_name_pl "identified_name_pl"
+- @subpage object::face
+- @subpage object::invisible
+- @subpage FLAG_IS_BUILDABLE
+- @subpage FLAG_IS_USED_UP
+- @subpage object::slaying
+- @subpage object::material
+- @subpage object::msg
+- @subpage object::name
+- @subpage FLAG_NO_PICK
+- @subpage object::nrof
+- @subpage object::name_pl
+- @subpage page_custom_attribute_price_adjustment "price_adjustment"
+- @subpage page_custom_attribute_price_adjustment_buy "price_adjustment_buy"
+- @subpage page_custom_attribute_price_adjustment_sell "price_adjustment_sell"
+- @subpage object::smoothlevel
+- @subpage FLAG_SPLITTING
+- @subpage object::title
+- @subpage FLAG_UNPAID
+- @subpage object::value
+- @subpage object::weight
+- @subpage object::last_sp
+- @subpage living::exp
+- @subpage living::ac
+- @subpage object::path_attuned
+- @subpage living::Cha
+- @subpage living::Con
+- @subpage FLAG_CURSED
+- @subpage FLAG_DAMNED
+- @subpage object::path_denied
+- @subpage living::Dex
+- @subpage FLAG_STARTEQUIP
+- @subpage living::grace
+- @subpage object::move_type
+- @subpage living::hp
+- @subpage living::Int
+- @subpage FLAG_APPLIED
+- @subpage object::item_power
+- @subpage living::luck
+- @subpage living::sp
+- @subpage living::Pow
+- @subpage page_custom_attribute_race_restriction "race_restriction"
+- @subpage FLAG_REFL_MISSILE
+- @subpage FLAG_REFL_SPELL
+- @subpage object::path_repelled
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage object::resist
+- @subpage FLAG_LIFESAVE
+- @subpage FLAG_STEALTH
+- @subpage living::Str
+- @subpage FLAG_UNIQUE
+- @subpage living::wc
+- @subpage living::Wis
+- @subpage FLAG_XRAYS
+- @subpage object::level
+- @subpage object::magic
+- @subpage object::last_heal
+- @subpage object::anim_suffix
+- @subpage object::subtype
+- @subpage object::randomitems
+- @subpage FLAG_IS_CAULDRON
+- @subpage object::other_arch
+- @subpage object::race
+- @subpage object::container
+- @subpage page_custom_attribute_face_opened "face_opened"
+- @subpage FLAG_IS_FLOOR
+- @subpage object::speed
+- @subpage object::move_on
+- @subpage object::attacktype
+- @subpage object::last_grace
+- @subpage living::maxgrace
+- @subpage living::dam
+- @subpage object::last_eat
+- @subpage living::maxsp
+- @subpage living::maxhp
+- @subpage FLAG_NO_DAMAGE
+- @subpage FLAG_BLIND
+- @subpage page_custom_attribute_on_use_yield "on_use_yield"
+- @subpage FLAG_UNDEAD
+- @subpage FLAG_SEE_IN_DARK
+- @subpage FLAG_IS_HILLY
+- @subpage FLAG_NO_MAGIC
+- @subpage object::move_slow
+- @subpage object::move_slow_penalty
+- @subpage FLAG_IS_WOODED
+- @subpage object::direction
+- @subpage FLAG_ALIVE
+- @subpage object::resist
+- @subpage FLAG_SLEEP
+- @subpage object::attack_movement
+- @subpage FLAG_CAST_SPELL
+- @subpage FLAG_USE_ARMOUR
+- @subpage FLAG_USE_BOW
+- @subpage FLAG_USE_RANGE
+- @subpage FLAG_USE_RING
+- @subpage FLAG_USE_SCROLL
+- @subpage FLAG_USE_SHIELD
+- @subpage FLAG_CAN_USE_SKILL
+- @subpage FLAG_USE_WEAPON
+- @subpage object::carrying
+- @subpage page_custom_attribute_death_animation "death_animation"
+- @subpage FLAG_FRIENDLY
+- @subpage FLAG_HITBACK
+- @subpage object::will_apply
+- @subpage FLAG_MONSTER
+- @subpage FLAG_GENERATOR
+- @subpage page_custom_attribute_generator_limit "generator_limit"
+- @subpage page_custom_attribute_generator_code "generator_code"
+- @subpage page_custom_attribute_generator_max_map "generator_max_map"
+- @subpage page_custom_attribute_generator_radius "generator_radius"
+- @subpage page_custom_attribute_no_mood_change "no_mood_change"
+- @subpage FLAG_ONE_HIT
+- @subpage object::pick_up
+- @subpage FLAG_RANDOM_MOVE
+- @subpage FLAG_RUN_AWAY
+- @subpage FLAG_SEE_INVISIBLE
+- @subpage FLAG_STAND_STILL
+- @subpage FLAG_CONTENT_ON_GEN
+- @subpage FLAG_UNAGGRESSIVE
+- @subpage FLAG_NO_DROP
+- @subpage FLAG_NO_STRENGTH
+- @subpage FLAG_AUTO_APPLY
+- @subpage object::expmul
+- @subpage page_custom_attribute_wc_increase_rate "wc_increase_rate"
+- @subpage object::skill
+- @subpage object::casting_time
+- @subpage page_custom_attribute_casting_requirements "casting_requirements"
+- @subpage object::duration
+- @subpage page_custom_attribute_immunity_chance "immunity_chance"
+- @subpage page_custom_attribute_anim_full "anim_full"
+- @subpage page_custom_attribute_base_speed "base_speed"
+- @subpage page_custom_attribute_face_full "face_full"
+- @subpage object::move_allow
+- @subpage page_custom_attribute_passenger_limit "passenger_limit"
+- @subpage page_custom_attribute_weight_speed_ratio "weight_speed_ratio"
+- @subpage FLAG_BLESSED
+- @subpage FLAG_CAN_ROLL
+- @subpage object::weapontype
+*/

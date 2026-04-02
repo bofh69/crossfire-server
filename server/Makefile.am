@@ -1,103 +1,149 @@
-#
-# Makefile for crossfire 0.95.0 and beyond
-#
-# This file will eventually be replaced by a configure script.  But for
-# now, this simple makefile should do the job.
-#
-#   Copyright (C) 1992 Frank Tore Johansen
-#   Copyright (C) 2001 Mark Wedel
-#
-#   This program is free software; you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation; either version 2 of the License, or
-#   (at your option) any later version.
-#
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
-#
-#   You should have received a copy of the GNU General Public License
-#   along with this program; if not, write to the Free Software
-#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-#
-#   The author can be reached via e-mail to mwedel@scruz.net
+bin_PROGRAMS = crossfire-server
 
+pkglib_LTLIBRARIES = libserver.la
+crossfire_server_SOURCES = main.cpp
+libserver_la_SOURCES = \
+	account.cpp \
+	account_char.cpp \
+	alchemy.cpp \
+	apply.cpp \
+	attack.cpp \
+	ban.cpp \
+	build_map.cpp \
+	c_chat.cpp \
+	c_misc.cpp \
+	c_move.cpp \
+	c_new.cpp \
+	c_object.cpp \
+	c_party.cpp \
+	c_range.cpp \
+	c_wiz.cpp \
+	commands.cpp \
+	disease.cpp \
+	hiscore.cpp \
+	gods.cpp \
+	init.cpp \
+	knowledge.cpp \
+	login.cpp \
+	monster.cpp \
+	move.cpp \
+	ob_methods.cpp \
+	ob_types.cpp \
+	party.cpp \
+	pets.cpp \
+	player.cpp \
+	plugins.cpp \
+	quest.cpp \
+	races.cpp \
+	resurrection.cpp \
+	rune.cpp \
+	shop.cpp \
+	skills.cpp \
+	skill_util.cpp \
+	spell_attack.cpp \
+	spell_effect.cpp \
+	spell_util.cpp \
+	swap.cpp \
+	time.cpp \
+	timers.cpp \
+	weather.cpp \
+	server.cpp \
+	modules/cfcitybell.cpp \
+	modules/citylife.cpp \
+	modules/random_house_generator.cpp \
+	modules/cfweather.cpp \
+	win32.cpp \
+	$(top_srcdir)/socket/image.cpp \
+	$(top_srcdir)/socket/info.cpp \
+	$(top_srcdir)/socket/init.cpp \
+	$(top_srcdir)/socket/item.cpp \
+	$(top_srcdir)/socket/loop.cpp \
+	$(top_srcdir)/socket/lowlevel.cpp \
+	$(top_srcdir)/socket/metaserver.cpp \
+	$(top_srcdir)/socket/request.cpp \
+	$(top_srcdir)/socket/requestinfo.cpp \
+	$(top_srcdir)/socket/sounds.cpp \
+	$(top_srcdir)/types/altar/altar.cpp \
+	$(top_srcdir)/types/armour_improver/armour_improver.cpp \
+	$(top_srcdir)/types/arrow/arrow.cpp \
+	$(top_srcdir)/types/blindness/blindness.cpp \
+	$(top_srcdir)/types/book/book.cpp \
+	$(top_srcdir)/types/button/button.cpp \
+	$(top_srcdir)/types/cf_handle/cf_handle.cpp \
+	$(top_srcdir)/types/check_inv/check_inv.cpp \
+	$(top_srcdir)/types/clock/clock.cpp \
+	$(top_srcdir)/types/container/container.cpp \
+	$(top_srcdir)/types/converter/converter.cpp \
+	$(top_srcdir)/types/creator/creator.cpp \
+	$(top_srcdir)/types/deep_swamp/deep_swamp.cpp \
+	$(top_srcdir)/types/detector/detector.cpp \
+	$(top_srcdir)/types/director/director.cpp \
+	$(top_srcdir)/types/dragon_focus/dragon_focus.cpp \
+	$(top_srcdir)/types/duplicator/duplicator.cpp \
+	$(top_srcdir)/types/exit/exit.cpp \
+	$(top_srcdir)/types/food/food.cpp \
+	$(top_srcdir)/types/gate/gate.cpp \
+	$(top_srcdir)/types/hole/hole.cpp \
+	$(top_srcdir)/types/identify_altar/identify_altar.cpp \
+	$(top_srcdir)/types/lamp/lamp.cpp \
+	$(top_srcdir)/types/lightable/lightable.cpp \
+	$(top_srcdir)/types/lighter/lighter.cpp \
+	$(top_srcdir)/types/marker/marker.cpp \
+	$(top_srcdir)/types/mimic/mimic.cpp \
+	$(top_srcdir)/types/mood_floor/mood_floor.cpp \
+	$(top_srcdir)/types/peacemaker/peacemaker.cpp \
+	$(top_srcdir)/types/pedestal/pedestal.cpp \
+	$(top_srcdir)/types/player_changer/player_changer.cpp \
+	$(top_srcdir)/types/player_mover/player_mover.cpp \
+	$(top_srcdir)/types/poison/poison.cpp \
+	$(top_srcdir)/types/poisoning/poisoning.cpp \
+	$(top_srcdir)/types/potion/potion.cpp \
+	$(top_srcdir)/types/power_crystal/power_crystal.cpp \
+	$(top_srcdir)/types/savebed/savebed.cpp \
+	$(top_srcdir)/types/scroll/scroll.cpp \
+	$(top_srcdir)/types/shop_inventory/shop_inventory.cpp \
+	$(top_srcdir)/types/shop_mat/shop_mat.cpp \
+	$(top_srcdir)/types/sign/sign.cpp \
+	$(top_srcdir)/types/skillscroll/skillscroll.cpp \
+	$(top_srcdir)/types/spell_effect/spell_effect.cpp \
+	$(top_srcdir)/types/spellbook/spellbook.cpp \
+	$(top_srcdir)/types/spinner/spinner.cpp \
+	$(top_srcdir)/types/teleporter/teleporter.cpp \
+	$(top_srcdir)/types/thrown_object/thrown_object.cpp \
+	$(top_srcdir)/types/transport/transport.cpp \
+	$(top_srcdir)/types/trap/common_trap.cpp \
+	$(top_srcdir)/types/trap/trap.cpp \
+	$(top_srcdir)/types/trap/rune.cpp \
+	$(top_srcdir)/types/trapdoor/trapdoor.cpp \
+	$(top_srcdir)/types/treasure/treasure.cpp \
+	$(top_srcdir)/types/trigger/trigger.cpp \
+	$(top_srcdir)/types/trigger_altar/trigger_altar.cpp \
+	$(top_srcdir)/types/trigger_button/trigger_button.cpp \
+	$(top_srcdir)/types/trigger_pedestal/trigger_pedestal.cpp \
+	$(top_srcdir)/types/weapon_improver/weapon_improver.cpp \
+	$(top_srcdir)/types/common/common_apply.cpp \
+	$(top_srcdir)/types/common/describe.cpp \
+	$(top_srcdir)/types/common/projectile.cpp \
+	$(top_srcdir)/types/common/light_object.cpp \
+	$(top_srcdir)/types/legacy/apply.cpp \
+	$(top_srcdir)/types/legacy/legacy_describe.cpp \
+	$(top_srcdir)/types/legacy/process.cpp
+libserver_la_LIBADD = ../random_maps/librandom_map.la
 
-bin_PROGRAMS = crossfire
-
-noinst_LIBRARIES = libserver.a
-crossfire_SOURCES = main.c
-libserver_a_SOURCES = \
-	alchemy.c\
-	apply.c\
-	attack.c\
-	ban.c\
-	build_map.c\
-	c_chat.c\
-	c_misc.c\
-	c_move.c\
-	c_new.c\
-	c_object.c\
-	c_party.c\
-	c_range.c\
-	c_wiz.c\
-	commands.c\
-	daemon.c\
-	disease.c\
-	egoitem.c \
-	hiscore.c\
-	gods.c\
-	init.c\
-	login.c\
-	monster.c\
-	move.c\
-	pets.c\
-	player.c\
-	plugins.c\
-	resurrection.c\
-	rune.c\
-	shop.c\
-	skills.c\
-	skill_util.c\
-	spell_attack.c\
-	spell_effect.c\
-	spell_util.c\
-	swamp.c\
-	swap.c\
-	time.c\
-	timers.c\
-	weather.c\
-	server.c
-
-AM_CPPFLAGS = -I$(top_srcdir)/include -DDATADIR=\"$(pkgdatadir)\" -DCONFDIR=\"$(pkgconfdir)\" \
+libserver_la_CPPFLAGS = -I$(top_srcdir)/include -DDATADIR=\"$(pkgdatadir)\" -DCONFDIR=\"$(pkgconfdir)\" \
 	      -DLIBDIR=\"$(pkglibdir)\" -DLOCALDIR=\"$(pkgstatedir)\" \
 	      -DPLUGIN_SUFFIX=\".so\"
 
-if HAVE_LIBDL
-LIBDL=-ldl
-crossfire_LDFLAGS=-export-dynamic
-else
-LIBDL=
-crossfire_LDFLAGS=
+if PCH
+libserver_la_CPPFLAGS += -include-pch $(top_srcdir)/include/global.h.gch
 endif
-crossfire_LDADD = libserver.a ../common/libcross.a ../random_maps/librandom_map.a \
-		../socket/libsocket.a $(LIBDL)
 
-../common/libcross.a:
-	( cd ../common ; make libcross.a )
+crossfire_server_LDFLAGS=$(LIBDL_LDFLAGS)
 
-../random_maps/librandom_map.a:
-	( cd ../random_maps ; make librandom_map.a )
+crossfire_server_LDADD = libserver.la ../common/libcross.la ../random_maps/librandom_map.la
 
-../socket/libsocket.a:
-	( cd ../socket ; make libsocket.a )
+../common/libcross.la:
+	( cd ../common ; make libcross.la )
 
-# Check if everything is installed as it should
-installcheck-local:
-	$(bindir)/crossfire -o
-
-proto:
-	cproto -D__CEXTRACT__ -o ../include/sproto.h $(CPPFLAGS) $(AM_CPPFLAGS) \
-		`echo $(SOURCES) " " | $(AWK) -v RS=" " '/.c$$/ { print }'`
-	chmod 644 ../include/sproto.h
+../random_maps/librandom_map.la:
+	( cd ../random_maps ; make librandom_map.la )

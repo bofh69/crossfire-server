@@ -1,14 +1,14 @@
 !include "MUI.nsh"
 
 ;Title Of Your Application
-Name "Crossfire Server 1.11.0"
+Name "Crossfire Server trunk-14250"
 
 VIAddVersionKey "ProductName" "Crossfire server installer"
 VIAddVersionKey "Comments" "Website: http://crossfire.real-time.com"
 VIAddVersionKey "FileDescription" "Crossfire server installer"
-VIAddVersionKey "FileVersion" "1.11.0"
+VIAddVersionKey "FileVersion" "trunk-14250"
 VIAddVersionKey "LegalCopyright" "Crossfire is released under the GPL."
-VIProductVersion "1.11.0.0"
+VIProductVersion "2.0.0.14250"
 
 ;Do A CRC Check
 CRCCheck On
@@ -50,41 +50,39 @@ Section "Crossfire Server (required)" cf
   SetCompress Auto
   SetOverwrite IfNewer
   File "ReleaseLog\crossfire32.exe"
+  File "..\pthreadVC2.dll"
+  File "..\zlib1.dll"
+  File "..\libcurl.dll"
   File "Release_notes.txt"
-  File "pthreadVC2.dll"
-  File "libcurl.dll"
-  File zlib1.dll
   File /oname=Changelog.rtf "..\changelog"
   SetOutPath $INSTDIR\share
-  File "..\share\archetypes"
-  File "..\share\artifacts"
-  File "..\share\attackmess"
-  File "..\share\ban_file"
-  File "..\share\bmaps"
-  File "..\share\bmaps.paths"
-  File "..\share\crossfire.0"
-  File "..\share\crossfire.1"
-  File "..\share\def_help"
-  File "..\share\dm_file"
-  File "..\share\exp_table"
-  File "..\share\faces"
-  File "..\share\forbid"
-  File "..\share\formulae"
-  File "..\share\image_info"
-  File "..\share\materials"
-  File "..\share\messages"
-  File "..\share\motd"
-  File "..\share\news"
-  File "..\share\races"
-  File "..\share\rules"
-  File "..\share\settings"
-  File "..\share\smooth"
-  File "..\share\animations"
-  File "..\share\treasures"
+  File "..\lib\crossfire.arc"
+  File "..\lib\artifacts"
+  File "..\lib\attackmess"
+  File "..\lib\ban_file"
+  File "..\lib\crossfire.face"
+  File "..\lib\crossfire.tar"
+  File "..\lib\def_help"
+  File "..\lib\dm_file"
+  File "..\lib\exp_table"
+  File "..\lib\forbid"
+  File "..\lib\formulae"
+  File "..\lib\image_info"
+  File "..\lib\materials"
+  File "..\lib\messages"
+  File "..\lib\motd"
+  File "..\lib\news"
+  File "..\lib\races"
+  File "..\lib\rules"
+  File "..\lib\settings"
+  File "..\lib\treasures.trs"
+  File "..\lib\stat_bonus"
   SetOutPath $INSTDIR\share\help
-  File "..\share\help\*.*"
+  File "..\lib\help\*.*"
   SetOutPath $INSTDIR\share\wizhelp
-  File "..\share\wizhelp\*.*"
+  File "..\lib\wizhelp\*.*"
+  SetOutPath $INSTDIR\share\i18n
+  File "..\lib\i18n\*.*"
 
   ; Additional directories
   CreateDirectory $INSTDIR\tmp
@@ -93,6 +91,7 @@ Section "Crossfire Server (required)" cf
   CreateDirectory $INSTDIR\var\template-maps
   CreateDirectory $INSTDIR\var\unique-items
   CreateDirectory $INSTDIR\var\datafiles
+  CreateDirectory $INSTDIR\var\account
 
   ; Write the uninstall keys for Windows
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Crossfire Server" "DisplayName" "Crossfire Server (remove only)"
@@ -106,13 +105,13 @@ Section "Crossfire Server (required)" cf
         DetailPrint "Registering service..."
         ExecWait '"$INSTDIR\Crossfire32.exe" -regsrv'
         WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Crossfire Server" "ServiceInstalled" "1"
-        
+
   dont_install:
 SectionEnd
 
 Section "Python plugin" py
-  DetailPrint "Checking for Python25.dll..."
-  GetDllVersion "Python25.dll" $R0 $R1
+  DetailPrint "Checking for Python26.dll..."
+  GetDllVersion "Python26.dll" $R0 $R1
   IntOp $R2 $R0 / 0x00010000
   IntOp $R3 $R0 & 0x0000FFFF
   IntCmp $R2 2 0 wrong
@@ -120,7 +119,7 @@ Section "Python plugin" py
   DetailPrint "   found"
   Goto ok
 wrong:
-  MessageBox MB_YESNO|MB_ICONQUESTION "Couldn't find Python25.dll. Make sure Python is installed, and that Python24.dll is in your PATH.$\rServer may fail to start if this DLL is not found.$\rInstall plugin anyway?" /SD IDNO IDNO end
+  MessageBox MB_YESNO|MB_ICONQUESTION "Couldn't find Python26.dll. Make sure Python is installed, and that Python26.dll is in your PATH.$\rServer may fail to start if this DLL is not found.$\rInstall plugin anyway?" /SD IDNO IDNO end
   DetailPrint "  install anyway."
 ok:
   SetOutPath $INSTDIR\share\plugins
@@ -156,18 +155,19 @@ Section "un.Crossfire Server" un_cf
 
   ;Delete Files
   Delete "$INSTDIR\crossfire32.exe"
+  Delete "$INSTDIR\pthreadvc2.dll"
+  Delete "$INSTDIR\zlib1.dll"
+  Delete "$INSTDIR\libcurl.dll"
   Delete "$INSTDIR\Changelog.rtf"
   Delete "$INSTDIR\Share\plugins\python21.dll"
   Delete "$INSTDIR\Release_notes.txt"
-  Delete "$INSTDIR\Share\treasures"
-  Delete "$INSTDIR\Share\archetypes"
+  Delete "$INSTDIR\Share\crossfire.trs"
+  Delete "$INSTDIR\Share\crossfire.arc"
+  Delete "$INSTDIR\Share\crossfire.face"
+  Delete "$INSTDIR\Share\crossfire.tar"
   Delete "$INSTDIR\Share\artifacts"
   Delete "$INSTDIR\Share\attackmess"
   Delete "$INSTDIR\Share\ban_file"
-  Delete "$INSTDIR\Share\bmaps"
-  Delete "$INSTDIR\Share\bmaps.paths"
-  Delete "$INSTDIR\Share\crossfire.0"
-  Delete "$INSTDIR\Share\crossfire.1"
   Delete "$INSTDIR\Share\def_help"
   Delete "$INSTDIR\Share\dm_file"
   Delete "$INSTDIR\Share\exp_table"
@@ -182,25 +182,28 @@ Section "un.Crossfire Server" un_cf
   Delete "$INSTDIR\Share\races"
   Delete "$INSTDIR\Share\rules"
   Delete "$INSTDIR\Share\settings"
-  Delete "$INSTDIR\Share\smooth"
-  Delete "$INSTDIR\Share\animations"
-  
+
   ;Delete help files
   RmDir /r "$INSTDIR\Share\Help"
   RmDir /r "$INSTDIR\Share\WizHelp"
-  
+  RmDir /r "$INSTDIR\Share\i18n"
+
   ;Delete plugins
   RmDir /r "$INSTDIR\Share\Plugins"
-  
+
   ;Remove 'temp' directory
   rmdir /r "$INSTDIR\tmp"
-  
+
   ;Remove some data files
   Delete "$INSTDIR\Var\bookarch"
   Delete "$INSTDIR\Var\clockdata"
   Delete "$INSTDIR\Var\crossfire.log"
   Delete "$INSTDIR\Var\crossfiremail"
   Delete "$INSTDIR\Var\highscore"
+  Delete "$INSTDIR\Var\accounts"
+  rmdir /r "$INSTDIR\account"
+
+  rmdir $INSTDIR
 
   ;Delete Start Menu Shortcuts
   RmDir /r "$SMPROGRAMS\Crossfire Server"
@@ -218,6 +221,7 @@ Section "un.Player files and unique maps data" un_pl
   RmDir /r "$INSTDIR\var\template-maps"
   RmDir /r "$INSTDIR\var\unique-items"
   RmDir /r "$INSTDIR\var\datafiles"
+  RmDir /r "$INSTDIR\var\account"
   skip:
 SectionEnd
 
@@ -229,7 +233,7 @@ Section -un.final_clean
 
 maps:
     MessageBox MB_YESNO|MB_ICONQUESTION "Do you want to also remove the maps?" IDNO no_maps
-    
+
     Banner::Show /NOUNLOAD /set 76 "Please wait" "Uninstalling maps..."
 
     ;Remove maps, let's call the uninstaller in silent mode, and no copying itself somewhere else
@@ -266,4 +270,3 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${un_cf} "Remove Crossfire Server."
   !insertmacro MUI_DESCRIPTION_TEXT ${un_pl} "Remove ALL player data, as well as unique maps information."
 !insertmacro MUI_UNFUNCTION_DESCRIPTION_END
-

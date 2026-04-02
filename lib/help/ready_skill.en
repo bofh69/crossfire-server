@@ -1,0 +1,14 @@
+The ready_skill command will make the specified skill active for your next set of actions. The specified skill will be set as your active skill.
+
+Syntax:
+    ready_skill <skill name>
+
+Example:
+  ready_skill punching
+
+The skill must be used by firing in a direction; ready_skill does not directly activate the skill.
+
+The result depends on the skill selected and what items are around you.
+
+See Also: skills
+See Also: use_skill

@@ -1,27 +1,22 @@
 XSLTENGINE= @XSLTENGINE@
-CROSSEDIT = @CROSSEDIT@
 
 if HAVE_CHECK
   UNIT_TEST = test
 endif
 
-SUBDIRS = common random_maps socket server include lib utils doc plugins devel $(UNIT_TEST) $(CROSSEDIT)
+SUBDIRS = include common random_maps server lib utils doc plugins $(UNIT_TEST)
 
-EXTRA_DIST = AUTHORS ChangeLog COPYING DEVELOPERS autogen.sh run_win32.bat
+EXTRA_DIST = AUTHORS COPYING ChangeLog INSTALL README.rst autogen.sh
 
 DISTCHECK_CONFIGURE_FLAGS = --localstatedir=$$dc_install_base/var --mandir=$$dc_install_base/man
+
+ACLOCAL_AMFLAGS = -I macros --install
 
 archives: dist
 	(cd doc; make archive)
 	(cd lib; make archive)
 
-proto:
-	(cd common; make proto)
-	(cd server; make proto)
-	(cd plugins; make proto)
-	@if [ "X$(NO_X)" != "Xyes" ]; then \
-		(cd crossedit; make proto) \
-	fi
+dox:
+	@ doxygen 2>doxygen.err
 
-clean-local:
-	$(RM) configtest.out configtest.xml configtest.xsl
+CLEANFILES=	configtest.out configtest.xml configtest.xsl

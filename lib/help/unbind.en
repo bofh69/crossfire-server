@@ -1,0 +1,17 @@
+The unbind command is used to remove a shortcut, alias, or key sequence associated with a key (i.e., F3) or keyboard combination (i.e., shift + F3). 
+
+Usage:
+  unbind
+  unbind #
+  unbind -g #
+  unbind reset
+
+Summary:
+
+  unbind - lists all available keybindings that are enabled
+  unbind # - will reset the character keybinding of the specified number (i.e., unbind 23 will unbind keybinding number 23)
+  unbind -g - will use the global bindings, which means a binding that is based on your login account and applies to all your characters
+  unbind -g # - will reset the global keybinding of the specified number (i.e., unbind -g 23 will unbind keybinding number 23)
+  unbind reset - will reset your character to all default keybindings
+
+See Also: bind

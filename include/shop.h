@@ -1,0 +1,109 @@
+#ifndef _SHOP_H
+#define _SHOP_H
+
+/**
+ * Adjust the value of the given item based on the player's skills. This
+ * function should only be used when calculating "you reckon" prices.
+ *
+ * @param obj item in question. Must not be NULL.
+ * @param who player trying to judge the value of the item. Must not be NULL.
+ * @return approximate value of obj.
+ */
+uint64_t price_approx(const object *obj, object *who);
+
+/**
+ * Adjust the value of an item to be bought based on the player's bargaining skill and
+ * charisma. This should only be used if the player is in a shop.
+ *
+ * @param obj item in question. Must not be NULL.
+ * @param who player trying to judge the value of the item. Must not be NULL.
+ * @return value of obj.
+ */
+uint64_t shop_price_buy(const object *obj, object *who);
+
+/**
+ * Adjust the value of an item to be sold based on the player's bargaining skill and
+ * charisma. This should only be used if the player is in a shop.
+ *
+ * @param obj item in question. Must not be NULL.
+ * @param who player trying to judge the value of the item. Must not be NULL.
+ * @return value of obj.
+ */
+uint64_t shop_price_sell(const object *obj, object *who);
+
+/**
+ * Converts a price to number of coins.
+ *
+ * While cost is 64 bit, the number of any coin is still really
+ * limited to 32 bit (size of nrof field).  If it turns out players
+ * have so much money that they have more than 2 billion platinum
+ * coins, there are certainly issues - the easiest fix at that
+ * time is to add a higher denomination (mithril piece with
+ * 10,000 silver or something)
+ *
+ * @param cost
+ * value to transform to currency.
+ * @param largest_coin
+ * maximum coin to give the price into, should be between 0 and NUM_COINS - 1.
+ * @return
+ * converted value the caller is responsible to free.
+ */
+char* cost_string_from_value(uint64_t cost, int largest_coin);
+char *cost_str(uint64_t cost);
+
+/**
+ * Return a textual cost approximation in a newly-allocated string.
+ *
+ * @param obj item to query the price of, must not be NULL.
+ * @param who player asking for the price, must not be NULL.
+ * @return converted value the caller is responsible to free.
+ */
+char *cost_approx_str(const object *obj, object *who);
+
+/**
+ * Determine the amount of money the given object contains, including what is
+ * inside containers.
+ *
+ * @param op Player or container object
+ * @return Total amount of money inside
+ */
+uint64_t query_money(const object *op);
+
+int pay_for_amount(uint64_t to_pay, object *pl);
+int can_pay(object *pl);
+
+/**
+ * Pay for each unpaid item carried by a player, including those inside
+ * containers. It is a good idea to call can_pay() before using this function,
+ * because items are paid for here in no particular order.
+ *
+ * @param pl Player making purchase
+ * @param op Container to examine, usually the same player object
+ * @retval 0 Player still has unpaid items
+ * @retval 1 Player paid for all unpaid items
+ */
+int shop_pay_unpaid(object *pl, object *op);
+
+int pay_for_item(object *op, object *pl, uint64_t reduction);
+void sell_item(object *op, object *pl);
+
+/**
+ * Return the approval ratio for a shop for a given player. This is based on
+ * both the race of the shopkeeper and the player.
+ *
+ * @param map Map with a shop
+ * @param player Player in question
+ * @return Approval ratio between 0 and 1
+ */
+double shop_approval(const mapstruct *map, const object *player);
+
+/**
+ * Give the player a description of the shop on their current map. This is
+ * used for the bargaining skill.
+ *
+ * @param op Non-null player to describe the shop to
+ * @return Zero if the object is not a player, 1 otherwise
+ */
+int shop_describe(const object *op);
+
+#endif

@@ -1,0 +1,57 @@
+Manage a report submitted by other players.
+
+Usage: report fix <NUM>
+Usage: report close <NUM>
+Usage: report delete <NUM>
+Usage: report list
+Usage: report help
+
+This allows a DM to close out reports from players with a message of "closed" or "fixed".
+
+Your interaction with the report requires the issue number associated with the report.
+
+  Example: 'report fix 120
+
+This will mark issue number 120 as fixed, generally meaning the issue for the report has been corrected or solved.
+
+  Example: 'report close 120
+
+This will mark issue number 120 as closed, generally meaning the issue could not be resolved or the issue was addressed through other means.
+
+  Example: 'report delete 120
+
+This will delete issue number 120, generally as a way to remove a test posting or duplicate post or for other reasons.
+
+If you use an issue number that does not exist or is invalid, you see a message like:
+
+  No reports found with the specified search pattern
+
+Example: 'report list
+
+This will show you all reports that you have created and their status of closed or fixed or new.
+
+You can also search for specific reports using the issue number or by text from the summary.
+
+Example:
+  'report list key
+
+You will see:
+  <issue_no> (closed|fixed|new) the key I just found in this map won't open this door
+
+Example:
+  'report help
+
+Both players and DMs will see the following output:
+
+The report command accepts the following subcommands:
+- delete
+- help
+- list
+- open
+- fix
+- close
+
+The following subcommands are DM only: delete, fix, close
+The following subcommands are available to players: help, list, open
+
+See also: report

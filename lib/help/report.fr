@@ -1,0 +1,5 @@
+Signale une anomalie à l'équipe du serveur.
+
+[color=#ff5500]Utilisation :[/color] report <description de l'anomalie>
+
+Le rapport envoyé contient le nom de votre personnage, votre position courante, et la description que vous avez saisie.

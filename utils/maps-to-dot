@@ -1,0 +1,215 @@
+#!/bin/sh
+#_(:bootstrapper
+   DEPS=' {:deps {}} ';# {:deps {clj-time {:mvn/version "0.14.2"}}}
+   exec clj -Sdeps "$DEPS" "$0" "$@"
+   :end)
+
+; Usage: ./maps-to-dot crossfire-maps/ output-dir/
+;
+; Requires clj(1), usually included as part of the 'clojure' package.
+; Generating images additionally requires neato(1), part of 'graphviz'.
+;
+; Generates a GraphViz visualization of interconnections between Crossfire maps.
+; Outputs a different digraph for each region.
+;
+; You can generate a quick and dirty HTML page containing all the graphs with:
+;
+;   for i in *.dot; do neato -T svg_inline -o ${i%.dot}.svg $i; done
+;   {
+;     echo '<base href="https://www.crossfireatlas.net/" />'
+;     echo '<head><style>svg { max-width: 100%; height: auto; }</style></head>'
+;     for i in *.svg; do
+;       name=${i%.svg}
+;       printf '%s<br>\n' $name
+;       cat $name.svg
+;       printf '\n<hr>\n'
+;     done
+;   } > index.html
+;
+; Each node will link to the corresponding map on Crossfire Atlas.
+
+(ns map-digraph
+  (:require [clojure.java.io :as jio]
+            [clojure.string :as string]))
+
+(defn is-map?
+  "Check if the given File is a crossfire map. It must exist, be a file, and start with the line 'arch map'"
+  [file]
+  (and
+   file
+   (.canRead file)
+   (.isFile file)
+   (-> file jio/reader line-seq first (= "arch map"))))
+
+(defn- field-extractor
+  [field-name]
+  (let [pattern (re-pattern (str "^" field-name " (.*)$"))]
+    (fn [line]
+      (get (re-find pattern line) 1))))
+
+(def slaying-field (field-extractor "slaying"))
+(def name-field (field-extractor "name"))
+(def region-field (field-extractor "region"))
+
+(defn map-name-from-metadata
+  "Read the initial map arch from the contents and extract the human-readable name from it, if present. Nil otherwise."
+  [contents]
+  (->> contents
+       (take-while (partial not= "end"))
+       (some name-field)))
+
+(defn add-name
+  "Given a map and its definition, assoc the human-friendly map name. World map cells just get the region name to avoid hundreds of world_X_Y nodes, everything else gets the metadata name if possible and the file name if not."
+  [{:keys [path region] :as map} mapdef]
+  (let [name (or (map-name-from-metadata mapdef)
+                 (.. path (getFileName) (toString)))]
+    (assoc map :name
+           (cond
+             (not (string/starts-with? name "world_")) name
+             :else (str "[region: " region "]")))))
+
+(defn to-map-path
+  "Turn a [slaying] value into a canonical map path, or nil. In practice, this means:
+   - if it ends with .py, discard it, it's a script link and not a map link
+   - if it starts with /, resolve it relative to the repo root
+   - otherwise, resolve it relative to the origin map's containing directory
+   no attempt is made to check the validity of the path."
+  [{:keys [path]} root exit]
+  (let [exit-path (.toPath (jio/file exit))]
+    (cond
+      (string/ends-with? exit ".py") nil
+      (.isAbsolute exit-path) (.resolve
+                               root
+                               (.relativize (.toPath (jio/file "/"))
+                                            exit-path))
+      :else (.. path (getParent) (resolve exit-path) (normalize)))))
+
+(defn list-exits
+  "Find all the *valid* exits in a mapdef. This just blindly grabs all the [slaying] values from the map and then shoves them through is-map? to just get the ones that point to actual maps that exist.
+  Returns a set of map paths."
+  [map-obj mapdef root]
+  (->> mapdef
+       (keep slaying-field)
+       (keep (partial to-map-path map-obj root))
+       (filter #(is-map? (.toFile %)))
+       (into #{})))
+
+(defn add-exits
+  "Read the mapdef and assoc the set of exit paths into the mapobj."
+  [map contents root]
+  (assoc map :exits
+         (list-exits map contents root)))
+
+(defn add-region
+  "Read the mapdef and assoc the region into the mapobj, or 'none' if no region is defined."
+  [map-obj mapdef]
+  (assoc map-obj :region
+         (or
+          (->> mapdef
+               (keep region-field)
+               first)
+          "none")))
+
+(defn read-map
+  "Read in a map file and emit a structure of the form:
+   {:path   canonical absolute path to the map, with / as the root of the map repo
+    :name   name from map metadata, or bare filename if no name specified
+    :region region the map belongs to, if any
+    :exits  set of map paths that this map has exits to
+   }"
+  [root file]
+  (let [contents (-> file slurp string/split-lines)]
+    (println "Reading: " (.toString (.relativize root (.toPath file))))
+    (->
+     {:path (.toPath file)}
+     (add-region contents)
+     (add-name contents)
+     (add-exits contents root))))
+
+(defn exit-dest
+  "Generate an [exit-name, bidirectional?] pair for an exit leading from this-map to other-map.
+   Unidirectional links are generated unconditionally. Bidirectional links are generated only from the map with the name that sorts earlier."
+  [this-map other-map]
+  (cond
+    (not (-> other-map :exits (:path this-map))) [(:name other-map) false]
+    (< (compare (:name this-map) (:name other-map)) 0) [(:name other-map) true]
+    :else nil))
+
+(defn resolve-exits
+  "Turn the map paths emitted by read-map into human readable exit names to feed to graphviz. Drops exits that lead to missing maps, and collapses all out-of-region exits into '[to region-name]'.
+   Returns a set of [name, bidi?] pairs where bidi? is true if the link is bidirectional."
+  [exits maps this-map]
+  (->> exits
+       (keep (fn [exit-path]
+              (let [other-map (maps (.toString exit-path))]
+                (cond
+                  (nil? other-map) nil
+                  (= (:name this-map) (:name other-map)) nil
+                  (= (:region other-map) (:region this-map))
+                  (exit-dest this-map other-map)
+                  :else [(str "[to " (:region other-map) "]") false]))))
+       (into #{})))
+
+(defn resolve-all-exits
+  "Given a [path -> mapobj] map, turn the exits in each map into the name of the actual mapobj they refer to, or delete them if they do not resolve."
+  [maps]
+  (map (fn [[k v]] [k (update v :exits resolve-exits maps v)])
+       maps))
+
+(defn generate-edges
+  "Actually produce the graphviz source text for all the edges in a given region. Returns a seq of strings."
+  [maps]
+  (for [{:keys [name exits]} maps
+        [dst bidi?]          exits]
+    (str \" name "\" -> \"" dst "\"" (when bidi? " [dir=both]"))))
+
+(defn map-nodes
+  "Return a seq of graphviz node declarations for all the maps in the given path->map map."
+  [maps]
+  (for [{:keys [name path]} maps]
+    (str \" name "\" [href=\"" path ".html\"]")))
+
+(defn write-graph
+  "Generate a graphviz file for the given region and write it to dest."
+  [dest [region maps]]
+  (let [dot-name (string/replace region " " "_")
+        dest-file (jio/file (.toFile dest) (str dot-name ".dot"))
+        edges (generate-edges maps)]
+    (println "Writing: " (.toString dest-file))
+    (spit
+     dest-file
+     (str
+      "digraph crossfire_" dot-name " {\n"
+      "  concentrate=true\n"
+      "  overlap=false\n"
+      "  "
+      (string/join "\n  " (map-nodes maps))
+      "  "
+      (string/join "\n  " (sort edges))
+      "\n}\n"))))
+
+(defn resolve-paths
+  [root [path map]]
+  [path (update map :path
+                (fn [path]
+                  (str "/" (.toString (.relativize root path)))))])
+
+(defn generate-digraphs
+  [source-dir dest-dir]
+  (let [source-dir (.toPath (jio/file source-dir))
+        dest-dir (.toPath (jio/file dest-dir))]
+    (->> (file-seq (.toFile source-dir))
+        ;;  (take 1000) ; for testing
+         (filter is-map?)
+         (map (partial read-map source-dir))
+         (map (juxt #(.toString (:path %)) identity))
+         (into {})
+         (resolve-all-exits)
+         (map (partial resolve-paths source-dir))
+         (map second)
+         (group-by :region)
+         (run! (partial write-graph dest-dir)))))
+
+(apply generate-digraphs *command-line-args*)
+
+"All done!"

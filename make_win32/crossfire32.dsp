@@ -44,7 +44,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "DEBUG" /D "TIME_ARCH_LOAD" /D "CS_LOGSTATS" /D "ESRV_DEBUG" /FD /GZ /I./include /I./random_maps /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\include" /I "..\random_maps" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "DEBUG" /D "ESRV_DEBUG" /FR /FD /GZ /I./include /I./random_maps /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\include" /I "..\random_maps" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "DEBUG" /D "ESRV_DEBUG" /FR /FD /P /GZ /I./include /I./random_maps /c
 # ADD BASE RSC /l 0x407 /i "../include" /d "_DEBUG"
 # ADD RSC /l 0x407 /i "../include" /d "_DEBUG"
 BSC32=bscmake.exe
@@ -52,7 +52,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib wsock32.lib winmm.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib wsock32.lib winmm.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"d:\python21\libs"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib wsock32.lib winmm.lib pthreadVC2.lib libcurl.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"d:\python21\libs"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Cmds=copy FullDebug\crossfire32.exe ..\crossfire32.exe
@@ -104,7 +104,7 @@ PostBuild_Cmds=copy ReleaseQuit\crossfire32.exe ..\crossfire32.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /Gi /GX /O2 /Ob2 /I "..\include" /I "..\random_maps" /I "..\\" /I "..\plugin\include" /I "d:\Python21\include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "DEBUG" /YX"preheader.pch" /FD /c
-# ADD CPP /nologo /MD /W3 /Gi /GX /O2 /Ob2 /I "..\include" /I "..\random_maps" /D "_CONSOLE" /D "DEBUG" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "DEBUG_MOVEATTACK" /YX"preheader.pch" /FD /c
+# ADD CPP /nologo /MD /W3 /Gi /GX /O2 /Ob2 /I "..\include" /I "..\random_maps" /D "_CONSOLE" /D "DEBUG" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "DEBUG_MOVEATTACK" /FR /YX"preheader.pch" /FD /c
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
 # ADD RSC /l 0x407 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -112,7 +112,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib wsock32.lib winmm.lib /nologo /subsystem:console /pdb:none /machine:I386 /libpath:"d:\python21\libs"
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib wsock32.lib winmm.lib /nologo /subsystem:console /pdb:none /machine:I386 /libpath:"d:\python21\libs"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib wsock32.lib winmm.lib pthreadVC2.lib libcurl.lib /nologo /subsystem:console /pdb:none /machine:I386 /libpath:"d:\python21\libs"
 # SUBTRACT LINK32 /debug
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
@@ -299,6 +299,10 @@ SOURCE=..\socket\request.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\socket\requestinfo.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\socket\sounds.c
 
 !IF  "$(CFG)" == "crossfire32 - Win32 FullDebug"
@@ -324,6 +328,14 @@ SOURCE=..\socket\sounds.c
 # Begin Group "server"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\server\account.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\server\account_char.c
+# End Source File
 # Begin Source File
 
 SOURCE=..\server\alchemy.c
@@ -652,29 +664,6 @@ SOURCE=..\server\disease.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\server\egoitem.c
-
-!IF  "$(CFG)" == "crossfire32 - Win32 FullDebug"
-
-# PROP Intermediate_Dir "FullDebug\server"
-
-!ELSEIF  "$(CFG)" == "crossfire32 - Win32 ReleaseQuit"
-
-# PROP BASE Intermediate_Dir "Win32_Release\server"
-# PROP Intermediate_Dir "ReleaseQuit\server"
-
-!ELSEIF  "$(CFG)" == "crossfire32 - Win32 ReleaseLog"
-
-# PROP BASE Intermediate_Dir "Win32_ReleaseNormal\server"
-# PROP Intermediate_Dir "ReleaseLog\server"
-# ADD BASE CPP /YX"crossfire32.pch"
-# ADD CPP /YX"crossfire32.pch"
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=..\server\gods.c
 
 !IF  "$(CFG)" == "crossfire32 - Win32 FullDebug"
@@ -741,6 +730,10 @@ SOURCE=..\server\init.c
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=..\server\knowledge.c
 # End Source File
 # Begin Source File
 
@@ -836,6 +829,18 @@ SOURCE=..\server\move.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\server\ob_methods.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\server\ob_types.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\server\party.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\server\pets.c
 
 !IF  "$(CFG)" == "crossfire32 - Win32 FullDebug"
@@ -902,6 +907,10 @@ SOURCE=..\server\plugins.c
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=..\server\quest.c
 # End Source File
 # Begin Source File
 
@@ -1052,29 +1061,6 @@ SOURCE=..\server\spell_effect.c
 # Begin Source File
 
 SOURCE=..\server\spell_util.c
-
-!IF  "$(CFG)" == "crossfire32 - Win32 FullDebug"
-
-# PROP Intermediate_Dir "FullDebug\server"
-
-!ELSEIF  "$(CFG)" == "crossfire32 - Win32 ReleaseQuit"
-
-# PROP BASE Intermediate_Dir "Win32_Release\server"
-# PROP Intermediate_Dir "ReleaseQuit\server"
-
-!ELSEIF  "$(CFG)" == "crossfire32 - Win32 ReleaseLog"
-
-# PROP BASE Intermediate_Dir "Win32_ReleaseNormal\server"
-# PROP Intermediate_Dir "ReleaseLog\server"
-# ADD BASE CPP /YX"crossfire32.pch"
-# ADD CPP /YX"crossfire32.pch"
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\server\swamp.c
 
 !IF  "$(CFG)" == "crossfire32 - Win32 FullDebug"
 
@@ -1618,6 +1604,10 @@ SOURCE=..\common\arch.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\common\artifact.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\common\button.c
 
 !IF  "$(CFG)" == "crossfire32 - Win32 FullDebug"
@@ -1635,6 +1625,10 @@ SOURCE=..\common\button.c
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\dialog.c
 # End Source File
 # Begin Source File
 
@@ -1798,6 +1792,10 @@ SOURCE=..\common\item.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\common\languages.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\common\links.c
 
 !IF  "$(CFG)" == "crossfire32 - Win32 FullDebug"
@@ -1921,6 +1919,42 @@ SOURCE=..\common\map.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\common\ob_methods.c
+
+!IF  "$(CFG)" == "crossfire32 - Win32 FullDebug"
+
+# PROP Intermediate_Dir "FullDebug\common"
+
+!ELSEIF  "$(CFG)" == "crossfire32 - Win32 ReleaseQuit"
+
+!ELSEIF  "$(CFG)" == "crossfire32 - Win32 ReleaseLog"
+
+# PROP Intermediate_Dir "ReleaseLog\common"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\ob_types.c
+
+!IF  "$(CFG)" == "crossfire32 - Win32 FullDebug"
+
+# PROP Intermediate_Dir "FullDebug\common"
+
+!ELSEIF  "$(CFG)" == "crossfire32 - Win32 ReleaseQuit"
+
+# PROP Intermediate_Dir "ReleaseQuit\common"
+
+!ELSEIF  "$(CFG)" == "crossfire32 - Win32 ReleaseLog"
+
+# PROP Intermediate_Dir "ReleaseLog\common"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=..\common\object.c
 
 !IF  "$(CFG)" == "crossfire32 - Win32 FullDebug"
@@ -1938,6 +1972,10 @@ SOURCE=..\common\object.c
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\output_file.c
 # End Source File
 # Begin Source File
 
@@ -1982,10 +2020,6 @@ SOURCE=..\common\porting.c
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\quest.c
 # End Source File
 # Begin Source File
 
@@ -2073,6 +2107,10 @@ SOURCE=..\common\shstr.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\common\stringbuffer.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\common\time.c
 
 !IF  "$(CFG)" == "crossfire32 - Win32 FullDebug"
@@ -2130,6 +2168,258 @@ SOURCE=..\common\utils.c
 
 !ENDIF 
 
+# End Source File
+# End Group
+# Begin Group "types"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\types\altar\altar.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\legacy\apply.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\armour_improver\armour_improver.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\arrow\arrow.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\blindness\blindness.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\book\book.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\button\button.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\cf_handle\cf_handle.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\check_inv\check_inv.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\clock\clock.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\common\common_apply.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\trap\common_trap.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\container\container.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\converter\converter.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\creator\creator.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\deep_swamp\deep_swamp.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\common\describe.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\detector\detector.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\director\director.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\dragon_focus\dragon_focus.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\duplicator\duplicator.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\exit\exit.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\food\food.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\gate\gate.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\hole\hole.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\identify_altar\identify_altar.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\lamp\lamp.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\legacy\legacy_describe.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\lighter\lighter.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\marker\marker.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\mood_floor\mood_floor.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\peacemaker\peacemaker.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\pedestal\pedestal.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\player_changer\player_changer.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\player_mover\player_mover.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\poison\poison.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\poisoning\poisoning.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\potion\potion.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\power_crystal\power_crystal.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\legacy\process.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\common\projectile.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\trap\rune.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\savebed\savebed.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\scroll\scroll.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\shop_inventory\shop_inventory.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\shop_mat\shop_mat.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\sign\sign.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\skillscroll\skillscroll.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\spell_effect\spell_effect.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\spellbook\spellbook.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\spinner\spinner.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\teleporter\teleporter.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\thrown_object\thrown_object.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\transport\transport.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\trap\trap.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\trapdoor\trapdoor.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\treasure\treasure.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\trigger\trigger.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\trigger_altar\trigger_altar.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\trigger_button\trigger_button.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\trigger_pedestal\trigger_pedestal.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\types\weapon_improver\weapon_improver.c
 # End Source File
 # End Group
 # End Group
@@ -2468,6 +2758,14 @@ SOURCE=..\include\newserver.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\include\ob_methods.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\ob_types.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\include\object.h
 
 !IF  "$(CFG)" == "crossfire32 - Win32 FullDebug"
@@ -2480,6 +2778,10 @@ SOURCE=..\include\object.h
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\output_file.h
 # End Source File
 # Begin Source File
 

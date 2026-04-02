@@ -4,11 +4,12 @@ CHECK_PARENT_NAME=Site index
 
 include $(top_srcdir)/check-fragment.am
 
-SUBDIRS = include templates toolkit unit
+SUBDIRS = include templates toolkit unit bugs
+
+DISTCLEANFILES=	.autorun.xml
 
 clean-local:
-	$(RM) -rf logs
-	$(RM) .autorun.xml
+	-rm -rf logs
 
 check-local: check-html check-text
 clean-local: clean-unit

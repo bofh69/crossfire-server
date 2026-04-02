@@ -1,0 +1,19 @@
+The command 'hostile' is not an actual command. It refers to the state change that occurs when using the 'peaceful' command.
+
+The 'peaceful' command will switch you between peaceful and hostile attack modes.
+
+Usage
+  peaceful
+
+When in hostile mode (peaceful off), melee combat is enabled when bumping into other players. All normal attacks will also deal full damage.
+
+Damage caused by area-effect attacks such as cone spells, explosions, fireballs, poisons, clouds, swarms, runes, or diseases is not affected by peaceful/hostile mode.
+
+Pets in SAD mode will not attack another player as long as both players are peaceful.
+
+Warning:
+Running around with hostile on means other players will automatically hit back when you bump them.
+If a low-level character bumps into a high-level melee player, death is almost certain.
+Using hostile mode on servers that discourage player killing (PK) is strongly advised against and may result in being banned.
+
+  See also: peaceful

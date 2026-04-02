@@ -1,0 +1,9 @@
+The freeze command will prevent a player from taking any action for some amount of time, the default time is 100 ticks.
+
+Usage:
+  freeze [ticks] <player>
+
+Example:
+  freeze 50 George
+
+George will be unable to move, use any communication channels, cast any spells, use any items, or interact with any nearby objects of his character for 50 game ticks. 

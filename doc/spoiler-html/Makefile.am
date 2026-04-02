@@ -1,15 +1,14 @@
-
 EXTRA_DIST = spells-extract stats-extract\
 	spoiler.shtml helm-extract mag-extract shield-extract \
 	empty.pbm bow-extract arche-extract weap-extract
 
 HTML =	monput.html spells.html stats.html weap.html shield.html helmet.html\
  	mag.html arm.html arche.html bow.html version.html weapmag.html
-	
-CLEANFILES = items .bmaps in_monput in_items in_spells in_stats \
-		*x*.ppm tmp.ppm work.ppm *.gif $(HTML) spoiler.html
 
-CROSSBIN = ../../server/crossfire
+CLEANFILES = items .bmaps in_monput in_items in_spells in_stats \
+		*x*.ppm tmp.ppm work.ppm *.png $(HTML) spoiler.html
+
+CROSSBIN = ../../server/crossfire-server
 INCDIR = $(top_srcdir)/include
 DTOP = $(top_srcdir)/$(PACKAGE)-doc
 PERL = @PERL@
@@ -28,32 +27,32 @@ $(CROSSBIN):
 check_ok: dump_switches
 	@$(RM) dump_switches
 
-.bmaps: $(pkgdatadir)/archetypes
+.bmaps: $(pkgdatadir)/crossfire.arc
 	$(RM) *.gif
 	touch .bmaps
 
 items: .bmaps in_items ../scripts/makeps.pl items.gif
-	$(PERL) ../scripts/makeps.pl output=png libdir=$(top_srcdir)/lib archdir=$(top_srcdir)/lib/ size=0.4 input=in_items inarch=$(pkgdatadir)/archetypes > items
+	$(PERL) ../scripts/makeps.pl output=png libdir=$(top_srcdir)/lib archdir=$(top_srcdir)/lib/ size=0.4 input=in_items inarch=$(pkgdatadir)/crossfire.arc > items
 
-in_items: $(srcdir)/../scripts/items-extract.pl $(pkgdatadir)/archetypes $(top_srcdir)/common/living.c
-	$(PERL) $(srcdir)/../scripts/items-extract.pl  living_c=$(top_srcdir)/common/living.c $(pkgdatadir)/archetypes > in_items
+in_items: $(srcdir)/../scripts/items-extract.pl $(pkgdatadir)/crossfire.arc $(top_srcdir)/common/living.c
+	$(PERL) $(srcdir)/../scripts/items-extract.pl  living_c=$(top_srcdir)/common/living.c $(pkgdatadir)/crossfire.arc > in_items
 
 stats.html: .bmaps in_stats ../scripts/makeps.pl stats.gif
-	$(PERL) ../scripts/makeps.pl output=png libdir=$(top_srcdir)/lib archdir=$(top_srcdir)/lib/ size=0.4 input=in_stats inarch=$(pkgdatadir)/archetypes > stats.html
+	$(PERL) ../scripts/makeps.pl output=png libdir=$(top_srcdir)/lib archdir=$(top_srcdir)/lib/ size=0.4 input=in_stats inarch=$(pkgdatadir)/crossfire.arc > stats.html
 
-in_stats: stats-extract $(pkgdatadir)/archetypes $(top_srcdir)/common/living.c
-	$(AWK) -v living_c=$(top_srcdir)/common/living.c 		-f stats-extract $(pkgdatadir)/archetypes > in_stats
+in_stats: stats-extract $(pkgdatadir)/crossfire.arc $(top_srcdir)/common/living.c
+	$(AWK) -v living_c=$(top_srcdir)/common/living.c 		-f stats-extract $(pkgdatadir)/crossfire.arc > in_stats
 
 monput.html: .bmaps in_monput ../scripts/makeps.pl monsters.gif
-	$(PERL) ../scripts/makeps.pl output=png libdir=$(top_srcdir)/lib archdir=$(top_srcdir)/lib/ size=0.4 input=in_monput inarch=$(pkgdatadir)/archetypes > monput.html
+	$(PERL) ../scripts/makeps.pl output=png libdir=$(top_srcdir)/lib archdir=$(top_srcdir)/lib/ size=0.4 input=in_monput inarch=$(pkgdatadir)/crossfire.arc > monput.html
 
-in_monput: ../scripts/monster-extract.pl $(CROSSBIN) $(pkgdatadir)/treasures $(pkgdatadir)/archetypes
+in_monput: ../scripts/monster-extract.pl $(CROSSBIN) $(pkgdatadir)/crossfire.trs $(pkgdatadir)/crossfire.arc
 	$(CROSSBIN) -m2 |  sort -f | $(PERL) ../scripts/monster-extract.pl > in_monput
 
 spells.html: .bmaps in_spells ../scripts/makeps.pl spells.gif
-	$(PERL) ../scripts/makeps.pl output=png libdir=$(top_srcdir)/lib archdir=$(top_srcdir)/lib/ size=0.4 input=in_spells inarch=$(pkgdatadir)/archetypes > spells.html
+	$(PERL) ../scripts/makeps.pl output=png libdir=$(top_srcdir)/lib archdir=$(top_srcdir)/lib/ size=0.4 input=in_spells inarch=$(pkgdatadir)/crossfire.arc > spells.html
 
-in_spells: spells-extract  $(INCDIR)/spellist.h 		$(CROSSBIN) $(pkgdatadir)/archetypes
+in_spells: spells-extract  $(INCDIR)/spellist.h 		$(CROSSBIN) $(pkgdatadir)/crossfire.arc
 	tr -d \" < $(INCDIR)/spellist.h | 		$(AWK) -F, -v crosscmd="$(CROSSBIN) -m4" 			-f spells-extract | sort > in_spells
 
 version.html: $(CROSSBIN)
@@ -90,4 +89,3 @@ archive: spoiler.html
 	$(mkinstalldirs) $(DTOP)/spoiler-html
 	cp spoiler.html $(DTOP)/spoiler-html
 	cp *.gif $(DTOP)/spoiler-html
-	

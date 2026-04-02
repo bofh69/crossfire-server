@@ -1,0 +1,17 @@
+{% extends "inc-page.html" %}
+{% block title %}List of all {{ length(reset_groups) }} reset groups{% endblock %}
+{% block contents %}
+<h1>List of all {{ length(reset_groups) }} reset groups</h1>
+<ul>
+  {% for rg in reset_groups %}
+  {% set rgm = get_list_by_field(maps, "reset_group", rg) %}
+  <li>{{ rg }} ({{ length(rgm) }} maps)
+    <ul>
+      {% for map in rgm %}
+      <li><a href='{{ link_to_page("map.html", map._key) }}'>{{ map.name }}</a></li>
+      {% endfor %}
+    </ul>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

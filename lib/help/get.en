@@ -1,0 +1,11 @@
+A variant of the take command that allows an item count to be specified. For example:
+
+  get 10 platinum
+
+Another useful count is `all' to act like pickup 4 and pickup 5:
+
+  get all
+  
+  See Also: pickup
+  See Also: take
+  See Also: bind

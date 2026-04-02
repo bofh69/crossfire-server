@@ -1,0 +1,39 @@
+NOTE: Creating items is rather dangerous and tends to crash the server when creating some items. It is generally safer to modify existing items with the patch command instead of the create command.
+
+The create command allows a DM to make in-game items or items with numerous special properties (i.e., magical enchantment, graphic or face, quantity, etc.)
+
+Usage: create [<number>] [<bonus>] <archetype> [<variable1> <value1>] [<variable2> <value2>] ... [of <artifact>]
+
+Example:
+  create 5 +1 sword name “Spiffy Sword” face chicken.171
+
+This would create 5 longswords +1 named 'Spiffy Sword' that look like chickens.
+
+Usage: create [<number>] [<archetype>] of [<archetype>] [<attribute>] [<attribute value>]
+
+Example:
+  create 1 rod_heavy of spell_word_of_recall level 3 hp 100 maxhp 100
+
+This would generate one 'heavy rod of word of recall (lvl 3)' into the inventory of the DM.
+
+The number and bonus attributes may be left off, or the bonus itself may be left off at any time.
+
+If a bonus is desired, the number must be specified as well.
+
+Archetype must be specified in all cases.
+
+Variables and values may be left off at any time, but specifying a variable requires a value also be specified.
+
+Multipart values such as for an item name must be quoted.
+
+Creating artifacts requires placing the artifact definition at the end of the line, as any characters after the "of" are treated as part of the artifact name, regardless of quotes.
+
+When creating artifacts, the actual arch name must be used.
+
+Example:
+  create 10 balm_generic of first aid
+
+Creating wands/staves/scrolls/etc with specific spells is done in the same manner as an artifact.
+
+See Also: patch
+See Also: dump

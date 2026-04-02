@@ -1,0 +1,190 @@
+# Messages en Portuguese
+LN|Português
+Your current language is set to: English.| Seu idioma atual está definido como: Potuguês.
+Available languages:|Idiomas disponíveis:
+Unknown language.|Idioma desconhecido.
+Your current language is set to English.|Seu idioma atual está definido como Potuguês.
+Current time is: %02ld:%02ld:%02ld.|A hora atual é: %02ld:%02ld:%02ld.
+The first column is the name of the body location.|A primeira coluna é o nome da localização do corpo.
+The second column is how many of those locations your body has.|A segunda coluna é quantos desses locais seu corpo possui.
+The third column is how many slots in that location are available.|A terceira coluna é quantos slots nesse local estão disponíveis.
+in your range slot|em seu slot de intervalo
+in a human's range slot|no espaço de alcance de um humano
+on your arm|no seu braço
+on a human's arm|no braço de um humano
+on your body|No seu corpo
+on a human's torso|no torso de um humano
+on your head|na sua cabeça
+on a human's head|na cabeça de um humano
+around your neck|em torno do pescoço
+around a humans neck|em torno de um pescoço de um humano
+in your skill slot|em sua habilidade
+in a human's skill slot|em habilidade de um humano
+on your finger|no seu dedo
+on a human's finger|no seu dedo de um humano
+around your shoulders|em torno de seus ombros
+around a human's shoulders|em torno ombros de um humano
+on your feet|no seu pé
+on a human's feet|no pé de um humano
+on your hands|em suas mãos
+on a human's hands|em mãos de um humano
+around your wrists|em torno de seus pulsos
+around a human's wrist|em torno dos pulsos de um humano
+around your waist|em torno de sua cintura
+around a human's waist|em torno da cintura de um humano
+around your legs|em torno de suas pernas
+around a human's legs|em torno das pernas de um humano
+You are not allowed to wear armor.|Você não tem permissão para usar armadura.
+You are not allowed to use weapons.|Você não tem permissão para usar armas.
+[fixed]%4d used objects:    %8d|[fixed]%4d objetos usados:     %8d
+[fixed]%4d free objects:    %8d|[fixed]%4d objetos livres:     %8d
+[fixed]%4d active objects:  %8d|[fixed]%4d objetos ativados:   %8d
+[fixed]%4d players:         %8d|[fixed]%4d jogadores:          %8d
+[fixed]%4d maps allocated:  %8d|[fixed]%4d mapas alocados:     %8d
+[fixed]%4d maps in memory:  %8d|[fixed]%4d mapas na memória:   %8d
+[fixed]%4d archetypes:      %8d|[fixed]%4d arquétipos:         %8d
+[fixed]%4d animations:      %8d|[fixed]%4d animações:          %8d
+[fixed]%4d treasurelists    %8d|[fixed]%4d listas de tesouros  %8d
+[fixed]%4ld treasures        %8d|[fixed]%4ld tesouros            %8d
+[fixed]%4ld artifacts        %8d|[fixed]%4ld artefatos           %8d
+[fixed]%4ld artifacts strngs %8d|[fixed]%4ld cordas de artefatos %8d
+[fixed]%4d artifactlists    %8d|[fixed]%4d listas de artefatos   %8d
+[fixed]Total space allocated:%8d|[fixed]Espaço total alocado:   %8d
+[fixed]Total space used:     %8d|[fixed]Espaço total usado:     %8d
+You are in %s.\n%s|Você está em %s.\n%s
+players:%d difficulty:%d size:%dx%d start:%dx%d timeout %d|jogadores:%d dificuldade:%d tamanho:%dx%d início:%dx%d tempo limite %d
+Heap is corrupted.|A pilha está corrompida.
+Heap checks out OK.|A verificação da pilha está ok.
+In the world currently there are:|No mundo atualmente existem:
+%u players in %s|%u jogadores em %s
+who failed - out of memory!|Falha - sem memória!
+Total Players (%d) -- WIZ(%d) AFK(%d) BOT(%d)|Total de jogadores (%d) -- WIZ(%d) AFK(%d) BOT(%d)
+Total Players in %s (%d) -- WIZ(%d) AFK(%d) BOT(%d)|Total de jogadores em %s (%d) -- WIZ(%d) AFK(%d) BOT(%d)
+Total Players in party %s (%d) -- WIZ(%d) AFK(%d) BOT(%d)|Total de jogadores no grupo %s (%d) -- WIZ(%d) AFK(%d) BOT(%d)
+You are no longer AFK|Você não é mais AFK
+You are now AFK|Agora você está AFK
+Global debug level is %d.|O nível de depuração global é %d.
+93|Debug é um comando privilegiado.
+Debug level set to %d.|Nível de depuração definido como %d.
+You will now walk through walls.|Agora você pode atravessar as paredes.
+You will now be stopped by walls.|Agora você não pode atravessar as paredes.
+You can now cast spells anywhere.|Agora você pode lançar feitiços em qualquer lugar.
+You now cannot cast spells in no-magic areas.|Agora você não pode lançar feitiços em áreas sem magia.
+Set listen to what (presently %d)?|O que devo ouvir (atualmente %d)?
+Verbose level should be positive.|O nível detalhado deve ser positivo.
+Your verbose level is now %d.|Seu nível detalhado agora é %d.
+[fixed]  Experience: %|[fixed]  Experiência: %
+[fixed]  Next Level: %|[fixed]  Próximo nível: %
+[fixed]\nStat       Nat/Real/Max|[fixed]\Habilidades     Base/Atual/Max
+[fixed]Str         %2d/ %3d/%3d|[fixed]Força             %2d/ %3d/%3d
+[fixed]Dex         %2d/ %3d/%3d|[fixed]Agilidade         %2d/ %3d/%3d
+[fixed]Con         %2d/ %3d/%3d|[fixed]Constituição      %2d/ %3d/%3d
+[fixed]Int         %2d/ %3d/%3d|[fixed]Inteligência      %2d/ %3d/%3d
+[fixed]Wis         %2d/ %3d/%3d|[fixed]Sabedoria         %2d/ %3d/%3d
+[fixed]Pow         %2d/ %3d/%3d|[fixed]Poder             %2d/ %3d/%3d
+[fixed]Cha         %2d/ %3d/%3d|[fixed]Carisma           %2d/ %3d/%3d
+\nAttack Mode: %s|\nModo de ataque: %s
+Peaceful|Pacífico
+[fixed]%s\t%04d %02d %02d %02d %02d %02d|[fixed]%s\t%04d %02d %02d %02d %02d %02d
+applymode is set to %s|applymode está definido para %s
+applymode: Unknown options %s, valid options are nochoice, never, always|applymode: opções desconhecidas %s, opções válidas são nochoice, never, always
+applymode%s set to %s|applymode%s está definido %s
+bowmode is set to %s|bowmode está definido %s
+bowmode%s set to %s|bowmode%s está definido %s
+petmode is set to %s|petmode está definido %s
+petmode: Unknown options %s, valid options are normal, sad (seek and destroy), defend, arena|petmode: Opções desconhecidas %s, opções válidas são normal, sad (procurar e destruir), defend, arena
+petmode%s set to %s|petmode%s está definido %s
+Pets:|Pets:
+%d  %s - level %d|%d  %s - nível %d
+[fixed]level %d %s|[fixed]nível %d %s
+[fixed]%d/%d HP, %d/%d SP|[fixed]%d/%d Saúde, %d/%d Maná
+[fixed]Str %d|[fixed]Força        %d
+[fixed]Dex %d|[fixed]Agilidade    %d
+[fixed]Con %d|[fixed]Constituição %d
+[fixed]Int %d|[fixed]Inteligência %d
+[fixed]Wis %d|[fixed]Sabedoria    %d
+[fixed]Cha %d|[fixed]Poder        %d
+[fixed]Pow %d|[fixed]Carisma      %d
+[fixed]wc %d  damage %d ac %d|[fixed]ataque %d dano %d armadura %d
+You have no pets.|Você não tem pets.
+No such pet.|Nenhum pet correspondente.
+usekeys is set to %s|usekeys está definido como %s
+usekeys: Unknown option %s, valid options are inventory, keyrings, containers|usekeys: Opção desconhecida %s, opções válidas são inventory, keyrings, containers
+usekeys%s set to %s|usekeys%s definido como %s
+[fixed]%-20s %+5d|[fixed]%-20s %+5d
+\nNatural skin resistances:|\nResistências naturais da pele:
+      Wiz commands:|      Comandos do DM:
+      Misc help:|      Ajuda diversa:
+      Commands:|      Comandos:
+      Wiz commands:|      Comandos do DM:
+      Communication commands:|      Comandos de comunicação:
+      Commands:|      Comandos:
+Illegal characters in '%s'|Caracteres ilegais em '%s'
+Help about '%s'|Ajuda sobre '%s'
+No help available on '%s'|Nenhuma ajuda disponível em '%s'
+Quitting will delete your character.\nAre you sure you want to delete your character (y/n):|Ao Sair seu personagem será excluido.\Tem certeza de que deseja excluir seu personagem (y=sim/n=não):
+Sounds are turned off.|Os sons estão desligados.
+The sounds are enabled.|Os sons estão ativados.
+Password changed cancelled.|Alteração da senha foi cancelado.
+You are not allowed to play.|Você não tem permissão para jogar.
+The passwords did not match.|As senhas não coincidem.
+\nWelcome, Brave New Warrior!\n|\nSeja bem-vindo, Bravo Guerreiro Novo!\n
+You entered the wrong current password.|Você digitou errado a senha atual.
+Please enter your new password, or blank to cancel:|Digite sua nova senha ou em branco para cancelar:
+Please confirm your new password, or blank to cancel:|Confirme sua nova senha ou em branco para cancelar:
+The new passwords don't match!|As novas senhas não coincidem!
+Password changed.|Senha modificada com sucesso.
+You cannot change your title.|Você não pode alterar seu título.
+Dragons cannot change titles.|Dragões não podem mudar de título.
+Your title is '%s'.|Seu título é '%s'.
+Your title is the default title.|Seu título é o título padrão.
+Title set to default.|Título definido como padrão.
+Title too long.|Título muito longo.
+You can not save on unholy ground.|Você não pode salvar em solo profano.
+You don't deserve to save yet.|Você não merece salvar ainda.
+You have been saved.|Você foi salvo.
+SAVE FAILED!|FALHA AO SALVAR!
+You will not attack other players.|Você não atacará outros jogadores.
+You will attack other players.|Você vai atacar outros jogadores.
+Your current wimpy level is %d.|Seu nível de fraqueza atualmente é %d.
+Your new wimpy level is %d.|Seu novo nível de fraqueza é %d.
+Your pets have been killed.|Seus pets foram mortos.
+Killed %d pets.|Matou %d pets.
+Couldn't find any suitable pets to kill.|Não foi possível encontrar nenhum pet adequado para matar.
+Password change.\nPlease enter your current password, or empty string to cancel.|Alteração de senha.\nDigite sua senha atual ou deixe vazio para cancelar.
+Server settings:|Configurações do servidor:
+ * item power factor: %2f| * fator de poder do item: %2f
+ * death is not permanent| * a morte não é permanente
+ * permanent death, resurrection is enabled| * morte permanente, a ressurreição está habilitada
+ * permanent death, resurrection is NOT enabled| * morte permanente, ressurreição NÃO está habilitada
+ * players can set their title| * os jogadores podem definir seu título
+ * players can't set their title| * os jogadores não podem definir seu título
+ * too much equipment can lead to spell failure and ill effects| * muito equipamento pode levar a falha de feitiço e efeitos nocivos
+ * too much equipment can lead to spell failure but no ill effects| * muito equipamento pode levar a falha de feitiço, mas sem efeitos nocivos
+ * too much equipment can't lead to spell failure| * muito equipamento não pode levar a falha de feitiço
+ * casting takes time| * lançar feitiço leva tempo
+ * casting is immediate| * lançar feitiço é imediata
+ * permanent experience: %d%%| * experiência permanente: %d%%
+ * death penalty %d%% or %d levels| * penalidade de morte: %d%% ou %d níveis
+ * friendly fire: %d%%| * fogo amigo: %d%%
+ * players can't steal from other players| * jogadores não podem roubar de outros jogadores
+ * players can steal from other players| * jogadores podem roubar de outros jogadores
+ * players can create portals from their apartments| * os jogadores podem criar portais de seus apartamentos
+ * players can't create portals from their apartments| * os jogadores não podem criar portais de seus apartamentos
+ * players can write spells they are denied| * os jogadores podem escrever feitiços que são negados
+ * players can't write spells they are denied| * os jogadores não podem escrever feitiços que são negados
+Wimpy level should be between 1 and 100.|O nível de fraqueza deve estar entre 1 e 100.
+You keep that in mind for future reference.|Você mantém isso em mente para referência futura..
+Use the 'knowledge' command to see what you keep in mind (this message will not appear anymore).|Use o comando 'knowledge' para ver o que você tem em mente (esta mensagem não aparecerá mais).
+# missões
+You|Você
+%s completed %d out of %d quests, of which %d may be restarted.|%s completou %d de %d missões, das quais %d pode ser reiniciada.
+%s completed %d quests|%s completou %d missões
+%s completed the following quests:|%s completou as seguintes missões:
+ (can be replayed)| (pode ser repetido)
+%s started the following quests:|%s iniciou as seguintes missões:
+%s didn't start any quest.|%s não iniciou nenhuma missão.
+This quest has been completed%s.[/color]|Esta missão foi concluída%s.[/color]
+Command 'quest' called in DM mode.|Comando 'quest' chamado no modo DM.
+Please specify a player name.|Especifique um nome de jogador.
+%s is not online, or ambiguous name.|%s não está online ou nome ambíguo.

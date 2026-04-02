@@ -1,0 +1,9 @@
+The forget_spell command will cause your currently logged-in character to permanently lose knowledge of the specified spell.
+
+Usage:
+  forget_spell <spell name>
+
+Example:
+  forget_spell light
+
+  You lose knowledge of light.

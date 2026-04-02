@@ -1,0 +1,24 @@
+/*
+ * Crossfire -- cooperative multi-player graphical RPG and adventure game
+ *
+ * Copyright (c) 2020-2022 the Crossfire Development Team
+ *
+ * Crossfire is free software and comes with ABSOLUTELY NO WARRANTY. You are
+ * welcome to redistribute it under certain conditions. For details, please
+ * see COPYING and LICENSE.
+ *
+ * The authors can be reached via e-mail at <crossfire@metalforge.org>.
+ */
+
+#ifndef ARTIFACTWRITER_H
+#define ARTIFACTWRITER_H
+
+#include "global.h"
+#include "AssetWriter.h"
+
+class ArtifactWriter : public AssetWriter<artifact> {
+  public:
+    virtual void write(const artifact *item, StringBuffer *buf);
+};
+
+#endif /* ARTIFACTWRITER_H */

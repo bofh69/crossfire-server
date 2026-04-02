@@ -1,0 +1,15 @@
+The learn_special_prayer command will permanently give the DM any specified spell that is normally granted to cult followers.
+
+Usage:
+  learn_special_prayer <prayer name>
+
+Note: the <prayer name> is the actual spell name, not the object or archetype name. So, for instance, insect plague would be used instead of spell_insect_plague.
+
+Examples:
+  learn_special_prayer wave
+  learn_special_prayer insect plague
+
+The DM character still has access to the granted spell even when they are not in DM mode - but still must meet the minimum casting requirements for the spell (i.e., proper level in praying, enough grace to cast the prayer, etc.)
+
+See Also: learn_spell
+See Also: nodm

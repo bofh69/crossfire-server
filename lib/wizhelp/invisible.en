@@ -1,0 +1,6 @@
+The invisible command will make the DM temporarily invisible for approximately 2 ticks (or 16 seconds assuming default server configuration settings.
+
+Usage:
+  invisible
+
+Once the timer on the command expires, the DM will return to visible mode again.

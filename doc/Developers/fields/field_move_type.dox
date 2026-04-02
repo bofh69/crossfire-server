@@ -1,0 +1,52 @@
+/**
+@fn object::move_type
+# Use
+<table>
+	<tr>
+		<th>Type(s)</th>
+		<th>Description</th>
+	</tr>	<tr>
+		<td>
+@ref page_type_39, @ref page_type_99, @ref page_type_104, @ref page_type_16, @ref page_type_87, @ref page_type_113, @ref page_type_100, @ref page_type_34, @ref page_type_70, @ref page_type_33
+		</td><td>                As soon as the player applies a piece of equipment, the player
+                will start using the granted movement types.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_54, @ref page_type_6
+		</td><td>                If set on a food with a non-null title, consumption will grant the player
+                the selected movement types for the duration of the food effect.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_215, @ref page_type_28
+		</td><td>            Determines which movement types this monster can use. Flying
+            monsters won't get slowed down in rough terrain and they won't be
+            affected by movers.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_40
+		</td><td>                When a monster steps onto the mover, it must use one of these
+                movement types for it to be moved. By default, this is "walk",
+                so flying monsters (and players!) won't be affected. It's
+                probably best to change this to &lt;walk,fly_low&gt; if you want
+                things to not bypass it just by flying.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_43
+		</td><td>            Determines which movement types this skill grants.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_2
+		</td><td>            The move type the transport uses.</td>
+	</tr>
+	<tr>
+		<td>
+@ref page_type_216
+		</td><td>            Must be set if the object has can_roll set.</td>
+	</tr>
+
+*/

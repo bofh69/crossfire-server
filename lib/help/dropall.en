@@ -1,0 +1,19 @@
+Syntax:
+  
+  dropall [type]
+
+The dropall command drops all items in your inventory to the ground, except locked items. The type parameter will also control what is dropped:
+
+'empty' (e.g., nothing specified): drops all objects except food, money, keys, and containers
+
+weapons: drops weapons, bows, and arrows
+
+armor (armor): drops armor, shield, and helmets
+
+misc: drop horns, books, girdles, amulets, rings, cloaks, boots, gloves, bracers, scrolls, wands, rods, and potions
+
+food: drops food and drink
+
+flesh: drops all flesh
+
+See also 'drop' and mouse button control within the client for dropping objects.

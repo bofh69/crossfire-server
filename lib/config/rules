@@ -1,0 +1,18 @@
+# rules -- server rules
+#
+# These rules are sent to players when they connect. You should change them
+# to reflect the actual rules in effect on your server.
+
+[i]Behavior[/i]
+Please keep conversations on the shout and chat channels friendly.
+
+[i]Bugs[/i]
+Do not exploit bugs. If you come across one, please report it.
+
+[i]Player Killing[/i]
+Player killing is not allowed unless both players agree to it.
+
+[i]Stealing[/i]
+Do not steal items from other players.
+
+[b]All violations are punishable at the discretion of the dungeon master.[/b]

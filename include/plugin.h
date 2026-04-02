@@ -3,12 +3,35 @@
 /* This code is placed under the GPL.                                        */
 /*****************************************************************************/
 
+/**
+ * @file
+ * Definitions for the plugin system.
+ * @todo link to plugin stuff when the documentation exists in doxygen form :) remove commented things line 329+.
+ */
+
 /*****************************************************************************/
 /* Headers needed.                                                           */
 /*****************************************************************************/
 
 #ifndef PLUGIN_H
 #define PLUGIN_H
+
+#undef MODULEAPI
+#ifdef WIN32__
+# ifdef PYTHON_PLUGIN_EXPORTS
+#  define MODULEAPI __declspec(dllexport)
+# else
+#  define MODULEAPI __declspec(dllimport)
+# endif
+#else
+#ifdef HAVE_VISIBILITY
+# define MODULEAPI __attribute__((visibility("default")))
+#else
+# define MODULEAPI
+#endif
+#endif
+
+#include <global.h>
 
 /*****************************************************************************/
 /* This one does not exist under Win32.                                      */
@@ -17,80 +40,15 @@
 #include <dlfcn.h>
 #endif
 
-#undef MODULEAPI
-#ifdef WIN32
-#ifdef PYTHON_PLUGIN_EXPORTS
-#define MODULEAPI __declspec(dllexport)
-#else
-#define MODULEAPI __declspec(dllimport)
-#endif
-#else
-#define MODULEAPI
-#endif
+#include "random_maps/random_map.h"
+#include "random_maps/rproto.h"
 
-#include <global.h>
-#include <object.h>
-#include <logger.h>
-
-#ifdef HAVE_TIME_H
-#include <time.h>
-#endif
-#include <../random_maps/random_map.h>
-#include <../random_maps/rproto.h>
-
-
-/*****************************************************************************/
-/* This one does not exist under Win32.                                      */
-/*****************************************************************************/
+/*******************************************************************************/
+/* This one does not exist under Win32.                                        */
+/*******************************************************************************/
 #ifndef WIN32
 #include <dirent.h>
 #endif
-
-/*****************************************************************************/
-/* Event ID codes. I sorted them to present local events first, but it is    */
-/* just a 'cosmetic' thing.                                                  */
-/*****************************************************************************/
-/*****************************************************************************/
-/* Local events. Those are always linked to a specific object.               */
-/*****************************************************************************/
-#define EVENT_NONE     0  /* No event. This exists only to reserve the "0".  */
-#define EVENT_APPLY    1  /* Object applied-unapplied.                       */
-#define EVENT_ATTACK   2  /* Monster attacked or Scripted Weapon used.       */
-#define EVENT_DEATH    3  /* Player or monster dead.                         */
-#define EVENT_DROP     4  /* Object dropped on the floor.                    */
-#define EVENT_PICKUP   5  /* Object picked up.                               */
-#define EVENT_SAY      6  /* Someone speaks.                                 */
-#define EVENT_STOP     7  /* Thrown object stopped.                          */
-#define EVENT_TIME     8  /* Triggered each time the object can react/move.  */
-#define EVENT_THROW    9  /* Object is thrown.                               */
-#define EVENT_TRIGGER  10 /* Button pushed, lever pulled, etc.               */
-#define EVENT_CLOSE    11 /* Container closed.                               */
-#define EVENT_TIMER    12 /* Timer connected triggered it.                   */
-#define EVENT_DESTROY  13 /* Object destroyed (includes map reset/swapout)   */
-/*****************************************************************************/
-/* Global events. Those are never linked to a specific object.               */
-/*****************************************************************************/
-#define EVENT_BORN     14 /* A new character has been created.               */
-#define EVENT_CLOCK    15 /* Global time event.                              */
-#define EVENT_CRASH    16 /* Triggered when the server crashes. Not recursive*/
-#define EVENT_PLAYER_DEATH  17 /* Global Death event                         */
-#define EVENT_GKILL    18 /* Triggered when anything got killed by anyone.   */
-#define EVENT_LOGIN    19 /* Player login.                                   */
-#define EVENT_LOGOUT   20 /* Player logout.                                  */
-#define EVENT_MAPENTER 21 /* A player entered a map.                         */
-#define EVENT_MAPLEAVE 22 /* A player left a map.                            */
-#define EVENT_MAPRESET 23 /* A map is resetting.                             */
-#define EVENT_REMOVE   24 /* A Player character has been removed.            */
-#define EVENT_SHOUT    25 /* A player 'shout' something.                     */
-#define EVENT_TELL     26 /* A player 'tell' something.                      */
-#define EVENT_MUZZLE   27 /* A player was Muzzled (no_shout set).            */
-#define EVENT_KICK     28 /* A player was Kicked by a DM                     */
-#define EVENT_MAPUNLOAD     29 /* A map is freed (includes swapping out)     */
-#define EVENT_MAPLOAD       30 /* A map is loaded                            */
-
-#define NR_EVENTS 31
-
-#include <stdarg.h>
 
 #define CFAPI_NONE    0
 #define CFAPI_INT     1
@@ -111,47 +69,51 @@
 #define CFAPI_SINT64  16
 #define CFAPI_SSTRING 17 /* Shared string that shouldn't be changed, or const char* */
 #define CFAPI_MOVETYPE 18 /* MoveType */
+#define CFAPI_OBJECT_VECTOR 19  /**< Pointer to a std::vector<object *> */
+#define CFAPI_MAP_VECTOR    20  /**< Pointer to a std::vector<mapstruct *> */
+#define CFAPI_ARCHETYPE_VECTOR  21  /**< Pointer to a std::vector<archetype *> */
+#define CFAPI_REGION_VECTOR 22  /**< Pointer to a std::vector<region *> */
+#define CFAPI_PARTY_VECTOR  23  /**< Pointer to a std::vector<partylist *> */
 
-typedef void* (*f_plug_api) (int* type, ...);
-typedef int   (*f_plug_postinit) (void);
-typedef int   (*f_plug_init)(const char* iversion, f_plug_api gethooksptr);
+/** General API function. */
+typedef void (*f_plug_api)(int *type, ...);
+/** Function called after the plugin was initialized. */
+typedef int (*f_plug_postinit)(void);
+/** First function called in a plugin. */
+typedef int (*f_plug_init)(const char *iversion, f_plug_api gethooksptr);
+/** Get various plugin properties. */
+typedef void *(*f_plug_property)(int *type, ...);
 
 #ifndef WIN32
-#define LIBPTRTYPE void*
+#define LIBPTRTYPE void *
 #else
+/** Library handle. */
 #define LIBPTRTYPE HMODULE
 #endif
 
-typedef struct _crossfire_plugin
-{
-    f_plug_api      eventfunc;          /* Event Handler function            */
-    f_plug_api      propfunc;           /* Plugin getProperty function       */
-    f_plug_postinit closefunc;          /* Plugin Termination function       */
-    LIBPTRTYPE      libptr;             /* Pointer to the plugin library     */
-    char            id[MAX_BUF];        /* Plugin identification string      */
-    char            fullname[MAX_BUF];  /* Plugin full name                  */
-    f_plug_api      gevent[NR_EVENTS];  /* Global events registered          */
-    struct _crossfire_plugin *next;
-    struct _crossfire_plugin *prev;
-} crossfire_plugin;
-
-extern int plugin_number;
-extern crossfire_plugin* plugins_list;
+/** One loaded plugin. */
+struct crossfire_plugin {
+    f_plug_property propfunc;           /**< Plugin getProperty function       */
+    f_plug_postinit closefunc;          /**< Plugin Termination function       */
+    LIBPTRTYPE      libptr;             /**< Pointer to the plugin library     */
+    char            id[MAX_BUF];        /**< Plugin identification string      */
+    char            fullname[MAX_BUF];  /**< Plugin full name                  */
+    event_registration  global_registration[NR_EVENTS]; /**< Global event registration identifiers. */
+} ;
 
 #ifdef WIN32
 
-#define plugins_dlopen(fname) LoadLibrary(fname)
+#define plugins_dlopen(fname) LoadLibraryA(fname)
 #define plugins_dlclose(lib) FreeLibrary(lib)
-#define plugins_dlsym(lib,name) GetProcAddress(lib,name)
+#define plugins_dlsym(lib, name) GetProcAddress(lib, name)
 
 #else /*WIN32 */
 
-#define plugins_dlopen(fname) dlopen(fname,RTLD_NOW|RTLD_GLOBAL)
-#define plugins_dlclose(lib) dlclose(lib)
-#define plugins_dlsym(lib,name) dlsym(lib,name)
-#define plugins_dlerror() dlerror()
+#define plugins_dlopen(fname) dlopen(fname, RTLD_NOW|RTLD_GLOBAL)   /**< Load a shared library. */
+#define plugins_dlclose(lib) dlclose(lib)                           /**< Unload a shared library. */
+#define plugins_dlsym(lib, name) dlsym(lib, name)                   /**< Get a function from a shared library. */
+#define plugins_dlerror() dlerror()                                 /**< Library error. */
 #endif /* WIN32 */
-
 
 /* OBJECT-RELATED HOOKS */
 
@@ -205,7 +167,7 @@ extern crossfire_plugin* plugins_list;
 #define CFAPI_OBJECT_PROP_WEIGHT_LIMIT      49
 #define CFAPI_OBJECT_PROP_CARRYING          50
 #define CFAPI_OBJECT_PROP_GLOW_RADIUS       51
-#define CFAPI_OBJECT_PROP_PERM_EXP          52
+#define CFAPI_OBJECT_PROP_TOTAL_EXP         52
 #define CFAPI_OBJECT_PROP_CURRENT_WEAPON    53
 #define CFAPI_OBJECT_PROP_ENEMY             54
 #define CFAPI_OBJECT_PROP_ATTACKED_BY       55
@@ -254,7 +216,7 @@ extern crossfire_plugin* plugins_list;
 #define CFAPI_OBJECT_PROP_INVISIBLE         98
 #define CFAPI_OBJECT_PROP_FACE              99
 #define CFAPI_OBJECT_PROP_ANIMATION         100
-#define CFAPI_OBJECT_PROP_NO_SAVE           101
+/*#define CFAPI_OBJECT_PROP_NO_SAVE           101*/
 #define CFAPI_OBJECT_PROP_MOVE_TYPE         102
 #define CFAPI_OBJECT_PROP_MOVE_BLOCK        103
 #define CFAPI_OBJECT_PROP_MOVE_ALLOW        104
@@ -263,6 +225,7 @@ extern crossfire_plugin* plugins_list;
 #define CFAPI_OBJECT_PROP_MOVE_SLOW         107
 #define CFAPI_OBJECT_PROP_MOVE_SLOW_PENALTY 108
 #define CFAPI_OBJECT_PROP_DURATION          109
+#define CFAPI_OBJECT_PROP_RAW_NAME          110
 
 #define CFAPI_PLAYER_PROP_IP                150
 #define CFAPI_PLAYER_PROP_MARKED_ITEM       151
@@ -271,6 +234,15 @@ extern crossfire_plugin* plugins_list;
 #define CFAPI_PLAYER_PROP_BED_X             154
 #define CFAPI_PLAYER_PROP_BED_Y             155
 #define CFAPI_PLAYER_PROP_NEXT              156
+#define CFAPI_PLAYER_PROP_TITLE             157
+#define CFAPI_PLAYER_PROP_TRANSPORT         158
+#define CFAPI_PLAYER_PROP_CLIENT            159
+#define CFAPI_PLAYER_PROP_COUNT             160
+
+#define CFAPI_PLAYER_QUEST_START            0
+#define CFAPI_PLAYER_QUEST_GET_STATE        1
+#define CFAPI_PLAYER_QUEST_SET_STATE        2
+#define CFAPI_PLAYER_QUEST_WAS_COMPLETED    3
 
 #define CFAPI_MAP_PROP_FLAGS                0
 #define CFAPI_MAP_PROP_DIFFICULTY           1
@@ -286,12 +258,6 @@ extern crossfire_plugin* plugins_list;
 #define CFAPI_MAP_PROP_HEIGHT               11
 #define CFAPI_MAP_PROP_ENTER_X              12
 #define CFAPI_MAP_PROP_ENTER_Y              13
-#define CFAPI_MAP_PROP_TEMPERATURE          14
-#define CFAPI_MAP_PROP_PRESSURE             15
-#define CFAPI_MAP_PROP_HUMIDITY             16
-#define CFAPI_MAP_PROP_WINDSPEED            17
-#define CFAPI_MAP_PROP_WINDDIR              18
-#define CFAPI_MAP_PROP_SKY                  19
 #define CFAPI_MAP_PROP_WPARTX               20
 #define CFAPI_MAP_PROP_WPARTY               21
 #define CFAPI_MAP_PROP_MESSAGE              22
@@ -299,11 +265,11 @@ extern crossfire_plugin* plugins_list;
 #define CFAPI_MAP_PROP_REGION               24
 #define CFAPI_MAP_PROP_UNIQUE               25
 
-#define CFAPI_ARCH_PROP_NAME				0
-#define CFAPI_ARCH_PROP_NEXT				1
-#define CFAPI_ARCH_PROP_HEAD				2
-#define CFAPI_ARCH_PROP_MORE				3
-#define CFAPI_ARCH_PROP_CLONE				4
+#define CFAPI_ARCH_PROP_NAME                0
+#define CFAPI_ARCH_PROP_NEXT                1
+#define CFAPI_ARCH_PROP_HEAD                2
+#define CFAPI_ARCH_PROP_MORE                3
+#define CFAPI_ARCH_PROP_CLONE               4
 
 #define CFAPI_PARTY_PROP_NAME               0
 #define CFAPI_PARTY_PROP_NEXT               1
@@ -315,27 +281,83 @@ extern crossfire_plugin* plugins_list;
 #define CFAPI_REGION_PROP_PARENT            2
 #define CFAPI_REGION_PROP_LONGNAME          3
 #define CFAPI_REGION_PROP_MESSAGE           4
+#define CFAPI_REGION_PROP_JAIL_X            5
+#define CFAPI_REGION_PROP_JAIL_Y            6
+#define CFAPI_REGION_PROP_JAIL_PATH         7
 
-/*****************************************************************************/
-/* Exportable functions. Any plugin should define all those.                 */
-/* initPlugin        is called when the plugin initialization process starts.*/
-/* endPlugin         is called before the plugin gets unloaded from memory.  */
-/* getPluginProperty is currently unused.                                    */
-/* registerHook      is used to transmit hook pointers from server to plugin.*/
-/* triggerEvent      is called whenever an event occurs.                     */
-/*****************************************************************************/
-/*extern MODULEAPI CFParm* initPlugin(CFParm* PParm);
-extern MODULEAPI CFParm* endPlugin(CFParm* PParm);
-extern MODULEAPI CFParm* getPluginProperty(CFParm* PParm);
-extern MODULEAPI CFParm* registerHook(CFParm* PParm);
-extern MODULEAPI CFParm* triggerEvent(CFParm* PParm);
-*/
+#define CFAPI_SYSTEM_MAPS       200
+#define CFAPI_SYSTEM_PLAYERS    201
+#define CFAPI_SYSTEM_ARCHETYPES 202
+#define CFAPI_SYSTEM_REGIONS    203
+#define CFAPI_SYSTEM_PARTIES    204
+#define CFAPI_SYSTEM_FRIENDLY_LIST  205
 
-typedef struct _hook_entry
-{
-    f_plug_api func;
-    int fid;
-    char fname[256];
-} hook_entry;
+/**
+ * @defgroup PLUGIN_SYM Required Plugin Symbols
+ *
+ * These symbols for callable functions should be defined by plugins. They are
+ * defined here so that plugins can include this header to type check their
+ * symbol definitions, and for document generation. The server should not
+ * define or use these symbols, since they are resolved at run time.
+ * @{
+ */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * The server calls this function after loading the plugin.
+ *
+ * @param iversion Plugin interface version. Currently "2.0".
+ * @param gethooksptr A function that the plugin can call to obtain symbol
+ * addresses for functions in the server that the plugin can call ("hooks").
+ * Use this interface to call functions in the server, because some platforms
+ * (e.g. Windows) does not support calling functions in the server directly
+ * from loaded libraries. (Is this still true now that we switched to shared
+ * libraries?)
+ * @return Unused. You can return any number here.
+ */
+int initPlugin(const char *iversion, f_plug_api gethooksptr);
+
+/**
+ * The server calls this function to get information about the plugin, notably the name and version.
+ *
+ * @param type
+ * ignored.
+ * @return
+ * @li the name, if asked for 'Identification'.
+ * @li the version, if asked for 'FullName'.
+ * @li NULL else.
+ */
+void *getPluginProperty(int *type, ...);
+
+/**
+ * Handles an object-related event.
+ */
+int eventListener(int *type, ...);
+
+/**
+ * The server calls this function to actually initialize the plugin here, after
+ * object handlers are registered. This is a good place for a plugin to
+ * register global events, initialize databases, etc.
+ */
+int postInitPlugin(void);
+
+/** called before the plugin gets unloaded from memory. */
+int closePlugin(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+/**@}*/
+
+/** One function the server exposes to plugins. */
+struct hook_entry {
+    f_plug_api func;        /**< Function itself. */
+    int fid;                /**< Function identifier. */
+    const char fname[256];  /**< Function name. */
+};
 
 #endif /* PLUGIN_H */

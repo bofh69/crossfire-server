@@ -1,0 +1,34 @@
+{% extends "inc-page.html" %}
+{% block title %}Index{% endblock %}
+{% block contents %}
+    <strong><big>Crossfire Mapper Index</big></strong>
+    <ul>
+      <li><a href='{{ link_to_page("world.html") }}'>World map</a></li>
+      <li>
+        Indices
+        <ul>
+          <li><a href='{{ link_to_page("regions.html") }}'>Region list</a></li>
+          <li><a href='{{ link_to_page("maps_by_level.html") }}'>All maps by level</a></li>
+          <li><a href='{{ link_to_page("maps.html") }}'>All maps (alphabetical)</a></li>
+          <li><a href='{{ link_to_page("reset_groups.html") }}'>Map reset groups</a></li>
+          <li><a href='{{ link_to_page("npc_info.html") }}'>NPCs with special messages</a></li>
+          <li><a href='{{ link_to_page("items.html") }}'>Special items found in maps</a></li>
+          <li><a href='{{ link_to_page("system_quests.html") }}'>Quests</a></li>
+          <li><a href='{{ link_to_page("quests.html") }}'>Quests-in-maps</a></li>
+          <li><a href='{{ link_to_page("monsters.html") }}'>Monsters and the maps they are found on</a></li>
+          <li><a href='{{ link_to_page("slaying.html") }}'>Keys, containers, doors, and detectors with special slaying requirements</a></li>
+          <li><a href='{{ link_to_page("readables.html") }}'>SIGN and BOOK with a special message</a></li>
+        </ul>
+      </li>
+      <li>
+        Images
+        <ul>
+          <li><a href="world_raw.png">World</a></li>
+          <li><a href="world.png">World/Regions</a></li>
+          <li><a href="world_info.png">World features</a></li>
+          <li><a href="world_regions.png">Region locales</a></li>
+          <li><a href="world_elevation.png">World elevation</a></li>
+        </ul>
+      </li>
+    </ul>
+{% endblock %}

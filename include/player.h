@@ -1,242 +1,262 @@
 /*
- * static char *rcsid_player_h =
- *   "$Id$";
+ * Crossfire -- cooperative multi-player graphical RPG and adventure game
+ *
+ * Copyright (c) 1999-2022 the Crossfire Development Team
+ * Copyright (c) 1992 Frank Tore Johansen
+ *
+ * Crossfire is free software and comes with ABSOLUTELY NO WARRANTY. You are
+ * welcome to redistribute it under certain conditions. For details, please
+ * see COPYING and LICENSE.
+ *
+ * The authors can be reached via e-mail at <crossfire@metalforge.org>.
  */
 
-/*
-    CrossFire, A Multiplayer game for X-windows
-
-    Copyright (C) 2002 Mark Wedel & Crossfire Development Team
-    Copyright (C) 1992 Frank Tore Johansen
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    The authors can be reached via e-mail at crossfire-devel@real-time.com
-*/
+/**
+ * @file
+ * Player-specific structures.
+ */
 
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#define NUM_OUTPUT_BUFS	5
-typedef struct {
-    const char *buf;		/* Actual string pointer */
-    uint32 first_update;	/* First time this message was stored  */
-    uint16 count;		/* How many times we got this message */
-} Output_Buf;
-
-
-/* wand/rod/horn rolled into range_misc.  They all use the same body location
+/**
+ * What range is currently selected by the player.
+ *
+ * Wand/rod/horn rolled into range_misc.  They all use the same body location
  * anyways.
  */
-typedef enum rangetype {
-    range_bottom    = -1,
-    range_none	    = 0,
-    range_bow	    = 1,
-    range_magic	    = 2,
-    range_misc	    = 3,
-    range_golem     = 4,
-    range_skill	    = 5,
-    range_builder   = 6,
-    range_size	    = 7
-} rangetype;
+enum rangetype {
+    range_bottom    = -1, /**< Minimum, exclusive, value. */
+    range_none      = 0,  /**< No range selected. */
+    range_bow       = 1,  /**< Bow. */
+    range_magic     = 2,  /**< Spells. */
+    range_misc      = 3,  /**< Misc items. */
+    range_golem     = 4,  /**< Control golem. */
+    range_skill     = 5,  /**< Use skill. */
+    range_builder   = 6,  /**< Map builder. */
+    range_size      = 7   /**< Maximum, exclusive, value. */
+};
 
-typedef enum _bowtype {
-    bow_normal = 0,
-    bow_threewide = 1,
-    bow_spreadshot = 2,
-    bow_n = 3, /* must stay at 3 */
-    bow_ne = 4,
-    bow_e = 5,
-    bow_se = 6,
-    bow_s = 7,
-    bow_sw = 8,
-    bow_w = 9,
-    bow_nw = 10, /* must stay at 10 */
-	bow_bestarrow = 11
-} bowtype_t;
+/** Bow firing mode.*/
+enum bowtype_t {
+    bow_normal = 0, /**< Standard mode, one random arrow. */
+    bow_threewide = 1,  /**< Fire three arrows in the same direction. */
+    bow_spreadshot = 2, /**< Fire three arrows in a cone. */
+    bow_n = 3,          /**< Fire north whatever the facing direction. Must stay at 3. */
+    bow_ne = 4,         /**< Fire north-east whatever the facing direction. */
+    bow_e = 5,          /**< Fire east whatever the facing direction. */
+    bow_se = 6,         /**< Fire south-east whatever the facing direction. */
+    bow_s = 7,          /**< Fire south whatever the facing direction. */
+    bow_sw = 8,         /**< Fire south-west whatever the facing direction. */
+    bow_w = 9,          /**< Fire west whatever the facing direction. */
+    bow_nw = 10,        /**< Fire north-west whatever the facing direction. */
+    bow_bestarrow = 11  /**< Try to find an arrow matching the target. */
+};
 
-typedef enum _petmode {
-    pet_normal = 0,
-    pet_sad = 1,
-    pet_defend = 2,
-    pet_arena = 3
-} petmode_t;
+/** Petmode. */
+enum petmode_t {
+    pet_normal = 0, /**< Standard mode/ */
+    pet_sad = 1,    /**< Try to find enemies. */
+    pet_defend = 2, /**< Stay close to the owner. */
+    pet_arena = 3   /**< Attack other players in arena. */
+};
 
-typedef enum usekeytype {
-    key_inventory=0,
-    keyrings=1,
-    containers=2
-} usekeytype;
+/** How to use keys. */
+enum usekeytype {
+    key_inventory = 0,  /**< Only use keys in inventory. */
+    keyrings = 1,       /**< Use keys in inventory and active key rings. */
+    containers = 2      /**< Use keys in inventory and active containers. */
+};
 
-/* This is used to control what to do when we need to unapply
+/**
+ * This is used to control what to do when we need to unapply
  * an object before we can apply another one.
  */
-typedef enum unapplymode {
-    unapply_nochoice=0,	    /* Will unapply objects when there no choice to unapply */
-    unapply_never=1,	    /* will not unapply objects automatically */
-    unapply_always=2	    /* Will unapply whatever is necessary - this goes beyond */
-			    /* no choice - if there are multiple ojbect of the same type */
-			    /* that need to be unapplied, there is no way for the player */
-			    /* to control which of these will be unapplied. */
-} unapplymode;
+enum unapplymode {
+    unapply_nochoice = 0,   /**< Will unapply objects when there no choice to unapply. */
+    unapply_never = 1,      /**< Will not unapply objects automatically. */
+    unapply_always = 2      /**< Will unapply whatever is necessary - this goes beyond
+                             * no choice - if there are multiple ojbect of the same type
+                             * that need to be unapplied, there is no way for the player
+                             * to control which of these will be unapplied. */
+};
 
 /**
  * This stores, for a spell a player knows, the last sp/gr/dam information sent to client.
  */
-typedef struct client_spell {
-    object *spell;
-    sint16 last_sp;
-    sint16 last_grace;
-    sint16 last_dam;
-    struct client_spell *next;
-} client_spell;
-
-/* not really the player, but tied pretty closely */
-typedef struct party_struct {
-    char * partyleader;
-    char passwd[9];
-    struct party_struct *next;
-    char *partyname;
-
-#ifdef PARTY_KILL_LOG
-    struct party_kill {
-	char killer[MAX_NAME+1],dead[MAX_NAME+1];
-	sint64 exp;
-    } party_kills[PARTY_KILL_LOG];
-#endif
-    sint64 total_exp;
-    uint32  kills;
-} partylist;
+struct client_spell {
+    object *spell;              /**< Spell object this structure is about. */
+    int16_t last_sp;             /**< Last spell cost. */
+    int16_t last_grace;          /**< Last grace cost. */
+    int16_t last_dam;            /**< Last damage. */
+    struct client_spell *next;  /**< Next spell information. */
+};
 
 /**
  * Whether to rejoin party at login or not.
  */
-typedef enum party_rejoin_mode {
+enum party_rejoin_mode {
     party_rejoin_no = 0,        /**< Don't rejoin. */
     party_rejoin_if_exists = 1, /**< Rejoin if party exists. */
-    party_rejoin_always = 2,    /**< If party doesn't exist, form it. */
-} party_rejoin_mode;
+    party_rejoin_always = 2     /**< If party doesn't exist, form it. */
+};
 
-typedef struct pl {
-    struct pl	*next;		    /* Pointer to next player, NULL if this is last */
-    socket_struct	socket;		    /* Socket information for this player */
-    char	maplevel[MAX_BUF];  /* On which level is the player? */
-    struct mapdef *loading;	    /* When entering a map in progress of loading, not really used */
-    char	savebed_map[MAX_BUF];  /* map where player will respawn after death */
-    sint16	bed_x, bed_y;	    /* x,y - coordinates of respawn (savebed) */
-    rangetype	shoottype;	    /* Which range-attack is being used by player */
-    char	spellparam[MAX_BUF];	/* What param to add to spells */
-    bowtype_t   bowtype;	    /* which firemode? */
-    petmode_t   petmode;	    /* which petmode? */
-    object	*ranges[range_size];/* object for each range.  Set up in fix player.  Note */
-				    /* That not all are used, it is just nice to map this 1:1 */
-				    /* With the range names */
-    uint32	golem_count;	    /* To track the golem */
-    usekeytype	usekeys;	    /* Method for finding keys for doors */
-    unapplymode	unapply;	    /* Method for auto unapply */
-    uint32	count;		    /* Any numbers typed before a command */
-    uint32	mode;		    /* Mode of player for pickup. */
+typedef bool (*repeat_cb)(player *, void *data);
 
-    sint16	digestion;	    /* Any bonuses/penalties to digestion */
-    sint16	gen_hp;		    /* Bonuses to regeneration speed of hp */
-    sint16	gen_sp;		    /* Bonuses to regeneration speed of sp */
-    sint16	gen_sp_armour;	    /* Penalty to sp regen from armour */
-    sint16	gen_grace;	    /* Bonuses to regeneration speed of grace */
-    sint16	item_power;	    /* Total item power of objects equipped */
-    uint8	state;		    /* Input state of the player (name, password, etc */
-    uint8	listening;	    /* Which priority will be used in info_all */
-    sint8	last_level;	    /* Last level we sent to client */
+/** One player. */
+struct player {
+    player   *next;                  /**< Pointer to next player, NULL if this is last. */
+    socket_struct *socket;              /**< Socket information for this player.  See the page on
+                                         * @ref page_connection "the login process" for a description of its use. */
+    char        maplevel[MAX_BUF];      /**< On which level is the player? */
+    char        savebed_map[MAX_BUF];   /**< Map where player will respawn after death. */
+    int16_t      bed_x, bed_y;           /**< x,y - coordinates of respawn (savebed). */
+    rangetype   shoottype;              /**< Which range-attack is being used by player. */
+    char        spellparam[MAX_BUF];    /**< What param to add to spells. */
+    bowtype_t   bowtype;                /**< Which firemode? */
+    petmode_t   petmode;                /**< Which petmode? */
+    object      *ranges[range_size];    /**< Object for each range.  Set up in fix_object().  Note
+                                         * That not all are used, it is just nice to map this 1:1
+                                         * With the range names. */
+    uint32_t      golem_count;            /**< To track the golem. */
+    usekeytype  usekeys;                /**< Method for finding keys for doors. */
+    unapplymode unapply;                /**< Method for auto unapply. */
+    uint32_t      count;                  /**< Any numbers typed before a command. */
+    uint32_t      mode;                   /**< Mode of player for pickup. */
+
+    int16_t      digestion;              /**< Any bonuses/penalties to digestion. */
+    int16_t      gen_hp;                 /**< Bonuses to regeneration speed of hp. */
+    int16_t      gen_sp;                 /**< Bonuses to regeneration speed of sp. */
+    int16_t      gen_sp_armour;          /**< Penalty to sp regen from armour. */
+    int16_t      gen_grace;              /**< Bonuses to regeneration speed of grace. */
+    int16_t      item_power;             /**< Total item power of objects equipped. */
+    uint8_t       state;                  /**< Input state of the player (name, password, etc). See the page on
+                                         * @ref page_connection "the login process" for a description of its use. */
+    uint8_t       listening;              /**< Which priority will be used in info_all. */
+    int8_t       last_level;             /**< Last level we sent to client. */
+    float        character_load;         /**< Value between 0 and 1 indicating how much the character is overloaded. */
+    float        last_character_load;    /**< Last value sent to the client. */
 
     /* Try to put all the bitfields together - saves some small amount of memory */
-    uint32	braced:1;	    /* Will not move if braced, only attack */
-    uint32	tmp_invis:1;	    /* Will invis go away when we attack ? */
-    const char	*invis_race;	    /* What race invisible to? */
-    uint32	do_los:1;	    /* If true, need to call update_los() in draw(), and clear */
-    uint32	fire_on:1;	    /* Player should fire object, not move */
-    uint32	run_on:1;	    /* Player should keep moving in dir until run is off */
-    uint32	has_hit:1;	    /* If set, weapon_sp instead of speed will count */
-    uint32	name_changed:1;	    /* If true, the player has set a name. */
-    uint32	peaceful:1;	    /* If set, won't attack friendly creatures */
-    uint32	hidden:1;	    /* If True, player (DM) is hidden from view */
-    uint32	explore:1;	    /* if True, player is in explore mode */
-    uint32	no_shout:1;	    /* if True, player is *not* able to use shout command */
+    uint32_t      braced:1;            /**< Will not move if braced, only attack. */
+    uint32_t      tmp_invis:1;         /**< Will invis go away when we attack? */
+    uint32_t      do_los:1;            /**< If true, need to call update_los() in draw(), and clear. */
+    uint32_t      fire_on:1;           /**< Player should fire object, not move. */
+    uint32_t      run_on:1;            /**< Player should keep moving in dir until run is off. */
+    uint32_t      has_hit:1;           /**< If set, weapon_sp instead of speed will count. */
+    uint32_t      name_changed:1;      /**< If true, the player has set a name. */
+    uint32_t      peaceful:1;          /**< If set, won't attack friendly creatures. */
+    uint32_t      hidden:1;            /**< If True, player (DM) is hidden from view. */
+    uint32_t      no_shout:1;          /**< if True, player is *not *able to use shout command. */
+    uint32_t      has_directory:1;     /**< If 0, the player was not yet saved, its directory doesn't exist. */
+    uint32_t      partial_commands:1;  /**< If 1, then first letters of a command are enough if no ambiguity in name. */
+    const char  *invis_race;         /**< What race invisible to? */
 
-    object	*last_skill_ob[NUM_SKILLS];	/* the exp object */
-    sint64	last_skill_exp[NUM_SKILLS];	/* shadow register. if != exp. obj update client */
+    object      *last_skill_ob[MAX_SKILLS];     /**< Exp objects sent to client. */
+    int64_t      last_skill_exp[MAX_SKILLS];     /**< Last exp sent to client. If != exp. obj update client. */
 
-    float	weapon_sp;	    /* Penalties to speed when fighting w speed >ws/10*/
-    float	last_weapon_sp;	    /* if diff than weapon_sp, update client */
-    uint16	last_flags;	    /* fire/run on flags for last tick */
-    sint32	last_weight;	    /* Last weight as sent to client; -1 means do not send weight */
-    sint32	last_weight_limit;  /* Last weight limit transmitted to client */
-    uint32	last_path_attuned;  /* Last spell attunment sent to client */
-    uint32	last_path_repelled; /* Last spell repelled sent to client */
-    uint32	last_path_denied;   /* Last spell denied sent to client */
-    living	orig_stats;	    /* Permanent real stats of player */
-    living	last_stats;	    /* Last stats as sent to client */
-    float	last_speed;	    /* Last speed as sent to client */
-    sint16	last_resist[NROFATTACKS];	/* last resist values sent to client */
-    int		Swap_First;	    /* First stat player has selected to swap */
-    object	*ob;		    /* The object representing the player */
-    object	*last_used;	    /* Pointer to object last picked or applied */
-    uint32	last_used_id;	    /* Safety measures to be sure it's the same */
-    sint8	blocked_los[MAP_CLIENT_X][MAP_CLIENT_Y]; /* array showing what spaces */
-				    /* the player can see.  For maps smaller than */
-				    /* MAP_CLIENT_.., the upper left is used */
+    float       last_weapon_sp;      /**< if diff than weapon_sp, update client. */
+    uint16_t      last_flags;          /**< Fire/run on flags for last tick. */
+    int32_t      last_weight;         /**< Last weight as sent to client; -1 means do not send weight. */
+    int32_t      last_weight_limit;   /**< Last weight limit transmitted to client. */
+    uint32_t      last_path_attuned;   /**< Last spell attunment sent to client. */
+    uint32_t      last_path_repelled;  /**< Last spell repelled sent to client. */
+    uint32_t      last_path_denied;    /**< Last spell denied sent to client. */
+    uint32_t      last_character_flags; /**< Last character flags (CS_STAT_CHARACTER_FLAGS) sent to client. */
+    uint16_t      last_item_power;      /**< Last value for item_power. */
+    tag_t       last_examined;       /**< Tag of most recently 'examined object. */
+    int         swap_first;          /**< First stat player has selected to swap. */
+    living      orig_stats;          /**< Permanent real stats of player. */
+    living      last_stats;          /**< Last stats as sent to client. */
+    living      last_orig_stats;     /**< Last permanent stats sent to client. */
+    living      last_race_stats;     /**< Last race stats sent to the client. */
+    living      applied_stats;       /**< Stat changes due to gear or skills. */
+    living      last_applied_stats;  /**< Last applied stats sent to the client. */
+    float       last_speed;          /**< Last speed as sent to client. */
+    int16_t      last_resist[NROFATTACKS];       /**< last resist values sent to client. */
+    int16_t      last_golem_hp;       /**< Last golem hp value sent to the client. */
+    int16_t      last_golem_maxhp;    /**< Last golem max hp value sent to the client. */
+    object      *ob;                 /**< The object representing the player. */
+    int8_t       blocked_los[MAP_CLIENT_X][MAP_CLIENT_Y]; /**< Array showing what spaces
+                                                          * the player can see.  For maps smaller than
+                                                          * MAP_CLIENT_.., the upper left is used. */
 
-    char	own_title[MAX_NAME];	/* Title the player has chosen for themself */
-				    /* Note that for dragon players, this is filled in for them */
-    char	title[BIG_NAME];    /* Default title, like fighter, wizard, etc */
+    char        own_title[MAX_NAME]; /**< Title the player has chosen for themself.
+                                      * Note that for dragon players, this is filled in for them. */
+    char        title[BIG_NAME];     /**< Default title, like fighter, wizard, etc. */
 
-    sint8	levhp[11];	    /* What the player gained on that level */
-    sint8	levsp[11];	    /* Same for sp */
-    sint8	levgrace[11];	    /* And same for grace */
+    int8_t       levhp[11];           /**< What hp bonus the player gained on that level. */
+    int8_t       levsp[11];           /**< What sp bonus the player gained on that level. */
+    int8_t       levgrace[11];        /**< What grace bonus the player gained on that level. */
 
-    char	killer[BIG_NAME];   /* Who killed this player. */
-    char	last_tell[MAX_NAME];   /* last player that told you something [mids 01/14/2002] */
+    char        killer[BIG_NAME];    /**< Who killed this player. */
+    char        last_tell[MAX_NAME]; /**< last player that told you something [mids 01/14/2002]. */
 
-    char	write_buf[MAX_BUF]; /* Holds arbitrary input from client */
-    char	input_buf[MAX_BUF]; /* Holds command to run */
-    char	password[16];	    /* 2 (seed) + 11 (crypted) + 1 (EOS) + 2 (safety) = 16 */
-    char	new_password[16];   /* 2 (seed) + 11 (crypted) + 1 (EOS) + 2 (safety) = 16 */
+    char        password[16];        /**< 2 (seed) + 11 (crypted) + 1 (EOS) + 2 (safety) = 16 */
+    char        new_password[16];    /**< 2 (seed) + 11 (crypted) + 1 (EOS) + 2 (safety) = 16 */
 
+    int16_t      encumbrance;         /**< How much our player is encumbered. */
 #ifdef SAVE_INTERVAL
-    time_t	last_save_time;
+    time_t      last_save_time;      /**< Last time the player was saved. */
 #endif /* SAVE_INTERVAL */
 #ifdef AUTOSAVE
-    uint32	last_save_tick;
+    uint32_t      last_save_tick;      /**< Last tick the player was saved. */
 #endif
-    partylist    *party;	    /* Party this player is part of */
-    partylist    *party_to_join; /* used when player wants to join a party */
-				    /* but we will have to get password first */
-				    /* so we have to remember which party to */
-				    /* join */
-    party_rejoin_mode rejoin_party; /**< Whether to rejoin or not party at login. */
-    char    search_str[MAX_BUF];    /* Item we are looking for */
-    sint16  encumbrance;	    /* How much our player is encumbered  */
-    Output_Buf	outputs[NUM_OUTPUT_BUFS];   /* holds output strings to client */
-    uint16	outputs_sync;	    /* How often to print, no matter what */
-    uint16	outputs_count;	    /* Print if this count is exceeded */
-    object	*mark;		    /* marked object */
-    uint32	mark_count;	    /* count of mark object */
-    object	*transport;	    /* transport the player is in */
-    client_spell* spell_state; /**< Spell information sent to client */
+    partylist   *party;              /**< Party this player is part of. */
+    partylist   *party_to_join;      /**< Used when player wants to join a party
+                                      * but we will have to get password first
+                                      * so we have to remember which party to
+                                      * join. */
+    object *last_exit;           /**< Last exit used by player or NULL */
+
+    party_rejoin_mode rejoin_party;  /**< Whether to rejoin or not party at login. */
+    char        search_str[MAX_BUF]; /**< Item we are looking for. */
+    uint32_t      mark_count;          /**< Count of marked object. */
+    object      *mark;               /**< Marked object. */
+    object      *transport;          /**< Transport the player is in. */
+    client_spell *spell_state;       /**< Spell information sent to client. */
     /* Special DM fields */
-    tag_t*  stack_items;    /* Item stack for patch/dump/... commands */
-    int     stack_position; /* Current stack position, 0 for no item */
-    char * followed_player; /**< Player the DM is following. */
-} player;
+    tag_t       *stack_items;        /**< Item stack for patch/dump/... commands. */
+    sstring     followed_player;     /**< Player the DM is following. */
+    int         stack_position;      /**< Current stack position, 0 for no item. */
+    language_t  language;            /**< The language the player wishes to use. */
+    const char  *unarmed_skill;      /**< Prefered skill to use in unarmed combat */
+    uint32_t      ticks_played;        /**< How many ticks this player has played */
+
+    uint8_t delayed_buffers_allocated;  /**< Number of items in delayed_buffers_used. */
+    uint8_t delayed_buffers_used;       /**< Used items in delayed_buffers_used. */
+    SockList **delayed_buffers;         /**< Buffers which will be sent after the player's tick completes. */
+    bool is_wraith;                 /**< Whether this player is a wraith or not, initialized at load time. */
+    bool is_old_wraith;             /**< Whether this player is a "old" wraith, initialized at load time and updated when eating. */
+    repeat_cb repeat_func;          /**< If not NULL, automatically repeat the action repeat_func until interrupted. */
+    sstring repeat_action;          /**< Shared string with textual description of current repeat action (e.g. "praying"). */
+    void *repeat_func_data;         /**< Arguments to pass into repeat_func. */
+};
+
+/**
+ * @defgroup FIND_PLAYER_xxx Flags to search players through find_player().
+ * Those flag control what player should be returned.
+ */
+/*@{*/
+
+#define FIND_PLAYER_PARTIAL_NAME    0x1 /**< Find on partial name. */
+#define FIND_PLAYER_NO_HIDDEN_DM    0x2 /**< Don't find hidden DMs. */
+
+/*@}*/
+
+/**
+ * @defgroup ADD_PLAYER_xxx Flags - flags passed to add_player()
+ * to control behavior
+ */
+/*@{*/
+#define ADD_PLAYER_NEW              0x1 /**< Name/password provided, so skip to roll stats */
+#define ADD_PLAYER_NO_MAP           0x2 /**< Do not set the first map */
+#define ADD_PLAYER_NO_STATS_ROLL    0x4 /**< Stats provided from client */
+/*@}*/
+
+void commit_crime(object *op, const char *description);
+bool is_criminal(object *op);
+void player_start_repeat(player *pl, const char *action, repeat_cb cb);
+void player_cancel_repeat(player *pl);
 
 #endif /* PLAYER_H */

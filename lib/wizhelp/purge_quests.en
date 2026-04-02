@@ -1,0 +1,10 @@
+Usage: purge_quests
+
+This command purges the quest definitions from the server memory.
+
+It does not remove anything from the disk.
+
+This is used to avoid restarting the server when a quest definition changes.
+
+See Also: purge_quest_state
+See Also: quest

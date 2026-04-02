@@ -1,0 +1,18 @@
+The 'peaceful' command will switch you between peaceful and hostile attack modes.
+
+Usage
+  peaceful
+
+When peaceful is on you will not automatically attack other players when bumping into them and will do reduced damage against other players if you do attack them (friendly fire).
+
+Having peaceful mode enabled only lowers damage against other players, it does not affect damage done to monsters or other NPCs, so it is generally advisable to remain in peaceful mode unless you are looking for trouble.
+
+It is still entirely possible to kill other players when in peaceful mode so you should still be careful when interacting with other players.
+
+Hostile mode (peaceful off) will enable melee combat when bumping into other players and does normal damage for other attacks as well.
+
+Damage done by area effect attacks like cone spells, explosive detonations, fireballs, poisons, cloud or swarm attacks, runes, or disease is not modified by peaceful/hostile mode.
+
+Your pets in SAD mode will not attack another player provided both of you are peaceful.
+
+WARNING: Running around with hostile on means other players AUTOMATICALLY hit back when you bump them. If your low level character bumps into a high enough level melee character your character will die. Using hostile on servers that frown on player killing (PK) is just not smart and will likely result in your being banned from that server.

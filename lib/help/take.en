@@ -1,0 +1,20 @@
+The take command will pick up an item (or items) on the space the player is standing on and places them into the player's inventory.
+
+Usage:
+  take
+
+If no parameter is given, take will get the top object that can be taken and place it in the player's inventory.
+
+Example:
+  You pick up the table.
+
+If no object can be taken, that will be stated.
+
+Example:
+  You can't pick up a wood floor.
+
+By default, take is bound to the comma (,) key with no parameters.
+
+  See Also: pickup
+  See Also: get
+  See Also: bind

@@ -1,0 +1,10 @@
+Usage: purge_quest_state
+
+This command purges the quest state for the players from the server.
+
+It does not remove said state from the disk.
+
+It is useful to change, via .quest file editing, the status of a quest for a player.
+
+See Also: purge_quests
+See Also: quest

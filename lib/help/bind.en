@@ -1,0 +1,39 @@
+The bind command is used to associate a skill or skills, action, command, alias, or shortcut to a keyboard key or key sequence (i.e., shift + F3).
+
+Syntax:
+
+    bind [-nfregc] <command>
+
+Flags (default -nrf):
+
+    -n: used in normal-mode
+    -f: used in fire-mode
+    -r: used in run-mode
+    -e: leave command in line edit
+    -g: global key and applies to all characters in your account
+    -c: Java client only: bind for this character only, this can be convenient if you play multiple characters
+
+Multiple commands can be bound to the same key by separating them with semicolons.
+
+Special binds:
+
+    bind commandkey - sets commandkey
+    bind firekey1 - sets first firekey
+    bind firekey2 - sets second firekey
+    bind runkey1 - sets first runkey
+    bind runkey2 - sets second runkey
+    bind prevkey - shows last commandline command from history
+    bind nextkey - when have used prevkey, goes forward in commandline history
+
+Examples:
+
+    bind -f cast paralyzed (F3)
+    will typically mean that Shift-F3 is used to select that spell (Shift being the fire key)
+
+    bind use_skill sense curse; use_skill sense magic (f)
+    will bind those two commands to the f key.
+
+The keybindings are stored in the keys file inside the hidden .crossfire directory of your HOME folder.
+Sometimes it makes sense to edit that file in a simple text editor, especially when many keybindings are to be added, instead of using the bind command in the commandline all the time.
+
+See Also: unbind 

@@ -1,81 +1,62 @@
-/*
- * static char *rcsid_living_h =
- *   "$Id$";
+/**
+ * @file
+ * Structure containing object statistics.
  */
-
-/*
-    CrossFire, A Multiplayer game for X-windows
-
-    Copyright (C) 2002 Mark Wedel & Crossfire Development Team
-    Copyright (C) 1992 Frank Tore Johansen
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    The authors can be reached via e-mail at crossfire-devel@real-time.com
-*/
 
 #ifndef LIVING_H
 #define LIVING_H
 
-#define STR 0
-#define DEX 1
-#define CON 2
-#define WIS 3
-#define CHA 4
-#define INT 5
-#define POW 6
-#define NUM_STATS 7
+/** Object statistics. */
+enum {
+    STRENGTH = 0,
+    DEXTERITY = 1,
+    CONSTITUTION = 2,
+    WISDOM = 3,
+    CHARISMA = 4,
+    INTELLIGENCE = 5,
+    POWER = 6,
+    NUM_STATS = 7  /**< Number of statistics. */
+};
 
-#define MAXLEVEL      115
-
-/* Changed from NO_STAT to NO_STAT_VAL to fix conflict on
- * AIX systems
- */
-#define NO_STAT_VAL 99    /* needed by skills code -b.t. */
+/** Maximum level a player can reach. */
+#define MAXLEVEL 115
 
 extern const char *const attacks[NROFATTACKS];
 
-extern const float cha_bonus[MAX_STAT + 1];
-extern const int dex_bonus[MAX_STAT + 1];
-extern const int thaco_bonus[MAX_STAT + 1];
-extern const int turn_bonus[MAX_STAT + 1];
-extern const int max_carry[MAX_STAT + 1];
-extern const int dam_bonus[MAX_STAT + 1];
-extern const int learn_spell[];
 extern const char *const restore_msg[NUM_STATS];
 extern const char *const statname[NUM_STATS];
 extern const char *const short_stat_name[NUM_STATS];
+extern const char *const drain_msg[NUM_STATS];
 extern const char *const lose_msg[NUM_STATS];
-extern const float speed_bonus[MAX_STAT + 1];
-extern const uint32 weight_limit[MAX_STAT + 1];
-extern const int cleric_chance[MAX_STAT + 1];
-extern const int fear_bonus[MAX_STAT + 1];
 
-typedef struct liv { /* Mostly used by "alive" objects */
-  sint8		Str,Dex,Con,Wis,Cha,Int,Pow;
-  sint8		wc,ac;		/* Weapon Class and Armour Class */
-  sint16	hp;		/* Hit Points. */
-  sint16	maxhp;
-  sint16	sp;		/* Spell points.  Used to cast mage spells. */
-  sint16	maxsp;		/* Max spell points. */
-  sint16	grace;		/* Grace.  Used to invoke clerical prayers. */
-  sint16	maxgrace;	/* Grace.  Used to invoke clerical prayers. */
-  sint64	exp;		/* Experience.  Killers gain 1/10. */
-  sint32	food;		/* How much food in stomach.  0 = starved. */
-  sint16	dam;		/* How much damage this object does when hitting */
-  sint8		luck;		/* Affects thaco and ac from time to time */
-} living;
+/**
+ * Various statistics of objects.
+ */
+struct living {
+    int8_t         Str, Dex, Con, Wis, Cha, Int, Pow;
+    int8_t         wc;         /**< Weapon Class, lower WC increases probability of hitting. See @ref living::ac. */
+    int8_t         ac;         /**< Armor Class, lower AC increases probability of not getting hit. See @ref attack_ob_simple(). */
+    int8_t         luck;       /**< Affects thaco and ac from time to time */
+    int16_t        hp;         /**< Hit Points. */
+    int16_t        maxhp;      /**< Max hit points. */
+    int16_t        sp;         /**< Spell points.  Used to cast mage spells. */
+    int16_t        maxsp;      /**< Max spell points. */
+    int16_t        grace;      /**< Grace.  Used to invoke clerical prayers. */
+    int16_t        maxgrace;   /**< Maximum grace.  Used to invoke clerical prayers. */
+    int16_t        dam;        /**< How much damage this object does when hitting */
+    int64_t        exp;        /**< Experience.  Killers gain 1/10. */
+    int32_t        food;       /**< How much food in stomach.  0 = starved. */
+};
+
+int get_cha_bonus(int stat);
+int get_dex_bonus(int stat);
+int get_thaco_bonus(int stat);
+uint32_t get_weight_limit(int stat);
+int get_learn_spell(int stat);
+int get_cleric_chance(int stat);
+int get_turn_bonus(int stat);
+int get_dam_bonus(int stat);
+float get_speed_bonus(int stat);
+int get_fear_bonus(int stat);
 
 #endif /* LIVING_H */

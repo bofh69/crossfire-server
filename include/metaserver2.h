@@ -1,30 +1,3 @@
-/*
- * static char *rcsid_metaserver2_h =
- *   "$Id: map.h 6761 2007-07-09 06:20:18Z mwedel $";
- */
-
-/*
-    CrossFire, A Multiplayer game for X-windows
-
-    Copyright (C) 2007 Mark Wedel & Crossfire Development Team
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    The authors can be reached via e-mail at crossfire-devel@real-time.com
-*/
-
 /**
  * @file
  * This file contains metaserver2 information - the metaserver2
@@ -36,8 +9,7 @@
 #ifndef METASERVER2_H
 #define METASERVER2_H
 
-
-/**
+/*
  * The current implementation of crossfire is not very thread
  * friendly/safe - in fact, metaserver2 is the first part to
  * use an extra thread.
@@ -55,14 +27,13 @@
  * to do its updates.
  */
 
-extern pthread_mutex_t ms2_info_mutex;
-
-typedef struct _MetaServer2_UpdateInfo {
-    int	    num_players;	/* Number of players */
-    int	    in_bytes;		/* Number of bytes received */
-    int	    out_bytes;		/* Number of bytes sent */
-    time_t  uptime;		/* How long server has been up */
-} MetaServer2_UpdateInfo;
+/** Structure containing information sent to the metaserver2 */
+struct MetaServer2_UpdateInfo {
+    int     num_players;        /**< Number of players */
+    int     in_bytes;           /**< Number of bytes received */
+    int     out_bytes;          /**< Number of bytes sent */
+    time_t  uptime;             /**< How long server has been up */
+};
 
 extern MetaServer2_UpdateInfo metaserver2_updateinfo;
 

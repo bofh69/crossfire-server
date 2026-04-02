@@ -1,0 +1,8 @@
+The passwd command allows you to change your server or game account password
+
+Usage:
+  passwd
+
+It prompts you for your current password, your new password, and a confirmation of your new password.
+
+Leaving any of these prompts blank cancels the password change operation.

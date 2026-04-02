@@ -1,0 +1,173 @@
+/*
+ * Crossfire -- cooperative multi-player graphical RPG and adventure game
+ *
+ * Copyright (c) 1999-2014 Mark Wedel and the Crossfire Development Team
+ * Copyright (c) 1992 Frank Tore Johansen
+ *
+ * Crossfire is free software and comes with ABSOLUTELY NO WARRANTY. You are
+ * welcome to redistribute it under certain conditions. For details, please
+ * see COPYING and LICENSE.
+ *
+ * The authors can be reached via e-mail at <crossfire@metalforge.org>.
+ */
+
+/**
+ * @file
+ * This handles logging, to file or strerr/stdout.
+ */
+
+#include "global.h"
+
+#include <stdarg.h>
+#include <stdlib.h>
+
+#ifdef HAVE_SYSLOG_H
+#include <syslog.h>
+#endif
+
+#include "sproto.h"
+#include "stats.h"
+
+int reopen_logfile = 0; /* May be set in SIGHUP handler */
+
+/**
+ * Human-readable name of log levels.
+ */
+const char *const loglevel_names[NRLOGLEVELS] = {
+    "[EE] ",
+    "[WW] ",
+    "[NN] ",
+    "[II] ",
+    "[DD] ",
+    "[MM] ",
+};
+
+#ifdef HAVE_SYSLOG_H
+const int syslog_pri_map[NRLOGLEVELS] = {
+    LOG_ERR,
+    LOG_WARNING,
+    LOG_NOTICE,
+    LOG_INFO,
+    LOG_DEBUG,
+    LOG_DEBUG,
+};
+#endif
+
+int maps_loaded_total = 0;
+int maps_saved_total = 0;
+int maps_swapped_total = 0;
+
+int log_total = 0;
+
+void init_log() {
+#ifdef HAVE_SYSLOG_H
+    // disable syslog, then only re-enable it if configured
+    setlogmask(0);
+#endif
+}
+
+/**
+ * Logs a message to stderr, or to file.
+ * Or discards the message if it is of no importance, and none have
+ * asked to hear messages of that logLevel.
+ *
+ * See include/logger.h for possible logLevels.  Messages with llevInfo
+ * and llevError are always printed, regardless of debug mode.
+ *
+ * @param logLevel
+ * level of the message
+ * @param format
+ * message to log. Works like printf() and such
+ */
+void LOG(LogLevel logLevel, const char *format, ...) {
+    char buf[20480];  /* This needs to be really really big - larger
+                       * than any other buffer, since that buffer may
+                       * need to be put in this one.
+                       */
+
+    char time_buf[2048];
+
+    va_list ap;
+    va_start(ap, format);
+
+    if (settings.log_callback) {
+        settings.log_callback(logLevel, format, ap);
+        va_end(ap);
+        return;
+    }
+
+    buf[0] = '\0';
+    if (logLevel <= settings.debug) {
+        time_buf[0] = '\0';
+        if (settings.log_timestamp == TRUE) {
+            struct tm *time_tmp;
+            time_t now = time((time_t *)NULL);
+
+            time_tmp = localtime(&now);
+            if (time_tmp != NULL) {
+                if (strftime(time_buf, sizeof(time_buf), settings.log_timestamp_format, time_tmp) == 0) {
+                    time_buf[0] = '\0';
+                }
+            }
+        }
+
+        vsnprintf(buf, sizeof(buf), format, ap);
+#ifdef HAVE_SYSLOG_H
+        syslog(syslog_pri_map[logLevel], "%s", buf);
+#endif
+#ifdef WIN32 /* ---win32 change log handling for win32 */
+        if (time_buf[0] != 0) {
+            fputs(time_buf, logfile);
+            fputs(" ", logfile);
+        }
+        fputs(loglevel_names[logLevel], logfile);    /* wrote to file or stdout */
+        fputs(buf, logfile);    /* wrote to file or stdout */
+        fflush(logfile);    /* always force flushing! */
+        if (logfile != stderr) {  /* if was it a logfile wrote it to screen too */
+            if (time_buf[0] != 0) {
+                fputs(time_buf, stderr);
+                fputs(" ", stderr);
+            }
+            fputs(loglevel_names[logLevel], stderr);
+            fputs(buf, stderr);
+            fflush(stderr);
+        }
+#else /* not WIN32 */
+        if (reopen_logfile) {
+            reopen_logfile = 0;
+            if (fclose(logfile) != 0) {
+                /* stderr has been closed if -detach was used, but it's better
+                 * to try to report about this anyway. */
+                perror("tried to close log file after SIGHUP in logger.c:LOG()");
+            }
+            if ((logfile = fopen(settings.logfilename, "a")) == NULL) {
+                /* There's likely to be something very wrong with the OS anyway
+                 * if reopening fails. */
+                perror("tried to open log file after SIGHUP in logger.c:LOG()");
+                emergency_save(0);
+                clean_tmp_files();
+                exit(1);
+            }
+            setvbuf(logfile, NULL, _IOLBF, 0);
+            LOG(llevInfo, "logfile reopened\n");
+        }
+
+        if (time_buf[0] != 0) {
+            fputs(time_buf, logfile);
+            fputs(" ", logfile);
+        }
+        fputs(loglevel_names[logLevel], logfile);
+        fputs(buf, logfile);
+#endif
+        log_total++;
+    }
+    if (!exiting
+    && !trying_emergency_save
+    && logLevel == llevError
+    && ++nroferrors > MAX_ERRORS) {
+        exiting = 1;
+        if (!trying_emergency_save)
+            emergency_save(0);
+    }
+    va_end(ap);
+}

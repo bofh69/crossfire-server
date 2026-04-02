@@ -1,0 +1,5 @@
+Usage: clearinfo
+
+Causes all text (chat, shouts, attack and action information, et al.) displayed in the client to be removed or purged.
+
+Client-specific command: gtk-v2

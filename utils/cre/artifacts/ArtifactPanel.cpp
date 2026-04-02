@@ -1,0 +1,200 @@
+/*
+ * Crossfire -- cooperative multi-player graphical RPG and adventure game
+ *
+ * Copyright (c) 2022 the Crossfire Development Team
+ *
+ * Crossfire is free software and comes with ABSOLUTELY NO WARRANTY. You are
+ * welcome to redistribute it under certain conditions. For details, please
+ * see COPYING and LICENSE.
+ *
+ * The authors can be reached via e-mail at <crossfire@metalforge.org>.
+ */
+
+#include "ArtifactPanel.h"
+#include "CREUtils.h"
+#include "animations/AnimationWidget.h"
+
+#include "assets.h"
+#include "AssetsManager.h"
+#include "Archetypes.h"
+#include "assets/AssetWrapper.h"
+#include "artifacts/ArtifactWrapper.h"
+#include "ResourcesManager.h"
+
+ArtifactPanel::ArtifactPanel(QWidget* parent, ResourcesManager *resources)
+ : AssetTWrapperPanel(parent), myResources(resources)
+{
+    addLineEdit(tr("Name:"), "name");
+    addSpinBox(tr("Chance:"), "chance", 0, 65535, false);
+    myType = addLineEdit(tr("Type:"), nullptr, true);
+    myOrigin = addLabel(tr("File:"), nullptr, true);
+
+    myViaAlchemy = addWidget(QString(), new QLabel(this), false, nullptr, nullptr);
+    myViaAlchemy->setWordWrap(true);
+
+    myValues = addTextEdit(tr("Values:"), nullptr, true);
+
+    myArchetypes = addWidget(QString(), new QTreeWidget(this), false, nullptr, nullptr);
+    myArchetypes->setHeaderLabel(tr("Allowed/forbidden archetypes"));
+    myArchetypes->setIconSize(QSize(32, 32));
+    myArchetypes->setRootIsDecorated(false);
+    connect(myArchetypes, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(artifactChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
+
+    myInstance = addTextEdit(tr("Result:"), nullptr, true);
+
+    myAnimation = addWidget(QString(), new AnimationControl(this), false, nullptr, nullptr);
+    myFace = addWidget(QString(), new AnimationWidget(this), false, nullptr, nullptr);
+}
+
+void ArtifactPanel::computeMadeViaAlchemy(const artifact* artifact) const
+{
+    Q_ASSERT(artifact != NULL);
+
+    const recipelist* list;
+    const recipe* recipe;
+    const archetype* arch;
+    QStringList possible;
+
+    for (int ing = 1; ; ing++)
+    {
+        list = get_formulalist(ing);
+        if (!list)
+            break;
+        for (recipe = list->items; recipe; recipe = recipe->next)
+        {
+            if (recipe->title == NULL)
+                continue;
+
+            if (strcmp(recipe->title, artifact->item->name) != 0)
+                continue;
+
+            for (size_t a = 0; a < recipe->arch_names; a++)
+            {
+                arch = find_archetype(recipe->arch_name[a]);
+                if (!arch)
+                    continue;
+                if ((arch->clone.type == artifact->item->type) && legal_artifact_combination(&arch->clone, artifact))
+                {
+                    if (!possible.contains(arch->name))
+                        possible.append(arch->name);
+                }
+            }
+        }
+    }
+
+    if (possible.isEmpty())
+        myViaAlchemy->setText(tr("Can't be made via alchemy."));
+    else
+    {
+        if (possible.size() == static_cast<int>(artifact->allowed.size()))
+            myViaAlchemy->setText(tr("Can be made via alchemy."));
+        else
+        {
+            possible.sort();
+            myViaAlchemy->setText(tr("The following archetypes can be used via alchemy: %1").arg(possible.join(tr(", "))));
+        }
+    }
+}
+
+/**
+ * Add all possible archetypes for the specified artifact.
+ * @param artifact artifact. Only the type is used.
+ * @param name archetype or object name to allow. If NULL, all items of the correct type are added.
+ * @param check if true then the archetype or object's name must match, else it must not match.
+ * @param root tree to insert items into.
+ */
+static void addArchetypes(const artifact* artifact, const char* name, bool check, QTreeWidget* root)
+{
+    QTreeWidgetItem* item = NULL;
+
+    getManager()->archetypes()->each([&artifact, &name, &check, &root, &item] (archetype *arch)
+    {
+        if (arch->head || arch->clone.type != artifact->item->type)
+        {
+          return;
+        }
+
+        if (name == NULL || (check && arch->clone.name && (!strcmp(name, arch->clone.name) || (!strcmp(name, arch->name)))) || (!check && (arch->clone.name && strcmp(name, arch->clone.name)) && strcmp(name, arch->name)))
+        {
+            if (item == NULL)
+            {
+                item = new QTreeWidgetItem(root, QStringList(name == NULL ? "(all)" : name));
+                item->setCheckState(0, check ? Qt::Checked : Qt::Unchecked);
+                item->setFlags(item->flags() & ~Qt::ItemIsUserCheckable);
+                root->addTopLevelItem(item);
+                item->setExpanded(true);
+            }
+            CREUtils::archetypeNode(arch, item)->setData(0, Qt::UserRole, arch->name);
+        }
+    });
+}
+
+void ArtifactPanel::updateItem()
+{
+    myType->setText(QString::number(myItem->item->type));
+    myOrigin->setText(QString::fromStdString(myResources->originOf(myItem)));
+
+    computeMadeViaAlchemy(myItem);
+
+    myArchetypes->clear();
+    myInstance->clear();
+
+    /* 'allowed' is either the archetype name or the item's name, so check all archetypes for each word */
+    for (const auto allowed : myItem->allowed) {
+        bool check = true;
+        auto name = allowed;
+        if (name[0] == '!') {
+            name = name + 1;
+            check = false;
+        }
+
+        addArchetypes(myItem, name, check, myArchetypes);
+    }
+
+    /* all items are allowed, so add them */
+    if (myItem->allowed.empty()) {
+        addArchetypes(myItem, NULL, true, myArchetypes);
+    }
+
+    StringBuffer* dump = stringbuffer_new();
+    get_ob_diff(dump, myItem->item, &empty_archetype->clone);
+    char* final = stringbuffer_finish(dump);
+    myValues->setText(final);
+    free(final);
+}
+
+void ArtifactPanel::artifactChanged(QTreeWidgetItem* current, QTreeWidgetItem*)
+{
+    myAnimation->setVisible(false);
+    myFace->setVisible(false);
+    myInstance->clear();
+    if (!current || current->data(0, Qt::UserRole).toString().isEmpty()) {
+        return;
+    }
+    archetype* arch = getManager()->archetypes()->find(current->data(0, Qt::UserRole).toString().toUtf8().constData());
+    if (!arch) {
+        return;
+    }
+
+    char* desc;
+    object* obj = arch_to_object(arch);
+    SET_FLAG(obj, FLAG_IDENTIFIED);
+    give_artifact_abilities(obj, myItem->item);
+    object_give_identified_properties(obj);
+    desc = stringbuffer_finish(describe_item(obj, NULL, 0, NULL));
+    myInstance->setText(desc);
+    free(desc);
+
+    if (obj->animation != nullptr) {
+      myAnimation->setVisible(true);
+      myAnimation->setAnimation(obj->animation, QUERY_FLAG(obj, FLAG_IS_TURNABLE) ? 8 : -1);
+    } else {
+      myFace->setVisible(true);
+      QList<int> faces;
+      faces.append(obj->face->number);
+      myFace->setAnimation(faces);
+      myFace->step();
+    }
+
+    object_free(obj, FREE_OBJ_FREE_INVENTORY | FREE_OBJ_NO_DESTROY_CALLBACK);
+}

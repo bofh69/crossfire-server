@@ -1,0 +1,74 @@
+# Teleporters {#system_teleporter}
+
+ 'Updated 11/5/95 to include full documentation on teleporters (mwedel)'
+
+  Teleporters operate in a manner similar to exits - when something is on a
+teleporter, and the teleporter gets its movement, the object is then
+teleported.  The main difference between that and normal exits is that normal exits
+transport the person either when they step on it (auto_apply), or when they
+apply it.  Teleporters operate without user control - you will get
+teleported whether or not you want to. Also, teleporters have speed associated
+with them - the way speed works.
+with teleporters is the same as with other objects - when the teleporter
+gets its chance to move, it teleports at that time.  Thus, if a teleporter
+has a speed of 0.05, it would teleport something once very 20 ticks.
+
+  Teleporters can be set to operate in three ways:
+
+   1. Slaying (new map) with destination coordinates.  In this case, it
+will teleport the player to the new map.
+
+   2. Destination coordinates, but no maps supplied.  In this case, it will
+teleport the object to the same map, new coordinates.  (New coordinates must not
+be 0,0.)
+
+   3. No coordinates or map supplied.
+
+   Note that there is a difference between #1 and #2 above even if the map
+supplied is the map you are on.  If a map is provided, even if it is the
+same map, only players will be teleported.  In the case of #2, all objects
+will be teleported.  Thus, in most cases, if you are doing a same map
+teleport, you want to leave the slaying field blank, so it will teleport all
+objects.  In the case of #3, it will teleport you to any teleporter that is with 5
+spaces of the source teleporter.  Note that for this to work, the destinatin
+teleporter must either be the first or second object on the space (ie, if a
+teleporter has 2 objects beneath it, it will not work).  Which teleporter
+you go to is randomly determined.
+
+  Now for special teleporters:
+
+   By default, teleporters teleport anything which steps
+on them to x,y,map (see map editor)  If you'd like to make
+teleporters trigger off of something, you must:
+
+   * make sure that the teleporter object has a speed of 0.
+pentagrams have a speed of zero by default, other
+teleporters must be modified using the map editor
+
+   * give the teleporter a connected value.  You may use
+any object to trigger the teleporter.  This includes
+magic ears, which recognize words, buttons, levers,
+altars, pedestals, perhaps even monsters.
+
+   When the connected object is triggered, the teleporter
+will trigger also, teleporting whomever is on it
+someplace.
+
+  NOTE: In order to teleport items other than players, the teleporter can not
+have an exit path set.  This means that it must be moving the objects
+between the same map.  Even if the exit path is set to this same map, the
+teleporter will not work properly for transporting objects.
+
+   You can restrict what a teleporter will act on by setting the 'subtype' field.
+It is a bitmask field indicating what to ignore.  Normally the teleporter will act
+on the first non-floor object above it, but use the following values to ignore other
+object types:
+   1  -- ignore non-player objects
+   2  -- ignore player objects
+   4  -- ignore non-mosters
+   8  -- ignore monsters
+   16 -- ignore no_pick objects
+
+   You can also restrict a teleporter to a specific arch type by specifying the
+'other_arch' field.  If this is set, the teleporter will only act on the matching
+arch type regardless of what else is above it.

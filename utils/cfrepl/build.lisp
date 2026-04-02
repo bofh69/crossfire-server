@@ -1,0 +1,5 @@
+(require 'cmp)
+(setf c:*user-cc-flags* "-I../../include")
+(setf c:*user-linker-flags* "-L../../common/.libs -lcross")
+(compile-file "src/binding" :system-p t)
+(c:build-fasl "cfrepl" :lisp-files '("src/stubs_common.o" "src/binding.o"))

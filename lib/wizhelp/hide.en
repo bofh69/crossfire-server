@@ -1,0 +1,31 @@
+The hide command will prevent the DM from being seen by players.
+
+Usage:
+  hide
+
+This is done by making the DM perpetually invisible players on the server. It also results in the DM not showing up in the who command, maps command, or being reported as a player on the metaserver. 
+
+Example:
+  hide
+
+All players and the DM will see:
+ The Dungeon Master is gone...
+ Jane leaves the game.
+ Jane left the game.
+
+Note that the DM can still do things that can make their presence known, eg, shout, other DM actions, etc.
+
+To leave hidden mode, just enter 'hide' again to become visible to players.
+
+Example:
+  hide
+
+The DM will see:
+  You are no longer hidden from players
+  Jane has entered the game.
+  The Dungeon Master has arrived!
+  Your invisibility spell runs out.
+
+All logged-in players will see:
+  Jane has entered the game.
+  The Dungeon Master has arrived!

@@ -1,0 +1,10 @@
+The dumpallobjects prints out a list of all active objects to stderr.
+
+Usage: dumpallobjects
+
+See Also: patch
+See Also: dumpabove
+See Also: dumpallarchtypes
+See Also: dumpallmaps
+See Also: dumpbelow
+See Also: dumpfriendlyobjects

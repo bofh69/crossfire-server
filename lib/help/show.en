@@ -1,0 +1,23 @@
+The show command toggles through the various inventory windows or activates a specific inventory tab.
+
+NOTE: This is a gtkv2 client command only
+
+Usage:
+  show
+  show <parameter>
+
+Available parameters:
+  all - All Items
+  applied - Applied Items
+  unapplied - Unapplied Items
+  unpaid - Unpaid items
+  cursed - Cursed items
+  magical - Magical items
+  nonmagical - Nonmagical items
+  locked - Inventory locked items
+  unlocked - Inventory unlocked items
+  unidentified - Inventory unidentified items
+  icons - Quick icon view
+
+See Also: apply
+See Also: lock

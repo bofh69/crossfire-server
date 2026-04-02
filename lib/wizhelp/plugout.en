@@ -1,0 +1,6 @@
+Usage: plugout <plugin name>
+
+This will remove a loaded plugin from memory.
+
+See Also: plugin
+See Also: pluglist

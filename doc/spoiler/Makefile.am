@@ -1,5 +1,3 @@
-
-
 EXTRA_DIST = monster-extract spells-extract stats-extract arm-extract\
  	helm-extract mag-extract shield-extract items-extract spoiler.tex\
  	sorter empty.pbm bow-extract arche-extract weap-extract
@@ -10,7 +8,7 @@ TEX =	monput.tex spells.tex stats.tex weap.tex shield.tex helmet.tex\
 CLEANFILES =  $(TEX) items .bmaps in_monput in_items in_spells in_stats \
 	*.ps *x*.ppm tmp.ppm work.ppm spoiler.dvi spoiler.log spoiler.aux
 
-CROSSBIN = ../../server/crossfire
+CROSSBIN = ../../server/crossfire-server
 INCDIR = $(top_srcdir)/include
 PERL = @PERL@
 
@@ -35,36 +33,36 @@ dump_switches:
 check_ok: dump_switches
 	@$(RM) dump_switches
 
-.bmaps: ../../lib/archetypes
+.bmaps: ../../lib/archetypes.arc
 	$(RM) *.ps
 	touch .bmaps
 
 items: .bmaps in_items ../scripts/makeps.pl items.ps
-	$(PERL) ../scripts/makeps.pl output=tex libdir=$(top_srcdir)/lib archdir=$(top_srcdir)/lib/ size=0.4 input=in_items inarch=$(pkgdatadir)/archetypes > items
+	$(PERL) ../scripts/makeps.pl output=tex libdir=$(top_srcdir)/lib archdir=$(top_srcdir)/lib/ size=0.4 input=in_items inarch=$(pkgdatadir)/crossfire.arc > items
 
-in_items: items-extract $(pkgdatadir)/archetypes $(top_srcdir)/common/living.c
-	$(AWK) -v living_c=$(top_srcdir)/common/living.c 		-f items-extract $(pkgdatadir)/archetypes > in_items
+in_items: items-extract $(pkgdatadir)/crossfire.arc $(top_srcdir)/common/living.c
+	$(AWK) -v living_c=$(top_srcdir)/common/living.c 		-f items-extract $(pkgdatadir)/crossfire.arc > in_items
 
 stats.tex: .bmaps in_stats ../scripts/makeps.pl characters.ps
-	$(PERL) ../scripts/makeps.pl output=tex libdir=$(top_srcdir)/lib archdir=$(top_srcdir)/lib/ size=0.4 input=in_stats inarch=$(pkgdatadir)/archetypes > stats.tex
+	$(PERL) ../scripts/makeps.pl output=tex libdir=$(top_srcdir)/lib archdir=$(top_srcdir)/lib/ size=0.4 input=in_stats inarch=$(pkgdatadir)/crossfire.arc > stats.tex
 
-in_stats: stats-extract $(pkgdatadir)/archetypes $(top_srcdir)/common/living.c
-	$(AWK) -v living_c=$(top_srcdir)/common/living.c 		-f stats-extract $(pkgdatadir)/archetypes > in_stats
+in_stats: stats-extract $(pkgdatadir)/crossfire.arc $(top_srcdir)/common/living.c
+	$(AWK) -v living_c=$(top_srcdir)/common/living.c 		-f stats-extract $(pkgdatadir)/crossfire.arc > in_stats
 
 monput.tex: .bmaps in_monput ../scripts/makeps.pl monsters.ps
-	$(PERL) ../scripts/makeps.pl output=tex libdir=$(top_srcdir)/lib archdir=$(top_srcdir)/lib/ size=0.4 input=in_monput inarch=$(pkgdatadir)/archetypes > monput.tex
+	$(PERL) ../scripts/makeps.pl output=tex libdir=$(top_srcdir)/lib archdir=$(top_srcdir)/lib/ size=0.4 input=in_monput inarch=$(pkgdatadir)/crossfire.arc > monput.tex
 
-in_monput: monster-extract $(CROSSBIN) $(pkgdatadir)/treasures $(pkgdatadir)/archetypes
+in_monput: monster-extract $(CROSSBIN) $(pkgdatadir)/crossfire.trs $(pkgdatadir)/crossfire.arc
 	$(CROSSBIN) -m2 | sort -f | 		$(AWK) -F'|' -f monster-extract > in_monput
 
 spells.tex: .bmaps in_spells ../scripts/makeps.pl spells.ps
-	$(PERL) ../scripts/makeps.pl output=tex libdir=$(top_srcdir)/lib archdir=$(top_srcdir)/lib/ size=0.4 input=in_spells inarch=$(pkgdatadir)/archetypes > spells.tex
+	$(PERL) ../scripts/makeps.pl output=tex libdir=$(top_srcdir)/lib archdir=$(top_srcdir)/lib/ size=0.4 input=in_spells inarch=$(pkgdatadir)/crossfire.arc > spells.tex
 
-in_spells: spells-extract sorter $(INCDIR)/spellist.h $(CROSSBIN) $(pkgdatadir)/archetypes
+in_spells: spells-extract sorter $(INCDIR)/spellist.h $(CROSSBIN) $(pkgdatadir)/crossfire.arc
 	tr -d \" < $(INCDIR)/spellist.h | 		$(AWK) -F, -v crosscmd="$(CROSSBIN) -m4" 			-f spells-extract | sort > in_spells
 
 version.tex: $(CROSSBIN)
-	$(CROSSBIN) -v 2>&1 | grep "^This is" | 		cut -d" " -f3- > version.tex
+	$(CROSSBIN) -v > version.tex
 
 characters.ps items.ps monsters.ps spells.ps:
 	touch $@

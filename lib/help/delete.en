@@ -1,0 +1,18 @@
+The delete command will permanently delete the active character (or, who you are logged in as) from the server.
+
+Usage
+  delete
+
+When the command is executed, you will be prompted with a yes or no response to confirm character deletion.
+
+Hit 'y' to proceed with the character removal
+Hit 'n' to cancel the process
+Hit enter again to exit the process and you will see a message "OK, continuing to play."
+
+The JX Client will display a popup window to ask you to hit y or n. The GTKv2 Client asks y or n in the Messages window.
+
+This will not delete your login account or any of your other characters associated with your player account, just the active character file along with any of their apartments and the content of those unique maps.
+
+NOTE: On older servers, this command does not exist. The delete command was added to avoid confusion with the quit command which back then was used to purge the active character file in those older servers.
+
+See also: quit

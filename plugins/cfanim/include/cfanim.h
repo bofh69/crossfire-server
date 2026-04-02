@@ -32,30 +32,43 @@
 #define PLUGIN_NAME    "Animator"
 #define PLUGIN_VERSION "CFAnim Plugin 2.0"
 
-#ifndef __CEXTRACT__
 #include <plugin.h>
 #include <plugin_common.h>
-#endif
 
-#include <plugin_common.h>
-enum time_enum {time_second, time_tick};
-struct CFanimation_struct;
-struct CFmovement_struct;
-typedef int (*CFAnimRunFunc) (struct CFanimation_struct* animation, long int id, void* parameters);
-typedef long int (*CFAnimInitFunc) (char* name,char* parameters,struct CFmovement_struct*);
-typedef struct CFmovement_struct
-{
-    struct CFanimation_struct* parent;
-    CFAnimRunFunc func;
-    void* parameters;
-    long int id;
-    int tick;
-    struct CFmovement_struct* next;
-} CFmovement;
-typedef struct CFanimation_struct
-{
-    char* name;
-    object* victim;
+/** Time units the animation can use. @todo add owner's speed unit */
+enum time_enum {
+    time_second,    /**< One second. */
+    time_tick       /**< One server tick. */
+};
+
+/** Result of one animation move. */
+enum anim_move_result {
+    mr_finished,        /**< Move completed. */
+    mr_again            /**< Move should continue next time. */
+};
+
+struct CFanimation;
+struct CFmovement;
+
+typedef anim_move_result (*CFAnimRunFunc)(struct CFanimation *animation, long int id, void *parameters);
+
+typedef long int (*CFAnimInitFunc)(const char *name, char *parameters, struct CFmovement *);
+
+/** One move in an animation. */
+struct CFmovement {
+    struct CFanimation *parent;  /**< Animation this move is linked to. */
+    CFAnimRunFunc func;                 /**< Function to run for this move. */
+    void *parameters;                   /**< Parameters to the function. */
+    long int id;                        /**< Identifier, used for various things. */
+    int tick;                           /**< Move duration, units depending on parent's time_representation. */
+    CFmovement *next;                   /**< Next move in the animation. */
+};
+
+/** One full animation. */
+struct CFanimation {
+    char *name;
+    object *victim;
+    object *event;
     int paralyze;
     int invisible;
     int wizard;
@@ -63,41 +76,25 @@ typedef struct CFanimation_struct
     int verbose;
     int ghosted;
     int errors_allowed;
-    object* corpse;
+    int delete_end;
+    object *corpse;
     long int tick_left;
     enum time_enum time_representation;
-    struct CFmovement_struct* nextmovement;
-    struct CFanimation_struct* nextanimation;
-} CFanimation;
-typedef struct
-{
-    const char *name;
-    CFAnimInitFunc funcinit;
-    CFAnimRunFunc funcrun;
-} CFanimationHook;
+    CFmovement *nextmovement;
+    CFanimation *nextanimation;
+};
+
+/** Available animation move. */
+struct CFanimationHook {
+    const char *name;           /**< Name as it appears in the animation file. */
+    CFAnimInitFunc funcinit;    /**< Function to process the parameters of the move. */
+    CFAnimRunFunc funcrun;      /**< Function to run the move. */
+};
+
 extern CFanimationHook animationbox[];
+
 extern int animationcount;
-int get_boolean (char* string,int* bool);
 
-typedef struct _cfpcontext
-{
-    struct _cfpcontext* down;
-    object*     who;
-    object*     activator;
-    object*     third;
-    object*     event;
-    char        message[1024];
-    int         fix;
-    int         event_code;
-    char        options[1024];
-    char        script[1024];
-    int         returnvalue;
-    int         parms[5];
-} CFPContext;
-
-extern f_plug_api  gethook;
-extern CFPContext* context_stack;
-extern CFPContext* current_context;
 #include <cfanim_proto.h>
 
 #endif /* PLUGIN_ANIM_H */

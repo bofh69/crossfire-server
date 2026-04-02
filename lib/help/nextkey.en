@@ -1,0 +1,10 @@
+This bound key allows you to move back through your previously used commands. This works best if you already have a key bound to the command called prevkey.
+
+You can also edit the command from the prevkey command list before you run it.
+
+This is just like the down arrow under most command line interfaces (CLI).
+
+Special note for GTKV2, one has to use the bind command (i.e., 'bind nextkey) as the the keybinding GUI does not work with this command.
+
+See also: prevkey
+See also: bind

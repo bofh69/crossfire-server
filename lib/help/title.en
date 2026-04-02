@@ -1,0 +1,28 @@
+The title command will add or change the title appended to the character name. The title is displayed alongside the character name in some clients and on the hiscore list.
+
+When you start a new character, the character's title defaults to “the <race>”. This is also the title that your character will default to when using the clear or default command option.
+
+Usage
+  title
+  title <new title>
+  title clear
+  title default
+
+title - If no new title is specified your current title is printed.
+title <new title> - will set your title to 'new title'
+title clear - resets the title to its default value
+title default - resets the title to its default value
+
+Example:
+  title
+    Your title is 'the gnome'.
+
+  title the fierce
+
+  title
+    Your title is 'the fierce'.
+
+  title clear
+    Your title is 'the gnome'.
+
+See Also: hiscore

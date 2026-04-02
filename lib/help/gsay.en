@@ -1,0 +1,19 @@
+gsay
+
+This command requires that a party has been formed and you are a member of that party.
+
+The gsay command can be used in place of the command, party say <message>.
+
+gsay sends a message to all members of your current party.
+
+gsay usage:
+
+    'gsay [Message that you want all party members to see]
+
+Example:
+
+  gsay hello
+
+Will display:
+
+  <party_name> You say: hello

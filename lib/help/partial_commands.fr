@@ -1,0 +1,13 @@
+Détermine si les commandes peuvent être partielles ou non.
+
+Quand désactivé, une commande doit être entrée en totalité pour être exécutée.
+
+Quand activé, les premières lettres d'une commande suffisent tant qu'il n'y a pas ambiguïté avec une autre commands.
+
+[color=#ff5500]Utilisation :[/color] partial_commands <1 ou on, ou 0 ou off>
+
+Sans paramètre, indique si l'option est active ou non.
+
+[color=#ff5500]Exemple :[/color]
+- quand désactivé, [color=#ff5500]pe[/color] et [color=#ff5500]pet[/color] ne sont pas reconnues
+- quand activé, [color=#ff5500]pe[/color] est une commande invalide, car elle peut signifier [color=#ff5500]peaceful[/color] ou [color=#ff5500]petmode[/color], cependant [color=#ff5500]pet[/color] sera équivalent à [color=#ff5500]petmode[/color]

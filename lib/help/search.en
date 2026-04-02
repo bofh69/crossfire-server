@@ -1,0 +1,6 @@
+An alternative form of use_skill find traps. The default key for his command is 's'.
+
+Searches for traps and other hidden objects in the tiles immediately surrounding the character and under the character. The odds of finding hidden traps are dependent upon the player's find traps skill.
+
+See Also: skills
+See Also: disarm

@@ -1,0 +1,11 @@
+Turns on fire mode. Normally this is done automatically when using the fire key + direction combination. However, it is possible to invoke it manually, in which case the character will commence firing as quickly as possible in whatever direction is specified after the command is issued, either by the arrow keys or by typing it out.
+
+To fire only once you can use <direction command> f.
+For example: "fire 1" starts to fire northeast until "fire_stop". The command "northeast f" fires once to the northeast.
+
+Use "stay f" to target yourself.
+
+You can turn off the fire command with fire_stop.
+To make a script or keybinding fire a single time in a particular direction, prefix the direction to the fire command. For instance, “east fire”
+
+See Also: fire_stop

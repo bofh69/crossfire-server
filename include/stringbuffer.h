@@ -1,25 +1,3 @@
-/*
-    CrossFire, A Multiplayer game for X-windows
-
-    Copyright (C) 2008 Crossfire Development Team
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    The authors can be reached via e-mail at crossfire-devel@real-time.com
-*/
-
 /** @file stringbuffer.h
  *
  * Implements a general string buffer: it builds a string by concatenating. It
@@ -44,13 +22,15 @@
 #ifndef STRING_BUFFER_H
 #define STRING_BUFFER_H
 
+#include <ctype.h>
+
 #include "global.h"
 
 
 /**
  * The string buffer state.
  */
-typedef struct StringBuffer StringBuffer;
+struct StringBuffer;
 
 
 /**
@@ -59,6 +39,12 @@ typedef struct StringBuffer StringBuffer;
  * @return The newly allocated string buffer.
  */
 StringBuffer *stringbuffer_new(void);
+
+/**
+ * Totally delete a string buffer.
+ * @param sb String to delete, pointer becomes invalid after the call.
+ */
+void stringbuffer_delete(StringBuffer *sb);
 
 /**
  * Deallocate the string buffer instance and return the string.
@@ -103,6 +89,25 @@ void stringbuffer_append_string(StringBuffer *sb, const char *str);
 void stringbuffer_append_printf(StringBuffer *sb, const char *format, ...);
 
 /**
+ * Append a character to a string buffer instance.
+ *
+ * @param sb The string buffer to modify.
+ *
+ * @param c The string to append.
+ */
+void stringbuffer_append_char(StringBuffer *sb, const char c);
+
+/**
+ * Append a signed integer to a string buffer instance. This is intended to be
+ * faster than using stringbuffer_append_printf().
+ *
+ * @param sb The string buffer to modify.
+ *
+ * @param x The signed integer to append.
+ */
+void stringbuffer_append_int64(StringBuffer *sb, int64_t x);
+
+/**
  * Append the contents of a string buffer instance to another string buffer
  * instance.
  *
@@ -111,5 +116,31 @@ void stringbuffer_append_printf(StringBuffer *sb, const char *format, ...);
  * @param sb2 The string buffer to append; it must be different from sb.
  */
 void stringbuffer_append_stringbuffer(StringBuffer *sb, const StringBuffer *sb2);
+
+/**
+ * Append the specified content in a multiline block, starting with "start" and ending with "end".
+ * "start" and "end" must not end with a newline.
+ * @param sb The string buffer to modify.
+ * @param start The text to write to signify the start of the contents.
+ * @param content The actual content, which may contain multilines. If NULL of empty string, nothing is written.
+ * @param end The text to write to signify the end of the contents. If NULL then "end_<start>" will be used.
+ */
+void stringbuffer_append_multiline_block(StringBuffer *sb, const char *start, const char *content, const char *end);
+
+/**
+ * Return the current length of the buffer.
+ * @param sb The string buffer to check.
+ *
+ * @return current length of sb.
+ */
+size_t stringbuffer_length(StringBuffer *sb);
+
+/**
+ * Trim trailing whitespace from a stringbuffer.
+ *
+ * @param sb
+ * The stringbuffer.
+ */
+void stringbuffer_trim_whitespace(StringBuffer *sb);
 
 #endif

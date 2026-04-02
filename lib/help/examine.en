@@ -1,0 +1,12 @@
+Usage:
+
+ examine
+ examine item
+
+Show detailed information about an item
+
+If the item name is not specified, the information will be about an item the character is standing on
+
+If the item name is specified, information about one item is shown
+
+The item name may be a partial match. For instance, examine scroll shows information about a scroll

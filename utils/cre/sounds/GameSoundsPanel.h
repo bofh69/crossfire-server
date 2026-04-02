@@ -1,0 +1,27 @@
+/*
+ * Crossfire -- cooperative multi-player graphical RPG and adventure game
+ *
+ * Copyright (c) 2022 the Crossfire Development Team
+ *
+ * Crossfire is free software and comes with ABSOLUTELY NO WARRANTY. You are
+ * welcome to redistribute it under certain conditions. For details, please
+ * see COPYING and LICENSE.
+ *
+ * The authors can be reached via e-mail at <crossfire@metalforge.org>.
+ */
+
+#ifndef GAME_SOUNDS_PANEL_H
+#define GAME_SOUNDS_PANEL_H
+
+#include "assets/AssetWrapperPanel.h"
+#include "GameSounds.h"
+
+class GameSoundsPanel : public AssetSWrapperPanel<GameSounds>{
+    Q_OBJECT
+public:
+    GameSoundsPanel(QWidget *parent);
+
+    virtual void updateItem() {}
+};
+
+#endif /* GAME_SOUNDS_PANEL_H */

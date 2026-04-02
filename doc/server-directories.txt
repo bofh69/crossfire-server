@@ -1,0 +1,101 @@
+Server Directories
+==================
+
+This file documents the various directories used by the server at runtime, as a
+resource for server administrators and developers.
+
+Internally, the server recognizes the following distinct directories. The *name*
+is what it's called in the server code; *flag* is the command line flag that can
+be used to override it; *envar* is the environment variable, if one exists, that
+can also be used as an override.
+
+If both the flag and the envar are set, the envar takes precedence.
+
+    name         flag          envar                  notes
+    -----------  ------------  ---------------------  -----
+    confdir      -conf                                absolute
+    datadir      -data         CROSSFIRE_LIBDIR       absolute
+    localdir     -local        CROSSFIRE_LOCALDIR     absolute
+    mapdir       -maps         CROSSFIRE_MAPDIR       relative to datadir or localdir
+    playerdir    -playerdir    CROSSFIRE_PLAYERDIR    relative to localdir
+    templatedir  -tmpdir       CROSSFIRE_TEMPLATEDIR  relative to localdir
+    uniquedir    -uniquedir    CROSSFIRE_UNIQUEDIR    relative to localdir
+    tmpdir       -templatedir  CROSSFIRE_TMPDIR       absolute
+    regions      -regions                             unused
+
+Paths marked "absolute" can, if you want, contain relative paths; in that case
+they will be relative to whatever the PWD of the crossfire server process is.
+You probably shouldn't, though.
+
+
+Notes on Specific Paths
+=======================
+
+confdir
+-------
+Usually /etc/crossfire.
+
+Contains runtime configuration files like the dm_file, motd, and settings file.
+
+
+datadir
+-------
+Usually /usr/share/crossfire.
+
+Contains data that the server does not need to modify while running, such as the
+maps, archetypes, graphics, etc. A default install will pack the archetype,
+artifact, and treasurelist definitions into a single .arc, .artifacts, or .trs
+file each, and the graphics into a .face (metadata) and .tar (bitmaps) file;
+however, the server will also quite happily load "unpacked" files as long as
+they have the right file extensions, which is convenient if you want to edit
+your maps and archetypes "live".
+
+It also contains a few files, like "attackmess", which have hard-coded names and
+are not identified by extension.
+
+
+localdir
+--------
+Usually /var/crossfire. Modern systems probably want /var/lib/crossfire instead.
+
+Contains data that the server does need to modify: saved players, "live" maps,
+apartment contents, high scores, the contents of player-edited books, etc.
+
+
+mapdir
+------
+Usually "maps". Always relative to datadir or localdir, depending on context.
+
+Relative to the datadir, this is the path to the complete map hierarchy for the
+server. Relative to the localdir, this holds "overlay maps" that can patch the
+maps from the base hierarchy at load time.
+
+
+playerdir
+---------
+Usually "players". Always relative to localdir.
+
+Holds per-player save data.
+
+
+templatedir
+-----------
+Usually "template-maps". Always relative to localdir.
+
+Holds maps generated at runtime and saved to disk. (I think. -TF)
+
+
+uniquedir
+---------
+Usually "unique-items". Always relative to localdir.
+
+Holds information about items that don't disappear when the map resets.
+
+
+tmpdir
+------
+Usually /tmp.
+
+Holds scratch files that don't need to persist across restarts. In practice this
+is mostly live maps. On a busy server with a long reset time this can get a bit
+cluttered, so you might want to point it at /tmp/crossfire or similar.
