@@ -144,6 +144,79 @@ bool ws_do_handshake(socket_struct *ns) {
     if (!strstr(reinterpret_cast<char *>(sl->buf), "\r\n\r\n"))
         return true; /* Need more data. */
 
+    /* ------------------------------------------------------------------
+     * X-Forwarded-For support.
+     *
+     * When the server sits behind a trusted reverse proxy (e.g. nginx),
+     * the proxy sets this header to the real client IP.  We parse the
+     * first (leftmost) address from the header value, validate it, then
+     * run checkbanned() on it so that the IP ban list is honoured even
+     * for proxied WebSocket connections.
+     *
+     * Security note: we only use this header when it is present in the
+     * request.  The raw TCP peer address was already checked by
+     * checkbanned() in do_server() before we reach this point, so the
+     * TCP connection itself is always screened first.
+     * ------------------------------------------------------------------ */
+    const char *xff_hdr = ws_strcasestr(
+        reinterpret_cast<char *>(sl->buf), "X-Forwarded-For:");
+    if (xff_hdr) {
+        xff_hdr += strlen("X-Forwarded-For:");
+        while (*xff_hdr == ' ' || *xff_hdr == '\t') xff_hdr++;
+
+        /* Take only the first address (before any comma or whitespace). */
+        const char *xff_end = xff_hdr;
+        while (*xff_end && *xff_end != ',' &&
+               *xff_end != '\r' && *xff_end != '\n' &&
+               *xff_end != ' ' && *xff_end != '\t')
+            xff_end++;
+
+        size_t xff_len = (size_t)(xff_end - xff_hdr);
+
+        /* Sanity-check the length: a valid IPv4/IPv6 address fits in 45 bytes
+         * (max IPv6 = 39 chars, mapped IPv4 = 45 chars). */
+        if (xff_len == 0 || xff_len >= 46) {
+            LOG(llevInfo, "WebSocket: invalid X-Forwarded-For value from %s\n",
+                ns->host);
+            ns->status = Ns_Dead;
+            return false;
+        }
+
+        /* Validate that every character is a legal IP address character
+         * (hex digit, dot, colon, or bracket for IPv6).  This prevents
+         * log-injection and any further misuse of the value. */
+        for (size_t i = 0; i < xff_len; i++) {
+            char c = xff_hdr[i];
+            if (!isxdigit((unsigned char)c) && c != '.' && c != ':' &&
+                c != '[' && c != ']') {
+                LOG(llevInfo,
+                    "WebSocket: illegal character in X-Forwarded-For from %s\n",
+                    ns->host);
+                ns->status = Ns_Dead;
+                return false;
+            }
+        }
+
+        char xff_ip[47];
+        memcpy(xff_ip, xff_hdr, xff_len);
+        xff_ip[xff_len] = '\0';
+
+        if (checkbanned(NULL, xff_ip)) {
+            LOG(llevInfo,
+                "WebSocket: banned X-Forwarded-For address %s (TCP peer %s)\n",
+                xff_ip, ns->host);
+            ns->status = Ns_Dead;
+            return false;
+        }
+
+        /* Replace the stored host with the real client IP so that all
+         * subsequent log messages and game logic see the correct address. */
+        free(ns->host);
+        ns->host = strdup_local(xff_ip);
+        LOG(llevDebug,
+            "WebSocket: X-Forwarded-For updated host to %s\n", ns->host);
+    }
+
     /* Extract Sec-WebSocket-Key (case-insensitive per RFC 7230 §3.2). */
     const char *key_hdr = ws_strcasestr(
         reinterpret_cast<char *>(sl->buf), "Sec-WebSocket-Key:");
