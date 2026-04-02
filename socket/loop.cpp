@@ -45,6 +45,7 @@
 #include "newserver.h"
 #include "sockproto.h"
 #include "sproto.h"
+#include "websocket.h"
 
 extern uint32_t last_time;
 
@@ -261,6 +262,14 @@ handle_cmd(socket_struct *ns, player *pl, char *cmd, char *data, int len) {
  * @return If the main loop should continue processing this client.
  */
 bool handle_client(socket_struct *ns, player *pl) {
+    /* Handle the WebSocket HTTP upgrade handshake. */
+    if (ns->is_websocket && ns->ws_state == WS_HTTP) {
+        if (!ws_do_handshake(ns))
+            return false;
+        /* Handshake complete or in progress – don't process protocol yet. */
+        return false;
+    }
+
     /* Loop through this - maybe we have several complete packets here. */
     /* Command_count is used to limit the number of requests from
      * clients that have not logged in - we do not want an unauthenticated
@@ -278,7 +287,12 @@ bool handle_client(socket_struct *ns, player *pl) {
             return false;
         }
 
-        int status = SockList_ReadPacket(ns->fd, &ns->inbuf, sizeof(ns->inbuf.buf)-1);
+        int status;
+        if (ns->is_websocket && ns->ws_state == WS_ACTIVE) {
+            status = ws_read_packet(ns);
+        } else {
+            status = SockList_ReadPacket(ns->fd, &ns->inbuf, sizeof(ns->inbuf.buf)-1);
+        }
         if (status != 1) {
             if (status < 0) {
                 ns->status = Ns_Dead;
@@ -376,8 +390,9 @@ static int is_fd_valid(int fd) {
 /**
  * Handle a new connection from a client.
  * @param listen_fd file descriptor the request came from.
+ * @param is_websocket true if this is a WebSocket listening socket.
  */
-static void new_connection(int listen_fd) {
+static void new_connection(int listen_fd, bool is_websocket) {
     int newsocknum = -1, j;
 #ifdef HAVE_GETNAMEINFO
     struct sockaddr_storage addr;
@@ -440,6 +455,18 @@ static void new_connection(int listen_fd) {
             LOG(llevInfo, "Banned host tried to connect: [%s]\n", buf);
             close(init_sockets[newsocknum].fd);
             init_sockets[newsocknum].fd = -1;
+        } else if (is_websocket) {
+            /* For WebSocket connections, defer init_connection() until the
+             * HTTP upgrade handshake has been completed. */
+            ns->is_websocket = true;
+            ns->ws_state     = WS_HTTP;
+            ns->ws_header_size = 0;
+            ns->ws_frame_total = 0;
+            ns->status       = Ns_Add;
+            free(ns->host);
+            ns->host = strdup_local(buf);
+            SockList_ResetRead(&ns->inbuf);
+            LOG(llevDebug, "WebSocket connection attempt from %s\n", buf);
         } else {
             init_connection(ns, buf);
         }
@@ -618,7 +645,7 @@ void do_server(void) {
             }
             if (FD_ISSET(init_sockets[i].fd, &tmp_read)) {
                 if (init_sockets[i].listen)
-                    new_connection(init_sockets[i].fd);
+                    new_connection(init_sockets[i].fd, init_sockets[i].is_websocket);
                 else
                     handle_client(&init_sockets[i], NULL);
             }
