@@ -77,3 +77,17 @@ void init_connection(socket_struct *ns, const char *from_ip) {
 
 /** Server-only function used in lowlevel.cpp – not linked here. */
 int count_players(void) { return 0; }
+
+/**
+ * Stub for checkbanned().  By default returns 0 (not banned).
+ * Tests that need to simulate a banned IP override g_checkbanned_result.
+ */
+int g_checkbanned_result = 0;      /* 0 = allow, 1 = banned */
+char g_checkbanned_host[64] = "";  /* last host passed to checkbanned() */
+
+int checkbanned(const char *login, const char *host) {
+    (void)login;
+    if (host)
+        snprintf(g_checkbanned_host, sizeof(g_checkbanned_host), "%s", host);
+    return g_checkbanned_result;
+}

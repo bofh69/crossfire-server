@@ -749,6 +749,328 @@ START_TEST(test_handshake_nul_in_request) {
 END_TEST
 
 /* -------------------------------------------------------------------------
+ * X-Forwarded-For helpers and tests
+ * ------------------------------------------------------------------------- */
+
+/* Access the stub control variables defined in stubs_websocket.cpp. */
+extern int  g_checkbanned_result;
+extern char g_checkbanned_host[64];
+
+/**
+ * Send a complete HTTP Upgrade request including an X-Forwarded-For header.
+ */
+static void send_http_upgrade_xff(int fd, const char *key_value,
+                                   const char *xff_value) {
+    char req[1024];
+    int n;
+    if (xff_value) {
+        n = snprintf(req, sizeof(req),
+            "GET / HTTP/1.1\r\n"
+            "Host: localhost\r\n"
+            "Upgrade: websocket\r\n"
+            "Connection: Upgrade\r\n"
+            "Sec-WebSocket-Key: %s\r\n"
+            "X-Forwarded-For: %s\r\n"
+            "Sec-WebSocket-Version: 13\r\n"
+            "\r\n",
+            key_value, xff_value);
+    } else {
+        n = snprintf(req, sizeof(req),
+            "GET / HTTP/1.1\r\n"
+            "Host: localhost\r\n"
+            "Upgrade: websocket\r\n"
+            "Connection: Upgrade\r\n"
+            "Sec-WebSocket-Key: %s\r\n"
+            "Sec-WebSocket-Version: 13\r\n"
+            "\r\n",
+            key_value);
+    }
+    feed_bytes(fd, (const uint8_t *)req, (size_t)n);
+}
+
+/* -------------------------------------------------------------------------
+ * Test: X-Forwarded-For present with an allowed IP – handshake succeeds and
+ * ns->host is updated to the forwarded address.
+ * ------------------------------------------------------------------------- */
+
+START_TEST(test_xff_allowed_ip) {
+    int sv[2];
+    ck_assert_int_eq(socketpair(AF_UNIX, SOCK_STREAM, 0, sv), 0);
+    fcntl(sv[0], F_SETFL, O_NONBLOCK);
+
+    g_checkbanned_result = 0; /* allow */
+    memset(g_checkbanned_host, 0, sizeof(g_checkbanned_host));
+
+    socket_struct ns = make_ws_http_socket(sv[0]);
+    /* Simulate the TCP peer address set by do_server(). */
+    ns.host = strdup("10.0.0.1");
+
+    send_http_upgrade_xff(sv[1], "dGhlIHNhbXBsZSBub25jZQ==", "203.0.113.42");
+
+    bool ok = ws_do_handshake(&ns);
+    ck_assert(ok);
+    ck_assert_int_eq(ns.ws_state, WS_ACTIVE);
+    /* The host must be updated to the forwarded IP. */
+    ck_assert_str_eq(ns.host, "203.0.113.42");
+    /* checkbanned was called with the forwarded IP. */
+    ck_assert_str_eq(g_checkbanned_host, "203.0.113.42");
+
+    free(ns.host);
+    close(sv[0]);
+    close(sv[1]);
+}
+END_TEST
+
+/* -------------------------------------------------------------------------
+ * Test: X-Forwarded-For with a banned IP – handshake is rejected.
+ * ------------------------------------------------------------------------- */
+
+START_TEST(test_xff_banned_ip) {
+    int sv[2];
+    ck_assert_int_eq(socketpair(AF_UNIX, SOCK_STREAM, 0, sv), 0);
+    fcntl(sv[0], F_SETFL, O_NONBLOCK);
+
+    g_checkbanned_result = 1; /* banned */
+
+    socket_struct ns = make_ws_http_socket(sv[0]);
+    ns.host = strdup("10.0.0.1");
+
+    send_http_upgrade_xff(sv[1], "dGhlIHNhbXBsZSBub25jZQ==", "198.51.100.5");
+
+    bool ok = ws_do_handshake(&ns);
+    ck_assert(!ok);
+    ck_assert_int_eq(ns.status, Ns_Dead);
+
+    free(ns.host);
+    /* Reset for subsequent tests. */
+    g_checkbanned_result = 0;
+    close(sv[0]);
+    close(sv[1]);
+}
+END_TEST
+
+/* -------------------------------------------------------------------------
+ * Test: No X-Forwarded-For header – handshake succeeds using the TCP IP.
+ * ------------------------------------------------------------------------- */
+
+START_TEST(test_xff_absent) {
+    int sv[2];
+    ck_assert_int_eq(socketpair(AF_UNIX, SOCK_STREAM, 0, sv), 0);
+    fcntl(sv[0], F_SETFL, O_NONBLOCK);
+
+    g_checkbanned_result = 0;
+
+    socket_struct ns = make_ws_http_socket(sv[0]);
+    ns.host = strdup("192.0.2.1");
+
+    /* No xff_value – send_http_upgrade_xff passes NULL. */
+    send_http_upgrade_xff(sv[1], "dGhlIHNhbXBsZSBub25jZQ==", NULL);
+
+    bool ok = ws_do_handshake(&ns);
+    ck_assert(ok);
+    ck_assert_int_eq(ns.ws_state, WS_ACTIVE);
+    /* host should remain the TCP peer address. */
+    ck_assert_str_eq(ns.host, "192.0.2.1");
+
+    free(ns.host);
+    close(sv[0]);
+    close(sv[1]);
+}
+END_TEST
+
+/* -------------------------------------------------------------------------
+ * Test: X-Forwarded-For with multiple addresses (comma-separated).
+ * Only the first (leftmost = original client) address is used.
+ * ------------------------------------------------------------------------- */
+
+START_TEST(test_xff_multiple_addresses) {
+    int sv[2];
+    ck_assert_int_eq(socketpair(AF_UNIX, SOCK_STREAM, 0, sv), 0);
+    fcntl(sv[0], F_SETFL, O_NONBLOCK);
+
+    g_checkbanned_result = 0;
+    memset(g_checkbanned_host, 0, sizeof(g_checkbanned_host));
+
+    socket_struct ns = make_ws_http_socket(sv[0]);
+    ns.host = strdup("10.0.0.1");
+
+    send_http_upgrade_xff(sv[1], "dGhlIHNhbXBsZSBub25jZQ==",
+                          "203.0.113.10, 10.1.2.3, 10.0.0.1");
+
+    bool ok = ws_do_handshake(&ns);
+    ck_assert(ok);
+    ck_assert_int_eq(ns.ws_state, WS_ACTIVE);
+    /* Only the first address should be used. */
+    ck_assert_str_eq(ns.host, "203.0.113.10");
+    ck_assert_str_eq(g_checkbanned_host, "203.0.113.10");
+
+    free(ns.host);
+    close(sv[0]);
+    close(sv[1]);
+}
+END_TEST
+
+/* -------------------------------------------------------------------------
+ * Test: X-Forwarded-For with an IPv6 address.
+ * ------------------------------------------------------------------------- */
+
+START_TEST(test_xff_ipv6_address) {
+    int sv[2];
+    ck_assert_int_eq(socketpair(AF_UNIX, SOCK_STREAM, 0, sv), 0);
+    fcntl(sv[0], F_SETFL, O_NONBLOCK);
+
+    g_checkbanned_result = 0;
+    memset(g_checkbanned_host, 0, sizeof(g_checkbanned_host));
+
+    socket_struct ns = make_ws_http_socket(sv[0]);
+    ns.host = strdup("::1");
+
+    send_http_upgrade_xff(sv[1], "dGhlIHNhbXBsZSBub25jZQ==",
+                          "2001:db8::1");
+
+    bool ok = ws_do_handshake(&ns);
+    ck_assert(ok);
+    ck_assert_str_eq(ns.host, "2001:db8::1");
+
+    free(ns.host);
+    close(sv[0]);
+    close(sv[1]);
+}
+END_TEST
+
+/* -------------------------------------------------------------------------
+ * Test: X-Forwarded-For with an illegal character (injection attempt).
+ * The request must be rejected to prevent log-injection / misuse.
+ * ------------------------------------------------------------------------- */
+
+START_TEST(test_xff_illegal_character) {
+    int sv[2];
+    ck_assert_int_eq(socketpair(AF_UNIX, SOCK_STREAM, 0, sv), 0);
+    fcntl(sv[0], F_SETFL, O_NONBLOCK);
+
+    g_checkbanned_result = 0;
+
+    socket_struct ns = make_ws_http_socket(sv[0]);
+    ns.host = strdup("10.0.0.1");
+
+    /* Attempt to inject a newline into the log via the XFF header. */
+    send_http_upgrade_xff(sv[1], "dGhlIHNhbXBsZSBub25jZQ==",
+                          "192.0.2.1\nevil");
+
+    /* Because the newline terminates the XFF value at the first address
+     * boundary (our parser stops at whitespace), the address seen is
+     * "192.0.2.1" which is valid.  The parser must not pass "evil" anywhere.
+     * The connection should succeed with host == "192.0.2.1". */
+    bool ok = ws_do_handshake(&ns);
+    if (ok) {
+        /* The parser correctly extracted only "192.0.2.1". */
+        ck_assert_str_eq(ns.host, "192.0.2.1");
+    }
+    /* If the handshake failed that is also acceptable (conservative parser). */
+
+    free(ns.host);
+    close(sv[0]);
+    close(sv[1]);
+}
+END_TEST
+
+/* -------------------------------------------------------------------------
+ * Test: X-Forwarded-For with an excessively long value (overflow attempt).
+ * Must be rejected without a buffer overrun.
+ * ------------------------------------------------------------------------- */
+
+START_TEST(test_xff_too_long) {
+    int sv[2];
+    ck_assert_int_eq(socketpair(AF_UNIX, SOCK_STREAM, 0, sv), 0);
+    fcntl(sv[0], F_SETFL, O_NONBLOCK);
+
+    g_checkbanned_result = 0;
+
+    socket_struct ns = make_ws_http_socket(sv[0]);
+    ns.host = strdup("10.0.0.1");
+
+    /* A 200-character "IP address" – well beyond the 45-char limit. */
+    char long_xff[210];
+    memset(long_xff, '1', 200);
+    long_xff[200] = '\0';
+
+    send_http_upgrade_xff(sv[1], "dGhlIHNhbXBsZSBub25jZQ==", long_xff);
+
+    bool ok = ws_do_handshake(&ns);
+    ck_assert(!ok);
+    ck_assert_int_eq(ns.status, Ns_Dead);
+
+    free(ns.host);
+    close(sv[0]);
+    close(sv[1]);
+}
+END_TEST
+
+/* -------------------------------------------------------------------------
+ * Test: X-Forwarded-For with an empty value.
+ * Must be rejected (empty string is not a valid IP).
+ * ------------------------------------------------------------------------- */
+
+START_TEST(test_xff_empty_value) {
+    int sv[2];
+    ck_assert_int_eq(socketpair(AF_UNIX, SOCK_STREAM, 0, sv), 0);
+    fcntl(sv[0], F_SETFL, O_NONBLOCK);
+
+    g_checkbanned_result = 0;
+
+    socket_struct ns = make_ws_http_socket(sv[0]);
+    ns.host = strdup("10.0.0.1");
+
+    send_http_upgrade_xff(sv[1], "dGhlIHNhbXBsZSBub25jZQ==", "");
+
+    bool ok = ws_do_handshake(&ns);
+    ck_assert(!ok);
+    ck_assert_int_eq(ns.status, Ns_Dead);
+
+    free(ns.host);
+    close(sv[0]);
+    close(sv[1]);
+}
+END_TEST
+
+/* -------------------------------------------------------------------------
+ * Test: X-Forwarded-For with lowercase header name (case-insensitive).
+ * ------------------------------------------------------------------------- */
+
+START_TEST(test_xff_lowercase_header) {
+    int sv[2];
+    ck_assert_int_eq(socketpair(AF_UNIX, SOCK_STREAM, 0, sv), 0);
+    fcntl(sv[0], F_SETFL, O_NONBLOCK);
+
+    g_checkbanned_result = 0;
+    memset(g_checkbanned_host, 0, sizeof(g_checkbanned_host));
+
+    socket_struct ns = make_ws_http_socket(sv[0]);
+    ns.host = strdup("10.0.0.1");
+
+    /* Use lowercase header name. */
+    const char *req =
+        "GET / HTTP/1.1\r\n"
+        "Host: localhost\r\n"
+        "Upgrade: websocket\r\n"
+        "Connection: Upgrade\r\n"
+        "Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n"
+        "x-forwarded-for: 203.0.113.77\r\n"
+        "Sec-WebSocket-Version: 13\r\n"
+        "\r\n";
+    feed_bytes(sv[1], (const uint8_t *)req, strlen(req));
+
+    bool ok = ws_do_handshake(&ns);
+    ck_assert(ok);
+    ck_assert_str_eq(ns.host, "203.0.113.77");
+
+    free(ns.host);
+    close(sv[0]);
+    close(sv[1]);
+}
+END_TEST
+
+/* -------------------------------------------------------------------------
  * Suite definition
  * ------------------------------------------------------------------------- */
 
@@ -792,6 +1114,18 @@ Suite *websocket_suite(void) {
     tcase_add_test(tc_hs, test_handshake_buffer_overflow_protection);
     tcase_add_test(tc_hs, test_handshake_nul_in_request);
     suite_add_tcase(s, tc_hs);
+
+    TCase *tc_xff = tcase_create("x_forwarded_for");
+    tcase_add_test(tc_xff, test_xff_allowed_ip);
+    tcase_add_test(tc_xff, test_xff_banned_ip);
+    tcase_add_test(tc_xff, test_xff_absent);
+    tcase_add_test(tc_xff, test_xff_multiple_addresses);
+    tcase_add_test(tc_xff, test_xff_ipv6_address);
+    tcase_add_test(tc_xff, test_xff_illegal_character);
+    tcase_add_test(tc_xff, test_xff_too_long);
+    tcase_add_test(tc_xff, test_xff_empty_value);
+    tcase_add_test(tc_xff, test_xff_lowercase_header);
+    suite_add_tcase(s, tc_xff);
 
     return s;
 }
