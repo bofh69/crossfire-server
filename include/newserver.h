@@ -133,6 +133,12 @@ struct socket_struct {
     uint8_t login_method;   /**< Login method this client is using */
     uint16_t notifications; /**< Notifications this client wants to get. */
     uint32_t last_tick;     /**< Number of ticks since last communication. */
+
+    /* WebSocket support */
+    bool     is_websocket;       /**< True if this connection uses the WebSocket protocol. */
+    uint8_t  ws_state;           /**< WebSocket state: WS_NONE, WS_HTTP, or WS_ACTIVE. */
+    int      ws_header_size;     /**< Current WS frame: expected header bytes (0 = unknown). */
+    uint64_t ws_frame_total;     /**< Current WS frame: total expected bytes header+payload (0 = unknown). */
 };
 
 /**
