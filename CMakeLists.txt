@@ -4,6 +4,7 @@ set(VERSION 1.75.0)
 
 option(METASERVER2 "Metaserver2 support (requires curl)" ON)
 option(MAPPER "Build crossfire-mapper (requires gdlib)" ON)
+option(TEST "Build tests (requires check)" OFF)
 
 find_package(FLEX REQUIRED)
 
@@ -136,7 +137,7 @@ target_link_libraries(random_map random_map_lib)
 # }}}
 
 # server {{{
-add_executable(crossfire-server
+add_library(cfserver SHARED
 	server/account.cpp
 	server/account_char.cpp
 	server/alchemy.cpp
@@ -262,24 +263,27 @@ add_executable(crossfire-server
 	types/trigger_button/trigger_button.cpp
 	types/trigger_pedestal/trigger_pedestal.cpp
 	types/weapon_improver/weapon_improver.cpp
+)
+add_executable(crossfire-server
     server/main.cpp
 )
-target_precompile_headers(crossfire-server PRIVATE include/global.h)
-target_compile_definitions(crossfire-server PRIVATE PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}")
-target_link_libraries(crossfire-server PUBLIC cross random_map_lib crypt)
+target_precompile_headers(cfserver PRIVATE include/global.h)
+target_compile_definitions(cfserver PRIVATE PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}")
+target_link_libraries(cfserver PUBLIC cross random_map_lib crypt)
+target_link_libraries(crossfire-server cfserver)
 install(TARGETS crossfire-server RUNTIME)
-install(TARGETS cross random_map_lib DESTINATION ${CMAKE_INSTALL_LIBDIR}/${CMAKE_PROJECT_NAME})
+install(TARGETS cross cfserver random_map_lib DESTINATION ${CMAKE_INSTALL_LIBDIR}/${CMAKE_PROJECT_NAME})
 install(DIRECTORY lib/config/ DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/${CMAKE_PROJECT_NAME}/example)
 install(DIRECTORY lib/i18n lib/help lib/wizhelp DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${CMAKE_PROJECT_NAME})
 
 if(METASERVER2)
     find_package(CURL REQUIRED)
     set(HAVE_LIBCURL TYPE INTERNAL ${CURL_FOUND})
-    target_include_directories(crossfire-server PRIVATE ${CURL_INCLUDE_DIRS})
-    target_link_libraries(crossfire-server PUBLIC ${CURL_LIBRARIES})
+    target_include_directories(cfserver PRIVATE ${CURL_INCLUDE_DIRS})
+    target_link_libraries(cfserver PUBLIC ${CURL_LIBRARIES})
 
     find_package(Threads)
-    target_link_libraries(crossfire-server PUBLIC Threads::Threads)
+    target_link_libraries(cfserver PUBLIC Threads::Threads)
 endif()
 # }}}
 
@@ -292,6 +296,11 @@ if(MAPPER)
     target_link_libraries(crossfire-mapper PUBLIC cross ${GD_LDFLAGS})
 endif()
 # }}}
+
+# tests
+if(TEST)
+    add_subdirectory(test)
+endif()
 
 include(CheckIncludeFiles)
 check_include_files(crypt.h HAVE_CRYPT_H)
