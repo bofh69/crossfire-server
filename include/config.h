@@ -513,7 +513,6 @@
  * highscore files and directories can be found.
  */
 #define MAPDIR          "maps"
-#define TEMPLATE_DIR    "template-maps"
 #define REGIONS         "regions.reg"
 #define OLD_HIGHSCORE   "highscore"
 #define HIGHSCORE_DIR   "highscores"

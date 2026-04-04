@@ -256,7 +256,6 @@ struct Settings {
     const char *mapdir;         /**< Where the map files are */
     const char *regions;        /**< Name of the regions file - libdir is prepended */
     const char *uniquedir;      /**< Directory for the unique items */
-    const char *templatedir;    /**< Directory for the template map */
     const char *tmpdir;         /**< Directory to use for temporary files */
     uint8_t   stat_loss_on_death; /**< If true, chars lose a random stat when they die */
     int16_t  pk_luck_penalty;    /**< Amount by which player luck is reduced if they PK */

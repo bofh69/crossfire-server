@@ -250,14 +250,6 @@ static void set_uniquedir(const char *path) {
 }
 
 /**
- * Command line option: set template path.
- * @param path new path.
- */
-static void set_templatedir(const char *path) {
-    settings.templatedir = path;
-}
-
-/**
  * Command line option: set player path.
  * @param path new path.
  */
@@ -421,7 +413,6 @@ static struct Command_Line_Options options[] = {
     { "-playerdir", 1, 1, (cmdlinefunc_args0)set_playerdir },
     { "-regions", 1, 1, (cmdlinefunc_args0)set_regions },
     { "-syslog", 1, 1, (cmdlinefunc_args0)set_syslog },
-    { "-templatedir", 1, 1, (cmdlinefunc_args0)set_templatedir },
     { "-tmpdir", 1, 1, (cmdlinefunc_args0)set_tmpdir },
     { "-uniquedir", 1, 1, (cmdlinefunc_args0)set_uniquedir },
     { "-v", 0, 1, (cmdlinefunc_args0)call_version },
@@ -1106,7 +1097,7 @@ void add_server_collect_hooks() {
  * writes to without checking that the directories already exist).
  */
 static void mklocaldirs() {
-    auto dirs = {"account", "maps", "players", "template-maps", "unique-items"};
+    auto dirs = {"account", "maps", "players", "unique-items"};
     std::string localdir(settings.localdir);
     try {
         std::filesystem::create_directories(localdir);

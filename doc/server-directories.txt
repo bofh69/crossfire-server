@@ -18,9 +18,8 @@ If both the flag and the envar are set, the envar takes precedence.
     localdir     -local        CROSSFIRE_LOCALDIR     absolute
     mapdir       -maps         CROSSFIRE_MAPDIR       relative to datadir or localdir
     playerdir    -playerdir    CROSSFIRE_PLAYERDIR    relative to localdir
-    templatedir  -tmpdir       CROSSFIRE_TEMPLATEDIR  relative to localdir
     uniquedir    -uniquedir    CROSSFIRE_UNIQUEDIR    relative to localdir
-    tmpdir       -templatedir  CROSSFIRE_TMPDIR       absolute
+    tmpdir       -tmpdir       CROSSFIRE_TMPDIR       absolute
     regions      -regions                             unused
 
 Paths marked "absolute" can, if you want, contain relative paths; in that case
@@ -76,13 +75,6 @@ playerdir
 Usually "players". Always relative to localdir.
 
 Holds per-player save data.
-
-
-templatedir
------------
-Usually "template-maps". Always relative to localdir.
-
-Holds maps generated at runtime and saved to disk. (I think. -TF)
 
 
 uniquedir

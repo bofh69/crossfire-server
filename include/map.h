@@ -331,7 +331,6 @@ struct mapstruct {
                                  * players entering/exiting map. */
     sstring reset_group;        /**< For reset purpose, all maps in the same group reset at the same time. */
     uint32_t  unique:1;           /**< If set, this is a per player unique map. */
-    uint32_t  is_template:1;         /**< If set, this is a template map. */
     uint32_t  nosmooth:1;         /**< If set the content of this map has smoothlevel=0 forced. */
     uint32_t  outdoor:1;          /**< True if an outdoor map. */
     int32_t  timeout;            /**< Swapout is set to this. */

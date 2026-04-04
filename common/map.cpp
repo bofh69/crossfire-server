@@ -133,26 +133,6 @@ void create_overlay_pathname(const char *name, char *buf, size_t size) {
 }
 
 /**
- * same as create_pathname(), but for the template maps.
- *
- * @param name
- * path of the template map.
- * @param buf
- * buffer that will contain the full path.
- * @param size
- * buf's length
- */
-void create_template_pathname(const char *name, char *buf, size_t size) {
-    /* Why?  having extra / doesn't confuse unix anyplace?  Dependancies
-     * someplace else in the code? msw 2-17-97
-     */
-    if (*name == '/')
-        snprintf(buf, size, "%s/%s%s", settings.localdir, settings.templatedir, name);
-    else
-        snprintf(buf, size, "%s/%s/%s", settings.localdir, settings.templatedir, name);
-}
-
-/**
  * This makes absolute path to the itemfile where unique objects
  * will be saved. Converts '/' to '@'.
  *
@@ -1129,7 +1109,7 @@ static int load_map_header(FILE *fp, mapstruct *m) {
         } else if (!strcmp(key, "unique")) {
             m->unique = atoi(value);
         } else if (!strcmp(key, "template")) {
-            m->is_template = atoi(value);
+            LOG(llevWarn, "template maps are no longer supported");
         } else if (!strcmp(key, "region")) {
             m->region = get_region_by_name(value);
         } else if (!strcmp(key, "shopitems")) {
@@ -1422,8 +1402,8 @@ int save_map(mapstruct *m, int flag) {
 
     PROFILE_BEGIN();
 
-    if (flag != SAVE_MODE_NORMAL || (m->unique) || (m->is_template)) {
-        if (!m->unique && !m->is_template) { /* flag is set */
+    if (flag != SAVE_MODE_NORMAL || (m->unique)) {
+        if (!m->unique) { /* flag is set */
             if (flag == SAVE_MODE_OVERLAY)
                 create_overlay_pathname(m->path, filename, MAX_BUF);
             else
@@ -1494,8 +1474,6 @@ int save_map(mapstruct *m, int flag) {
         fprintf(fp, "maplore\n%sendmaplore\n", m->maplore);
     if (m->unique)
         fprintf(fp, "unique %d\n", m->unique);
-    if (m->is_template)
-        fprintf(fp, "template %d\n", m->is_template);
     if (m->outdoor)
         fprintf(fp, "outdoor %d\n", m->outdoor);
     if (m->nosmooth)
@@ -1520,7 +1498,7 @@ int save_map(mapstruct *m, int flag) {
      * If unique map, save files in the proper destination (set by
      * player)
      */
-    if ((flag == SAVE_MODE_NORMAL || flag == SAVE_MODE_OVERLAY) && !m->unique && !m->is_template) {
+    if ((flag == SAVE_MODE_NORMAL || flag == SAVE_MODE_OVERLAY) && !m->unique) {
         char name[MAX_BUF], final_unique[sizeof(name) + 4];
 
         create_items_path(m->path, name, MAX_BUF);

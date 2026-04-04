@@ -9,7 +9,6 @@ md tmp
 md var
 md var\players
 md var\unique-items
-md var\template-maps
 md var\datafiles
 md share
 md share\help

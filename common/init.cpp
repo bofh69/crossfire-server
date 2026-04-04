@@ -150,7 +150,6 @@ struct Settings settings = {
     .mapdir = MAPDIR,
     .regions = REGIONS,
     .uniquedir = UNIQUE_DIR,
-    .templatedir = TEMPLATE_DIR,
     .tmpdir = TMPDIR,
     .stat_loss_on_death = STAT_LOSS_ON_DEATH,
     .pk_luck_penalty = PK_LUCK_PENALTY,
@@ -369,9 +368,6 @@ static void init_environ(void) {
     cp = getenv("CROSSFIRE_UNIQUEDIR");
     if (cp)
         settings.uniquedir = cp;
-    cp = getenv("CROSSFIRE_TEMPLATEDIR");
-    if (cp)
-        settings.templatedir = cp;
     cp = getenv("CROSSFIRE_TMPDIR");
     if (cp)
         settings.tmpdir = cp;
