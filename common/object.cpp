@@ -5099,8 +5099,6 @@ void get_ob_diff(StringBuffer *sb, const object *op, const object *op2) {
         FAST_SAVE_LONG(sb, "x ", op->x);
     if (op->y != op2->y)
         FAST_SAVE_LONG(sb, "y ", op->y);
-    if (op->elevation != op2->elevation)
-        FAST_SAVE_LONG(sb, "elevation ", op->elevation);
     if (op->speed != op2->speed) {
         FAST_SAVE_DOUBLE(sb, "speed ", op->speed);
     }
