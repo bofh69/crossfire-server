@@ -37,7 +37,7 @@ check_living_SOURCES = check_living.cpp
 check_loader_SOURCES = check_loader.cpp
 #check_logger_SOURCES = check_logger.cpp
 #check_los_SOURCES = check_los.cpp
-#check_map_SOURCES = check_map.cpp
+check_map_SOURCES = check_map.cpp
 check_mapsave_SOURCES = check_mapsave.cpp
 check_minheap_SOURCES = check_minheap.cpp
 check_object_SOURCES = check_object.cpp
@@ -57,7 +57,7 @@ check_utils_SOURCES = check_utils.cpp
 noinst_PROGRAMS += lightmap
 lightmap_SOURCES = lightmap.cpp
 
-TESTS= check_arch check_artifact check_friend check_holy check_image check_item check_living check_loader check_mapsave check_minheap check_object check_path check_readable check_recipe check_region check_shstr check_stringbuffer check_time check_treasure check_utils
+TESTS= check_arch check_artifact check_friend check_holy check_image check_item check_living check_loader check_map check_mapsave check_minheap check_object check_path check_readable check_recipe check_region check_shstr check_stringbuffer check_time check_treasure check_utils
 TESTS+= check_asset_load_write
 
 DISTCLEANFILES=	.autorun.xml

@@ -20,7 +20,7 @@ endfunction()
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(CHECK check REQUIRED)
 
-set(COMMON_TESTS check_arch check_artifact check_friend check_holy check_image check_item check_living check_loader check_mapsave check_minheap check_object check_path check_readable check_recipe check_region check_shstr check_stringbuffer check_time check_treasure check_utils check_asset_load_write)
+set(COMMON_TESTS check_arch check_artifact check_friend check_holy check_image check_item check_living check_loader check_map check_mapsave check_minheap check_object check_path check_readable check_recipe check_region check_shstr check_stringbuffer check_time check_treasure check_utils check_asset_load_write)
 
 set(SERVER_TESTS check_account check_account_char check_alchemy check_apply check_attack check_monster check_c_object comet_perf check_c_party check_shop check_swap check_monster_change check_player perf_tests)
 

@@ -30,19 +30,44 @@
  * This is the unit tests file for common/map.c
  */
 
+#include <stdio.h>
 #include <stdlib.h>
+
+#include "global.h"
+
 #include <check.h>
+#include "toolkit_common.h"
 
 void setup(void) {
-    /* put any initialisation steps here, they will be run before each testcase */
+    cctk_setdatadir(SOURCE_ROOT "lib");
+    cctk_setlog(LOGDIR "/unit/common/map.out");
+    cctk_init_std_archetypes();
 }
 
 void teardown(void) {
     /* put any cleanup steps here, they will be run after each testcase */
 }
 
-START_TEST(test_empty) {
-    /*TESTME test not yet developped*/
+START_TEST(test_map_save) {
+    /* Load a map, then save it and compare the two files. */
+    std::string map = "/world/world_105_115";
+    std::string dst = "check_map.out";
+    struct mapstruct *m = ready_map_name(map.c_str(), MAP_FLUSH); // do not set first_load
+    FILE *fp;
+    fp = fopen(dst.c_str(), "w");
+    ck_assert_ptr_nonnull(fp);
+    int res = save_map_to_stream(m, 0, fp, fp);
+    fclose(fp);
+    ck_assert_int_ge(res, 0);
+    std::string src = SOURCE_ROOT "lib/maps" + map;
+    // std::format() is only available in C++20...
+    std::string cmd = "cmp";
+    cmd += " ";
+    cmd += src;
+    cmd += " ";
+    cmd += dst;
+    int cmp = system(cmd.c_str());
+    ck_assert_int_eq(cmp, 0);
 }
 END_TEST
 
@@ -54,7 +79,7 @@ Suite *map_suite(void) {
     tcase_add_checked_fixture(tc_core, setup, teardown);
 
     suite_add_tcase(s, tc_core);
-    tcase_add_test(tc_core, test_empty);
+    tcase_add_test(tc_core, test_map_save);
 
     return s;
 }
