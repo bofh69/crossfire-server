@@ -5002,7 +5002,10 @@ void get_ob_diff(StringBuffer *sb, const object *op, const object *op2) {
         ADD_STRINGLINE_ENTRY(sb, "name ", op->name);
     }
     if (op->name_pl && op->name_pl != op2->name_pl) {
-        ADD_STRINGLINE_ENTRY(sb, "name_pl ", op->name_pl);
+        // The loader will set name_pl = name if there is no special plural name,
+        // so check for that when we save out.
+        if (op->name_pl != op->name)
+            ADD_STRINGLINE_ENTRY(sb, "name_pl ", op->name_pl);
     }
     if (op->anim_suffix && op->anim_suffix != op2->anim_suffix) {
         ADD_STRINGLINE_ENTRY(sb, "anim_suffix ", op->anim_suffix);
