@@ -210,6 +210,7 @@ extern int ob_blocked(const object *ob, mapstruct *m, int16_t x, int16_t y);
 extern mapstruct *get_linked_map(void);
 extern mapstruct *get_empty_map(int sizex, int sizey);
 extern mapstruct *mapfile_load(const char *map, int flags);
+extern int save_map_to_stream(mapstruct *m, int flag, FILE *fp, FILE *fp2);
 extern int save_map(mapstruct *m, int flag);
 extern void clean_object(object *op);
 extern void free_map(mapstruct *m);

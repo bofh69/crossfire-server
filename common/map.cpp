@@ -1375,63 +1375,16 @@ static void load_unique_objects(mapstruct *m) {
 }
 
 /**
- * Saves a map to file.  If flag is SAVE_MODE_INPLACE, it is saved into the same
- * file it was (originally) loaded from.  Otherwise a temporary
- * filename will be genarated, and the file will be stored there.
- * The temporary filename will be stored in the mapstructure.
- * If the map is unique, we also save to the filename in the map
- * (this should have been updated when first loaded)
- *
- * @param m
- * map to save.
- * @param flag
- * One of @ref SAVE_MODE_xxx "SAVE_MODE_xxx" values.
- * @return
- * one of @ref SAVE_ERROR_xxx "SAVE_ERROR_xxx" values.
+ * Save map to stream.
+ * @param m Map to save
+ * @param flag 0 or ::SAVE_MODE_OVERLAY
+ * @param fp Stream to save map header and regular objects
+ * @param fp2 Stream to save unique objects. Can be equal to fp to save all in one file.
  */
-int save_map(mapstruct *m, int flag) {
-    FILE *fp, *fp2;
-    OutputFile of, of2;
-    char filename[MAX_BUF], shop[MAX_BUF];
-    int i, res;
-
-    if (flag && !*m->path) {
-        LOG(llevError, "Tried to save map without path.\n");
-        return SAVE_ERROR_NO_PATH;
-    }
-
-    PROFILE_BEGIN();
-
-    if (flag != SAVE_MODE_NORMAL || (m->unique)) {
-        if (!m->unique) { /* flag is set */
-            if (flag == SAVE_MODE_OVERLAY)
-                create_overlay_pathname(m->path, filename, MAX_BUF);
-            else
-                create_pathname(m->path, filename, MAX_BUF);
-        } else {
-            if (m->path[0] != '~') {
-                LOG(llevError,
-                    "Cannot save unique map '%s' outside of LOCALDIR. Check "
-                    "that all exits to '%s' have FLAG_UNIQUE set correctly.\n",
-                    m->path, m->path);
-                return SAVE_ERROR_UCREATION;
-            }
-            snprintf(filename, sizeof(filename), "%s/%s/%s", settings.localdir, settings.playerdir, m->path+1);
-        }
-
-        make_path_to_file(filename);
-    } else {
-        if (!m->tmpname)
-            m->tmpname = tempnam(settings.tmpdir, NULL);
-        strlcpy(filename, m->tmpname, sizeof(filename));
-    }
+int save_map_to_stream(mapstruct *m, int flag, FILE *fp, FILE *fp2) {
     m->in_memory = MAP_SAVING;
 
-    fp = of_open(&of, filename);
-    if (fp == NULL)
-        return SAVE_ERROR_RCREATION;
-
-    /* legacy */
+    // map header
     fprintf(fp, "arch map\n");
     if (m->name)
         fprintf(fp, "name %s\n", m->name);
@@ -1447,6 +1400,7 @@ int save_map(mapstruct *m, int flag) {
     if (m->region)
         fprintf(fp, "region %s\n", m->region->name);
     if (m->shopitems) {
+        char shop[MAX_BUF];
         print_shop_string(m, shop, sizeof(shop));
         fprintf(fp, "shopitems %s\n", shop);
     }
@@ -1487,18 +1441,88 @@ int save_map(mapstruct *m, int flag) {
 
     /* Save any tiling information, except on overlays */
     if (flag != SAVE_MODE_OVERLAY)
-        for (i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
             if (m->tile_path[i])
                 fprintf(fp, "tile_path_%d %s\n", i+1, m->tile_path[i]);
 
     fprintf(fp, "end\n");
+
+    int res;
+    if (flag == SAVE_MODE_OVERLAY) {
+        /* SO_FLAG_NO_REMOVE is non destructive save, so map is still valid. */
+        res = save_objects(m, fp, fp2, SAVE_FLAG_NO_REMOVE);
+        m->in_memory = MAP_IN_MEMORY;
+    } else {
+        res = save_objects(m, fp, fp2, 0);
+        free_all_objects(m);
+    }
+    return res;
+}
+
+/**
+ * Saves a map to file.  If flag is SAVE_MODE_INPLACE, it is saved into the same
+ * file it was (originally) loaded from.  Otherwise a temporary
+ * filename will be genarated, and the file will be stored there.
+ * The temporary filename will be stored in the mapstructure.
+ * If the map is unique, we also save to the filename in the map
+ * (this should have been updated when first loaded)
+ *
+ * @param m
+ * map to save.
+ * @param flag
+ * One of @ref SAVE_MODE_xxx "SAVE_MODE_xxx" values.
+ * @return
+ * one of @ref SAVE_ERROR_xxx "SAVE_ERROR_xxx" values.
+ */
+int save_map(mapstruct *m, int flag) {
+    FILE *fp;
+    OutputFile of;
+    char filename[MAX_BUF];
+
+    if (flag && !*m->path) {
+        LOG(llevError, "Tried to save map without path.\n");
+        return SAVE_ERROR_NO_PATH;
+    }
+
+    PROFILE_BEGIN();
+
+    if (flag != SAVE_MODE_NORMAL || (m->unique)) {
+        if (!m->unique) { /* flag is set */
+            if (flag == SAVE_MODE_OVERLAY)
+                create_overlay_pathname(m->path, filename, MAX_BUF);
+            else
+                create_pathname(m->path, filename, MAX_BUF);
+        } else {
+            if (m->path[0] != '~') {
+                LOG(llevError,
+                    "Cannot save unique map '%s' outside of LOCALDIR. Check "
+                    "that all exits to '%s' have FLAG_UNIQUE set correctly.\n",
+                    m->path, m->path);
+                return SAVE_ERROR_UCREATION;
+            }
+            snprintf(filename, sizeof(filename), "%s/%s/%s", settings.localdir, settings.playerdir, m->path+1);
+        }
+
+        make_path_to_file(filename);
+    } else {
+        if (!m->tmpname)
+            m->tmpname = tempnam(settings.tmpdir, NULL);
+        strlcpy(filename, m->tmpname, sizeof(filename));
+    }
+
+    fp = of_open(&of, filename);
+    if (fp == NULL)
+        return SAVE_ERROR_RCREATION;
 
     /* In the game save unique items in the different file, but
      * in the editor save them to the normal map file.
      * If unique map, save files in the proper destination (set by
      * player)
      */
+    int res;
     if ((flag == SAVE_MODE_NORMAL || flag == SAVE_MODE_OVERLAY) && !m->unique) {
+        FILE *fp2;
+        OutputFile of2;
         char name[MAX_BUF], final_unique[sizeof(name) + 4];
 
         create_items_path(m->path, name, MAX_BUF);
@@ -1508,26 +1532,15 @@ int save_map(mapstruct *m, int flag) {
             of_cancel(&of);
             return SAVE_ERROR_UCREATION;
         }
-        if (flag == SAVE_MODE_OVERLAY) {
-            /* SO_FLAG_NO_REMOVE is non destructive save, so map is still valid. */
-            res = save_objects(m, fp, fp2, SAVE_FLAG_NO_REMOVE);
-            if (res < 0) {
-                LOG(llevError, "Save error during object save: %d\n", res);
-                of_cancel(&of);
-                of_cancel(&of2);
-                return res;
-            }
-            m->in_memory = MAP_IN_MEMORY;
-        } else {
-            res = save_objects(m, fp, fp2, 0);
-            if (res < 0) {
-                LOG(llevError, "Save error during object save: %d\n", res);
-                of_cancel(&of);
-                of_cancel(&of2);
-                return res;
-            }
-            free_all_objects(m);
+
+        res = save_map_to_stream(m, flag, fp, fp2);
+        if (res < 0) {
+            LOG(llevError, "Save error during object save: %d\n", res);
+            of_cancel(&of);
+            of_cancel(&of2);
+            return res;
         }
+
         if (ftell(fp2) == 0) {
             of_cancel(&of2);
             /* If there are no unique items left on the map, we need to
@@ -1542,18 +1555,17 @@ int save_map(mapstruct *m, int flag) {
             }
 
             if (chmod(final_unique, SAVE_MODE) != 0) {
-                LOG(llevError, "Could not set permissions on '%s'\n",
-                        final_unique);
+                LOG(llevError, "Could not set permissions on '%s'\n", final_unique);
             }
         }
-    } else { /* save same file when not playing, like in editor */
-        res = save_objects(m, fp, fp, 0);
-        if (res < 0) {
-            LOG(llevError, "Save error during object save: %d\n", res);
-            of_cancel(&of);
-            return res;
-        }
-        free_all_objects(m);
+    } else {
+        res = save_map_to_stream(m, flag, fp, fp);
+    }
+
+    if (res < 0) {
+        LOG(llevError, "Save error during object save: %d\n", res);
+        of_cancel(&of);
+        return res;
     }
 
     if (!of_close(&of))
