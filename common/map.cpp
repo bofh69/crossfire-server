@@ -1430,20 +1430,21 @@ int save_map_to_stream(mapstruct *m, int flag, FILE *fp, FILE *fp2) {
         fprintf(fp, "unique %d\n", m->unique);
     if (m->outdoor)
         fprintf(fp, "outdoor %d\n", m->outdoor);
-    if (m->nosmooth)
-        fprintf(fp, "nosmooth %d\n", m->nosmooth);
-    if (m->last_reset_time)
-        fprintf(fp, "first_load %ld\n", m->last_reset_time);
-    if (m->background_music)
-        fprintf(fp, "background_music %s\n", m->background_music);
-    if (m->reset_group)
-        fprintf(fp, "reset_group %s\n", m->reset_group);
 
     /* Save any tiling information, except on overlays */
     if (flag != SAVE_MODE_OVERLAY)
         for (int i = 0; i < 4; i++)
             if (m->tile_path[i])
                 fprintf(fp, "tile_path_%d %s\n", i+1, m->tile_path[i]);
+
+    if (m->nosmooth)
+        fprintf(fp, "nosmooth %d\n", m->nosmooth);
+    if (m->background_music)
+        fprintf(fp, "background_music %s\n", m->background_music);
+    if (m->last_reset_time)
+        fprintf(fp, "first_load %ld\n", m->last_reset_time);
+    if (m->reset_group)
+        fprintf(fp, "reset_group %s\n", m->reset_group);
 
     fprintf(fp, "end\n");
 
