@@ -350,7 +350,7 @@ extern FILE *tempnam_secure(const char *dir, const char *pfx, char **filename);
 extern void remove_directory(const char *path);
 extern int ihypot(int a, int b);
 extern int isqrt(int n);
-extern void make_path_to_file(const char *filename);
+extern bool make_path_to_file(const char *filename);
 /* player.cpp */
 extern void clear_player(player *pl);
 extern void free_player(player *pl);

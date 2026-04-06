@@ -32,8 +32,6 @@
 #include <strings.h>
 #endif
 
-#include <filesystem>
-
 #include "loader.h"
 #include "version.h"
 #include "server.h"
@@ -1097,16 +1095,12 @@ void add_server_collect_hooks() {
  * writes to without checking that the directories already exist).
  */
 static void mklocaldirs() {
-    auto dirs = {"account", "maps", "players", "unique-items"};
+    auto dirs = {"", "/account", "/maps", "/players", "/unique-items"};
     std::string localdir(settings.localdir);
-    try {
-        std::filesystem::create_directories(localdir);
-        for (auto dir : dirs) {
-            std::filesystem::create_directories(localdir + "/" + dir);
-        }
-    } catch (std::filesystem::filesystem_error e) {
-        LOG(llevError, "Could not create server save directories in %s (%s). Some server state may fail to save.\n",
-                settings.localdir, e.what());
+    for (auto dir : dirs) {
+        if (!make_path_to_file((localdir + "/" + dir).c_str()))
+            LOG(llevError, "Could not create server save directories in %s (%s). Some server state may fail to save.\n",
+                settings.localdir, dir);
     }
 }
 

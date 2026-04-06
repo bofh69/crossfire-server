@@ -157,16 +157,17 @@ void remove_directory(const char *path) {
  *
  * @param filename
  * file path we'll want to access. Can be NULL.
+ * @return true on success (including filename NULL or empty), false if error.
  *
  * @note
  * will LOG() to debug and error.
  */
-void make_path_to_file(const char *filename) {
+bool make_path_to_file(const char *filename) {
     char buf[MAX_BUF], *cp = buf;
     struct stat statbuf;
 
     if (!filename || !*filename)
-        return;
+        return true;
 
     safe_strncpy(buf, filename, sizeof(buf));
     while ((cp = strchr(cp+1, (int)'/'))) {
@@ -179,11 +180,13 @@ void make_path_to_file(const char *filename) {
             if (mkdir(buf, SAVE_DIR_MODE)) {
 #endif
                 LOG(llevError, "Cannot mkdir %s: %s\n", buf, strerror(errno));
-                return;
+                return false;
             }
         }
         *cp = '/';
     }
+
+    return true;
 }
 
 /**
