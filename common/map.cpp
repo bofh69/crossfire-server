@@ -708,19 +708,12 @@ void load_objects(mapstruct *m, FILE *fp, int mapflags) {
  * one of @ref SAVE_ERROR_xxx "SAVE_ERROR_xxx" value.
  */
 int save_objects(mapstruct *m, FILE *fp, FILE *fp2, int flag) {
-    int i, j = 0, unique = 0;
     unsigned int count = 0;
-
-    StringBuffer *sb = stringbuffer_new();
-    StringBuffer *sb2 = stringbuffer_new();
-
-    long serialize_time, write_time;
-
+    long serialize_time;
     PROFILE_BEGIN();
-
-    for (i = 0; i < MAP_WIDTH(m); i++) {
-        for (j = 0; j < MAP_HEIGHT(m); j++) {
-            unique = 0;
+    for (int i = 0; i < MAP_WIDTH(m); i++) {
+        for (int j = 0; j < MAP_HEIGHT(m); j++) {
+            int unique = 0; //< 1 if this tile should be saved
             FOR_MAP_PREPARE(m, i, j, op) {
                 if (QUERY_FLAG(op, FLAG_IS_FLOOR) && QUERY_FLAG(op, FLAG_UNIQUE))
                     unique = 1;
@@ -733,29 +726,28 @@ int save_objects(mapstruct *m, FILE *fp, FILE *fp2, int flag) {
                 if (op->head || object_get_owner(op) != NULL)
                     continue;
 
+                FILE *dst = NULL; // fp, fp2, or NULL depending on if object is unique
                 if (unique || QUERY_FLAG(op, FLAG_UNIQUE)) {
-                    save_object_in_sb(sb2, op, SAVE_FLAG_SAVE_UNPAID|SAVE_FLAG_NO_REMOVE);
-                    count++ ;
-                } else if (flag == 0
-                    || (flag == SAVE_FLAG_NO_REMOVE && (!QUERY_FLAG(op, FLAG_OBJ_ORIGINAL) && !QUERY_FLAG(op, FLAG_UNPAID)))) {
-                        save_object_in_sb(sb, op, SAVE_FLAG_SAVE_UNPAID|SAVE_FLAG_NO_REMOVE);
-                        count++;
+                    dst = fp2;
+                } else if (flag == 0 || (flag == SAVE_FLAG_NO_REMOVE && (!QUERY_FLAG(op, FLAG_OBJ_ORIGINAL) && !QUERY_FLAG(op, FLAG_UNPAID)))) {
+                    dst = fp;
+                } else {
+                    // Don't save
+                    continue;
                 }
+
+                StringBuffer *sb = stringbuffer_new();
+                save_object_in_sb(sb, op, SAVE_FLAG_SAVE_UNPAID|SAVE_FLAG_NO_REMOVE);
+                count++;
+                char *cp = stringbuffer_finish(sb);
+                fputs(cp, dst);
+                free(cp);
             } FOR_MAP_FINISH(); /* for this space */
         } /* for this j */
     }
     PROFILE_END(diff, serialize_time = diff);
 
-    PROFILE_BEGIN();
-    char *cp = stringbuffer_finish(sb);
-    char *cp2 = stringbuffer_finish(sb2);
-    fputs(cp, fp);
-    fputs(cp2, fp2);
-    free(cp);
-    free(cp2);
-    PROFILE_END(diff, write_time = diff);
-
-    LOG(llevDebug, "saved %d objects on %s (%ld us serializing, %ld us writing)\n", count, m->path, serialize_time, write_time);
+    LOG(llevDebug, "saved %d objects on %s (%ld us)\n", count, m->path, serialize_time);
     return 0;
 }
 
