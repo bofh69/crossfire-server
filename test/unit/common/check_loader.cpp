@@ -72,7 +72,7 @@ START_TEST(test_get_ob_diff) {
     buf = stringbuffer_new();
     get_ob_diff(buf, orc, &arch->clone);
     result = stringbuffer_finish(buf);
-    FAIL_UNLESS(result && strcmp(result, "name Orc chief\nspeed 0.500000\n") == 0, "diff modified obj/clone was %s!", result);
+    FAIL_UNLESS(result && strcmp(result, "name Orc chief\nspeed 0.5\n") == 0, "diff modified obj/clone was %s!", result);
     free(result);
 
     orc->stats.hp = 50;
@@ -83,7 +83,7 @@ START_TEST(test_get_ob_diff) {
     buf = stringbuffer_new();
     get_ob_diff(buf, orc, &arch->clone);
     result = stringbuffer_finish(buf);
-    FAIL_UNLESS(result && strcmp(result, "name Orc chief\nWis 59\nhp 50\nexpmul 8.500000\ndam 168\nspeed 0.500000\n") == 0, "2n diff modified obj/clone was %s!", result);
+    FAIL_UNLESS(result && strcmp(result, "name Orc chief\nWis 59\nhp 50\nexpmul 8.5\ndam 168\nspeed 0.5\n") == 0, "2n diff modified obj/clone was %s!", result);
     free(result);
 }
 END_TEST

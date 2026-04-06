@@ -4933,7 +4933,7 @@ static inline void FAST_SAVE_LONG(StringBuffer *sb, const char *name, const long
 
 /** Adds a double to the buffer. name must have a space at the end. */
 static inline void FAST_SAVE_DOUBLE(StringBuffer *sb, const char *name, const double value) {
-    stringbuffer_append_printf(sb, "%s%f\n", name, value);
+    stringbuffer_append_printf(sb, "%s%g\n", name, value);
 }
 
 /**
