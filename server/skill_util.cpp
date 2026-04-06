@@ -411,7 +411,7 @@ struct do_skill_cb_data {
     const char *string;
 };
 
-bool do_skill_cb(player *pl, void *data) {
+bool do_skill_cb(player * /*pl*/, void *data) {
     struct do_skill_cb_data *args = (struct do_skill_cb_data *)data;
     do_skill(args->op, args->part, args->skill, args->dir, args->string);
     return true;
