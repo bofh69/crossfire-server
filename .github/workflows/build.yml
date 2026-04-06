@@ -2,31 +2,29 @@ name: Build
 
 on:
   push:
-    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
 jobs:
-  build-automake:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v6
     - name: install deps
-      run: sudo apt install libcurl4 libcurl4-openssl-dev libgd-dev libgd-tools
+      run: sudo apt install check libcurl4 libcurl4-openssl-dev libgd-dev libgd-tools
     - name: autoconf
       run: autoreconf -i
     - name: configure
-      run: ./configure --enable-gcc-pch --disable-collect --disable-check --enable-mapper
-    - name: make
-      run: make -j $(nproc)
-
-  build-cmake:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v6
-    - name: install deps
-      run: sudo apt install libcurl4 libcurl4-openssl-dev libgd-dev libgd-tools
-    - name: configure
-      run: cmake -G Ninja .
+      run: ./configure --enable-gcc-pch --disable-collect --enable-mapper
     - name: build
+      run: make -j $(nproc)
+    - name: run cmake
+      run: cmake -G Ninja . -DTEST=ON
+    - name: cmake build
       run: cmake --build .
+    - name: fetch arch
+      run: git clone --depth=1 https://git.code.sf.net/p/crossfire/crossfire-arch lib/arch
+    - name: fetch maps
+      run: git clone --depth=1 https://git.code.sf.net/p/crossfire/crossfire-maps lib/maps
+    - name: test
+      run: cd test && ctest -j --output-on-failure
