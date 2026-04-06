@@ -4817,8 +4817,7 @@ static void command_weather (object *op, const char *params) {
 // Event/command handler ids start at 1, so 0 is an unset flag.
 static event_registration global_map_handler = 0,
                           global_clock_handler = 0,
-                          global_object_handler = 0,
-                          global_mapload_handler = 0;
+                          global_object_handler = 0;
 
 static command_registration command_handler = 0;
 
@@ -4923,7 +4922,6 @@ void cfweather_init(Settings *settings, ServerSettings *serv) {
     // Connect the events after initialization, since we don't need to do
     // precipitation when we're initializing.
     global_map_handler = events_register_global_handler(EVENT_MAPREADY, weather_listener);
-    //global_mapload_handler = events_register_global_handler(EVENT_MAPLOAD, weather_listener);
     global_clock_handler = events_register_global_handler(EVENT_CLOCK, weather_clock_listener);
     global_object_handler = events_register_global_handler(EVENT_TIME, weather_object_listener);
     // Register the 'weather command
