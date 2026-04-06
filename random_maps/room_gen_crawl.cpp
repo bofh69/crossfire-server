@@ -38,6 +38,11 @@
 // Mask of all the directions
 #define MAP_CRAWL_ALL  15
 
+// Define to dump the layout of the internal paths determination, for debug purposes
+//#define DEBUG_CRAWL
+
+
+#ifdef DEBUG_CRAWL
 /**
  * Function for helping to ensure parity between the compartmentalized
  * and final versions of the map.
@@ -111,6 +116,7 @@ static void print_debug_paths(uint8_t *paths, int x_eff, int y_eff) {
 		printf("\n");
 	}
 }
+#endif
 
 /**
  * Generator of the crawl maze
@@ -314,8 +320,9 @@ char **map_gen_crawl(int xsize, int ysize, int iter, int hallway) {
 		return map_gen_crawl(xsize, ysize, 1, hallway);
 	}
 
-	// Temp debugging of paths
-	// print_debug_paths(paths, x_eff, y_eff);
+#ifdef DEBUG_CRAWL
+	print_debug_paths(paths, x_eff, y_eff);
+#endif
 
 	// Translate our generation onto the actual random map.
 
