@@ -532,7 +532,7 @@ static int worldmap_to_weathermap(const int x, const int y, int * const wx, int 
  * If none are found, returns NULL
  */
 static object *avoid_weather(int * const av, const mapstruct *m, const int x, const int y, int * const gs, const int grow) {
-    int avoid, gotsnow, i;
+    int avoid, gotsnow;
     object *tmp, *snow = NULL;
     const weather_avoids_t *cur;
 
@@ -1202,7 +1202,7 @@ static void spin_globe() {
  */
 static int humid_tile(const int x, const int y, const int dark) {
     // ox and oy denote the neighbor that is influencing us (due to winds from there)
-    int ox = x, oy = y, humid, evap, tempeffect, lightness;
+    int ox = x, oy = y, humid, evap, tempeffect;
 
     /* find the square the wind is coming from, without going out of bounds */
 
@@ -1581,10 +1581,10 @@ static void do_map_precipitation(mapstruct * const m) {
  * map we are currently processing. Must be a world map.
  */
 static void let_it_snow(mapstruct * const m) {
-    int x, y, i, wx, wy;
+    int x, y, wx, wy;
     int nx, ny, j, d;
-    int avoid, temp, sky, gotsnow, found, nodstk;
-    object *ob, *tmp, *oldsnow, *topfloor;
+    int avoid, temp, sky, gotsnow, nodstk;
+    object *tmp, *oldsnow, *topfloor;
     archetype *at, *doublestack, *doublestack2;
 
     sstring dungmag = find_string("dungeon_magic");
@@ -1610,7 +1610,6 @@ static void let_it_snow(mapstruct * const m) {
             }
             /* we use the unjittered coordinates */
             (void)worldmap_to_weathermap(nx, ny, &wx, &wy, m);
-            ob = NULL;
             at = NULL;
             doublestack = NULL;
             /* this will definately need tuning */
@@ -1779,10 +1778,10 @@ static void let_it_snow(mapstruct * const m) {
  * map we are currently processing.
  */
 static void singing_in_the_rain(mapstruct * const m) {
-    int x, y, i, wx, wy;
+    int x, y, wx, wy;
     int nx, ny, d, j;
     int avoid, temp, sky, gotsnow, /*found,*/ nodstk;
-    object *ob, *tmp, *oldsnow, *topfloor;
+    object *tmp, *oldsnow, *topfloor;
     archetype *at, *doublestack, *doublestack2;
 
     sstring dungmag = find_string("dungeon_magic");
@@ -1810,7 +1809,6 @@ static void singing_in_the_rain(mapstruct * const m) {
             }
             /* we use the unjittered coordinates */
             (void)worldmap_to_weathermap(nx, ny, &wx, &wy, m);
-            ob = NULL;
             at = NULL;
             doublestack = NULL;
             avoid = 0;
@@ -1973,22 +1971,19 @@ static void singing_in_the_rain(mapstruct * const m) {
  */
 static void plant_a_garden(mapstruct *const m) {
     int x, y, i, wx, wy;
-    int avoid, two, temp, sky, gotsnow, found, days;
-    object *ob, *tmp;
+    int avoid, temp, gotsnow, found, days;
+    object *tmp;
     archetype *at;
 
     days = todtick/HOURS_PER_DAY;
     for (x = 0; x < wset.worldmaptilesizex; x++) {
         for (y = 0; y < wset.worldmaptilesizey; y++) {
             (void)worldmap_to_weathermap(x, y, &wx, &wy, m);
-            ob = NULL;
             at = NULL;
             avoid = 0;
-            two = 0;
             gotsnow = 0;
             /*temp = real_world_temperature(x, y, m);*/
             temp = weathermap[wx][wy].realtemp;
-            sky = weathermap[wx][wy].sky;
             (void)avoid_weather(&avoid, m, x, y, &gotsnow, 1);
             if (!avoid) {
                 found = 0;
@@ -2073,8 +2068,8 @@ static void plant_a_garden(mapstruct *const m) {
 static void change_the_world(mapstruct * const m) {
     int x, y, i, wx, wy;
     int nx, ny, j, d;
-    int avoid, two, temp, sky, gotsnow, found, days;
-    object *ob, *tmp, *doublestack;
+    int avoid, temp, gotsnow, found, days;
+    object *tmp, *doublestack;
     archetype *at, *dat;
 
     days = todtick/HOURS_PER_DAY;
@@ -2099,15 +2094,12 @@ static void change_the_world(mapstruct * const m) {
             }
             /* we use the unjittered coordinates */
             (void)worldmap_to_weathermap(nx, ny, &wx, &wy, m);
-            ob = NULL;
             at = NULL;
             dat = NULL;
             avoid = 0;
-            two = 0;
             gotsnow = 0;
             /*temp = real_world_temperature(x, y, m);*/
             temp = weathermap[wx][wy].realtemp;
-            sky = weathermap[wx][wy].sky;
             (void)avoid_weather(&avoid, m, x, y, &gotsnow, 1);
             if (!avoid) {
                 for (i = 0; weather_tile[i].herb != NULL; i++) {
@@ -2712,9 +2704,8 @@ static int load_humidity_map_part(mapstruct **m, const int dir, const int x, con
 static int do_water_elev_calc(mapstruct * const m, const int x, const int y, int * const water, int64_t * const elev, int * const trees) {
     if (!m || !water || !elev || !trees)
         return -1;
-    object *ob = GET_MAP_OB(m, x, y), *obtmp;
+    object *ob = GET_MAP_OB(m, x, y);
     if (ob) {
-        DensityConfig *tmp;
         if (QUERY_FLAG(ob, FLAG_IS_WATER)) {
             (*water)++;
         }
@@ -3563,7 +3554,7 @@ int write_weather_images() {
     FILE *fp;
     OutputFile of;
     int x, y;
-    int32_t min[8], max[8], avgrain, avgwind, realmaxwind;
+    int32_t min[8], max[8], avgrain, avgwind;
     double scale[8], realscalewind;
     uint8_t pixels[3*3*WEATHERMAPTILESX];
     int64_t total_rainfall = 0;
@@ -3612,7 +3603,6 @@ int write_weather_images() {
     avgwind = (total_wind   /(WEATHERMAPTILESX*WEATHERMAPTILESY));
     max[2] = avgrain-1;
     realscalewind = 255.0l/(max[4]);
-    realmaxwind = max[4];
     max[4] = avgwind-1;
     for (x = 0; x < 8; x++) {
         scale[x] = 255.0l/(max[x]-min[x]);
@@ -4640,7 +4630,7 @@ static int weather_object_listener(int *type, ...) {
  * @param params
  * unused.
  */
-static void command_weather (object *op, const char *params) {
+static void command_weather (object *op, const char * /*params*/) {
     int wx, wy, temp, sky;
     const char *buf;
 
