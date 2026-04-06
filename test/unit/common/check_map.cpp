@@ -41,6 +41,7 @@
 void setup(void) {
     cctk_setdatadir(SOURCE_ROOT "lib");
     cctk_setlog(LOGDIR "/unit/common/map.out");
+    init_experience(); // need level table to load some maps
     cctk_init_std_archetypes();
 }
 
@@ -48,11 +49,25 @@ void teardown(void) {
     /* put any cleanup steps here, they will be run after each testcase */
 }
 
-START_TEST(test_map_save) {
-    /* Load a map, then save it and compare the two files. */
-    std::string map = "/world/world_105_115";
+/**
+ * Compare two files (by path) for equality.
+ */
+int cmp(std::string src, std::string dst) {
+    // std::format() is only available in C++20...
+    std::string cmd = "cmp";
+    cmd += " ";
+    cmd += src;
+    cmd += " ";
+    cmd += dst;
+    return system(cmd.c_str());
+}
+
+/**
+ * Load a map, then save it and compare the two files.
+ */
+void test_load_save_regular_map(std::string map) {
     std::string dst = "check_map.out";
-    struct mapstruct *m = ready_map_name(map.c_str(), MAP_FLUSH); // do not set first_load
+    struct mapstruct *m = ready_map_name(map.c_str(), MAP_FLUSH); // load from scratch
     FILE *fp;
     fp = fopen(dst.c_str(), "w");
     ck_assert_ptr_nonnull(fp);
@@ -60,14 +75,14 @@ START_TEST(test_map_save) {
     fclose(fp);
     ck_assert_int_ge(res, 0);
     std::string src = SOURCE_ROOT "lib/maps" + map;
-    // std::format() is only available in C++20...
-    std::string cmd = "cmp";
-    cmd += " ";
-    cmd += src;
-    cmd += " ";
-    cmd += dst;
-    int cmp = system(cmd.c_str());
-    ck_assert_int_eq(cmp, 0);
+    ck_assert_int_eq(cmp(src, dst), 0);
+}
+
+START_TEST(test_map_save) {
+    test_load_save_regular_map("/world/world_104_115");
+    test_load_save_regular_map("/world/world_104_116");
+    test_load_save_regular_map("/world/world_105_115");
+    //test_load_save_regular_map("/world/world_105_116");
 }
 END_TEST
 
