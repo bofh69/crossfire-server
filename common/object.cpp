@@ -5151,8 +5151,7 @@ void get_ob_diff(StringBuffer *sb, const object *op, const object *op2) {
     }
     if (op->value != op2->value)
         FAST_SAVE_LONG(sb, "value ", op->value);
-    if (op->carrying != op2->carrying)
-        FAST_SAVE_LONG(sb, "carrying ", op->carrying);
+    // op->carrying is always recomputed at load, so don't save it
     if (op->weight != op2->weight)
         FAST_SAVE_LONG(sb, "weight ", op->weight);
     if (op->invisible != op2->invisible)
