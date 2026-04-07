@@ -1165,7 +1165,6 @@ void init(int argc, char **argv) {
         // binary name in argv[0]. If that is not there, assume we are running
         // as a test and don't create sockets.
         init_server();
-        init_ws_server();
     } else {
         LOG(llevInfo, "Running server in test mode (no sockets).\n");
     }

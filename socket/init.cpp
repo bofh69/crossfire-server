@@ -390,85 +390,71 @@ void init_server(void) {
         LOG(llevError, "init_server: can't open any listening socket\n");
         fatal(SEE_LAST_ERROR);
     }
-}
-
-/*******************************************************************************
- *
- * Start of functions dealing with freeing of the data.
- *
- ******************************************************************************/
-
-/**
- * Open WebSocket listening sockets on settings.ws_port and append them to the
- * global init_sockets array.  Does nothing if settings.ws_port is 0.
- */
-void init_ws_server(void) {
-    if (settings.ws_port <= 0)
-        return;
 
 #ifdef HAVE_GETADDRINFO
-    struct addrinfo hints, *ai, *ai_p;
-    char buf[32];
-    int e, ok, count, base;
+    if (settings.ws_port > 0) {
+        struct addrinfo ws_hints, *ws_ai, *ws_ai_p;
+        char ws_buf[32];
+        int ws_count, ws_base, ws_ok;
 
-    memset(&hints, '\0', sizeof(hints));
-    hints.ai_flags    = AI_PASSIVE | AI_ADDRCONFIG;
-    hints.ai_socktype = SOCK_STREAM;
-    snprintf(buf, sizeof(buf), "%d", settings.ws_port);
-    e = getaddrinfo(NULL, buf, &hints, &ai);
-    if (e != 0) {
-        LOG(llevError, "init_ws_server: getaddrinfo: %s\n", gai_strerror(e));
-        return;
-    }
+        memset(&ws_hints, '\0', sizeof(ws_hints));
+        ws_hints.ai_flags    = AI_PASSIVE | AI_ADDRCONFIG;
+        ws_hints.ai_socktype = SOCK_STREAM;
+        snprintf(ws_buf, sizeof(ws_buf), "%d", settings.ws_port);
+        e = getaddrinfo(NULL, ws_buf, &ws_hints, &ws_ai);
+        if (e != 0) {
+            LOG(llevError, "init_server: getaddrinfo (WebSocket): %s\n", gai_strerror(e));
+        } else {
+            ws_count = 0;
+            for (ws_ai_p = ws_ai; ws_ai_p != NULL; ws_ai_p = ws_ai_p->ai_next)
+                ws_count++;
 
-    count = 0;
-    for (ai_p = ai; ai_p != NULL; ai_p = ai_p->ai_next)
-        count++;
+            ws_base = socket_info.allocated_sockets;
+            init_sockets = static_cast<socket_struct *>(
+                realloc(init_sockets, sizeof(socket_struct) * (ws_base + ws_count)));
+            if (!init_sockets)
+                fatal(OUT_OF_MEMORY);
 
-    base = socket_info.allocated_sockets;
-    init_sockets = static_cast<socket_struct *>(
-        realloc(init_sockets, sizeof(socket_struct) * (base + count)));
-    if (!init_sockets)
-        fatal(OUT_OF_MEMORY);
+            for (int j = ws_base; j < ws_base + ws_count; j++) {
+                memset(&init_sockets[j], 0, sizeof(socket_struct));
+                init_sockets[j].listen = static_cast<listen_info *>(
+                    calloc(sizeof(struct listen_info), 1));
+                init_sockets[j].faces_sent   = NULL;
+                init_sockets[j].account_name = NULL;
+                init_sockets[j].is_websocket = true;
+            }
 
-    for (int i = base; i < base + count; i++) {
-        memset(&init_sockets[i], 0, sizeof(socket_struct));
-        init_sockets[i].listen = static_cast<listen_info *>(
-            calloc(sizeof(struct listen_info), 1));
-        init_sockets[i].faces_sent   = NULL;
-        init_sockets[i].account_name = NULL;
-        init_sockets[i].is_websocket = true;
-    }
+            {
+                int j = ws_base;
+                for (ws_ai_p = ws_ai; ws_ai_p != NULL; ws_ai_p = ws_ai_p->ai_next, j++) {
+                    init_sockets[j].listen->family   = ws_ai_p->ai_family;
+                    init_sockets[j].listen->socktype = ws_ai_p->ai_socktype;
+                    init_sockets[j].listen->protocol = ws_ai_p->ai_protocol;
+                    init_sockets[j].listen->addrlen  = ws_ai_p->ai_addrlen;
+                    init_sockets[j].listen->addr =
+                        static_cast<sockaddr *>(malloc(ws_ai_p->ai_addrlen));
+                    memcpy(init_sockets[j].listen->addr, ws_ai_p->ai_addr, ws_ai_p->ai_addrlen);
+                }
+            }
+            freeaddrinfo(ws_ai);
 
-    {
-        int i = base;
-        for (ai_p = ai; ai_p != NULL; ai_p = ai_p->ai_next, i++) {
-            init_sockets[i].listen->family   = ai_p->ai_family;
-            init_sockets[i].listen->socktype = ai_p->ai_socktype;
-            init_sockets[i].listen->protocol = ai_p->ai_protocol;
-            init_sockets[i].listen->addrlen  = ai_p->ai_addrlen;
-            init_sockets[i].listen->addr =
-                static_cast<sockaddr *>(malloc(ai_p->ai_addrlen));
-            memcpy(init_sockets[i].listen->addr, ai_p->ai_addr, ai_p->ai_addrlen);
+            ws_ok = 0;
+            for (int j = ws_base; j < ws_base + ws_count; j++) {
+                init_listening_socket(&init_sockets[j]);
+                if (init_sockets[j].fd != -1)
+                    ws_ok = 1;
+            }
+            socket_info.allocated_sockets = ws_base + ws_count;
+
+            if (!ws_ok)
+                LOG(llevError, "init_server: could not open any WebSocket listening socket\n");
+            else
+                LOG(llevInfo, "WebSocket server listening on port %d\n", settings.ws_port);
         }
     }
-    freeaddrinfo(ai);
-
-    ok = 0;
-    for (int i = base; i < base + count; i++) {
-        init_listening_socket(&init_sockets[i]);
-        if (init_sockets[i].fd != -1)
-            ok = 1;
-    }
-    socket_info.allocated_sockets = base + count;
-
-    if (!ok)
-        LOG(llevError, "init_ws_server: could not open any WebSocket listening socket\n");
-    else
-        LOG(llevInfo, "WebSocket server listening on port %d\n", settings.ws_port);
 #else
-    LOG(llevError,
-        "init_ws_server: getaddrinfo not available, WebSocket port ignored\n");
+    if (settings.ws_port > 0)
+        LOG(llevError, "init_server: getaddrinfo not available, WebSocket port ignored\n");
 #endif
 }
 

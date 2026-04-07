@@ -35,12 +35,6 @@ struct socket_struct;
 struct SockList;
 
 /**
- * Create a WebSocket listening socket and add it to the server socket array.
- * Uses settings.ws_port as the port number.  Does nothing if ws_port == 0.
- */
-void init_ws_server(void);
-
-/**
  * Attempt to complete the WebSocket HTTP Upgrade handshake for a socket that
  * is in the WS_HTTP state.  Reads available data from the socket and, once a
  * complete HTTP request has been received, sends the HTTP 101 response and
