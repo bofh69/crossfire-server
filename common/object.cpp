@@ -49,6 +49,8 @@
                               : "=&r" (__cnt), "=r" (__tmp)                   \
                               : "rm" (word), "1" (-1));                       \
                            __cnt + 1; }))
+#elif defined(_WIN32)
+#   define ffs(word) __builtin_ffs(word)
 #endif
 
 static int compare_ob_value_lists_one(const object *, const object *);
