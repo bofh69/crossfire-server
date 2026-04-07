@@ -2,7 +2,9 @@ pkglib_LTLIBRARIES = libcross.la
 
 libcross_la_SOURCES = \
 	anim.cpp \
-	arch.cpp\
+	arch.cpp \
+	base64.cpp \
+	sha1.cpp \
 	arch_types_valid.cpp \
 	artifact.cpp \
 	assets/AnimationWriter.cpp \
