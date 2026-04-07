@@ -31,27 +31,35 @@
 #define LO_NEWFILE 2
 
 static void generate_map(char *OutFileName) {
-    RMParms rp;
-    mapstruct *newMap;
-
-    fprintf(stderr, "Reading parameters from stdin...\n");
-
-    /* Initialize parameters and set initial settings. */
-    memset(&rp, 0, sizeof(RMParms));
-    rp.Xsize = -1;
-    rp.Ysize = -1;
-
     /* Initialize Crossfire library. */
     init_globals();
+    settings.debug = llevWarn; // suppress asset loading message
     init_library();
     init_readable();
     init_gods();
 
+    /* Initialize parameters and set initial settings. */
+    RMParms rp;
+    memset(&rp, 0, sizeof(RMParms));
+    rp.Xsize = -1;
+    rp.Ysize = -1;
+
     load_parameters(stdin, LO_NEWFILE, &rp);
     fclose(stdin);
 
-    newMap = generate_random_map(OutFileName, &rp, NULL, NULL);
-    save_map(newMap, SAVE_MODE_INPLACE);
+    mapstruct *newMap = generate_random_map(OutFileName, &rp, NULL, NULL);
+    FILE *fp;
+    if (strcmp(OutFileName, "-") == 0) {
+        fp = stdout;
+    } else {
+        fp = fopen(OutFileName, "w");
+        if (fp == NULL) {
+            perror("failed to open output file");
+            return;
+        }
+    }
+    save_map_to_stream(newMap, SAVE_MODE_NORMAL, fp, fp);
+    fclose(fp);
 }
 
 /**
@@ -137,12 +145,10 @@ static void print_usage(void) {
         "\n"
         "Options:\n"
         "  -h             display this help message\n"
-        "  -g <file>      randomly generate the specified map file\n"
-        "  -l <layout>    layout to use. See Layouts for valid layouts.\n"
-        "                 (overridden by -g)\n"
-        "  -t             test map layout (overriden by -g)\n"
-        "  -x <width>     specify map width\n"
-        "  -y <height>    specify map height\n"
+        "  -t [-l LAYOUT] [-x WIDTH] [-y HEIGHT]\n"
+        "                 Test the given map layout\n"
+        "  -g FILE        Read parameters from stdin and generate random map to FILE.\n"
+        "                 If FILE is '-' then use stdout.\n"
         "\n"
         "Layouts:\n"
         "  rogue   -- roguelike map generator\n"
