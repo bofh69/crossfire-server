@@ -356,7 +356,8 @@ endif()
 if(CHECK_FOUND)
     enable_testing()
 
-    # WebSocket unit tests
+    # WebSocket unit tests (uses POSIX socketpair, not available on Windows)
+    if(NOT WIN32)
     add_executable(check_websocket
         test/unit/socket/check_websocket.cpp
         test/unit/socket/stubs_websocket.cpp
@@ -372,6 +373,7 @@ if(CHECK_FOUND)
     target_link_libraries(check_websocket PRIVATE cross ${CHECK_LDFLAGS})
     target_compile_options(check_websocket PRIVATE ${CHECK_CFLAGS_OTHER})
     add_test(NAME check_websocket COMMAND check_websocket)
+    endif()
 else()
     message(STATUS "Check library not found - unit tests disabled")
 endif()
