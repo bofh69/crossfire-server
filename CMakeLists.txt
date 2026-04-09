@@ -363,6 +363,23 @@ configure_file("utils/crossfire-server-local.in" "crossfire-server-local")
 
 add_subdirectory(plugins/cfpython)
 
+# WebSocket echo server (Linux only – for use with the Autobahn test suite) {{{
+if(NOT WIN32)
+add_executable(ws_echo_server
+    utils/ws_echo_server/main.cpp
+    utils/ws_echo_server/stubs.cpp
+    test/unit/common/stubs_common.cpp
+    socket/websocket.cpp
+)
+target_include_directories(ws_echo_server PRIVATE
+    include
+    include/random_maps
+    ${PROJECT_BINARY_DIR}
+)
+target_link_libraries(ws_echo_server PRIVATE cross)
+endif()
+# }}}
+
 # Unit tests {{{
 find_package(PkgConfig)
 if(PkgConfig_FOUND)
