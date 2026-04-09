@@ -1,0 +1,7 @@
+{
+  "name": "crossfire-server",
+  "image": "debian:trixie",
+  "features": {},
+  "onCreateCommand": "apt-get update && apt-get install -y automake flex git g++ libcurl4 libcurl4-openssl-dev libgd-dev libgd-tools libtool make python3-bsddb3 python3-dev sqlite3",
+  "remoteUser": "root"
+}
