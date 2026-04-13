@@ -870,7 +870,7 @@ void command_quest(object *op, const char *params) {
  * Dump one quest on the logfile.
  * @param quest quest to dump.
  */
-static void output_quests(const quest_definition *quest, void *user) {
+static void output_quests(const quest_definition *quest, void *) {
     const char *parent = "";
     if (quest->parent)
         parent = quest->parent->quest_code;

@@ -144,12 +144,12 @@ static PyObject *Map_GetEnterY(Crossfire_Map *whoptr, void *closure) {
     return Py_BuildValue("i", cf_map_get_enter_y(whoptr->map));
 }
 
-static PyObject* Map_GetWPartX(Crossfire_Map* whoptr, void* closure)
+static PyObject* Map_GetWPartX(Crossfire_Map* whoptr, void *)
 {
     MAPEXISTCHECK(whoptr);
     return Py_BuildValue("i", cf_map_get_wpartx(whoptr->map));
 }
-static PyObject* Map_GetWPartY(Crossfire_Map* whoptr, void* closure)
+static PyObject* Map_GetWPartY(Crossfire_Map* whoptr, void *)
 {
     MAPEXISTCHECK(whoptr);
     return Py_BuildValue("i", cf_map_get_wparty(whoptr->map));
