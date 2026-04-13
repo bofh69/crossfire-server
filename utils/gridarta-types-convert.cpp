@@ -440,7 +440,7 @@ ignore_list *find_ignore_list(const char *name) {
  * @todo remove spaces at line start/end.
  */
 char *read_line(char *buffer, int size, FILE *file) {
-    return fgets(buffer, 200, file);
+    return fgets(buffer, size, file);
 }
 
 /** Remove an attribute from the type. */
