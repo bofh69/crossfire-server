@@ -170,8 +170,8 @@ struct weather_grow_t {
  * Stolen from the settings file, as they are unused by everything that isn't weather.
  */
 struct weather_settings_t {
-    uint32_t  worldmaptilesizex;      /**< Number of squares wide in a wm tile */
-    uint32_t  worldmaptilesizey;      /**< Number of squares high in a wm tile */
+    int32_t  worldmaptilesizex;       /**< Number of squares wide in a wm tile */
+    int32_t  worldmaptilesizey;       /**< Number of squares high in a wm tile */
     uint16_t  dynamiclevel;           /**< How dynamic is the world? */
 };
 
@@ -474,10 +474,10 @@ static int worldmap_to_weathermap(const int x, const int y, int * const wx, int 
     if (fx == -2 || fy == -2) {
         return -1;
     }
-    if (fx > settings.worldmapstartx + settings.worldmaptilesx ||
-        fx < settings.worldmapstartx ||
-        fy > settings.worldmapstarty + settings.worldmaptilesy ||
-        fy < settings.worldmapstarty) {
+    if (fx > int(settings.worldmapstartx + settings.worldmaptilesx) ||
+        fx < int(settings.worldmapstartx) ||
+        fy > int(settings.worldmapstarty + settings.worldmaptilesy) ||
+        fy < int(settings.worldmapstarty)) {
         LOG(llevDebug, "worldmap_to_weathermap(%s)\n", filename);
         // If we don't populate the variables, mark as -2.
         // This tells us to not check again, as it is not a world map.
@@ -492,12 +492,12 @@ static int worldmap_to_weathermap(const int x, const int y, int * const wx, int 
         }
 
     }
-    if (fx > settings.worldmapstartx + settings.worldmaptilesx ||
-        fx < settings.worldmapstartx) {
+    if (fx > int(settings.worldmapstartx + settings.worldmaptilesx) ||
+        fx < int(settings.worldmapstartx)) {
         return -1;
     }
-    if (fy > settings.worldmapstarty + settings.worldmaptilesy ||
-        fy < settings.worldmapstarty) {
+    if (fy > int(settings.worldmapstarty + settings.worldmaptilesy) ||
+        fy < int(settings.worldmapstarty)) {
         return -1;
     }
     fx -= settings.worldmapstartx;
@@ -2248,9 +2248,9 @@ void perform_weather() {
     }
 
     /* move right to left, top to bottom */
-    if (++wmperformstartx == settings.worldmaptilesx) {
+    if (++wmperformstartx == int(settings.worldmaptilesx)) {
         wmperformstartx = 0;
-        if (++wmperformstarty == settings.worldmaptilesy) {
+        if (++wmperformstarty == int(settings.worldmaptilesy)) {
             wmperformstarty = 0;
         }
     }
@@ -3580,7 +3580,7 @@ int write_weather_images() {
         for (y = 0; y < WEATHERMAPTILESY; y++) {
 /*          min[0] = MIN(min[0], weathermap[x][y].water); */
             min[1] = MIN(min[1], weathermap[x][y].avgelev);
-            min[2] = MIN(min[2], weathermap[x][y].rainfall);
+            min[2] = MIN(min[2], int32_t(weathermap[x][y].rainfall));
 /*          min[3] = MIN(min[3], weathermap[x][y].pressure); */
 /*          min[4] = MIN(min[4], weathermap[x][y].windspeed); */
 /*          min[6] = MIN(min[6], weathermap[x][y].humid); */
@@ -3588,7 +3588,7 @@ int write_weather_images() {
 
 /*          max[0] = MAX(max[0], weathermap[x][y].water); */
             max[1] = MAX(max[1], weathermap[x][y].avgelev);
-            max[2] = MAX(max[2], weathermap[x][y].rainfall);
+            max[2] = MAX(max[2], int32_t(weathermap[x][y].rainfall));
 /*          max[3] = MAX(max[3], weathermap[x][y].pressure); */
             max[4] = MAX(max[4], weathermap[x][y].windspeed);
 /*          max[6] = MAX(max[6], weathermap[x][y].humid); */
@@ -3600,12 +3600,13 @@ int write_weather_images() {
     // Twiddle the data on total rainfall, since they have a different color for above/below average
     // This allows us to have the full scale of color range on each above average and below average.
     avgrain = total_rainfall/(WEATHERMAPTILESX*WEATHERMAPTILESY);
+    assert(avgrain >= 0);
     avgwind = (total_wind   /(WEATHERMAPTILESX*WEATHERMAPTILESY));
-    max[2] = avgrain-1;
+    max[2] = avgrain >= 1 ? avgrain-1 : 0;
     realscalewind = 255.0l/(max[4]);
-    max[4] = avgwind-1;
+    max[4] = avgwind >= 1 ? avgwind-1 : 0;
     for (x = 0; x < 8; x++) {
-        scale[x] = 255.0l/(max[x]-min[x]);
+        scale[x] = 255.0l/(max[x] != min[x] ? max[x] - min[x] : 1);
     }
 
     LOG(llevDebug, "Writing weather conditions map.\n");
@@ -3642,7 +3643,7 @@ int write_weather_images() {
             }
             // rainfall map -- third map of row
             // magenta = high rainfall, blue = average rainfall, black = low rainfall
-            if (weathermap[x][y].rainfall >= avgrain) { /* rainfall is rather spikey, this gives us more detail. */
+            if (weathermap[x][y].rainfall >= uint32_t(avgrain)) { /* rainfall is rather spikey, this gives us more detail. */
                 pixels[3*x+(2*WEATHERMAPTILESX*3+BLUE)] = 255;
                 pixels[3*x+(2*WEATHERMAPTILESX*3+RED)] = (uint8_t)((weathermap[x][y].rainfall-avgrain)*(255.0/(max[2]-avgrain)));
             } else {
@@ -3655,7 +3656,7 @@ int write_weather_images() {
     for (y = 0; y < WEATHERMAPTILESY; y++) {
         for (x = 0; x < WEATHERMAPTILESX; x++) {
             uint32_t dir = directions[weathermap[x][y].winddir-1];
-            uint32_t speed = weathermap[x][y].windspeed;
+            int32_t speed = weathermap[x][y].windspeed;
             int16_t pressure = (weathermap[x][y].pressure-PRESSURE_MIN)*scale[3];
             // Make sure we don't get artifacting from Post-smoothing pressure adjustments.
             // or round-off error in the above calculation.
@@ -4440,10 +4441,10 @@ static int read_weatherposition(const Settings *settings) {
     }
     LOG(llevDebug, "curposx=%d curposy=%d\n", sx, sy);
 
-    if (sx > settings->worldmaptilesx) {
+    if (sx > int(settings->worldmaptilesx)) {
         sx = -1;
     }
-    if (sy > settings->worldmaptilesy) {
+    if (sy > int(settings->worldmaptilesy)) {
         sy = 0;
     }
     // Now we apply these to the static variables.
