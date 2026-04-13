@@ -246,7 +246,7 @@ static const char *const art_author[] = {
     "ancient things",
     "artifacts",
     "equipment",
-    "Havlor",   /* ancient warrior scribe :) */
+    "Halvor",   /* ancient warrior scribe :) ; the one a ring is named after */
     "hoards",
     "items",
     "lost artifacts",
