@@ -23,8 +23,10 @@
 #include <mutex>
 #include <thread>
 #include <system_error>
+#include <time.h>
 
 #ifndef WIN32 /* ---win32 exclude unix header files */
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <netdb.h>
@@ -42,7 +44,7 @@
 
 /** Mutex to protect access to ::metaserver2_updateinfo. */
 static std::mutex ms2_info_mutex;
-/** Mutex to signal the thread should stop. */
+/** When this mutex becomes unlocked, make the metaserver thread exit. */
 static std::timed_mutex ms2_signal;
 
 int count_players() {
@@ -126,6 +128,7 @@ struct LocalMeta2Info {
     char    *mapbase;      /**< and server. */
     char    *codebase;
     char    *flags;        /**< Short flags to send to metaserver. */
+    time_t  last_read;     /**< When config was last read */
 };
 
 /** Non volatile information on the server. */
@@ -258,116 +261,51 @@ static void metaserver2_build_form(struct curl_httppost **formpost) {
 }
 #endif
 
-#ifdef HAVE_LIBCURL
 /**
- * This sends an update to the various metaservers.
- * It generates the form, and then sends it to the
- * server
+ * Return if the metaserver2 file has been modified since last load.
  */
-static void metaserver2_updates(void) {
-    struct curl_httppost *formpost = NULL;
-    metaserver2_build_form(&formpost);
-
-    for (auto hostname : metaservers) {
-        CURL *curl = curl_easy_init();
-        if (curl) {
-            curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30000);
-
-            /* what URL that receives this POST */
-            curl_easy_setopt(curl, CURLOPT_URL, hostname.c_str());
-            curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
-
-            /* Almost always, we will get HTTP data returned
-             * to us - instead of it going to stderr,
-             * we want to take care of it ourselves.
-             */
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, metaserver2_writer);
-
-            char errbuf[CURL_ERROR_SIZE];
-            curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errbuf);
-
-            CURLcode res = curl_easy_perform(curl);
-            if (res) {
-                LOG(llevError, "metaserver update failed: %s\n", errbuf);
-            }
-
-            /* always cleanup */
-            curl_easy_cleanup(curl);
-        } else {
-            LOG(llevError, "metaserver: could not initialize curl\n");
-        }
-    }
-    /* then cleanup the formpost chain */
-    curl_formfree(formpost);
+bool metaserver2_config_modified() {
+    char buf[MAX_BUF];
+    snprintf(buf, sizeof(buf), "%s/metaserver2", settings.confdir);
+#ifndef WIN32
+    struct stat statbuf;
+    if (stat(buf, &statbuf) != 0)
+        return false;
+    return statbuf.st_mtime > local_info.last_read;
+#else
+    return true; // TODO: implement
+#endif
 }
 
-/**
- * Repeatedly send updates to the metaserver, stopping when ms2_signal is acquired.
- * Works in the background.
- */
-
-void metaserver2_thread() {
-    do {
-        metaserver2_updates();
-    } while (!ms2_signal.try_lock_for(std::chrono::seconds(60)));
-    ms2_signal.unlock();
-}
-#endif
-
-/**
- * This initializes the metaserver2 logic - it reads
- * the metaserver2 file, storing the values
- * away.  Note that it may be possible/desirable for the
- * server to re-read the values and restart connections (for example,
- * a new metaserver has been added and you want to start updates to
- * it immediately and not restart the server).  Because of that,
- * there is some extra logic (has_init) to try to take that
- * into account.
- *
- * @return
- * 1 if we will be updating the metaserver, 0 if no
- * metaserver updates
- */
-int metaserver2_init(void) {
-    FILE *fp;
-    char buf[MAX_BUF], *cp, dummy[1];
-
-    dummy[0] = '\0';
-
-#ifdef HAVE_LIBCURL
-    static int has_init = 0;
-    if (!has_init) {
-        memset(&local_info, 0, sizeof(LocalMeta2Info));
-        memset(&metaserver2_updateinfo, 0, sizeof(MetaServer2_UpdateInfo));
-
-        local_info.portnumber = settings.csport;
-        curl_global_init(CURL_GLOBAL_ALL);
-    } else {
-        local_info.notification = 0;
-        if (local_info.hostname)
-            FREE_AND_CLEAR(local_info.hostname);
-        if (local_info.html_comment)
-            FREE_AND_CLEAR(local_info.html_comment);
-        if (local_info.text_comment)
-            FREE_AND_CLEAR(local_info.text_comment);
-        if (local_info.archbase)
-            FREE_AND_CLEAR(local_info.archbase);
-        if (local_info.mapbase)
-            FREE_AND_CLEAR(local_info.mapbase);
-        if (local_info.codebase)
-            FREE_AND_CLEAR(local_info.codebase);
-        if (local_info.flags)
-            FREE_AND_CLEAR(local_info.flags);
-        metaservers.clear();
-    }
-#endif
+void metaserver2_load_config() {
+    // Initialize settings
+    local_info.portnumber = settings.csport;
+    local_info.notification = 0;
+    if (local_info.hostname)
+        FREE_AND_CLEAR(local_info.hostname);
+    if (local_info.html_comment)
+        FREE_AND_CLEAR(local_info.html_comment);
+    if (local_info.text_comment)
+        FREE_AND_CLEAR(local_info.text_comment);
+    if (local_info.archbase)
+        FREE_AND_CLEAR(local_info.archbase);
+    if (local_info.mapbase)
+        FREE_AND_CLEAR(local_info.mapbase);
+    if (local_info.codebase)
+        FREE_AND_CLEAR(local_info.codebase);
+    if (local_info.flags)
+        FREE_AND_CLEAR(local_info.flags);
+    metaservers.clear();
 
     /* Now load up the values from the file */
+    char buf[MAX_BUF], *cp, dummy[1];
+    dummy[0] = '\0';
     snprintf(buf, sizeof(buf), "%s/metaserver2", settings.confdir);
 
+    FILE *fp;
     if ((fp = fopen(buf, "r")) == NULL) {
-        LOG(llevError, "Warning: No metaserver2 file found\n");
-        return 0;
+        LOG(llevError, "failed to open %s: %s\n", buf, strerror(errno));
+        return;
     }
     while (fgets(buf, sizeof(buf), fp) != NULL) {
         if (buf[0] == '#')
@@ -454,40 +392,115 @@ int metaserver2_init(void) {
     }
 #endif
 
-    if (local_info.notification) {
-        /* As noted above, it is much easier for the rest of the code
-         * to not have to check for null pointers.  So we do that
-         * here, and anything that is null, we just allocate
-         * an empty string.
-        */
-        if (!local_info.html_comment)
-            local_info.html_comment = strdup("");
-        if (!local_info.text_comment)
-            local_info.text_comment = strdup("");
-        if (!local_info.archbase)
-            local_info.archbase = strdup("");
-        if (!local_info.mapbase)
-            local_info.mapbase = strdup("");
-        if (!local_info.codebase)
-            local_info.codebase = strdup("");
-        if (!local_info.flags)
-            local_info.flags = strdup("");
+    /* As noted above, it is much easier for the rest of the code
+     * to not have to check for null pointers.  So we do that
+     * here, and anything that is null, we just allocate
+     * an empty string.
+    */
+    if (!local_info.html_comment)
+        local_info.html_comment = strdup("");
+    if (!local_info.text_comment)
+        local_info.text_comment = strdup("");
+    if (!local_info.archbase)
+        local_info.archbase = strdup("");
+    if (!local_info.mapbase)
+        local_info.mapbase = strdup("");
+    if (!local_info.codebase)
+        local_info.codebase = strdup("");
+    if (!local_info.flags)
+        local_info.flags = strdup("");
+
+    local_info.last_read = time(NULL);
+}
 
 #ifdef HAVE_LIBCURL
-        ms2_signal.lock();
-        try {
-          metaserver_thread = std::thread(metaserver2_thread);
-#ifndef WIN32
-          pthread_setname_np(metaserver_thread.native_handle(), "metaserver");
+/**
+ * This sends an update to the various metaservers.
+ * It generates the form, and then sends it to the
+ * server
+ */
+static void metaserver2_updates(void) {
+    struct curl_httppost *formpost = NULL;
+    metaserver2_build_form(&formpost);
+
+    for (auto hostname : metaservers) {
+        CURL *curl = curl_easy_init();
+        if (curl) {
+            curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30000);
+
+            /* what URL that receives this POST */
+            curl_easy_setopt(curl, CURLOPT_URL, hostname.c_str());
+            curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
+
+            /* Almost always, we will get HTTP data returned
+             * to us - instead of it going to stderr,
+             * we want to take care of it ourselves.
+             */
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, metaserver2_writer);
+
+            char errbuf[CURL_ERROR_SIZE];
+            curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errbuf);
+
+            CURLcode res = curl_easy_perform(curl);
+            if (res) {
+                LOG(llevError, "metaserver update failed: %s\n", errbuf);
+            }
+
+            /* always cleanup */
+            curl_easy_cleanup(curl);
+        } else {
+            LOG(llevError, "metaserver: could not initialize curl\n");
+        }
+    }
+    /* then cleanup the formpost chain */
+    curl_formfree(formpost);
+}
+
+/**
+ * Repeatedly send updates to the metaserver, stopping when ms2_signal is acquired.
+ * Works in the background.
+ */
+void metaserver2_thread() {
+    while (true) {
+        if (local_info.notification)
+            metaserver2_updates();
+        if (ms2_signal.try_lock_for(std::chrono::seconds(60)))
+            break;
+        if (metaserver2_config_modified()) {
+            LOG(llevInfo, "re-reading metaserver config\n");
+            metaserver2_load_config();
+        }
+    }
+    ms2_signal.unlock();
+}
 #endif
-        }
-        catch (const std::system_error &err) {
-          LOG(llevError, "metaserver2_init: failed to create thread, code %d, what %s\n", err.code().value(), err.what());
-          /* Effectively true - we're not going to update the metaserver */
-          local_info.notification = 0;
-        }
+
+/**
+ * Initialize metaserver reporting. Read the config file and launch the
+ * metaserver update thread, if enabled. Do not call this function more than
+ * once.
+ *
+ * @return
+ * 1 if we will be updating the metaserver, 0 if no
+ * metaserver updates
+ */
+int metaserver2_init(void) {
+    metaserver2_load_config();
+#ifdef HAVE_LIBCURL
+    curl_global_init(CURL_GLOBAL_ALL);
+    ms2_signal.lock();
+    try {
+        metaserver_thread = std::thread(metaserver2_thread);
+#ifndef WIN32
+        pthread_setname_np(metaserver_thread.native_handle(), "metaserver");
 #endif
     }
+    catch (const std::system_error &err) {
+        LOG(llevError, "metaserver2_init: failed to create thread, code %d, what %s\n", err.code().value(), err.what());
+        /* Effectively true - we're not going to update the metaserver */
+        local_info.notification = 0;
+    }
+#endif
     return local_info.notification;
 }
 

@@ -1150,10 +1150,10 @@ void init(int argc, char **argv) {
         // binary name in argv[0]. If that is not there, assume we are running
         // as a test and don't create sockets.
         init_server();
+        metaserver2_init();
     } else {
         LOG(llevInfo, "Running server in test mode (no sockets).\n");
     }
-    metaserver2_init();
     accounts_load();
     reset_sleep();
 }
