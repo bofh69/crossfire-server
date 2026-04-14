@@ -153,7 +153,7 @@ MetaServer2_UpdateInfo metaserver2_updateinfo;
 static size_t metaserver2_writer(void *ptr, size_t size, size_t nmemb, void *data) {
     (void)data;
     size_t realsize = size*nmemb;
-    LOG(llevError, "Message from metaserver:\n%s\n", (const char*)ptr);
+    LOG(llevError, "Message from metaserver:\n%.*s\n", realsize, (const char*)ptr);
     return realsize;
 }
 
