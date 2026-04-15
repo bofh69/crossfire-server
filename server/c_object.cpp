@@ -1693,6 +1693,7 @@ ex_autoid_result examine_autoidentify(object *op, object *tmp) {
     if (!QUERY_FLAG(tmp, FLAG_NO_SKILL_IDENT)) {
         skill = find_skill_by_number(op, tmptype->identifyskill);
         if (skill) {
+            have_skill = true;
             /* identify_object_with_skill() may merge tmp with another
              * object, so once that happens, we really can not do
              * any further processing with tmp.  It would be possible
@@ -1712,6 +1713,7 @@ ex_autoid_result examine_autoidentify(object *op, object *tmp) {
         /* The primary id skill didn't work, let's try the secondary one */
         skill = find_skill_by_number(op, tmptype->identifyskill2);
         if (skill) {
+            have_skill = true;
             /* if we've reached here, then the first skill will have been attempted
              * and failed; this will have set FLAG_NO_SKILL_IDENT we want to clear
              * that now, and try with the secondary ID skill, if it fails, then the
