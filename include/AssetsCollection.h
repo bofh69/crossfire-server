@@ -67,7 +67,7 @@ class AssetsCollection {
          * Clear all assets.
          */
         void clear() {
-            for (auto asset : m_assets) {
+            for (auto & asset : m_assets) {
                 asset_destroy(asset.second);
             }
             m_assets.clear();

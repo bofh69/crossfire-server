@@ -86,7 +86,7 @@ archetype *Archetypes::findByObjectName(const char *name) {
     if (!tmp)
         return NULL;
 
-    for (auto arch : m_assets) {
+    for (auto & arch : m_assets) {
         if (arch.second->clone.name == tmp) {
             return arch.second;
         }
@@ -98,7 +98,7 @@ archetype *Archetypes::findByObjectTypeName(int type, const char *name) {
     if (name == NULL)
         return NULL;
 
-    for (auto arch : m_assets) {
+    for (auto & arch : m_assets) {
         if (arch.second->clone.type == type && strcmp(arch.second->clone.name, name) == 0)
             return arch.second;
     }
@@ -110,7 +110,7 @@ archetype *Archetypes::findBySkillNameAndType(const char *skill, int type) {
     if (skill == NULL)
         return NULL;
 
-    for (auto arch : m_assets) {
+    for (auto & arch : m_assets) {
         if (((type == -1) || (type == arch.second->clone.type))
         && (arch.second->clone.skill) && (!strcmp(arch.second->clone.skill, skill)))
             return arch.second;
