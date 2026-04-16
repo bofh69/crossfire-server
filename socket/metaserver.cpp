@@ -119,16 +119,16 @@ static std::vector<std::string> metaservers;
  * or something)
  */
 struct LocalMeta2Info {
-    int     notification;  /**< If true, do updates to metaservers. */
-    char    *hostname;     /**< Hostname of this server. */
-    int     portnumber;    /**< Portnumber of this server. */
-    char    *html_comment; /**< html comment to send to metaservers. */
-    char    *text_comment; /**< text comment to send to metaservers. */
-    char    *archbase;     /**< Different sources for arches, maps */
-    char    *mapbase;      /**< and server. */
-    char    *codebase;
-    char    *flags;        /**< Short flags to send to metaserver. */
-    time_t  last_read;     /**< When config was last read */
+    int         notification;   /**< If true, do updates to metaservers. */
+    std::string hostname;       /**< Hostname of this server. */
+    int         portnumber;     /**< Portnumber of this server. */
+    std::string html_comment;   /**< html comment to send to metaservers. */
+    std::string text_comment;   /**< text comment to send to metaservers. */
+    std::string archbase;       /**< Different sources for arches, maps */
+    std::string mapbase;        /**< and server. */
+    std::string codebase;
+    std::string flags;          /**< Short flags to send to metaserver. */
+    time_t  last_read;          /**< When config was last read */
 };
 
 /** Non volatile information on the server. */
@@ -172,7 +172,7 @@ static void metaserver2_build_form(struct curl_httppost **formpost) {
      */
     curl_formadd(formpost, &lastptr,
                  CURLFORM_COPYNAME, "hostname",
-                 CURLFORM_COPYCONTENTS, local_info.hostname,
+                 CURLFORM_COPYCONTENTS, local_info.hostname.c_str(),
                  CURLFORM_END);
 
     snprintf(buf, sizeof(buf), "%d", local_info.portnumber);
@@ -183,32 +183,32 @@ static void metaserver2_build_form(struct curl_httppost **formpost) {
 
     curl_formadd(formpost, &lastptr,
                  CURLFORM_COPYNAME, "html_comment",
-                 CURLFORM_COPYCONTENTS, local_info.html_comment,
+                 CURLFORM_COPYCONTENTS, local_info.html_comment.c_str(),
                  CURLFORM_END);
 
     curl_formadd(formpost, &lastptr,
                  CURLFORM_COPYNAME, "text_comment",
-                 CURLFORM_COPYCONTENTS, local_info.text_comment,
+                 CURLFORM_COPYCONTENTS, local_info.text_comment.c_str(),
                  CURLFORM_END);
 
     curl_formadd(formpost, &lastptr,
                  CURLFORM_COPYNAME, "archbase",
-                 CURLFORM_COPYCONTENTS, local_info.archbase,
+                 CURLFORM_COPYCONTENTS, local_info.archbase.c_str(),
                  CURLFORM_END);
 
     curl_formadd(formpost, &lastptr,
                  CURLFORM_COPYNAME, "mapbase",
-                 CURLFORM_COPYCONTENTS, local_info.mapbase,
+                 CURLFORM_COPYCONTENTS, local_info.mapbase.c_str(),
                  CURLFORM_END);
 
     curl_formadd(formpost, &lastptr,
                  CURLFORM_COPYNAME, "codebase",
-                 CURLFORM_COPYCONTENTS, local_info.codebase,
+                 CURLFORM_COPYCONTENTS, local_info.codebase.c_str(),
                  CURLFORM_END);
 
     curl_formadd(formpost, &lastptr,
                  CURLFORM_COPYNAME, "flags",
-                 CURLFORM_COPYCONTENTS, local_info.flags,
+                 CURLFORM_COPYCONTENTS, local_info.flags.c_str(),
                  CURLFORM_END);
 
     ms2_info_mutex.lock();
@@ -281,20 +281,13 @@ void metaserver2_load_config() {
     // Initialize settings
     local_info.portnumber = settings.csport;
     local_info.notification = 0;
-    if (local_info.hostname)
-        FREE_AND_CLEAR(local_info.hostname);
-    if (local_info.html_comment)
-        FREE_AND_CLEAR(local_info.html_comment);
-    if (local_info.text_comment)
-        FREE_AND_CLEAR(local_info.text_comment);
-    if (local_info.archbase)
-        FREE_AND_CLEAR(local_info.archbase);
-    if (local_info.mapbase)
-        FREE_AND_CLEAR(local_info.mapbase);
-    if (local_info.codebase)
-        FREE_AND_CLEAR(local_info.codebase);
-    if (local_info.flags)
-        FREE_AND_CLEAR(local_info.flags);
+    local_info.hostname.clear();
+    local_info.html_comment.clear();
+    local_info.text_comment.clear();
+    local_info.archbase.clear();
+    local_info.mapbase.clear();
+    local_info.codebase.clear();
+    local_info.flags.clear();
     metaservers.clear();
 
     /* Now load up the values from the file */
@@ -346,7 +339,7 @@ void metaserver2_load_config() {
             }
         } else if (!strcasecmp(buf, "localhostname")) {
             if (*cp != 0) {
-                local_info.hostname = strdup_local(cp);
+                local_info.hostname = cp;
             } else {
                 LOG(llevError, "metaserver2: localhostname must have a value.\n");
             }
@@ -361,17 +354,17 @@ void metaserver2_load_config() {
          * string, so don't care if there is data in the string or not.
          */
         } else if (!strcasecmp(buf, "html_comment")) {
-            local_info.html_comment = strdup(cp);
+            local_info.html_comment = cp;
         } else if (!strcasecmp(buf, "text_comment")) {
-            local_info.text_comment = strdup(cp);
+            local_info.text_comment = cp;
         } else if (!strcasecmp(buf, "archbase")) {
-            local_info.archbase = strdup(cp);
+            local_info.archbase = cp;
         } else if (!strcasecmp(buf, "mapbase")) {
-            local_info.mapbase = strdup(cp);
+            local_info.mapbase = cp;
         } else if (!strcasecmp(buf, "codebase")) {
-            local_info.codebase = strdup(cp);
+            local_info.codebase = cp;
         } else if (!strcasecmp(buf, "flags")) {
-            local_info.flags = strdup(cp);
+            local_info.flags = cp;
         } else {
             LOG(llevError, "Unknown value in metaserver2 file: %s\n", buf);
         }
@@ -379,7 +372,7 @@ void metaserver2_load_config() {
     fclose(fp);
 
     /* If no hostname is set, can't do updates */
-    if (!local_info.hostname)
+    if (local_info.hostname.empty())
         local_info.notification = 0;
 
 #ifndef HAVE_LIBCURL
@@ -391,24 +384,6 @@ void metaserver2_load_config() {
         exit(1);
     }
 #endif
-
-    /* As noted above, it is much easier for the rest of the code
-     * to not have to check for null pointers.  So we do that
-     * here, and anything that is null, we just allocate
-     * an empty string.
-    */
-    if (!local_info.html_comment)
-        local_info.html_comment = strdup("");
-    if (!local_info.text_comment)
-        local_info.text_comment = strdup("");
-    if (!local_info.archbase)
-        local_info.archbase = strdup("");
-    if (!local_info.mapbase)
-        local_info.mapbase = strdup("");
-    if (!local_info.codebase)
-        local_info.codebase = strdup("");
-    if (!local_info.flags)
-        local_info.flags = strdup("");
 
     local_info.last_read = time(NULL);
 }
