@@ -2331,8 +2331,11 @@ static int player_fire_bow(object *op, int dir) {
         ret = fire_bow(op, NULL, op->contr->bowtype-bow_n+1, wcmod, op->x, op->y);
     } else if (op->contr->bowtype == bow_threewide) {
         ret = fire_bow(op, NULL, dir, 0, op->x, op->y);
-        ret |= fire_bow(op, NULL, dir, -5, op->x+freearr_x[absdir(dir+2)], op->y+freearr_y[absdir(dir+2)]);
-        ret |= fire_bow(op, NULL, dir, -5, op->x+freearr_x[absdir(dir-2)], op->y+freearr_y[absdir(dir-2)]);
+        // since adding by freearr is a circle around the player, offset side arrows so they line up with the middle arrow
+        int dx = freearr_x[absdir(dir)];
+        int dy = freearr_y[absdir(dir)];
+        ret |= fire_bow(op, NULL, dir, -5, op->x+freearr_x[absdir(dir+1)]-dx, op->y+freearr_y[absdir(dir+1)]-dy);
+        ret |= fire_bow(op, NULL, dir, -5, op->x+freearr_x[absdir(dir-1)]-dx, op->y+freearr_y[absdir(dir-1)]-dy);
     } else if (op->contr->bowtype == bow_spreadshot) {
         ret |= fire_bow(op, NULL, dir, 0, op->x, op->y);
         ret |= fire_bow(op, NULL, absdir(dir-1), -5, op->x, op->y);
