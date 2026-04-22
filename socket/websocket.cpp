@@ -267,7 +267,11 @@ bool ws_do_handshake(socket_struct *ns) {
     ns->ws_header_size = 0;
     ns->ws_frame_total = 0;
 
-    init_connection(ns, ns->host);
+    // init_connection updates ns->host by first freeing it.
+    char *tmp_host = ns->host;
+    ns->host = NULL;
+    init_connection(ns, tmp_host);
+    free(tmp_host);
     return true;
 }
 
