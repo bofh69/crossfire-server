@@ -1,8 +1,4 @@
-
-                        ** Media tags **
-
-Foreword
-========
+# Media Tags {#client_media_tags}
 
 This document is a quick explanation of tags that can be used in extended
 messages. For informations on what extended messages are at protocol level,

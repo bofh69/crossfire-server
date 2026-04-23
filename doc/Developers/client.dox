@@ -5,6 +5,8 @@ This page describes the client-server relation and what the client knows about t
 
 @todo expand (map info and such)
 
+@subpage client_media_tags
+
 @section sec_client_known_fields Object fields the client knows about
 
 The client knows about the following properties of an item:
