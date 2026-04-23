@@ -4,6 +4,8 @@ Maps are where the player and monsters roam. They contain objects, and some pre-
 
 When making maps, please follow the @subpage page_map_guide "Mapping Guide".
 
+- @subpage page_map_tech
+
 All objects without the ::FLAG_REMOVED set are ultimately on a map, either directly or because their top-level container is on a map. The only exception are objects for archetypes and artifacts, which aren't anywhere.
 
 Maps reset after some time, reverting to their default state. It is possible that the map is temporarily saved to disk to reclaim memory, in which case it will be reloaded when a player tried to enter it.
