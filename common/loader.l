@@ -921,9 +921,7 @@ static char *yval(void)
 
     /* Skip over whitespace */
     for (; *cp == ' '; cp++) {
-        if (*cp == '\0') {
-            return em;
-        }
+        // do nothing
     }
     /* Got last character before null and strip
      * off tailing whitespace
