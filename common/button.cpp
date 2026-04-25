@@ -14,6 +14,10 @@
 /**
  * @file
  * This handles triggers, buttons, altars and associated objects.
+ *
+ * loader.l calls add_button_link() for every object with a `connected` field.
+ * Pushing a button calls push_button() which looks up links on the map with
+ * matching connection IDs and calls trigger_connected() on them.
  */
 
 #include "global.h"
@@ -139,10 +143,7 @@ void trigger_connected(objectlink *ol, object *cause, const int state) {
 }
 
 /**
- * Push the specified object.  This can affect other buttons/gates/handles
- * altars/pedestals/holes in the whole map.
- * Changed the routine to loop through _all_ linked objects.
- * Better hurry with that linked list...
+ * Trigger all connections on the map connected to \p op.
  * @param op
  * object to push.
  */
@@ -645,7 +646,8 @@ int check_trigger(object *op, object *cause) {
 }
 
 /**
- * Links specified object in the map.
+ * Add the given object to the per-map list of connected objects with the given
+ * connection ID.
  * @param button
  * object to link. Must not be NULL.
  * @param map
