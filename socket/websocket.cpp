@@ -530,25 +530,13 @@ void ws_write_frame(socket_struct *ns, SockList *sl) {
 #endif
     } else {
         /* hdr_len == 4 */
-        if (4 + payload_len <= sizeof(sl->buf)) {
-            memmove(sl->buf + 4, sl->buf + 2, payload_len);
-            sl->buf[0] = header[0]; sl->buf[1] = header[1];
-            sl->buf[2] = header[2]; sl->buf[3] = header[3];
 #ifdef WIN32
-            send(ns->fd, reinterpret_cast<const char *>(sl->buf), (int)(4 + payload_len), 0);
+        send(ns->fd, reinterpret_cast<const char *>(header), hdr_len, 0);
+        send(ns->fd, reinterpret_cast<const char *>(sl->buf + 2), (int)payload_len, 0);
 #else
-            (void)send(ns->fd, sl->buf, 4 + payload_len, 0);
+        (void)send(ns->fd, header, (size_t)hdr_len, MSG_MORE);
+        (void)send(ns->fd, sl->buf + 2, payload_len, 0);
 #endif
-        } else {
-            /* Edge case: payload exactly fills the buffer – send separately. */
-#ifdef WIN32
-            send(ns->fd, reinterpret_cast<const char *>(header), hdr_len, 0);
-            send(ns->fd, reinterpret_cast<const char *>(sl->buf + 2), (int)payload_len, 0);
-#else
-            (void)send(ns->fd, header, (size_t)hdr_len, MSG_MORE);
-            (void)send(ns->fd, sl->buf + 2, payload_len, 0);
-#endif
-        }
     }
 }
 
