@@ -35,6 +35,14 @@ struct socket_struct;
 struct SockList;
 
 /**
+ * Initialize a new websocket connection.
+ *
+ * @param ns  The newly connected socket.
+ * @param host The IP address or hostname of the peer.
+ */
+void ws_init(socket_struct *ns, const char *host);
+
+/**
  * Attempt to complete the WebSocket HTTP Upgrade handshake for a socket that
  * is in the WS_HTTP state.  Reads available data from the socket and, once a
  * complete HTTP request has been received, sends the HTTP 101 response and

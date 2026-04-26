@@ -459,13 +459,7 @@ static void new_connection(int listen_fd, bool is_websocket) {
         } else if (is_websocket) {
             /* For WebSocket connections, defer init_connection() until the
              * HTTP upgrade handshake has been completed. */
-            ns->ws_state     = WS_HTTP;
-            ns->ws_header_size = 0;
-            ns->ws_frame_total = 0;
-            ns->status       = Ns_Add;
-            free(ns->host);
-            ns->host = strdup_local(buf);
-            SockList_ResetRead(&ns->inbuf);
+            ws_init(ns, buf);
             LOG(llevDebug, "WebSocket connection attempt from %s\n", buf);
         } else {
             init_connection(ns, buf);
