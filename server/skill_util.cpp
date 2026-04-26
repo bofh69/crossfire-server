@@ -508,10 +508,6 @@ int do_skill(object *op, object *part, object *skill, int dir, const char *strin
         exp = success = write_on_item(op, string, skill);
         break;
 
-    case SK_MEDITATION:
-        meditate(op, skill);
-        success = 1;
-        break;
         /* note that the following 'attack' skills gain exp through hit_player() */
 
     case SK_KARATE:
@@ -584,6 +580,17 @@ int do_skill(object *op, object *part, object *skill, int dir, const char *strin
     case SK_MISSILE_WEAPON:
         draw_ext_info(NDI_UNIQUE, 0, op, MSG_TYPE_SKILL, MSG_TYPE_SKILL_ERROR,
                       "There is no special attack for this skill.");
+        break;
+
+    case SK_MEDITATION:
+        if (op->contr) {
+            player_start_repeat(op->contr, "meditation", do_skill_cb);
+            op->contr->repeat_func_data = calloc(1, sizeof(struct do_skill_cb_data));
+            struct do_skill_cb_data *data = (struct do_skill_cb_data *)op->contr->repeat_func_data;
+            *data = {op, part, skill, dir, string};
+        }
+        meditate(op, skill);
+        success = 1;
         break;
 
     case SK_PRAYING:
