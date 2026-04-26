@@ -100,6 +100,16 @@ void ws_compute_accept_key(const char *key, char *out, size_t out_len) {
     base64_encode(digest, 20, out);
 }
 
+void ws_init(socket_struct *ns, const char *host) {
+    ns->ws_state     = WS_HTTP;
+    ns->ws_header_size = 0;
+    ns->ws_frame_total = 0;
+    ns->status       = Ns_Add;
+    free(ns->host);
+    ns->host = strdup_local(host);
+    SockList_ResetRead(&ns->inbuf);
+}
+
 /* =========================================================================
  * HTTP Upgrade handshake
  * ========================================================================= */
