@@ -2,7 +2,7 @@
 #usage : python arch2xml.py <directory> <xml file name>
 #FYI - the Walk function is very useful for other python programs as well
 
-import fnmatch, os, string
+import fnmatch, os
 
 #Flexable Directory Walker from the Python CookBook
 
@@ -20,7 +20,7 @@ def Walk( root, recurse=0, pattern='*', return_folders=0 ):
 
 	# expand pattern
 	pattern = pattern or '*'
-	pat_list = string.splitfields( pattern , ';' )
+	pat_list = pattern.split(';')
 
 	# check each file
 	for name in names:
@@ -65,7 +65,7 @@ def escape(esc_me):
 
 def arch2xml(root,filename,xsl_file='cfarches.xsl'):
     files = Walk(root, 1, '*.arc', 1)
-    print 'searching for arch files in %s' %root
+    print('searching for arch files in %s' %root)
     xml = open(filename,'w')
     xml.write('<?xml version="1.0"?>\n<?xml-stylesheet type="text/xsl" href="%s"?>\n<ARCHES>'%xsl_file)
     for file in files:
@@ -79,10 +79,10 @@ def arch2xml(root,filename,xsl_file='cfarches.xsl'):
             for line in contents:
                     xp = line.split()
                     if mess == 1 and len(xp)>1:
-                            str = escape(string.join(xp[0:]))
+                            str = escape(" ".join(xp[0:]))
                             xml.write('%s\n' %str)
                     elif len(xp) == 1:
-                            tag = string.lower(xp[0])
+                            tag = xp[0].lower()
                             # if an empty comment line, ignore it
                             if tag == '#':
                                 continue
@@ -102,6 +102,12 @@ def arch2xml(root,filename,xsl_file='cfarches.xsl'):
                             elif tag =='endmsg':
                                     tag = '     </message>'
                                     mess = 0
+                            elif tag =='lore':
+                                    tag = '     <lore>'
+                                    mess = 1
+                            elif tag =='endlore':
+                                    tag = '     </lore>'
+                                    mess = 0
                             elif tag == 'anim':
                                     tag = '     <anim>'
                             elif tag =='mina':
@@ -111,9 +117,9 @@ def arch2xml(root,filename,xsl_file='cfarches.xsl'):
                             xml.write('%s\n' %(tag))
                     elif len(xp)>1:
 			    
-                            tag = string.lower(xp[0])
+                            tag = xp[0].lower()
                             if (tag[0] == "#"):
-                                str = string.join(xp)[1:]
+                                str = " ".join(xp[1:])
                                 xml.write('     <comment>%s</comment>\n' %(escape(str)))
                             else:
                                 # A quick and dirty hack to make multiple independent arches
@@ -128,13 +134,13 @@ def arch2xml(root,filename,xsl_file='cfarches.xsl'):
                                     xml.write('\n</arch>\n<arch>\n')
                                     need_new_arch = 0
 
-                                str = string.join(xp[1:])
+                                str = " ".join(xp[1:])
                                 xml.write('     <%s>%s</%s>\n' %(tag,str,tag))
             xml.write('\n</arch>\n')
             arc.close()
     xml.write('\n</ARCHES>')
     xml.close()
-    print "DONE"
+    print("DONE")
 
 if __name__ == '__main__':
     import sys
