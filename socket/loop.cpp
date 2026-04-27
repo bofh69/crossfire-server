@@ -224,6 +224,12 @@ handle_cmd(socket_struct *ns, player *pl, char *cmd, char *data, int len) {
             return 0;
         }
     }
+
+    // Cancel auto-repeat command here, if any. This lets the server handle
+    // client commands (e.g. beat) without interrupting auto-repeat.
+    if (pl && pl->state == ST_PLAYING && pl->ob != NULL)
+        player_cancel_repeat(pl);
+
     /* Player must be in the playing state or the flag on the
      * the command must be zero for the user to use the command -
      * otherwise, a player cam save, be in the play_again state, and
@@ -279,9 +285,6 @@ bool handle_client(socket_struct *ns, player *pl) {
             }
             return false;
         }
-
-        if (pl && pl->state == ST_PLAYING && pl->ob != NULL)
-            player_cancel_repeat(pl);
 
         /* Since we have a full packet, reset last tick time. */
         ns->last_tick = 0;
