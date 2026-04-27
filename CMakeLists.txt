@@ -5,6 +5,7 @@ set(VERSION 1.75.0)
 option(METASERVER2 "Metaserver2 support (requires curl)" ON)
 option(MAPPER "Build crossfire-mapper (requires gdlib)" ON)
 option(TEST "Build tests (requires check)" OFF)
+option(EXTRAS "Build extra utilities" OFF)
 
 find_package(FLEX REQUIRED)
 
@@ -296,6 +297,16 @@ if(MAPPER)
     target_link_libraries(crossfire-mapper PUBLIC cross ${GD_LDFLAGS})
 endif()
 # }}}
+
+if(EXTRAS)
+    add_executable(bwp utils/bwp.cpp test/unit/common/stubs_common.cpp)
+    target_link_libraries(bwp PUBLIC cross)
+
+    add_executable(gridarta-types-convert utils/gridarta-types-convert.cpp)
+
+    add_executable(test_weather utils/test_weather.cpp)
+    target_link_libraries(test_weather PUBLIC cfserver)
+endif()
 
 # tests
 if(TEST)

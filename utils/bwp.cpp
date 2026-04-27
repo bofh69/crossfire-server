@@ -117,7 +117,7 @@ const char *const flag_names[NUM_FLAGS+1] = {
 static char *cat_template(char *source, char *add) {
     if (!source)
         return add;
-    source = realloc(source, strlen(source)+strlen(add)+1);
+    source = (char *)realloc(source, strlen(source)+strlen(add)+1);
     strcat(source, add);
     free(add);
     return source;
@@ -143,7 +143,7 @@ static int read_template(const char *name, char **buffer) {
         return 1;
     }
 
-    (*buffer) = calloc(1, info.st_size+1);
+    (*buffer) = (char *)calloc(1, info.st_size+1);
     if (!(*buffer)) {
         printf("Template %s calloc failed!\n", name);
         return 1;
@@ -212,7 +212,7 @@ static char *do_template(const char *tpl, const char **vars, const char **values
             maxlen = strlen(values[var]);
         var++;
     }
-    result = calloc(1, strlen(tpl)+maxlen*(count/2)+1);
+    result = (char *)calloc(1, strlen(tpl)+maxlen*(count/2)+1);
     if (!result)
         return NULL;
     current_result = result;
@@ -350,14 +350,14 @@ const char *join_with_comma(String_Array *array) {
     char *newtext;
     int i;
 
-    newtext = calloc(1, 1);
+    newtext = (char *)calloc(1, 1);
     qsort(array->item, array->count, sizeof(char *), sortbyname);
     for (i = 0; i < array->count; i++) {
         if (i) {
-            newtext = realloc(newtext, strlen(newtext)+strlen(", ")+1);
+            newtext = (char *)realloc(newtext, strlen(newtext)+strlen(", ")+1);
             newtext = strncat(newtext, ", ", 2);
         }
-        newtext = realloc(newtext, strlen(newtext)+strlen(array->item[i])+1);
+        newtext = (char *)realloc(newtext, strlen(newtext)+strlen(array->item[i])+1);
         newtext = strncat(newtext, array->item[i], strlen(array->item[i]));
     }
     return newtext;
@@ -390,23 +390,23 @@ int main(int argc, char *argv[]) {
 
         /* Initialize templates */
     if (read_template("templates/wiki/monster_page_head", &monster_page_head))
-        return;
+        return 1;
     if (read_template("templates/wiki/monster_page_foot", &monster_page_foot))
-        return;
+        return 1;
     if (read_template("templates/wiki/monster_entry", &monster_entry))
-        return;
+        return 1;
     if (read_template("templates/wiki/monster_canuse_row", &monster_canuse_row))
-        return;
+        return 1;
     if (read_template("templates/wiki/monster_protected_row", &monster_protected_row))
-        return;
+        return 1;
     if (read_template("templates/wiki/monster_vulnerable_row", &monster_vulnerable_row))
-        return;
+        return 1;
     if (read_template("templates/wiki/monster_special_row", &monster_special_row))
-        return;
+        return 1;
     if (read_template("templates/wiki/monster_attack_row", &monster_attack_row))
-        return;
+        return 1;
     if (read_template("templates/wiki/monster_lore_row", &monster_lore_row))
-        return;
+        return 1;
     sprintf(image_list_path, "%s/image_list", wikidir);
     image_list = fopen(image_list_path, "w");
     if (!image_list) {
@@ -486,7 +486,7 @@ int main(int argc, char *argv[]) {
                 val[keycount++] = letterindex;
                 key[keycount] = NULL;
                 tpl = do_template(monster_page_head, key, val);
-                res = fprintf(fp, tpl);
+                res = fprintf(fp, "%s", tpl);
                 free(tpl);
                 if (res < 0) {
                     LOG(llevError, "Unable to write to file!");
@@ -523,11 +523,11 @@ int main(int argc, char *argv[]) {
             };
             int j;
 
-            canuse.item = calloc((CANUSE_LENGTH+1), sizeof(const char *));
-            resist.item = calloc((NROFATTACKS+1), sizeof(const char *));
-            vulner.item = calloc((NROFATTACKS+1), sizeof(const char *));
-            attack.item = calloc((NROFATTACKS+1), sizeof(const char *));
-            special.item = calloc((NROFATTACKS+1), sizeof(const char *));
+            canuse.item = (char **)calloc((CANUSE_LENGTH+1), sizeof(const char *));
+            resist.item = (char **)calloc((NROFATTACKS+1), sizeof(const char *));
+            vulner.item = (char **)calloc((NROFATTACKS+1), sizeof(const char *));
+            attack.item = (char **)calloc((NROFATTACKS+1), sizeof(const char *));
+            special.item = (char **)calloc((NROFATTACKS+1), sizeof(const char *));
 
                 /* Do lore row */
             if (at->clone.lore) {
@@ -554,7 +554,6 @@ int main(int argc, char *argv[]) {
                 key[keycount+1] = NULL;
                 val[keycount] = join_with_comma(&canuse);
                 canuse_row = do_template(monster_canuse_row, key, val);
-                free(val[keycount]);
             } else
                 canuse_row = strdup("");
 
@@ -580,7 +579,6 @@ int main(int argc, char *argv[]) {
                 key[keycount+1] = NULL;
                 val[keycount] = join_with_comma(&resist);
                 protected_row = do_template(monster_protected_row, key, val);
-                free(val[keycount]);
             } else
                 protected_row = strdup("");
 
@@ -590,7 +588,6 @@ int main(int argc, char *argv[]) {
                 key[keycount+1] = NULL;
                 val[keycount] = join_with_comma(&vulner);
                 vulnerable_row = do_template(monster_vulnerable_row, key, val);
-                free(val[keycount]);
             } else
                 vulnerable_row = strdup("");
 
@@ -608,7 +605,6 @@ int main(int argc, char *argv[]) {
                 key[keycount+1] = NULL;
                 val[keycount] = join_with_comma(&attack);
                 attack_row = do_template(monster_attack_row, key, val);
-                free(val[keycount]);
             } else
                 attack_row = strdup("");
 
@@ -626,7 +622,6 @@ int main(int argc, char *argv[]) {
                 key[keycount+1] = NULL;
                 val[keycount] = join_with_comma(&special);
                 special_row = do_template(monster_special_row, key, val);
-                free(val[keycount]);
             } else
                 special_row = strdup("");
 
@@ -665,7 +660,7 @@ int main(int argc, char *argv[]) {
                 sprintf(buf[keycount], "{{http://aaron.baugher.biz/images/cf/%s.png}}", at->clone.face->name);
                 val[keycount++] = buf[keycount];
                 sprintf(buf[keycount], "%s.png\n", at->clone.face->name);
-                fprintf(image_list, buf[keycount]);
+                fprintf(image_list, "%s", buf[keycount]);
             }
 /*  Plan to add generator face too, when I decide how    */
             key[keycount] = "GENFACE";
@@ -673,7 +668,7 @@ int main(int argc, char *argv[]) {
             key[keycount] = NULL;
 
             tpl = do_template(monster_entry, key, val);
-            fprintf(fp, tpl);
+            fprintf(fp, "%s", tpl);
             free(tpl);
             tpl = NULL;
 
