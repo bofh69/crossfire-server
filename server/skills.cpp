@@ -1378,17 +1378,12 @@ int remove_trap(object *op, object *skill) {
  * When this skill is called from do_skill(), it allows
  * the player to regain lost grace points at a faster rate. -b.t.
  *
- * This always returns 0 - return value is used by calling function
- * such that if it returns true, player gets exp in that skill.  This
- * the effect here can be done on demand, we probably don't want to
- * give infinite exp by returning true in any cases.
- *
  * @param pl
  * object praying, should be a player.
  * @param skill
  * praying skill.
  * @return
- * 0.
+ * 1 on success, 0 on failure
  */
 int pray(object *pl, object *skill) {
     char buf[MAX_BUF];
@@ -1419,7 +1414,7 @@ int pray(object *pl, object *skill) {
         pl->stats.grace++;
         pl->last_grace = -1;
     }
-    return 0;
+    return 1;
 }
 
 /**
@@ -1437,16 +1432,17 @@ int pray(object *pl, object *skill) {
  * livng meditating, should be a player.
  * @param skill
  * meditation skill.
+ * 1 on success, 0 on failure
  */
-void meditate(object *pl, object *skill) {
+int meditate(object *pl, object *skill) {
     if (pl->type != PLAYER)
-        return; /* players only */
+        return 0; /* players only */
 
     /* check if pl has removed encumbering armour and weapons */
     if (QUERY_FLAG(pl, FLAG_READY_WEAPON) && skill->level < 6) {
         draw_ext_info(NDI_UNIQUE, 0, pl, MSG_TYPE_SKILL, MSG_TYPE_SKILL_ERROR,
                       "You can't concentrate while wielding a weapon!");
-        return;
+        return 0;
     }
 
     FOR_INV_PREPARE(pl, tmp)
@@ -1458,7 +1454,7 @@ void meditate(object *pl, object *skill) {
         && QUERY_FLAG(tmp, FLAG_APPLIED)) {
             draw_ext_info(NDI_UNIQUE, 0, pl, MSG_TYPE_SKILL, MSG_TYPE_SKILL_ERROR,
                           "You can't concentrate while wearing so much armour!");
-            return;
+            return 0;
         }
     FOR_INV_FINISH();
 
@@ -1480,6 +1476,7 @@ void meditate(object *pl, object *skill) {
         pl->stats.hp++;
         pl->last_heal = -1;
     }
+    return 1;
 }
 
 /**

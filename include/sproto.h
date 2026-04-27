@@ -494,7 +494,7 @@ int singing(object *pl, int dir, object *skill);
 int find_traps(object *pl, object *skill);
 int remove_trap(object *op, object *skill);
 int pray(object *pl, object *skill);
-void meditate(object *pl, object *skill);
+int meditate(object *pl, object *skill);
 int write_on_item(object *pl, const char *params, object *skill);
 int skill_throw(object *op, object *part, int dir, object *skill);
 /* skill_util.c */

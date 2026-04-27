@@ -413,8 +413,7 @@ struct do_skill_cb_data {
 
 bool do_skill_cb(player * /*pl*/, void *data) {
     struct do_skill_cb_data *args = (struct do_skill_cb_data *)data;
-    do_skill(args->op, args->part, args->skill, args->dir, args->string);
-    return true;
+    return do_skill(args->op, args->part, args->skill, args->dir, args->string) == 1;
 }
 
 /**
@@ -583,24 +582,25 @@ int do_skill(object *op, object *part, object *skill, int dir, const char *strin
         break;
 
     case SK_MEDITATION:
-        if (op->contr) {
+        if (op->contr && op->contr->repeat_func == NULL) {
             player_start_repeat(op->contr, "meditation", do_skill_cb);
             op->contr->repeat_func_data = calloc(1, sizeof(struct do_skill_cb_data));
             struct do_skill_cb_data *data = (struct do_skill_cb_data *)op->contr->repeat_func_data;
             *data = {op, part, skill, dir, string};
+        } else {
+            success = meditate(op, skill);
         }
-        meditate(op, skill);
-        success = 1;
         break;
 
     case SK_PRAYING:
-        if (op->contr) {
+        if (op->contr && op->contr->repeat_func == NULL) {
             player_start_repeat(op->contr, "praying", do_skill_cb);
             op->contr->repeat_func_data = calloc(1, sizeof(struct do_skill_cb_data));
             struct do_skill_cb_data *data = (struct do_skill_cb_data *)op->contr->repeat_func_data;
             *data = {op, part, skill, dir, string};
+        } else {
+            success = pray(op, skill);
         }
-        success = pray(op, skill);
         break;
 
     case SK_BARGAINING:
@@ -621,14 +621,15 @@ int do_skill(object *op, object *part, object *skill, int dir, const char *strin
         break;
 
     case SK_HARVESTING:
-        if (op->contr) {
+        if (op->contr && op->contr->repeat_func == NULL) {
             player_start_repeat(op->contr, skill->name, do_skill_cb);
             op->contr->repeat_func_data = calloc(1, sizeof(struct do_skill_cb_data));
             struct do_skill_cb_data *data = (struct do_skill_cb_data *)op->contr->repeat_func_data;
             *data = {op, part, skill, dir, string};
+        } else {
+            do_harvest(op, dir, skill);
+            success = 1;
         }
-        do_harvest(op, dir, skill);
-        success = 0;
         break;
 
     default: {
