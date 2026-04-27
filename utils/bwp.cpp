@@ -3,12 +3,13 @@
  *
  * This program will sort out all monster archetypes and print wiki pages
  * for them, named 'a' through 'z'.  It uses some *_template subroutines taken
- * from Ryo's mapper.c.  It should compile if installed in server/trunk/utils.
+ * from Ryo's mapper.c.
  * Please direct all suggestions or corrections to aaron@baugher.biz (or
  * Mhoram on #crossfire).
  *
- * Compile command: g++ -g -O0 bwp.cpp -I../include ../common/libcross.a ../socket/libsocket.a ../types/libtypes.a ../random_maps/librandom_map.a ../server/libserver.a ../common/libcross.a ../socket/libsocket.a ../types/libtypes.a ../random_maps/librandom_map.a -o bwp -lz -lcrypt -lm -lstdc++ -fpermissive -ldl -lcurl -lpthread
- * (someone should figure the correct order for the link of the libs...)
+ * Built using the CMake build. Add -DEXTRAS=ON to your CMake invocation.
+ *
+ * To run: cd to your arch dir, then run this program. It will write outputs to /tmp.
  */
 
 /*
