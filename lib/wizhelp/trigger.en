@@ -1,0 +1,4 @@
+Trigger a connection on the current map.
+
+Usage:
+  trigger <connection>
