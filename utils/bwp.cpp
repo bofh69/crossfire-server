@@ -9,7 +9,8 @@
  *
  * Built using the CMake build. Add -DEXTRAS=ON to your CMake invocation.
  *
- * To run: cd to your arch dir, then run this program. It will write outputs to /tmp.
+ * To run: cd to the directory with this program (server/utils), then run this
+ * program. It will write outputs to /tmp.
  */
 
 /*
