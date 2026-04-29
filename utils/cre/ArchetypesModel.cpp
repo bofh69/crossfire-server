@@ -17,8 +17,7 @@
 #include "archetypes/ObjectWrapper.h"
 #include "ResourcesManager.h"
 
-#define PROPERTY_COUNT  20
-const char *properties[PROPERTY_COUNT] = {
+const std::vector<const char *>properties {
     "arch_name",
     "hp",
     "maxhp",
@@ -59,7 +58,7 @@ int ArchetypesModel::rowCount(const QModelIndex &parent) const {
   
 int ArchetypesModel::columnCount(const QModelIndex &parent) const {
     (void)parent;
-    return PROPERTY_COUNT;
+    return properties.size();
 }
 
 QVariant ArchetypesModel::data(const QModelIndex &index, int role) const {
@@ -91,7 +90,7 @@ Qt::ItemFlags ArchetypesModel::flags(const QModelIndex &index) const {
         return Qt::NoItemFlags;
     }
 
-    if (index.column() < 0 || index.column() >= PROPERTY_COUNT) {
+    if (index.column() < 0 || index.column() >= properties.size()) {
         return QAbstractItemModel::flags(index);
     }
 
