@@ -6,6 +6,7 @@ option(METASERVER2 "Metaserver2 support (requires curl)" ON)
 option(MAPPER "Build crossfire-mapper (requires gdlib)" ON)
 option(TEST "Build tests (requires check)" OFF)
 option(EXTRAS "Build extra utilities" OFF)
+option(CRE "Build resource editor (requires Qt5)" OFF)
 
 find_package(FLEX REQUIRED)
 
@@ -311,6 +312,10 @@ endif()
 # tests
 if(TEST)
     add_subdirectory(test)
+endif()
+
+if(CRE)
+    add_subdirectory(utils/cre)
 endif()
 
 include(CheckIncludeFiles)
