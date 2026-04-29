@@ -1,4 +1,14 @@
-Trigger a connection on the current map.
+Usage: trigger <connection_number>
 
-Usage:
-  trigger <connection>
+Triggers (activates) a connection on the current map. This may include objects such as gates, spikes, teleporters, pits, doors, and similar archetypes.
+
+This command is useful when a DM wants to activate an archetype (gate, spikes, pit, door, etc.) directly, without needing to locate and use the corresponding in-map trigger (such as a pedestal, altar, lever, button, or inventory check).
+
+To determine the correct connection number, use the dump command on the map archetype.
+
+Example:
+ trigger 2
+
+This activates the archetype associated with connection 2 (i.e., connected 2).
+
+See also: dump
