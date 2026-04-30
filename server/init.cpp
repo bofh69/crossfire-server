@@ -38,6 +38,7 @@
 #include "sproto.h"
 #include "assets.h"
 #include "modules.h"
+#include "websocket.h"
 
 static void help(void);
 static void init_beforeplay(void);
@@ -293,6 +294,19 @@ static void set_csport(const char *val) {
 }
 
 /**
+ * Set the WebSocket listening port from a command-line argument.
+ * @param val port number as a string.
+ */
+static void set_ws_port(const char *val) {
+    int port = atoi(val);
+    if (port <= 0 || port > 65535) {
+        LOG(llevError, "%d is an invalid WebSocket port number, must be between 1 and 65535.\n", port);
+        exit(1);
+    }
+    settings.ws_port = port;
+}
+
+/**
  * Disable a plugin.
  * @param name plugin's name, without extension.
  */
@@ -426,6 +440,7 @@ static struct Command_Line_Options options[] = {
      * as they don't require much of anything to bet set up.
      */
     { "-p", 1, 2, (cmdlinefunc_args0)set_csport },
+    { "-ws-port", 1, 2, (cmdlinefunc_args0)set_ws_port },
 
     /** Start of pass 3 information. In theory, by pass 3, all data paths
      * and defaults should have been set up.
@@ -1214,6 +1229,9 @@ static void help(void) {
     printf(" -mt <name>   Dump a list of treasures for a monster.\n");
     printf(" -n           Turn off debugging messages if on by default.\n");
     printf(" -p <port>    Specifies the port to listen on for incoming connections.\n");
+    printf(" -ws-port <port>\n"
+           "              Specifies the port to listen on for WebSocket connections.\n"
+           "              If not given, no WebSocket port is opened.\n");
     printf(" -pack-assets <type> <filename>\n");
     printf("              Packs specified assets type to the specified filename.\n");
     printf("              Valid assets type are: archs, treasures, faces, messages, facesets, artifacts, formulae, images, quests.\n");
