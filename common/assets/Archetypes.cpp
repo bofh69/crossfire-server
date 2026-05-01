@@ -119,7 +119,7 @@ archetype *Archetypes::findBySkillNameAndType(const char *skill, int type) {
 }
 
 archetype *Archetypes::findByTypeSubtype(int type, int subtype) {
-    for (auto arch : m_assets) {
+    for (const auto& arch : m_assets) {
         if (((type == -1) || (type == arch.second->clone.type))
         && (subtype == -1 || subtype == arch.second->clone.subtype))
             return arch.second;

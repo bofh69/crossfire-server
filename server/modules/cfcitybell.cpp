@@ -164,7 +164,7 @@ void cfcitybell_init(Settings *, ServerSettings *serverSettings) {
 
 void cfcitybell_close() {
     events_unregister_global_handler(EVENT_CLOCK, global_handler);
-    for (auto reg : regions) {
+    for (const auto& reg : regions) {
         delete reg.second;
     }
     all_regions.clear();
