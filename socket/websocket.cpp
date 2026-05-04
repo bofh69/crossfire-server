@@ -273,9 +273,17 @@ bool ws_do_handshake(socket_struct *ns) {
         "\r\n",
         accept);
 #ifdef WIN32
-    send(ns->fd, response, rlen, 0);
+    if (send(ns->fd, response, rlen, 0) != rlen) {
+        LOG(llevError, "WebSocket send failed: %s\n", strerror(errno));
+        ns->status = Ns_Dead;
+        return false;
+    }
 #else
-    (void)write(ns->fd, response, (size_t)rlen);
+    if (write(ns->fd, response, (size_t)rlen) != rlen) {
+        LOG(llevError, "WebSocket write failed: %s\n", strerror(errno));
+        ns->status = Ns_Dead;
+        return false;
+    }
 #endif
 
     /* Transition to WS_ACTIVE and initialise the Crossfire session. */
@@ -527,9 +535,7 @@ void ws_write_frame(socket_struct *ns, SockList *sl) {
     /*
      * Build the complete frame.  For a 2-byte header we can overwrite
      * sl->buf[0..1] directly (same size as the normal length prefix).
-     * For a 4-byte header we shift the payload 2 bytes forward; if it
-     * happens to overflow the buffer (payload == 65535 bytes, extremely
-     * unlikely) we fall back to two separate send() calls.
+     * For a 4-byte header we fall back to two separate send() calls.
      */
     if (hdr_len == 2) {
         sl->buf[0] = header[0];
@@ -541,13 +547,21 @@ void ws_write_frame(socket_struct *ns, SockList *sl) {
 #endif
     } else {
         /* hdr_len == 4 */
-#ifdef WIN32
-        send(ns->fd, reinterpret_cast<const char *>(header), hdr_len, 0);
-        send(ns->fd, reinterpret_cast<const char *>(sl->buf + 2), (int)payload_len, 0);
+#if defined(WIN32)
+        if ((send(ns->fd, reinterpret_cast<const char *>(header), hdr_len, 0) != hdr_len) ||
+            (send(ns->fd, reinterpret_cast<const char *>(sl->buf + 2), (int)payload_len, 0) != payload_len)) {
+            LOG(llevError, "WebSocket send failed: %s\n", strerror(errno));
+            ns->status = Ns_Dead;
+        }
 #else
-        (void)send(ns->fd, header, (size_t)hdr_len, MSG_MORE);
-        (void)send(ns->fd, sl->buf + 2, payload_len, 0);
+#ifndef MSG_MORE
+#define MSG_MORE 0
+#endif
+        if ((send(ns->fd, header, (size_t)hdr_len, MSG_MORE) != hdr_len) ||
+            (send(ns->fd, sl->buf + 2, payload_len, 0) != payload_len)) {
+            LOG(llevError, "WebSocket send failed: %s\n", strerror(errno));
+            ns->status = Ns_Dead;
+        }
 #endif
     }
 }
-

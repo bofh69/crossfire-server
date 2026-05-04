@@ -434,10 +434,11 @@ void init_server(void) {
             int ws_count = count_addrinfo(ws_ai);
             int ws_base  = socket_info.allocated_sockets;
 
-            init_sockets = static_cast<socket_struct *>(
+            socket_struct *resized_init_sockets =  static_cast<socket_struct *>(
                 realloc(init_sockets, sizeof(socket_struct) * (ws_base + ws_count)));
-            if (!init_sockets)
+            if (!resized_init_sockets)
                 fatal(OUT_OF_MEMORY);
+            init_sockets = resized_init_sockets;
 
             alloc_listen_sockets(ws_base, ws_count, true);
             copy_addrinfo_to_listen(ws_base, ws_ai);
