@@ -101,9 +101,9 @@ ssize_t ws_compute_accept_key(const char *key, char *out, size_t out_len) {
 }
 
 void ws_init(socket_struct *ns, const char *host) {
-    ns->ws_state     = WS_HTTP;
-    ns->ws_header_size = 0;
-    ns->ws_frame_total = 0;
+    ns->websocket.ws_state     = WS_HTTP;
+    ns->websocket.ws_header_size = 0;
+    ns->websocket.ws_frame_total = 0;
     ns->status       = Ns_Add;
     free(ns->host);
     ns->host = strdup_local(host);
@@ -115,6 +115,11 @@ void ws_init(socket_struct *ns, const char *host) {
  * ========================================================================= */
 
 bool ws_do_handshake(socket_struct *ns) {
+
+    if (ns->websocket.ws_state != WS_HTTP) {
+        return true;
+    }
+
     SockList *sl = &ns->inbuf;
 
     /* Read available data into inbuf (treat as a plain byte buffer). */
@@ -136,9 +141,9 @@ bool ws_do_handshake(socket_struct *ns) {
 
     if (n < 0) {
 #ifdef WIN32
-        if (WSAGetLastError() == WSAEWOULDBLOCK) return true;
+        if (WSAGetLastError() == WSAEWOULDBLOCK) return false;
 #else
-        if (errno == EAGAIN || errno == EWOULDBLOCK) return true;
+        if (errno == EAGAIN || errno == EWOULDBLOCK) return false;
 #endif
         ns->status = Ns_Dead;
         return false;
@@ -152,7 +157,7 @@ bool ws_do_handshake(socket_struct *ns) {
 
     /* Wait until we have the complete HTTP header block (ends with \r\n\r\n). */
     if (!strstr(reinterpret_cast<char *>(sl->buf), "\r\n\r\n"))
-        return true; /* Need more data. */
+        return false; /* Need more data. */
 
     /* ------------------------------------------------------------------
      * X-Forwarded-For support.
@@ -274,10 +279,10 @@ bool ws_do_handshake(socket_struct *ns) {
 #endif
 
     /* Transition to WS_ACTIVE and initialise the Crossfire session. */
-    ns->ws_state = WS_ACTIVE;
+    ns->websocket.ws_state = WS_ACTIVE;
     SockList_ResetRead(&ns->inbuf);
-    ns->ws_header_size = 0;
-    ns->ws_frame_total = 0;
+    ns->websocket.ws_header_size = 0;
+    ns->websocket.ws_frame_total = 0;
 
     // init_connection updates ns->host by first freeing it.
     char *tmp_host = ns->host;
@@ -292,13 +297,17 @@ bool ws_do_handshake(socket_struct *ns) {
  * ========================================================================= */
 
 int ws_read_packet(socket_struct *ns) {
+    if (ns->websocket.ws_state != WS_ACTIVE) {
+        return -1;
+    }
+
     SockList *sl = &ns->inbuf;
 
     /* -------------------------------------------------------------------
      * Phase 1: accumulate the first 2 bytes of the frame header so we
      * can determine how many more header bytes we need.
      * ------------------------------------------------------------------- */
-    if (ns->ws_header_size == 0 && sl->len < 2) {
+    if (ns->websocket.ws_header_size == 0 && sl->len < 2) {
         int to_read = 2 - (int)sl->len;
 #ifdef WIN32
         int n = recv(ns->fd, reinterpret_cast<char *>(sl->buf + sl->len), to_read, 0);
@@ -327,21 +336,21 @@ int ws_read_packet(socket_struct *ns) {
      * Phase 2: once we have 2 bytes, compute the total header size.
      * Header = 2 bytes base + extended-length bytes + optional 4-byte mask.
      * ------------------------------------------------------------------- */
-    if (ns->ws_header_size == 0) {
+    if (ns->websocket.ws_header_size == 0) {
         bool masked    = (sl->buf[1] & 0x80) != 0;
         uint8_t plen7  =  sl->buf[1] & 0x7F;
         int hdr = 2;
         if      (plen7 == 126) hdr += 2;
         else if (plen7 == 127) hdr += 8;
         if (masked) hdr += 4;
-        ns->ws_header_size = hdr;
+        ns->websocket.ws_header_size = hdr;
     }
 
     /* -------------------------------------------------------------------
      * Phase 3: read until we have the complete frame header.
      * ------------------------------------------------------------------- */
-    if (sl->len < (size_t)ns->ws_header_size) {
-        int to_read = ns->ws_header_size - (int)sl->len;
+    if (sl->len < (size_t)ns->websocket.ws_header_size) {
+        int to_read = ns->websocket.ws_header_size - (int)sl->len;
 #ifdef WIN32
         int n = recv(ns->fd, reinterpret_cast<char *>(sl->buf + sl->len), to_read, 0);
 #else
@@ -361,14 +370,14 @@ int ws_read_packet(socket_struct *ns) {
         if (n == 0)
             return -1;
         sl->len += (size_t)n;
-        if (sl->len < (size_t)ns->ws_header_size)
+        if (sl->len < (size_t)ns->websocket.ws_header_size)
             return 0;
     }
 
     /* -------------------------------------------------------------------
      * Phase 4: parse the payload length and compute the total frame size.
      * ------------------------------------------------------------------- */
-    if (ns->ws_frame_total == 0) {
+    if (ns->websocket.ws_frame_total == 0) {
         uint8_t plen7 = sl->buf[1] & 0x7F;
         uint64_t payload_len;
         if (plen7 < 126) {
@@ -381,21 +390,21 @@ int ws_read_packet(socket_struct *ns) {
                 payload_len = (payload_len << 8) | sl->buf[2 + i];
         }
 
-        uint64_t total = (uint64_t)ns->ws_header_size + payload_len;
+        uint64_t total = (uint64_t)ns->websocket.ws_header_size + payload_len;
         /* Guard against frames that won't fit in our buffer. */
         if (total > (uint64_t)(sizeof(sl->buf) - 1)) {
             LOG(llevError, "WebSocket frame too large (%llu bytes) from %s\n",
                 (unsigned long long)total, ns->host);
             return -1;
         }
-        ns->ws_frame_total = total;
+        ns->websocket.ws_frame_total = total;
     }
 
     /* -------------------------------------------------------------------
      * Phase 5: read the payload.
      * ------------------------------------------------------------------- */
-    if (sl->len < ns->ws_frame_total) {
-        size_t to_read = (size_t)(ns->ws_frame_total - sl->len);
+    if (sl->len < ns->websocket.ws_frame_total) {
+        size_t to_read = (size_t)(ns->websocket.ws_frame_total - sl->len);
 #ifdef WIN32
         int n = recv(ns->fd, reinterpret_cast<char *>(sl->buf + sl->len), (int)to_read, 0);
 #else
@@ -415,7 +424,7 @@ int ws_read_packet(socket_struct *ns) {
         if (n == 0)
             return -1;
         sl->len += (size_t)n;
-        if (sl->len < ns->ws_frame_total)
+        if (sl->len < ns->websocket.ws_frame_total)
             return 0;
     }
 
@@ -446,8 +455,8 @@ int ws_read_packet(socket_struct *ns) {
     int payload_off = mask_off + (masked ? 4 : 0);
 
     /* Reset frame-tracking state for the next call. */
-    ns->ws_header_size = 0;
-    ns->ws_frame_total = 0;
+    ns->websocket.ws_header_size = 0;
+    ns->websocket.ws_frame_total = 0;
 
     /* Handle control frames. */
     if (opcode == 0x8) { /* Connection Close */
@@ -486,7 +495,7 @@ int ws_read_packet(socket_struct *ns) {
  * ========================================================================= */
 
 void ws_write_frame(socket_struct *ns, SockList *sl) {
-    if (ns->status == Ns_Dead || sl == NULL)
+    if (ns->status == Ns_Dead || sl == NULL || ns->websocket.ws_state != WS_ACTIVE)
         return;
 
     /* The Crossfire payload is sl->buf[2..sl->len-1]. */

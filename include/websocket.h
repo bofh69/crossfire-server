@@ -26,13 +26,19 @@
 #include <stdint.h>
 #include <stddef.h>
 
-/** WebSocket connection state values stored in socket_struct::ws_state. */
+/** WebSocket connection state values. */
 #define WS_NONE   0   /**< Not a WebSocket connection. */
 #define WS_HTTP   1   /**< Accumulating the HTTP Upgrade request. */
 #define WS_ACTIVE 2   /**< WebSocket handshake complete, frames in use. */
 
 struct socket_struct;
 struct SockList;
+
+struct websocket_state {
+    uint8_t  ws_state;           /**< WebSocket state: WS_NONE, WS_HTTP, or WS_ACTIVE. */
+    int      ws_header_size;     /**< Current WS frame: expected header bytes (0 = unknown). */
+    uint64_t ws_frame_total;     /**< Current WS frame: total expected bytes header+payload (0 = unknown). */
+};
 
 /**
  * Initialize a new websocket connection.

@@ -449,7 +449,7 @@ void Send_With_Handling(socket_struct *ns, SockList *sl) {
     if (ns->status == Ns_Dead || sl == NULL)
         return;
 
-    if (ns->is_websocket && ns->ws_state == WS_ACTIVE) {
+    if (ns->is_websocket) {
         ws_write_frame(ns, sl);
         return;
     }

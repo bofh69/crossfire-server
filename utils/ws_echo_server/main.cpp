@@ -74,7 +74,7 @@ static socket_struct *alloc_conn(int fd, const char *host) {
     ns->fd           = fd;
     ns->status       = Ns_Add;
     ns->is_websocket = true;
-    ns->ws_state     = WS_HTTP;
+    ns->websocket.ws_state     = WS_HTTP;
     ns->host         = strdup(host);
     SockList_ResetRead(&ns->inbuf);
     return ns;
@@ -226,7 +226,7 @@ static void handle_client(socket_struct *ns, int epfd) {
     /* ------------------------------------------------------------------
      * Phase 1: complete the HTTP Upgrade handshake.
      * ------------------------------------------------------------------ */
-    if (ns->ws_state == WS_HTTP) {
+    if (ns->websocket.ws_state == WS_HTTP) {
         if (!ws_do_handshake(ns) || ns->status == Ns_Dead) {
             close_conn(ns, epfd);
             return;

@@ -9,6 +9,8 @@
 #ifndef NEWSERVER_H
 #define NEWSERVER_H
 
+#include "websocket.h"
+
 /**
  * The lower bound for the number of objects to send for the 'look' window
  * (container or ground view).
@@ -136,9 +138,7 @@ struct socket_struct {
 
     /* WebSocket support */
     bool     is_websocket;       /**< True if this connection uses the WebSocket protocol. */
-    uint8_t  ws_state;           /**< WebSocket state: WS_NONE, WS_HTTP, or WS_ACTIVE. */
-    int      ws_header_size;     /**< Current WS frame: expected header bytes (0 = unknown). */
-    uint64_t ws_frame_total;     /**< Current WS frame: total expected bytes header+payload (0 = unknown). */
+    websocket_state websocket;   /**< Connection state for websockets */
 };
 
 /**

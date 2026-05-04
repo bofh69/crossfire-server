@@ -48,7 +48,7 @@ static socket_struct make_ws_socket(int fd) {
     ns.fd           = fd;
     ns.status       = Ns_Add;
     ns.is_websocket = true;
-    ns.ws_state     = WS_ACTIVE;
+    ns.websocket.ws_state     = WS_ACTIVE;
     ns.host         = const_cast<char *>("127.0.0.1");
     SockList_ResetRead(&ns.inbuf);
     return ns;
@@ -57,7 +57,7 @@ static socket_struct make_ws_socket(int fd) {
 /** Build a socket_struct in WS_HTTP state for handshake tests. */
 static socket_struct make_ws_http_socket(int fd) {
     socket_struct ns = make_ws_socket(fd);
-    ns.ws_state      = WS_HTTP;
+    ns.websocket.ws_state      = WS_HTTP;
     return ns;
 }
 
@@ -466,7 +466,7 @@ START_TEST(test_handshake_standard_case) {
 
     bool ok = ws_do_handshake(&ns);
     ck_assert(ok);
-    ck_assert_int_eq(ns.ws_state, WS_ACTIVE);
+    ck_assert_int_eq(ns.websocket.ws_state, WS_ACTIVE);
     ck_assert_int_eq(ns.status, Ns_Add);
 
     /* Verify the response starts with "HTTP/1.1 101". */
@@ -496,7 +496,7 @@ START_TEST(test_handshake_lowercase_key_header) {
 
     bool ok = ws_do_handshake(&ns);
     ck_assert(ok);
-    ck_assert_int_eq(ns.ws_state, WS_ACTIVE);
+    ck_assert_int_eq(ns.websocket.ws_state, WS_ACTIVE);
 
     close(sv[0]);
     close(sv[1]);
@@ -518,7 +518,7 @@ START_TEST(test_handshake_uppercase_key_header) {
 
     bool ok = ws_do_handshake(&ns);
     ck_assert(ok);
-    ck_assert_int_eq(ns.ws_state, WS_ACTIVE);
+    ck_assert_int_eq(ns.websocket.ws_state, WS_ACTIVE);
 
     close(sv[0]);
     close(sv[1]);
@@ -540,7 +540,7 @@ START_TEST(test_handshake_mixed_case_key_header) {
 
     bool ok = ws_do_handshake(&ns);
     ck_assert(ok);
-    ck_assert_int_eq(ns.ws_state, WS_ACTIVE);
+    ck_assert_int_eq(ns.websocket.ws_state, WS_ACTIVE);
 
     close(sv[0]);
     close(sv[1]);
@@ -591,7 +591,7 @@ START_TEST(test_handshake_incomplete_request) {
 
     bool ok = ws_do_handshake(&ns);
     ck_assert(ok);                      /* still alive, waiting */
-    ck_assert_int_eq(ns.ws_state, WS_HTTP); /* not upgraded yet */
+    ck_assert_int_eq(ns.websocket.ws_state, WS_HTTP); /* not upgraded yet */
     ck_assert_int_eq(ns.status, Ns_Add);
 
     close(sv[0]);
@@ -704,7 +704,7 @@ START_TEST(test_handshake_buffer_overflow_protection) {
     ns.fd       = -1;               /* will not be read */
     ns.status   = Ns_Add;
     ns.is_websocket = true;
-    ns.ws_state = WS_HTTP;
+    ns.websocket.ws_state = WS_HTTP;
     ns.host     = const_cast<char *>("127.0.0.1");
 
     /* Fill the buffer to exactly sizeof(buf) - 1 bytes so avail == 0. */
@@ -809,7 +809,7 @@ START_TEST(test_xff_allowed_ip) {
 
     bool ok = ws_do_handshake(&ns);
     ck_assert(ok);
-    ck_assert_int_eq(ns.ws_state, WS_ACTIVE);
+    ck_assert_int_eq(ns.websocket.ws_state, WS_ACTIVE);
     /* The host must be updated to the forwarded IP. */
     ck_assert_str_eq(ns.host, "203.0.113.42");
     /* checkbanned was called with the forwarded IP. */
@@ -868,7 +868,7 @@ START_TEST(test_xff_absent) {
 
     bool ok = ws_do_handshake(&ns);
     ck_assert(ok);
-    ck_assert_int_eq(ns.ws_state, WS_ACTIVE);
+    ck_assert_int_eq(ns.websocket.ws_state, WS_ACTIVE);
     /* host should remain the TCP peer address. */
     ck_assert_str_eq(ns.host, "192.0.2.1");
 
@@ -899,7 +899,7 @@ START_TEST(test_xff_multiple_addresses) {
 
     bool ok = ws_do_handshake(&ns);
     ck_assert(ok);
-    ck_assert_int_eq(ns.ws_state, WS_ACTIVE);
+    ck_assert_int_eq(ns.websocket.ws_state, WS_ACTIVE);
     /* Only the first address should be used. */
     ck_assert_str_eq(ns.host, "203.0.113.10");
     ck_assert_str_eq(g_checkbanned_host, "203.0.113.10");
