@@ -262,12 +262,11 @@ handle_cmd(socket_struct *ns, player *pl, char *cmd, char *data, int len) {
  * @return If the main loop should continue processing this client.
  */
 bool handle_client(socket_struct *ns, player *pl) {
-    /* Handle the WebSocket HTTP upgrade handshake. */
-    if (ns->is_websocket && ns->ws_state == WS_HTTP) {
-        if (!ws_do_handshake(ns))
+    if (ns->is_websocket) {
+        /* Maybe handle the WebSocket HTTP upgrade handshake. */
+        if (!ws_do_handshake(ns)) {
             return false;
-        /* Handshake complete or in progress – don't process protocol yet. */
-        return false;
+        }
     }
 
     /* Loop through this - maybe we have several complete packets here. */
@@ -288,7 +287,7 @@ bool handle_client(socket_struct *ns, player *pl) {
         }
 
         int status;
-        if (ns->is_websocket && ns->ws_state == WS_ACTIVE) {
+        if (ns->is_websocket) {
             status = ws_read_packet(ns);
         } else {
             status = SockList_ReadPacket(ns->fd, &ns->inbuf, sizeof(ns->inbuf.buf)-1);
