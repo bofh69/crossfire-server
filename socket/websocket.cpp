@@ -90,7 +90,7 @@ static const char *ws_strcasestr(const char *haystack, const char *needle) {
 /** GUID appended to the client key per RFC 6455 §1.3. */
 static const char WS_GUID[] = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
-ssize_t ws_compute_accept_key(const char *key, char *out, size_t out_len) {
+int ws_compute_accept_key(const char *key, char *out, size_t out_len) {
     char combined[128];
     snprintf(combined, sizeof(combined), "%s%s", key, WS_GUID);
     uint8_t digest[20];
@@ -533,32 +533,49 @@ void ws_write_frame(socket_struct *ns, SockList *sl) {
     }
 
     /*
-     * Build the complete frame.  For a 2-byte header we can overwrite
-     * sl->buf[0..1] directly (same size as the normal length prefix).
-     * For a 4-byte header we fall back to two separate send() calls.
+     * For a 2-byte header, the payload already begins at sl->buf[2], so we
+     * can overwrite sl->buf[0..1] with the header and send the whole buffer
+     * in a single call.
+     *
+     * For a 4-byte header, the payload still begins at sl->buf + 2, so
+     * there is no in-place room for the extra two header bytes.  In that
+     * case we send the header and payload with two separate send() calls.
+     *
+     * A send() failure is treated as fatal: the socket is marked Ns_Dead so
+     * the main loop closes it on the next pass.
      */
     if (hdr_len == 2) {
         sl->buf[0] = header[0];
         sl->buf[1] = header[1];
 #ifdef WIN32
-        send(ns->fd, reinterpret_cast<const char *>(sl->buf), (int)sl->len, 0);
-#else
-        (void)send(ns->fd, sl->buf, sl->len, 0);
-#endif
-    } else {
-        /* hdr_len == 4 */
-#if defined(WIN32)
-        if ((send(ns->fd, reinterpret_cast<const char *>(header), hdr_len, 0) != hdr_len) ||
-            (send(ns->fd, reinterpret_cast<const char *>(sl->buf + 2), (int)payload_len, 0) != payload_len)) {
+        if (send(ns->fd, reinterpret_cast<const char *>(sl->buf), (int)sl->len, 0) != (int)sl->len) {
             LOG(llevError, "WebSocket send failed: %s\n", strerror(errno));
             ns->status = Ns_Dead;
         }
 #else
-#ifndef MSG_MORE
-#define MSG_MORE 0
+        if (send(ns->fd, sl->buf, sl->len, 0) != (ssize_t)sl->len) {
+            LOG(llevError, "WebSocket send failed: %s\n", strerror(errno));
+            ns->status = Ns_Dead;
+        }
 #endif
+    } else {
+        /* hdr_len == 4: send the header and payload separately. */
+#if defined(WIN32)
+        if ((send(ns->fd, reinterpret_cast<const char *>(header), hdr_len, 0) != hdr_len) ||
+            (send(ns->fd, reinterpret_cast<const char *>(sl->buf + 2), (int)payload_len, 0) != (int)payload_len)) {
+            LOG(llevError, "WebSocket send failed: %s\n", strerror(errno));
+            ns->status = Ns_Dead;
+        }
+#elif defined(MSG_MORE)
+        /* MSG_MORE hints to the kernel to coalesce with the next send(). */
         if ((send(ns->fd, header, (size_t)hdr_len, MSG_MORE) != hdr_len) ||
-            (send(ns->fd, sl->buf + 2, payload_len, 0) != payload_len)) {
+            (send(ns->fd, sl->buf + 2, payload_len, 0) != (ssize_t)payload_len)) {
+            LOG(llevError, "WebSocket send failed: %s\n", strerror(errno));
+            ns->status = Ns_Dead;
+        }
+#else
+        if ((send(ns->fd, header, (size_t)hdr_len, 0) != hdr_len) ||
+            (send(ns->fd, sl->buf + 2, payload_len, 0) != (ssize_t)payload_len)) {
             LOG(llevError, "WebSocket send failed: %s\n", strerror(errno));
             ns->status = Ns_Dead;
         }
