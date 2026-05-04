@@ -34,6 +34,6 @@
  *
  * @return -1 in case of error, otherwise number of bytes written (including terminating NUL).
  */
-ssize_t base64_encode(const uint8_t *in, size_t in_len, char *out, size_t out_len);
+int base64_encode(const uint8_t *in, size_t in_len, char *out, size_t out_len);
 
 #endif /* BASE64_H */

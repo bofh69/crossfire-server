@@ -23,8 +23,8 @@
 static const char B64_CHARS[] =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-ssize_t base64_encode(const uint8_t *in, size_t in_len, char *out, size_t out_len) {
-    ssize_t i = 0, o = 0;
+int base64_encode(const uint8_t *in, size_t in_len, char *out, size_t out_len) {
+    size_t i = 0, o = 0;
     while (i < in_len) {
         size_t remaining = in_len - i;
         uint32_t b = (uint32_t)in[i++] << 16;
@@ -39,5 +39,5 @@ ssize_t base64_encode(const uint8_t *in, size_t in_len, char *out, size_t out_le
         out[o++] = (remaining >= 3) ? B64_CHARS[ b       & 0x3F] : '=';
     }
     out[o] = '\0';
-    return o;
+    return (int)o;
 }
