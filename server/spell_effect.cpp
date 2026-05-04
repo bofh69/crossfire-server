@@ -531,7 +531,7 @@ int cast_create_missile(object *op, object *caster, object *spell, int dir, cons
     if (stringarg) {
         /* If it starts with a letter, presume it is a description */
         if (isalpha(*stringarg)) {
-            auto items = find_artifactlist(missile->type)->items;
+            const auto& items = find_artifactlist(missile->type)->items;
             auto ial = std::find_if(items.cbegin(), items.cend(), [&] (const auto al) { return !strcasecmp(al->item->name, stringarg); });
             if (ial == items.cend()) {
                 object_free(missile, FREE_OBJ_NO_DESTROY_CALLBACK);

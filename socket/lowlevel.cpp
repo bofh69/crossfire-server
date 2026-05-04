@@ -36,6 +36,7 @@
 #include "shared/newclient.h"
 #include "sproto.h"
 #include "stats.h"
+#include "websocket.h"
 
 #ifdef WIN32
 #include <winsock2.h>
@@ -447,6 +448,11 @@ static void Write_To_Socket(socket_struct* ns, const unsigned char* buf, const i
 void Send_With_Handling(socket_struct *ns, SockList *sl) {
     if (ns->status == Ns_Dead || sl == NULL)
         return;
+
+    if (ns->is_websocket) {
+        ws_write_frame(ns, sl);
+        return;
+    }
 
     sl->buf[0] = ((sl->len-2)>>8)&0xFF;
     sl->buf[1] = (sl->len-2)&0xFF;

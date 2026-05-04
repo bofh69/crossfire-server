@@ -74,9 +74,14 @@ BufferReader *bufferreader_init_from_file(BufferReader *br, const char *filepath
         br = bufferreader_create();
     }
 
-    fseek(file, 0L, SEEK_END);
-    bufferreader_init_for_length(br, ftell(file));
-    fseek(file, 0, SEEK_SET);
+    // Try to determine length to avoid having to resize bufferreader
+    if (fseek(file, 0L, SEEK_END) == 0) {
+        bufferreader_init_for_length(br, ftell(file));
+        if (fseek(file, 0, SEEK_SET) != 0) {
+            // could not seek back to beginning, bail out
+            return NULL;
+        }
+    }
 
     size_t actual = fread(br->buf, 1, br->buffer_length, file);
     if (actual != br->buffer_length) {

@@ -36,6 +36,7 @@ add_library(cross SHARED
 	common/anim.cpp
 	common/arch.cpp
 	common/artifact.cpp
+	common/base64.cpp
 	common/assets/AnimationWriter.cpp
 	common/assets/Animations.cpp
 	common/assets/ArchetypeLoader.cpp
@@ -97,6 +98,7 @@ add_library(cross SHARED
 	common/recipe.cpp
 	common/region.cpp
 	common/shstr.cpp
+	common/sha1.cpp
 	common/stringbuffer.cpp
 	common/time.cpp
 	common/treasure.cpp
@@ -200,6 +202,7 @@ add_library(cfserver SHARED
 	socket/request.cpp
 	socket/requestinfo.cpp
 	socket/sounds.cpp
+	socket/websocket.cpp
 	types/altar/altar.cpp
 	types/armour_improver/armour_improver.cpp
 	types/arrow/arrow.cpp
@@ -359,3 +362,52 @@ configure_file("include/svnversion.h.in" "svnversion.h")
 configure_file("utils/crossfire-server-local.in" "crossfire-server-local")
 
 add_subdirectory(plugins/cfpython)
+
+# WebSocket echo server (Linux only – for use with the Autobahn test suite) {{{
+if(NOT WIN32)
+add_executable(ws_echo_server
+    utils/ws_echo_server/main.cpp
+    utils/ws_echo_server/stubs.cpp
+    test/unit/common/stubs_common.cpp
+    socket/websocket.cpp
+)
+target_include_directories(ws_echo_server PRIVATE
+    include
+    include/random_maps
+    ${PROJECT_BINARY_DIR}
+)
+target_link_libraries(ws_echo_server PRIVATE cross)
+endif()
+# }}}
+
+# Unit tests {{{
+find_package(PkgConfig)
+if(PkgConfig_FOUND)
+    pkg_check_modules(CHECK check)
+endif()
+
+if(CHECK_FOUND)
+    enable_testing()
+
+    # WebSocket unit tests (uses POSIX socketpair, not available on Windows)
+    if(NOT WIN32)
+    add_executable(check_websocket
+        test/unit/socket/check_websocket.cpp
+        test/unit/socket/stubs_websocket.cpp
+        test/unit/common/stubs_common.cpp
+        socket/websocket.cpp
+    )
+    target_include_directories(check_websocket PRIVATE
+        include
+        include/random_maps
+        ${PROJECT_BINARY_DIR}
+        ${CHECK_INCLUDE_DIRS}
+    )
+    target_link_libraries(check_websocket PRIVATE cross ${CHECK_LDFLAGS})
+    target_compile_options(check_websocket PRIVATE ${CHECK_CFLAGS_OTHER})
+    add_test(NAME check_websocket COMMAND check_websocket)
+    endif()
+else()
+    message(STATUS "Check library not found - unit tests disabled")
+endif()
+# }}}

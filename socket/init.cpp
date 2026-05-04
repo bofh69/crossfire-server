@@ -47,6 +47,7 @@ typedef char ssop_t;    /**< Parameter type for setsockopt, different between WI
 #include "image.h"
 #include "newserver.h"
 #include "sproto.h"
+#include "websocket.h"
 
 /** Socket information. */
 Socket_Info socket_info;
@@ -278,12 +279,60 @@ void init_listening_socket(socket_struct *ns) {
     ns->status = Ns_Add;
 }
 
+#ifdef HAVE_GETADDRINFO
+/** Return the number of entries in an addrinfo list. */
+static int count_addrinfo(const struct addrinfo *ai) {
+    int count = 0;
+    for (const struct addrinfo *p = ai; p != NULL; p = p->ai_next)
+        count++;
+    return count;
+}
+
+/** Copy addrinfo entries into init_sockets[base..base+count), which must
+ *  already have their listen pointers allocated. */
+static void copy_addrinfo_to_listen(int base, const struct addrinfo *ai) {
+    int i = base;
+    for (const struct addrinfo *p = ai; p != NULL; p = p->ai_next, i++) {
+        init_sockets[i].listen->family   = p->ai_family;
+        init_sockets[i].listen->socktype = p->ai_socktype;
+        init_sockets[i].listen->protocol = p->ai_protocol;
+        init_sockets[i].listen->addrlen  = p->ai_addrlen;
+        init_sockets[i].listen->addr     = static_cast<sockaddr *>(malloc(p->ai_addrlen));
+        memcpy(init_sockets[i].listen->addr, p->ai_addr, p->ai_addrlen);
+    }
+}
+#endif /* HAVE_GETADDRINFO */
+
+/** Allocate and zero-initialise socket slots init_sockets[base..base+count).
+ *  init_sockets must already be large enough to hold base+count entries. */
+static void alloc_listen_sockets(int base, int count, bool is_websocket) {
+    for (int i = base; i < base + count; i++) {
+        memset(&init_sockets[i], 0, sizeof(socket_struct));
+        init_sockets[i].listen = static_cast<listen_info *>(calloc(sizeof(struct listen_info), 1));
+        init_sockets[i].faces_sent   = NULL;
+        init_sockets[i].account_name = NULL;
+        init_sockets[i].is_websocket = is_websocket;
+    }
+}
+
+/** Call init_listening_socket for init_sockets[base..base+count).
+ *  Returns true if at least one socket was opened successfully. */
+static bool open_listen_sockets(int base, int count) {
+    bool any_ok = false;
+    for (int i = base; i < base + count; i++) {
+        init_listening_socket(&init_sockets[i]);
+        if (init_sockets[i].fd != -1)
+            any_ok = true;
+    }
+    return any_ok;
+}
+
 /** This sets up the listening socket.
  * @todo fix socket_info.max_filedescriptor hack. */
 void init_server(void) {
-    int i, e, listen_socket_count;
+    int e, listen_socket_count;
 #ifdef HAVE_GETADDRINFO
-    struct addrinfo *ai, *ai_p;
+    struct addrinfo *ai;
     struct addrinfo hints;
     char buf[MAX_BUF];
 #else
@@ -333,11 +382,7 @@ void init_server(void) {
         fatal(SEE_LAST_ERROR);
     }
 
-    listen_socket_count = 0;
-    for (ai_p = ai; ai_p != NULL; ai_p = ai_p->ai_next) {
-        listen_socket_count++;
-    }
-
+    listen_socket_count = count_addrinfo(ai);
     assert(listen_socket_count > 0);
 #else
     listen_socket_count = 1;
@@ -346,21 +391,10 @@ void init_server(void) {
     LOG(llevDebug, "Initialize new client/server data\n");
     init_sockets = static_cast<socket_struct *>(malloc(sizeof(socket_struct) * listen_socket_count));
     socket_info.allocated_sockets = listen_socket_count;
-    for (i = 0; i < listen_socket_count; i++) {
-        init_sockets[i].listen = static_cast<listen_info *>(calloc(sizeof(struct listen_info), 1));
-        init_sockets[i].faces_sent = NULL; /* unused */
-        init_sockets[i].account_name = NULL; /* Must be set to avoid undef behaviour elsewhere. */
-    }
+    alloc_listen_sockets(0, listen_socket_count, false);
 
 #ifdef HAVE_GETADDRINFO
-    for (i = 0, ai_p = ai; i < listen_socket_count && ai_p != NULL; i++, ai_p = ai_p->ai_next) {
-        init_sockets[i].listen->family   = ai_p->ai_family;
-        init_sockets[i].listen->socktype = ai_p->ai_socktype;
-        init_sockets[i].listen->protocol = ai_p->ai_protocol;
-        init_sockets[i].listen->addrlen  = ai_p->ai_addrlen;
-        init_sockets[i].listen->addr     = static_cast<sockaddr *>(malloc(ai_p->ai_addrlen));
-        memcpy(init_sockets[i].listen->addr, ai_p->ai_addr, ai_p->ai_addrlen);
-    }
+    copy_addrinfo_to_listen(0, ai);
     freeaddrinfo(ai);
 #else
     protox = getprotobyname("tcp");
@@ -379,23 +413,50 @@ void init_server(void) {
     init_sockets[0].listen->addrlen = sizeof(struct sockaddr_in);
 #endif
 
-    e = 1;
-    for (i = 0; i < listen_socket_count; i++) {
-        init_listening_socket(&init_sockets[i]);
-        if (init_sockets[i].fd != -1)
-            e = 0;
-    }
-    if (e != 0) {
+    if (!open_listen_sockets(0, listen_socket_count)) {
         LOG(llevError, "init_server: can't open any listening socket\n");
         fatal(SEE_LAST_ERROR);
     }
-}
 
-/*******************************************************************************
- *
- * Start of functions dealing with freeing of the data.
- *
- ******************************************************************************/
+#ifdef HAVE_GETADDRINFO
+    if (settings.ws_port > 0) {
+        struct addrinfo ws_hints, *ws_ai;
+        char ws_buf[32];
+
+        memset(&ws_hints, '\0', sizeof(ws_hints));
+        ws_hints.ai_flags    = AI_PASSIVE | AI_ADDRCONFIG;
+        ws_hints.ai_socktype = SOCK_STREAM;
+        snprintf(ws_buf, sizeof(ws_buf), "%d", settings.ws_port);
+        e = getaddrinfo(NULL, ws_buf, &ws_hints, &ws_ai);
+        if (e != 0) {
+            LOG(llevError, "init_server: getaddrinfo (WebSocket): %s\n", gai_strerror(e));
+        } else {
+            int ws_count = count_addrinfo(ws_ai);
+            int ws_base  = socket_info.allocated_sockets;
+
+            socket_struct *resized_init_sockets =  static_cast<socket_struct *>(
+                realloc(init_sockets, sizeof(socket_struct) * (ws_base + ws_count)));
+            if (!resized_init_sockets)
+                fatal(OUT_OF_MEMORY);
+            init_sockets = resized_init_sockets;
+
+            alloc_listen_sockets(ws_base, ws_count, true);
+            copy_addrinfo_to_listen(ws_base, ws_ai);
+            freeaddrinfo(ws_ai);
+
+            socket_info.allocated_sockets = ws_base + ws_count;
+
+            if (!open_listen_sockets(ws_base, ws_count))
+                LOG(llevError, "init_server: could not open any WebSocket listening socket\n");
+            else
+                LOG(llevInfo, "WebSocket server listening on port %d\n", settings.ws_port);
+        }
+    }
+#else
+    if (settings.ws_port > 0)
+        LOG(llevError, "init_server: getaddrinfo not available, WebSocket port ignored\n");
+#endif
+}
 
 /** Free's all the memory that ericserver allocates. */
 void free_all_newserver(void) {

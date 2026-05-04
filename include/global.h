@@ -334,6 +334,7 @@ struct Settings {
     class AssetsTracker *assets_tracker;    /**< If not NULL, called each time an asset is defined. */
     fatalHook fatal_hook;             /**< If not NULL then called when fatal() is called. */
     char* stat_file;
+    int     ws_port;                  /**< WebSocket port to listen on (0 = disabled). */
 };
 
 /**
