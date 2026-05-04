@@ -17,6 +17,7 @@
 
 #include "base64.h"
 
+#include <limits.h>
 #include <stdint.h>
 #include <stddef.h>
 
@@ -39,5 +40,7 @@ int base64_encode(const uint8_t *in, size_t in_len, char *out, size_t out_len) {
         out[o++] = (remaining >= 3) ? B64_CHARS[ b       & 0x3F] : '=';
     }
     out[o] = '\0';
+    if (o > (size_t)INT_MAX)
+        return -1;
     return (int)o;
 }
