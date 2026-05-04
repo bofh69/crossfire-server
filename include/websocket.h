@@ -90,7 +90,8 @@ void ws_write_frame(socket_struct *ns, SockList *sl);
  * @param key      NUL-terminated Sec-WebSocket-Key header value.
  * @param out      Output buffer.
  * @param out_len  Size of @p out (must be at least 29 bytes).
+ * @return         -1 in case of error, or out size, including terminating byte.
  */
-void ws_compute_accept_key(const char *key, char *out, size_t out_len);
+ssize_t ws_compute_accept_key(const char *key, char *out, size_t out_len);
 
 #endif /* WEBSOCKET_H */

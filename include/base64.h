@@ -30,7 +30,10 @@
  * @param in      Input bytes.
  * @param in_len  Number of input bytes.
  * @param out     Output buffer.
+ * @param out_len Size of output buffer.
+ *
+ * @return -1 in case of error, otherwise number of bytes written (including terminating NUL).
  */
-void base64_encode(const uint8_t *in, size_t in_len, char *out);
+ssize_t base64_encode(const uint8_t *in, size_t in_len, char *out, size_t out_len);
 
 #endif /* BASE64_H */

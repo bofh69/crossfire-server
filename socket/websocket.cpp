@@ -90,14 +90,14 @@ static const char *ws_strcasestr(const char *haystack, const char *needle) {
 /** GUID appended to the client key per RFC 6455 §1.3. */
 static const char WS_GUID[] = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
-void ws_compute_accept_key(const char *key, char *out, size_t out_len) {
+ssize_t ws_compute_accept_key(const char *key, char *out, size_t out_len) {
     char combined[128];
     snprintf(combined, sizeof(combined), "%s%s", key, WS_GUID);
     uint8_t digest[20];
     sha1((const uint8_t *)combined, strlen(combined), digest);
     /* 20 bytes → 28 Base64 chars + '=' + NUL = 29 chars minimum */
     assert(out_len >= 29);
-    base64_encode(digest, 20, out);
+    return base64_encode(digest, 20, out, out_len);
 }
 
 void ws_init(socket_struct *ns, const char *host) {
@@ -254,7 +254,9 @@ bool ws_do_handshake(socket_struct *ns) {
 
     /* Compute Sec-WebSocket-Accept. */
     char accept[64];
-    ws_compute_accept_key(ws_key, accept, sizeof(accept));
+    if (ws_compute_accept_key(ws_key, accept, sizeof(accept)) < 0) {
+        return false;
+    }
 
     /* Send HTTP 101 Switching Protocols. */
     char response[256];
