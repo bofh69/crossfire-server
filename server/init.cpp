@@ -1321,9 +1321,8 @@ static void init_startup(void) {
 /**
  * Signal handler that begins a normal server shutdown.
  */
-static void signal_shutdown(int signum_unused) {
-    (void) signum_unused; /* avoid unused warning if enambled */
-    shutdown_flag += 1;
+static void signal_shutdown(int signum) {
+    shutdown_flag = signum;
 }
 
 /**
@@ -1360,6 +1359,7 @@ void init_signals(void) {
     sa.sa_handler = rec_sighup;
     sigaction(SIGHUP, &sa, NULL);
     signal(SIGINT, signal_shutdown);
+    signal(SIGTERM, signal_shutdown);
     signal(SIGPIPE, SIG_IGN);
 #endif /* win32 */
 }
