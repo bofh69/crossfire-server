@@ -438,7 +438,7 @@ void citylife_close() {
     events_unregister_global_handler(EVENT_CLOCK, c);
     events_unregister_global_handler(EVENT_MAPLOAD, m);
     events_unregister_object_handler(CITYLIFE_NAME);
-    for (auto map : maps) {
+    for (const auto& map : maps) {
         delete map.second;
     }
     maps.clear();

@@ -9,6 +9,8 @@
 #ifndef NEWSERVER_H
 #define NEWSERVER_H
 
+#include "websocket.h"
+
 /**
  * The lower bound for the number of objects to send for the 'look' window
  * (container or ground view).
@@ -133,6 +135,10 @@ struct socket_struct {
     uint8_t login_method;   /**< Login method this client is using */
     uint16_t notifications; /**< Notifications this client wants to get. */
     uint32_t last_tick;     /**< Number of ticks since last communication. */
+
+    /* WebSocket support */
+    bool     is_websocket;       /**< True if this connection uses the WebSocket protocol. */
+    websocket_state websocket;   /**< Connection state for websockets */
 };
 
 /**

@@ -39,7 +39,7 @@
 #include "sproto.h"
 #include "stringbuffer.h"
 
-#ifdef CF_MXE_CROSS_COMPILE
+#if defined(CF_MXE_CROSS_COMPILE) || defined(WIN32)
 #   define ffs(word) (__builtin_constant_p (word)                             \
                       ? __builtin_ffs (word)                                  \
                       : ({ int __cnt, __tmp;                                  \
@@ -49,6 +49,8 @@
                               : "=&r" (__cnt), "=r" (__tmp)                   \
                               : "rm" (word), "1" (-1));                       \
                            __cnt + 1; }))
+#elif defined(_WIN32)
+#   define ffs(word) __builtin_ffs(word)
 #endif
 
 static int compare_ob_value_lists_one(const object *, const object *);
@@ -4541,6 +4543,7 @@ int object_set_value(object *op, const char *key, const char *value, int add_key
  * base name                  16
  * short name                 18
  * full name                  20
+ * number matching tag        30
  * (note, count is extracted from begin of name parameter or
  *  from pl->contr->count, name has priority)
  *
@@ -4559,6 +4562,14 @@ int object_set_value(object *op, const char *key, const char *value, int add_key
 int object_matches_string(object *pl, object *op, const char *name) {
     char *cp, local_name[MAX_BUF], name_op[MAX_BUF], name_short[HUGE_BUF], bname_s[MAX_BUF], bname_p[MAX_BUF];
     int count, retval = 0;
+
+    char *endptr;
+    if (op->count == strtoul(name, &endptr, 10)) {
+        if ((endptr != name) && (*endptr == '\0')) {
+            return 30;
+        }
+    }
+
     /* strtok is destructive to name */
     safe_strncpy(local_name, name, sizeof(local_name));
     sstring custom_name = object_get_value(op, CUSTOM_NAME_FIELD);
@@ -4876,11 +4887,8 @@ static const char *const flag_names[NUM_FLAGS+1] = {
  */
 static void get_string_move_type(StringBuffer *sb, MoveType mt)
 {
-    static char retbuf[MAX_BUF], retbuf_all[MAX_BUF];
+    std::string retbuf{""}, retbuf_all{" all"};
     int i, all_count = 0, count;
-
-    strcpy(retbuf, "");
-    strcpy(retbuf_all, " all");
 
     /* Quick check, and probably fairly common */
     if (mt == MOVE_ALL) {
@@ -4898,11 +4906,11 @@ static void get_string_move_type(StringBuffer *sb, MoveType mt)
      */
     for (i = MOVE_ALL, count = 0; i != 0; i >>= 1, count++) {
         if (mt&(1<<count)) {
-            strcat(retbuf, " ");
-            strcat(retbuf, move_name[count]);
+            retbuf += " ";
+            retbuf += move_name[count];
         } else {
-            strcat(retbuf_all, " -");
-            strcat(retbuf_all, move_name[count]);
+            retbuf_all += " -";
+            retbuf_all += move_name[count];
             all_count++;
         }
     }
@@ -4912,9 +4920,9 @@ static void get_string_move_type(StringBuffer *sb, MoveType mt)
      * 'all -walk -fly_low' - it is shorter to return 'fly_high swim'
      */
     if (all_count <= 1)
-        stringbuffer_append_string(sb, retbuf_all+1);
+        stringbuffer_append_string(sb, retbuf_all.c_str()+1);
     else
-        stringbuffer_append_string(sb, retbuf+1);
+        stringbuffer_append_string(sb, retbuf.c_str()+1);
 }
 
 /** Adds a line to the buffer. */

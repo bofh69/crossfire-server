@@ -564,3 +564,4 @@ configure~
 doxygen.err
 *.qm
 *.gmon
+build_test/

@@ -464,7 +464,7 @@ void init_regions(BufferReader *reader, const char *filename) {
         free(add);
     }
 
-    for (auto p : parents) {
+    for (const auto& p : parents) {
         p.first->parent = get_region_by_name(p.second.c_str());
         if (!p.first->parent) {
             LOG(llevError, "Couldn't find parent %s for region %s\n", p.second.c_str(), p.first->name);

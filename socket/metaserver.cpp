@@ -156,108 +156,44 @@ MetaServer2_UpdateInfo metaserver2_updateinfo;
 static size_t metaserver2_writer(void *ptr, size_t size, size_t nmemb, void *data) {
     (void)data;
     size_t realsize = size*nmemb;
-    LOG(llevError, "Message from metaserver:\n%.*s\n", realsize, (const char*)ptr);
+    LOG(llevError, "Message from metaserver:\n%.*s\n", (int)realsize, (const char*)ptr);
     return realsize;
 }
 
-static void metaserver2_build_form(struct curl_httppost **formpost) {
-    struct curl_httppost *lastptr = NULL;
-    char buf[MAX_BUF];
+static void metaserver2_field(curl_mime *mime, const char* field, std::string value) {
+    curl_mimepart *part = curl_mime_addpart(mime);
+    curl_mime_name(part, field);
+    curl_mime_data(part, value.c_str(), value.size());
+}
 
-    /* First, fill in the form - note that everything has to be a string,
-     * so we convert as needed with snprintf.
-     * The order of fields here really isn't important.
-     * The string after CURLFORM_COPYNAME is the name of the POST variable
-     * as the
-     */
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "hostname",
-                 CURLFORM_COPYCONTENTS, local_info.hostname.c_str(),
-                 CURLFORM_END);
+static void metaserver2_field(curl_mime *mime, const char* field, int value) {
+    metaserver2_field(mime, field, std::to_string(value));
+}
 
-    snprintf(buf, sizeof(buf), "%d", local_info.portnumber);
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "port",
-                 CURLFORM_COPYCONTENTS, buf,
-                 CURLFORM_END);
+static void metaserver2_build_mime(curl_mime *mime) {
+    metaserver2_field(mime, "hostname", local_info.hostname);
+    metaserver2_field(mime, "port", local_info.portnumber);
+    metaserver2_field(mime, "html_comment", local_info.html_comment);
+    metaserver2_field(mime, "text_comment", local_info.text_comment);
+    metaserver2_field(mime, "archbase", local_info.archbase);
+    metaserver2_field(mime, "mapbase", local_info.mapbase);
+    metaserver2_field(mime, "codebase", local_info.codebase);
+    metaserver2_field(mime, "flags", local_info.flags);
 
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "html_comment",
-                 CURLFORM_COPYCONTENTS, local_info.html_comment.c_str(),
-                 CURLFORM_END);
-
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "text_comment",
-                 CURLFORM_COPYCONTENTS, local_info.text_comment.c_str(),
-                 CURLFORM_END);
-
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "archbase",
-                 CURLFORM_COPYCONTENTS, local_info.archbase.c_str(),
-                 CURLFORM_END);
-
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "mapbase",
-                 CURLFORM_COPYCONTENTS, local_info.mapbase.c_str(),
-                 CURLFORM_END);
-
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "codebase",
-                 CURLFORM_COPYCONTENTS, local_info.codebase.c_str(),
-                 CURLFORM_END);
-
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "flags",
-                 CURLFORM_COPYCONTENTS, local_info.flags.c_str(),
-                 CURLFORM_END);
-
-    ms2_info_mutex.lock();
-
-    snprintf(buf, sizeof(buf), "%d", metaserver2_updateinfo.num_players);
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "num_players",
-                 CURLFORM_COPYCONTENTS, buf,
-                 CURLFORM_END);
-
-    snprintf(buf, sizeof(buf), "%d", metaserver2_updateinfo.in_bytes);
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "in_bytes",
-                 CURLFORM_COPYCONTENTS, buf,
-                 CURLFORM_END);
-
-    snprintf(buf, sizeof(buf), "%d", metaserver2_updateinfo.out_bytes);
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "out_bytes",
-                 CURLFORM_COPYCONTENTS, buf,
-                 CURLFORM_END);
-
-    snprintf(buf, sizeof(buf), "%ld", (long)metaserver2_updateinfo.uptime);
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "uptime",
-                 CURLFORM_COPYCONTENTS, buf,
-                 CURLFORM_END);
-
-    ms2_info_mutex.unlock();
+    {
+        std::scoped_lock l{ms2_info_mutex};
+        metaserver2_field(mime, "num_players", metaserver2_updateinfo.num_players);
+        metaserver2_field(mime, "in_bytes", metaserver2_updateinfo.in_bytes);
+        metaserver2_field(mime, "out_bytes", metaserver2_updateinfo.out_bytes);
+        metaserver2_field(mime, "uptime", metaserver2_updateinfo.uptime);
+    }
 
     /* Following few fields are global variables,
      * but are really defines, so won't ever change.
      */
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "version",
-                 CURLFORM_COPYCONTENTS, FULL_VERSION,
-                 CURLFORM_END);
-
-    snprintf(buf, sizeof(buf), "%d", VERSION_SC);
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "sc_version",
-                 CURLFORM_COPYCONTENTS, buf,
-                 CURLFORM_END);
-
-    snprintf(buf, sizeof(buf), "%d", VERSION_CS);
-    curl_formadd(formpost, &lastptr,
-                 CURLFORM_COPYNAME, "cs_version",
-                 CURLFORM_COPYCONTENTS, buf,
-                 CURLFORM_END);
+    metaserver2_field(mime, "version", FULL_VERSION);
+    metaserver2_field(mime, "sc_version", VERSION_SC);
+    metaserver2_field(mime, "cs_version", VERSION_CS);
 }
 #endif
 
@@ -392,43 +328,39 @@ void metaserver2_load_config() {
 /**
  * This sends an update to the various metaservers.
  * It generates the form, and then sends it to the
- * server
+ * server.
  */
-static void metaserver2_updates(void) {
-    struct curl_httppost *formpost = NULL;
-    metaserver2_build_form(&formpost);
+static void metaserver2_updates(CURL* curl) {
+    curl_mime* mime = curl_mime_init(curl);
+    if (!mime) {
+        LOG(llevError, "metaserver: failed to create MIME handle\n");
+        return;
+    }
+    metaserver2_build_mime(mime);
 
     for (auto hostname : metaservers) {
-        CURL *curl = curl_easy_init();
-        if (curl) {
-            curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30000);
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30000);
 
-            /* what URL that receives this POST */
-            curl_easy_setopt(curl, CURLOPT_URL, hostname.c_str());
-            curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
+        /* what URL that receives this POST */
+        curl_easy_setopt(curl, CURLOPT_URL, hostname.c_str());
+        curl_easy_setopt(curl, CURLOPT_MIMEPOST, mime);
 
-            /* Almost always, we will get HTTP data returned
-             * to us - instead of it going to stderr,
-             * we want to take care of it ourselves.
-             */
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, metaserver2_writer);
+        /* Almost always, we will get HTTP data returned
+         * to us - instead of it going to stderr,
+         * we want to take care of it ourselves.
+         */
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, metaserver2_writer);
 
-            char errbuf[CURL_ERROR_SIZE];
-            curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errbuf);
+        char errbuf[CURL_ERROR_SIZE];
+        curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errbuf);
 
-            CURLcode res = curl_easy_perform(curl);
-            if (res) {
-                LOG(llevError, "metaserver update failed: %s\n", errbuf);
-            }
-
-            /* always cleanup */
-            curl_easy_cleanup(curl);
-        } else {
-            LOG(llevError, "metaserver: could not initialize curl\n");
+        CURLcode res = curl_easy_perform(curl);
+        if (res) {
+            LOG(llevError, "metaserver update failed: %s\n", errbuf);
         }
     }
-    /* then cleanup the formpost chain */
-    curl_formfree(formpost);
+
+    curl_mime_free(mime);
 }
 
 /**
@@ -436,9 +368,19 @@ static void metaserver2_updates(void) {
  * Works in the background.
  */
 void metaserver2_thread() {
+    CURL* curl = curl_easy_init();
+    if (!curl) {
+        LOG(llevError, "metaserver: failed to initialize curl\n");
+        return;
+    }
+
+    if (getenv("CF_DEBUG_METASERVER")) {
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+    }
+
     while (true) {
         if (local_info.notification)
-            metaserver2_updates();
+            metaserver2_updates(curl);
         if (ms2_signal.try_lock_for(std::chrono::seconds(60)))
             break;
         if (metaserver2_config_modified()) {
@@ -446,6 +388,8 @@ void metaserver2_thread() {
             metaserver2_load_config();
         }
     }
+
+    curl_easy_cleanup(curl);
     ms2_signal.unlock();
 }
 #endif

@@ -45,6 +45,7 @@
 #include "newserver.h"
 #include "sockproto.h"
 #include "sproto.h"
+#include "websocket.h"
 
 extern uint32_t last_time;
 
@@ -261,6 +262,13 @@ handle_cmd(socket_struct *ns, player *pl, char *cmd, char *data, int len) {
  * @return If the main loop should continue processing this client.
  */
 bool handle_client(socket_struct *ns, player *pl) {
+    if (ns->is_websocket) {
+        /* Maybe handle the WebSocket HTTP upgrade handshake. */
+        if (!ws_do_handshake(ns)) {
+            return false;
+        }
+    }
+
     /* Loop through this - maybe we have several complete packets here. */
     /* Command_count is used to limit the number of requests from
      * clients that have not logged in - we do not want an unauthenticated
@@ -278,7 +286,12 @@ bool handle_client(socket_struct *ns, player *pl) {
             return false;
         }
 
-        int status = SockList_ReadPacket(ns->fd, &ns->inbuf, sizeof(ns->inbuf.buf)-1);
+        int status;
+        if (ns->is_websocket) {
+            status = ws_read_packet(ns);
+        } else {
+            status = SockList_ReadPacket(ns->fd, &ns->inbuf, sizeof(ns->inbuf.buf)-1);
+        }
         if (status != 1) {
             if (status < 0) {
                 ns->status = Ns_Dead;
@@ -376,8 +389,9 @@ static int is_fd_valid(int fd) {
 /**
  * Handle a new connection from a client.
  * @param listen_fd file descriptor the request came from.
+ * @param is_websocket true if this is a WebSocket listening socket.
  */
-static void new_connection(int listen_fd) {
+static void new_connection(int listen_fd, bool is_websocket) {
     int newsocknum = -1, j;
 #ifdef HAVE_GETNAMEINFO
     struct sockaddr_storage addr;
@@ -428,6 +442,7 @@ static void new_connection(int listen_fd) {
         socket_struct *ns;
 
         ns = &init_sockets[newsocknum];
+        ns->is_websocket = is_websocket;
 
 #ifdef HAVE_GETNAMEINFO
         getnameinfo((struct sockaddr *) &addr, addrlen, buf, sizeof(buf), NULL, 0, NI_NUMERICHOST);
@@ -440,6 +455,11 @@ static void new_connection(int listen_fd) {
             LOG(llevInfo, "Banned host tried to connect: [%s]\n", buf);
             close(init_sockets[newsocknum].fd);
             init_sockets[newsocknum].fd = -1;
+        } else if (is_websocket) {
+            /* For WebSocket connections, defer init_connection() until the
+             * HTTP upgrade handshake has been completed. */
+            ws_init(ns, buf);
+            LOG(llevDebug, "WebSocket connection attempt from %s\n", buf);
         } else {
             init_connection(ns, buf);
         }
@@ -588,6 +608,20 @@ void do_server(void) {
     // process_*_utime variables anyway.
 
     while (sleep_time > 0) {
+        
+        // Windows/Winsock doesn't like it when you call select(), but
+        // don't pass any sockets. So instead we just sleep and bail early.
+        // I feel like this shouldn't happen anyway, but it happens quite a lot.
+        
+        #ifdef WIN32
+        if (tmp_read.fd_count == 0) {
+            LOG(llevDebug, "No sockets, sleeping for %dms\n", sleep_time);
+            // On Windows, a capital-S Sleep() is in milliseconds.
+            Sleep(sleep_time/1000);
+            return;
+        }
+        #endif
+        
         socket_info.timeout.tv_sec = 0;
         socket_info.timeout.tv_usec = sleep_time;
         int pollret = select(socket_info.max_filedescriptor, &tmp_read, NULL,
@@ -600,6 +634,12 @@ void do_server(void) {
                 check_all_fds();
             }
             LOG(llevError, "select failed: %s\n", strerror(errno));
+            
+            #ifdef WIN32
+            int winsockerror = WSAGetLastError();
+            LOG(llevError, "Winsock error was: %d\n", winsockerror);
+            #endif
+            
             return;
         } else if (!pollret) {
             return;
@@ -618,7 +658,7 @@ void do_server(void) {
             }
             if (FD_ISSET(init_sockets[i].fd, &tmp_read)) {
                 if (init_sockets[i].listen)
-                    new_connection(init_sockets[i].fd);
+                    new_connection(init_sockets[i].fd, init_sockets[i].is_websocket);
                 else
                     handle_client(&init_sockets[i], NULL);
             }

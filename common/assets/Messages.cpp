@@ -56,9 +56,10 @@ GeneralMessage *Messages::random() {
     int weight = (RANDOM() % m_totalChance);
     while (msg != m_assets.end()) {
         weight -= msg->second->chance;
-        if (weight < 0)
-            break;
+        if (weight < 0) {
+            return msg->second;
+        }
         msg++;
     }
-    return msg->second;
+    return nullptr;
 }

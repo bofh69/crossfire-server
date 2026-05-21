@@ -63,6 +63,7 @@ libserver_la_SOURCES = \
 	$(top_srcdir)/socket/request.cpp \
 	$(top_srcdir)/socket/requestinfo.cpp \
 	$(top_srcdir)/socket/sounds.cpp \
+	$(top_srcdir)/socket/websocket.cpp \
 	$(top_srcdir)/types/altar/altar.cpp \
 	$(top_srcdir)/types/armour_improver/armour_improver.cpp \
 	$(top_srcdir)/types/arrow/arrow.cpp \

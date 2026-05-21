@@ -8,6 +8,10 @@ option(TEST "Build tests (requires check)" OFF)
 option(EXTRAS "Build extra utilities" OFF)
 option(CRE "Build resource editor (requires Qt5)" OFF)
 
+if(NOT WIN32)
+    set(BUILD_SHARED_LIBS ON)
+endif()
+
 find_package(FLEX REQUIRED)
 
 find_package(Python COMPONENTS Interpreter Development)
@@ -29,13 +33,14 @@ add_custom_command(OUTPUT arch_types_valid.cpp
 
 flex_target(LOADER common/loader.l loader.cpp COMPILE_FLAGS "-i -B -Cf")
 
-add_library(cross SHARED
+add_library(cross
     ${FLEX_LOADER_OUTPUTS}
 	arch_types_valid.cpp
 
 	common/anim.cpp
 	common/arch.cpp
 	common/artifact.cpp
+	common/base64.cpp
 	common/assets/AnimationWriter.cpp
 	common/assets/Animations.cpp
 	common/assets/ArchetypeLoader.cpp
@@ -97,6 +102,7 @@ add_library(cross SHARED
 	common/recipe.cpp
 	common/region.cpp
 	common/shstr.cpp
+	common/sha1.cpp
 	common/stringbuffer.cpp
 	common/time.cpp
 	common/treasure.cpp
@@ -109,7 +115,7 @@ target_precompile_headers(cross PRIVATE include/global.h)
 flex_target(READER random_maps/reader.l reader.cpp
     COMPILE_FLAGS "-P rm"
 )
-add_library(random_map_lib SHARED
+add_library(random_map_lib
     ${FLEX_READER_OUTPUTS}
 	random_maps/decor.cpp
 	random_maps/door.cpp
@@ -139,7 +145,7 @@ target_link_libraries(random_map random_map_lib)
 # }}}
 
 # server {{{
-add_library(cfserver SHARED
+add_library(cfserver
 	server/account.cpp
 	server/account_char.cpp
 	server/alchemy.cpp
@@ -200,6 +206,7 @@ add_library(cfserver SHARED
 	socket/request.cpp
 	socket/requestinfo.cpp
 	socket/sounds.cpp
+	socket/websocket.cpp
 	types/altar/altar.cpp
 	types/armour_improver/armour_improver.cpp
 	types/arrow/arrow.cpp
@@ -271,12 +278,18 @@ add_executable(crossfire-server
 )
 target_precompile_headers(cfserver PRIVATE include/global.h)
 target_compile_definitions(cfserver PRIVATE PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}")
-target_link_libraries(cfserver PUBLIC cross random_map_lib crypt)
+target_link_libraries(cfserver PUBLIC cross random_map_lib)
+if (WIN32)
+    target_link_libraries(cfserver PUBLIC ws2_32)
+else()
+    target_link_libraries(cfserver PUBLIC crypt)
+endif()
 target_link_libraries(crossfire-server cfserver)
 install(TARGETS crossfire-server RUNTIME)
 install(TARGETS cross cfserver random_map_lib DESTINATION ${CMAKE_INSTALL_LIBDIR}/${CMAKE_PROJECT_NAME})
 install(DIRECTORY lib/config/ DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/${CMAKE_PROJECT_NAME}/example)
 install(DIRECTORY lib/i18n lib/help lib/wizhelp DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${CMAKE_PROJECT_NAME})
+install(FILES lib/def_help DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${CMAKE_PROJECT_NAME})
 
 if(METASERVER2)
     find_package(CURL REQUIRED)
@@ -359,3 +372,57 @@ configure_file("include/svnversion.h.in" "svnversion.h")
 configure_file("utils/crossfire-server-local.in" "crossfire-server-local")
 
 add_subdirectory(plugins/cfpython)
+
+
+set(CPACK_PACKAGE_VERSION ${VERSION})
+include(CPack)
+
+# WebSocket echo server (Linux only – for use with the Autobahn test suite) {{{
+if(NOT WIN32)
+add_executable(ws_echo_server
+    utils/ws_echo_server/main.cpp
+    utils/ws_echo_server/stubs.cpp
+    test/unit/common/stubs_common.cpp
+    socket/websocket.cpp
+)
+target_include_directories(ws_echo_server PRIVATE
+    include
+    include/random_maps
+    ${PROJECT_BINARY_DIR}
+)
+target_link_libraries(ws_echo_server PRIVATE cross)
+endif()
+# }}}
+
+
+# Unit tests {{{
+find_package(PkgConfig)
+if(PkgConfig_FOUND)
+    pkg_check_modules(CHECK check)
+endif()
+
+if(CHECK_FOUND)
+    enable_testing()
+
+    # WebSocket unit tests (uses POSIX socketpair, not available on Windows)
+    if(NOT WIN32)
+    add_executable(check_websocket
+        test/unit/socket/check_websocket.cpp
+        test/unit/socket/stubs_websocket.cpp
+        test/unit/common/stubs_common.cpp
+        socket/websocket.cpp
+    )
+    target_include_directories(check_websocket PRIVATE
+        include
+        include/random_maps
+        ${PROJECT_BINARY_DIR}
+        ${CHECK_INCLUDE_DIRS}
+    )
+    target_link_libraries(check_websocket PRIVATE cross ${CHECK_LDFLAGS})
+    target_compile_options(check_websocket PRIVATE ${CHECK_CFLAGS_OTHER})
+    add_test(NAME check_websocket COMMAND check_websocket)
+    endif()
+else()
+    message(STATUS "Check library not found - unit tests disabled")
+endif()
+# }}}

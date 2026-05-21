@@ -235,14 +235,14 @@ static void account_write_entry(FILE *fp, account_struct *ac)
 {
     int i;
 
-    fprintf(fp,"%s:%s:%u:", ac->name, ac->password, (uint32_t)ac->last_login);
+    fprintf(fp,"%s:%s:%" PRIu64 ":", ac->name, ac->password, (uint64_t)ac->last_login);
     for (i=0; i<ac->num_characters; i++) {
         if (i != 0)
             fprintf(fp,";%s", ac->character_names[i]);
         else
             fprintf(fp,"%s", ac->character_names[i]);
     }
-    fprintf(fp,":%u:\n", (uint32_t) ac->created);
+    fprintf(fp,":%" PRIu64 ":\n", (uint64_t)ac->created);
 }
 
 
