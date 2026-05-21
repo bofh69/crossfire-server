@@ -152,6 +152,10 @@ bool ws_do_handshake(socket_struct *ns) {
         ns->status = Ns_Dead;
         return false;
     }
+#ifdef CS_LOGSTATS
+        cst_tot.ibytes += n;
+        cst_lst.ibytes += n;
+#endif
     sl->len += (size_t)n;
     sl->buf[sl->len] = '\0';
 
@@ -285,6 +289,10 @@ bool ws_do_handshake(socket_struct *ns) {
         return false;
     }
 #endif
+#ifdef CS_LOGSTATS
+        cst_tot.obytes += rlen;
+        cst_lst.obytes += rlen;
+#endif
 
     /* Transition to WS_ACTIVE and initialise the Crossfire session. */
     ns->websocket.ws_state = WS_ACTIVE;
@@ -335,6 +343,10 @@ int ws_read_packet(socket_struct *ns) {
         }
         if (n == 0)
             return -1;
+#ifdef CS_LOGSTATS
+        cst_tot.ibytes += n;
+        cst_lst.ibytes += n;
+#endif
         sl->len += (size_t)n;
         if (sl->len < 2)
             return 0;
@@ -377,6 +389,10 @@ int ws_read_packet(socket_struct *ns) {
         }
         if (n == 0)
             return -1;
+#ifdef CS_LOGSTATS
+        cst_tot.ibytes += n;
+        cst_lst.ibytes += n;
+#endif
         sl->len += (size_t)n;
         if (sl->len < (size_t)ns->websocket.ws_header_size)
             return 0;
@@ -431,6 +447,10 @@ int ws_read_packet(socket_struct *ns) {
         }
         if (n == 0)
             return -1;
+#ifdef CS_LOGSTATS
+        cst_tot.ibytes += n;
+        cst_lst.ibytes += n;
+#endif
         sl->len += (size_t)n;
         if (sl->len < ns->websocket.ws_frame_total)
             return 0;
@@ -558,6 +578,10 @@ void ws_write_frame(socket_struct *ns, SockList *sl) {
             ns->status = Ns_Dead;
         }
 #endif
+#ifdef CS_LOGSTATS
+        cst_tot.obytes += sl->len;
+        cst_lst.obytes += sl->len;
+#endif
     } else {
         /* hdr_len == 4: send the header and payload separately. */
 #if defined(WIN32)
@@ -579,6 +603,10 @@ void ws_write_frame(socket_struct *ns, SockList *sl) {
             LOG(llevError, "WebSocket send failed: %s\n", strerror(errno));
             ns->status = Ns_Dead;
         }
+#endif
+#ifdef CS_LOGSTATS
+        cst_tot.obytes += payload_len;
+        cst_lst.obytes += payload_len;
 #endif
     }
 }

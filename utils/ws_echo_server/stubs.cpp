@@ -67,3 +67,8 @@ int checkbanned(const char *login, const char *host) {
     (void)host;
     return 0; /* not banned */
 }
+
+#ifdef CS_LOGSTATS
+CS_Stats cst_tot, cst_lst;
+#endif
+

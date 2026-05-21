@@ -91,3 +91,8 @@ int checkbanned(const char *login, const char *host) {
         snprintf(g_checkbanned_host, sizeof(g_checkbanned_host), "%s", host);
     return g_checkbanned_result;
 }
+
+#ifdef CS_LOGSTATS
+CS_Stats cst_tot, cst_lst;
+#endif
+
