@@ -181,11 +181,13 @@ static void metaserver2_build_mime(curl_mime *mime) {
     metaserver2_field(mime, "flags", local_info.flags);
 
     {
-        std::scoped_lock l{ms2_info_mutex};
+        // std::scoped_lock l{ms2_info_mutex}; C++17 only
+        ms2_info_mutex.lock();
         metaserver2_field(mime, "num_players", metaserver2_updateinfo.num_players);
         metaserver2_field(mime, "in_bytes", metaserver2_updateinfo.in_bytes);
         metaserver2_field(mime, "out_bytes", metaserver2_updateinfo.out_bytes);
         metaserver2_field(mime, "uptime", metaserver2_updateinfo.uptime);
+        ms2_info_mutex.unlock();
     }
 
     /* Following few fields are global variables,

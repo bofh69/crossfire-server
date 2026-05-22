@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.15...4.1)
 project(crossfire LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 14)
 set(VERSION 1.75.0)
 
 option(METASERVER2 "Metaserver2 support (requires curl)" ON)
