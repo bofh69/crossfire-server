@@ -178,8 +178,19 @@ void accounts_load(void) {
 
         /* Ignore any comment lines */
         if (buf[0] == '#') continue;
+        /* Ignore empty lines */
+        if (buf[0] == 0) continue;
+        /* Skip if account name is empty. This cleans up entries introduced by a bug fixed in patches/477 */
+        if (buf[0] == ':') {
+            LOG(llevDebug, "Ignoring accounts entry without account name: %s\n", buf);
+            continue;
+        }
 
         fields = split_string(buf, tmp, NUM_ACCOUNT_FIELDS, ':');
+        if (fields < 3) {
+            LOG(llevWarn, "Parse failure for line in %s starting with: %s\n", fname, buf);
+            continue;
+        }
 
         account_struct *ac = account_alloc();
         ac->name = strdup_local(tmp[0]);
