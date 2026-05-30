@@ -369,7 +369,7 @@ configure_file("include/svnversion.h.in" "svnversion.h")
 
 configure_file("utils/crossfire-server-local.in" "crossfire-server-local")
 
-add_subdirectory(plugins/cfpython)
+add_subdirectory(plugins)
 
 set(CPACK_PACKAGE_VERSION ${VERSION})
 include(CPack)
