@@ -8,6 +8,8 @@ option(TEST "Build tests (requires check)" OFF)
 option(EXTRAS "Build extra utilities" OFF)
 option(CRE "Build resource editor (requires Qt5)" OFF)
 
+find_program(UNCRUSTIFY uncrustify)
+
 find_package(FLEX REQUIRED)
 
 find_package(Python COMPONENTS Interpreter Development)
@@ -21,6 +23,52 @@ add_compile_definitions(
     LOCALDIR="${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LOCALSTATEDIR}/${CMAKE_PROJECT_NAME}"
 )
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_PROJECT_NAME}")
+
+file(GLOB_RECURSE UNCRUSTIFY_FILES
+    ${PROJECT_SOURCE_DIR}/common/*.[ch]
+    ${PROJECT_SOURCE_DIR}/common/*.[ch]pp
+    ${PROJECT_SOURCE_DIR}/include/*.[ch]
+    ${PROJECT_SOURCE_DIR}/include/*.[ch]pp
+    ${PROJECT_SOURCE_DIR}/lib/*.[ch]
+    ${PROJECT_SOURCE_DIR}/lib/*.[ch]pp
+    ${PROJECT_SOURCE_DIR}/plugins/*/*.[ch]
+    ${PROJECT_SOURCE_DIR}/plugins/*/*.[ch]pp
+    ${PROJECT_SOURCE_DIR}/random_maps/*.[ch]
+    ${PROJECT_SOURCE_DIR}/random_maps/*.[ch]pp
+    ${PROJECT_SOURCE_DIR}/server/*.[ch]
+    ${PROJECT_SOURCE_DIR}/server/*.[ch]pp
+    ${PROJECT_SOURCE_DIR}/socket/*.[ch]
+    ${PROJECT_SOURCE_DIR}/socket/*.[ch]pp
+    ${PROJECT_SOURCE_DIR}/test/*/*.[ch]
+    ${PROJECT_SOURCE_DIR}/test/*/*.[ch]pp
+    ${PROJECT_SOURCE_DIR}/types/*/*.[ch]
+    ${PROJECT_SOURCE_DIR}/types/*/*.[ch]pp
+    ${PROJECT_SOURCE_DIR}/utils/*.[ch]
+    ${PROJECT_SOURCE_DIR}/utils/*.[ch]pp
+    ${PROJECT_SOURCE_DIR}/utils/*/*.[ch]
+    ${PROJECT_SOURCE_DIR}/utils/*/*.[ch]pp
+)
+
+if(UNCRUSTIFY)
+    add_custom_target(uncrustify
+        COMMAND ${UNCRUSTIFY}
+            -c ${PROJECT_SOURCE_DIR}/.uncrustify.cfg
+            --replace
+            --no-backup
+            ${UNCRUSTIFY_FILES}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMENT "Running uncrustify on project sources"
+        VERBATIM
+    )
+else()
+    add_custom_target(uncrustify
+        COMMAND ${CMAKE_COMMAND} -E echo "uncrustify not found. Install uncrustify to use this target."
+        COMMAND ${CMAKE_COMMAND} -E false
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMENT "uncrustify formatter is not available"
+        VERBATIM
+    )
+endif()
 
 # libcross {{{
 add_custom_command(OUTPUT arch_types_valid.cpp

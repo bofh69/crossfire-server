@@ -94,6 +94,12 @@ You should now be able to run the server::
 
   $ crossfire-server
 
+Formatting source code
+----------------------
+To run uncrustify on project C/C++ source files from a CMake build directory::
+
+  $ cmake --build . --target uncrustify
+
 Getting Help
 ------------
 Website
