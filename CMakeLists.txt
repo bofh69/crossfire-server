@@ -48,6 +48,7 @@ file(GLOB_RECURSE UNCRUSTIFY_FILES
     ${PROJECT_SOURCE_DIR}/utils/*/*.[ch]
     ${PROJECT_SOURCE_DIR}/utils/*/*.[ch]pp
 )
+list(FILTER UNCRUSTIFY_FILES EXCLUDE REGEX ".*/utils/mapper/nlohmann/json\\.hpp$")
 
 if(UNCRUSTIFY)
     add_custom_target(uncrustify
