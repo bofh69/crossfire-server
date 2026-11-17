@@ -401,6 +401,66 @@ void ws_init(socket_struct *ns, const char *host) {
  * HTTP Upgrade handshake
  * ========================================================================= */
 
+/**
+ * Apply the X-Forwarded-For header, if any.
+ *
+ * When the server sits behind a trusted reverse proxy (e.g. nginx), the
+ * proxy sets this header to the real client IP.  We parse the first
+ * (leftmost) address from the header value, validate it, then run
+ * checkbanned() on it so that the IP ban list is honoured even for proxied
+ * WebSocket connections.
+ *
+ * Security note: we only use this header when it is present in the request.
+ * The raw TCP peer address was already checked by checkbanned() in
+ * do_server() before we reach this point, so the TCP connection itself is
+ * always screened first.
+ *
+ * @return False if the connection must be refused (socket marked dead).
+ */
+static bool ws_apply_forwarded_for(socket_struct *ns, const std::string &request) {
+    std::string xff_hdr;
+    if (!ws_find_header(request, "X-Forwarded-For", xff_hdr))
+        return true;
+
+    /* Take only the first address (before any comma or whitespace). */
+    const std::string xff_ip = xff_hdr.substr(0, xff_hdr.find_first_of(", \t"));
+
+    /* Sanity-check the length: a valid IPv4/IPv6 address fits in 45 bytes
+     * (max IPv6 = 39 chars, mapped IPv4 = 45 chars). */
+    if (xff_ip.empty() || xff_ip.size() >= 46) {
+        LOG(llevInfo, "WebSocket: invalid X-Forwarded-For value from %s\n",
+            ns->host);
+        return ws_reject(ns, "400 Bad Request");
+    }
+
+    /* Validate that every character is a legal IP address character
+     * (hex digit, dot, colon, or bracket for IPv6).  This prevents
+     * log-injection and any further misuse of the value. */
+    for (char c : xff_ip) {
+        if (!isxdigit((unsigned char)c) && c != '.' && c != ':' &&
+            c != '[' && c != ']') {
+            LOG(llevInfo,
+                "WebSocket: illegal character in X-Forwarded-For from %s\n",
+                ns->host);
+            return ws_reject(ns, "400 Bad Request");
+        }
+    }
+
+    if (checkbanned(NULL, xff_ip.c_str())) {
+        LOG(llevInfo,
+            "WebSocket: banned X-Forwarded-For address %s (TCP peer %s)\n",
+            xff_ip.c_str(), ns->host);
+        return ws_reject(ns, "403 Forbidden");
+    }
+
+    /* Replace the stored host with the real client IP so that all
+     * subsequent log messages and game logic see the correct address. */
+    free(ns->host);
+    ns->host = strdup_local(xff_ip.c_str());
+    LOG(llevDebug, "WebSocket: X-Forwarded-For updated host to %s\n", ns->host);
+    return true;
+}
+
 bool ws_do_handshake(socket_struct *ns) {
 
     if (ns->websocket.ws_state != WS_HTTP) {
@@ -448,6 +508,9 @@ bool ws_do_handshake(socket_struct *ns) {
         LOG(llevInfo, "WebSocket: unsupported protocol version from %s\n", ns->host);
         return ws_reject(ns, "426 Upgrade Required", "Sec-WebSocket-Version: 13\r\n");
     }
+
+    if (!ws_apply_forwarded_for(ns, request))
+        return false;
 
     /* Extract Sec-WebSocket-Key. */
     std::string ws_key;
