@@ -41,6 +41,7 @@ add_library(cross
 	common/anim.cpp
 	common/arch.cpp
 	common/artifact.cpp
+	common/base64.cpp
 	common/assets/AnimationWriter.cpp
 	common/assets/Animations.cpp
 	common/assets/ArchetypeLoader.cpp
@@ -102,6 +103,7 @@ add_library(cross
 	common/recipe.cpp
 	common/region.cpp
 	common/shstr.cpp
+	common/sha1.cpp
 	common/stringbuffer.cpp
 	common/time.cpp
 	common/treasure.cpp
