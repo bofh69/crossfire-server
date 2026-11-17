@@ -207,6 +207,7 @@ add_library(cfserver
 	socket/request.cpp
 	socket/requestinfo.cpp
 	socket/sounds.cpp
+	socket/websocket.cpp
 	types/altar/altar.cpp
 	types/armour_improver/armour_improver.cpp
 	types/arrow/arrow.cpp

@@ -221,6 +221,7 @@ struct Settings settings = {
     .assets_tracker = nullptr,
     .fatal_hook = nullptr,
     .stat_file = nullptr,
+    .ws_port = 0,
 };
 
 struct Statistics statistics;

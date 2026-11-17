@@ -31,6 +31,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <string>
+
 #ifndef WIN32 /* ---win32 exclude include files */
 #include <arpa/inet.h>
 #include <sys/types.h>
@@ -47,6 +49,7 @@ typedef char ssop_t;    /**< Parameter type for setsockopt, different between WI
 #include "image.h"
 #include "newserver.h"
 #include "sproto.h"
+#include "websocket.h"
 
 /** Socket information. */
 Socket_Info socket_info;
@@ -299,12 +302,13 @@ static void copy_addrinfo_to_listen(int base, const struct addrinfo *ai) {
 
 /** Allocate and zero-initialise socket slots init_sockets[base..base+count).
  *  init_sockets must already be large enough to hold base+count entries. */
-static void alloc_listen_sockets(int base, int count) {
+static void alloc_listen_sockets(int base, int count, bool is_websocket) {
     for (int i = base; i < base + count; i++) {
         memset(&init_sockets[i], 0, sizeof(socket_struct));
         init_sockets[i].listen = static_cast<listen_info *>(calloc(sizeof(struct listen_info), 1));
         init_sockets[i].faces_sent   = NULL;
         init_sockets[i].account_name = NULL;
+        init_sockets[i].is_websocket = is_websocket;
     }
 }
 
@@ -384,7 +388,7 @@ void init_server(void) {
     LOG(llevDebug, "Initialize new client/server data\n");
     init_sockets = static_cast<socket_struct *>(malloc(sizeof(socket_struct) * listen_socket_count));
     socket_info.allocated_sockets = listen_socket_count;
-    alloc_listen_sockets(0, listen_socket_count);
+    alloc_listen_sockets(0, listen_socket_count, false);
 
 #ifdef HAVE_GETADDRINFO
     copy_addrinfo_to_listen(0, ai);
@@ -410,6 +414,44 @@ void init_server(void) {
         LOG(llevError, "init_server: can't open any listening socket\n");
         fatal(SEE_LAST_ERROR);
     }
+
+#ifdef HAVE_GETADDRINFO
+    if (settings.ws_port > 0) {
+        struct addrinfo ws_hints, *ws_ai;
+
+        memset(&ws_hints, '\0', sizeof(ws_hints));
+        ws_hints.ai_flags    = AI_PASSIVE | AI_ADDRCONFIG;
+        ws_hints.ai_socktype = SOCK_STREAM;
+        const std::string ws_port = std::to_string(settings.ws_port);
+        e = getaddrinfo(NULL, ws_port.c_str(), &ws_hints, &ws_ai);
+        if (e != 0) {
+            LOG(llevError, "init_server: getaddrinfo (WebSocket): %s\n", gai_strerror(e));
+        } else {
+            int ws_count = count_addrinfo(ws_ai);
+            int ws_base  = socket_info.allocated_sockets;
+
+            socket_struct *resized_init_sockets =  static_cast<socket_struct *>(
+                realloc(init_sockets, sizeof(socket_struct) * (ws_base + ws_count)));
+            if (!resized_init_sockets)
+                fatal(OUT_OF_MEMORY);
+            init_sockets = resized_init_sockets;
+
+            alloc_listen_sockets(ws_base, ws_count, true);
+            copy_addrinfo_to_listen(ws_base, ws_ai);
+            freeaddrinfo(ws_ai);
+
+            socket_info.allocated_sockets = ws_base + ws_count;
+
+            if (!open_listen_sockets(ws_base, ws_count))
+                LOG(llevError, "init_server: could not open any WebSocket listening socket\n");
+            else
+                LOG(llevInfo, "WebSocket server listening on port %d\n", settings.ws_port);
+        }
+    }
+#else
+    if (settings.ws_port > 0)
+        LOG(llevError, "init_server: getaddrinfo not available, WebSocket port ignored\n");
+#endif
 }
 
 /*******************************************************************************
