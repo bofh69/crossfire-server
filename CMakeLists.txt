@@ -376,3 +376,35 @@ add_subdirectory(plugins)
 
 set(CPACK_PACKAGE_VERSION ${VERSION})
 include(CPack)
+
+# Unit tests {{{
+find_package(PkgConfig)
+if(PkgConfig_FOUND)
+    pkg_check_modules(CHECK check)
+endif()
+
+if(CHECK_FOUND)
+    enable_testing()
+
+    # WebSocket unit tests (uses POSIX socketpair, not available on Windows)
+    if(NOT WIN32)
+    add_executable(check_websocket
+        test/unit/socket/check_websocket.cpp
+        test/unit/socket/stubs_websocket.cpp
+        test/unit/common/stubs_common.cpp
+        socket/websocket.cpp
+    )
+    target_include_directories(check_websocket PRIVATE
+        include
+        include/random_maps
+        ${PROJECT_BINARY_DIR}
+        ${CHECK_INCLUDE_DIRS}
+    )
+    target_link_libraries(check_websocket PRIVATE cross ${CHECK_LDFLAGS})
+    target_compile_options(check_websocket PRIVATE ${CHECK_CFLAGS_OTHER})
+    add_test(NAME check_websocket COMMAND check_websocket)
+    endif()
+else()
+    message(STATUS "Check library not found - unit tests disabled")
+endif()
+# }}}
