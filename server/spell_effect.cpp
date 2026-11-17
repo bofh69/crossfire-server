@@ -531,7 +531,7 @@ int cast_create_missile(object *op, object *caster, object *spell, int dir, cons
     if (stringarg) {
         /* If it starts with a letter, presume it is a description */
         if (isalpha(*stringarg)) {
-            auto items = find_artifactlist(missile->type)->items;
+            const auto& items = find_artifactlist(missile->type)->items;
             auto ial = std::find_if(items.cbegin(), items.cend(), [&] (const auto al) { return !strcasecmp(al->item->name, stringarg); });
             if (ial == items.cend()) {
                 object_free(missile, FREE_OBJ_NO_DESTROY_CALLBACK);
@@ -1735,7 +1735,7 @@ int dimension_door(object *op, object *caster, object *spob, int dir) {
 /**
  * Heals something.
  * @param op
- * who is casting.
+ * who is being healed
  * @param caster
  * what is casting.
  * @param spell
@@ -1760,7 +1760,8 @@ int cast_heal(object *op, object *caster, object *spell, int dir) {
      */
     heal = spell->stats.dam;
     if (spell->stats.hp)
-        heal += random_roll(spell->stats.hp, 6, op, PREFER_HIGH)+spell->stats.hp;
+        // use the target's luck to determine how much is healed, not the caster's
+        heal += random_roll(spell->stats.hp, 6, target, PREFER_HIGH)+spell->stats.hp;
 
     if (heal) {
         if (target->stats.hp >= target->stats.maxhp) {
@@ -1795,7 +1796,7 @@ int cast_heal(object *op, object *caster, object *spell, int dir) {
         }
     }
     if (spell->attacktype&AT_DISEASE)
-        if (cure_disease(target, op, caster && caster->type != PLAYER ? caster->skill : spell->skill))
+        if (cure_disease(target, caster, caster && caster->type != PLAYER ? caster->skill : spell->skill))
             success = 1;
 
     if (spell->attacktype&AT_POISON) {
@@ -2390,8 +2391,8 @@ int alchemy(object *op, object *caster, object *spell_ob) {
 
 
 /**
- * This function removes the cursed/damned status on equipped
- * items.
+ * Removes curse on equipped items. If blessed, also removes damnation.
+ * To be backwards-compatible, also removes damnation if FLAG_DAMNED is set on the spell object.
  *
  * @param op
  * who is casting.
@@ -2407,13 +2408,14 @@ int remove_curse(object *op, object *caster, object *spell) {
     int success = 0, was_one = 0;
 
     FOR_INV_PREPARE(op, tmp)
+        const bool removes_damnation = QUERY_FLAG(spell, FLAG_BLESSED) || QUERY_FLAG(spell, FLAG_DAMNED);
         if (QUERY_FLAG(tmp, FLAG_APPLIED)
-        && ((QUERY_FLAG(tmp, FLAG_CURSED) && QUERY_FLAG(spell, FLAG_CURSED))
-            || (QUERY_FLAG(tmp, FLAG_DAMNED) && QUERY_FLAG(spell, FLAG_DAMNED)))) {
+        && (QUERY_FLAG(tmp, FLAG_CURSED)
+            || (QUERY_FLAG(tmp, FLAG_DAMNED) && removes_damnation))) {
             was_one++;
             if (tmp->level <= caster_level(caster, spell)) {
                 success++;
-                if (QUERY_FLAG(spell, FLAG_DAMNED))
+                if (removes_damnation)
                     CLEAR_FLAG(tmp, FLAG_DAMNED);
 
                 CLEAR_FLAG(tmp, FLAG_CURSED);

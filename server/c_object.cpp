@@ -18,6 +18,7 @@
 
 #include "global.h"
 
+#include <assert.h>
 #include <ctype.h>
 #include <math.h>
 #include <stdlib.h>
@@ -1180,8 +1181,6 @@ void drop(object *op, object *tmp) {
  * optional specifier, like 'armour', 'weapon' and such.
  */
 void command_dropall(object *op, const char *params) {
-    int count = 0;
-
     if (op->inv == NULL) {
         draw_ext_info(NDI_UNIQUE, 0, op,
                       MSG_TYPE_COMMAND, MSG_TYPE_COMMAND_ERROR,
@@ -1189,8 +1188,8 @@ void command_dropall(object *op, const char *params) {
         return;
     }
 
-    if (op->contr)
-        count = op->contr->count;
+    assert(op->contr);
+    int count = op->contr->count;
 
     /* Set this so we don't call it for _every_ object that
      * is dropped.
@@ -1215,8 +1214,7 @@ void command_dropall(object *op, const char *params) {
             && !curinv->invisible
             && (curinv->type != CONTAINER || op->container != curinv)) {
                 drop(op, curinv);
-                if (op->contr)
-                    op->contr->count = count;
+                op->contr->count = count;
             }
         } FOR_INV_FINISH();
     } else if (strcmp(params, "weapons") == 0) {
@@ -1224,8 +1222,7 @@ void command_dropall(object *op, const char *params) {
             if (!QUERY_FLAG(curinv, FLAG_INV_LOCKED)
             && (curinv->type == WEAPON || curinv->type == BOW || curinv->type == ARROW)) {
                 drop(op, curinv);
-                if (op->contr)
-                    op->contr->count = count;
+                op->contr->count = count;
             }
         } FOR_INV_FINISH();
     } else if (strcmp(params, "armor") == 0 || strcmp(params, "armour") == 0) {
@@ -1233,8 +1230,7 @@ void command_dropall(object *op, const char *params) {
             if (!QUERY_FLAG(curinv, FLAG_INV_LOCKED)
             && (curinv->type == ARMOUR || curinv->type == SHIELD || curinv->type == HELMET)) {
                 drop(op, curinv);
-                if (op->contr)
-                    op->contr->count = count;
+                op->contr->count = count;
             }
         } FOR_INV_FINISH();
     } else if (strcmp(params, "food") == 0) {
@@ -1242,8 +1238,7 @@ void command_dropall(object *op, const char *params) {
             if (!QUERY_FLAG(curinv, FLAG_INV_LOCKED)
             && (curinv->type == FOOD || curinv->type == DRINK)) {
                 drop(op, curinv);
-                if (op->contr)
-                    op->contr->count = count;
+                op->contr->count = count;
             }
         } FOR_INV_FINISH();
     } else if (strcmp(params, "flesh") == 0) {
@@ -1251,8 +1246,7 @@ void command_dropall(object *op, const char *params) {
             if (!QUERY_FLAG(curinv, FLAG_INV_LOCKED)
             && (curinv->type == FLESH)) {
                 drop(op, curinv);
-                if (op->contr)
-                    op->contr->count = count;
+                op->contr->count = count;
             }
         } FOR_INV_FINISH();
     } else if (strcmp(params, "misc") == 0) {
@@ -1276,8 +1270,7 @@ void command_dropall(object *op, const char *params) {
                 case ROD:
                 case POTION:
                     drop(op, curinv);
-                    if (op->contr)
-                        op->contr->count = count;
+                    op->contr->count = count;
                     break;
 
                 default:

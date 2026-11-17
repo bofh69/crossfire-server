@@ -258,6 +258,8 @@ enum object_type {
 
 typedef uint32_t ob_flags[4];
 
+const tag_t OBJECT_INVALID = 0;
+
 /**
  * Main Crossfire structure, one ingame object.
  *
@@ -490,7 +492,6 @@ struct archetype {
     int reference_count;    /**< How many times this temporary archetype is used. If 0, "permanent" archetype. */
 };
 
-extern object *objects;
 extern object *active_objects;
 
 extern int nrofallocobjects;

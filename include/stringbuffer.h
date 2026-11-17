@@ -1,8 +1,8 @@
 /** @file stringbuffer.h
- *
- * Implements a general string buffer: it builds a string by concatenating. It
- * allocates enough memory to hold the whole string; there is no upper limit
- * for the total string length.
+ * This used to be a buffer for building strings, when Crossfire was written in
+ * C. It now is a wrapper around std::string. Note that the memory management
+ * semantics for stringbuffer_new/delete/finish/finish_shared must be
+ * preserved. New code should be written with std::string.
  *
  * Usage is:
  * <code>
@@ -30,7 +30,7 @@
 /**
  * The string buffer state.
  */
-struct StringBuffer;
+using StringBuffer = std::string;
 
 
 /**

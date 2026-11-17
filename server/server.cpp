@@ -1257,8 +1257,8 @@ static void do_shutdown(void) {
  * Check if we're ready to shut the server down.
  */
 static bool check_shutdown(void) {
-    if (shutdown_flag == 1) {
-        LOG(llevInfo, "Received SIGINT; shutting down...\n");
+    if (shutdown_flag != 0) {
+        LOG(llevInfo, "Received signal %d; shutting down...\n", (int)shutdown_flag);
         return true;
     }
 

@@ -157,7 +157,7 @@ void rewinddir(DIR *dir_Info) {
  */
 
 /** Will be set to FALSE when the server should stop running because the service is turned off. */
-int bRunning;
+int bRunning = 1;
 
 /** Status when the server is started as a service. */
 SERVICE_STATUS m_ServiceStatus;
@@ -331,7 +331,6 @@ void WINAPI ServiceMain(DWORD argc, LPTSTR *argv) {
     m_ServiceStatus.dwWaitHint           = 0;
     SetServiceStatus(m_ServiceStatusHandle, &m_ServiceStatus);
 
-    bRunning = 1;
     main(0, NULL);
 
     return;

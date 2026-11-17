@@ -28,6 +28,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <map>
+
 #ifndef WIN32 /* ---win32 exclude headers */
 #include <sys/types.h>
 #include <sys/uio.h>
@@ -39,7 +41,7 @@
 #include "sproto.h"
 #include "stringbuffer.h"
 
-#ifdef CF_MXE_CROSS_COMPILE
+#if defined(CF_MXE_CROSS_COMPILE) || defined(WIN32)
 #   define ffs(word) (__builtin_constant_p (word)                             \
                       ? __builtin_ffs (word)                                  \
                       : ({ int __cnt, __tmp;                                  \
@@ -291,9 +293,11 @@ int nroffreeobjects = STARTMAX;  /**< How many OBs allocated and free (free) */
 int nrofallocobjects = STARTMAX; /**< How many OBs allocated (free + used) */
 #endif
 
-object *objects;           /**< Pointer to the list of used objects */
+static object *objects;           /**< Pointer to the list of used objects */
 static object *free_objects;      /**< Pointer to the list of unused objects */
 object *active_objects;    /**< List of active objects that need to be processed */
+
+static std::map<tag_t, object *> object_map;
 
 /** X offset when searching around a spot. */
 short freearr_x[SIZEOFFREE] = {
@@ -348,6 +352,8 @@ void init_objects(void) {
     SET_FLAG(&objarray[STARTMAX-1], FLAG_REMOVED);
     SET_FLAG(&objarray[STARTMAX-1], FLAG_FREED);
 #endif
+
+    object_map = {};
 }
 
 /**
@@ -536,21 +542,19 @@ int object_can_merge(object *ob1, object *ob2) {
 
 /**
  * object_sum_weight() is a recursive function which calculates the weight
- * an object is carrying.  It goes through in figures out how much
- * containers are carrying, and sums it up.
+ * an object is carrying and stores it in op->carrying. It goes through in
+ * figures out how much containers are carrying, and sums it up.
  *
  * This takes into account the container's weight reduction.
  *
  * @param op
  * object we want the weight of.
- * @return
- * weight of this item and all its inventory.
  *
  * @note
  * The object's carrying field is updated.
  */
 /* TODO should check call this this are made a place where we really need reevaluaton of whole tree */
-signed long object_sum_weight(object *op) {
+void object_sum_weight(object *op) {
     signed long sum;
 
     sum = 0;
@@ -562,7 +566,6 @@ signed long object_sum_weight(object *op) {
     if (op->type == CONTAINER && op->stats.Str)
         sum = (sum*(100-op->stats.Str))/100;
     op->carrying = sum;
-    return sum;
 }
 
 /**
@@ -710,12 +713,16 @@ void object_dump_all(void) {
  * matching object, NULL if not found.
  */
 object *object_find_by_tag_global(tag_t i) {
-    object *op;
+    if (i == OBJECT_INVALID) {
+        return nullptr;
+    }
 
-    for (op = objects; op != NULL; op = op->next)
-        if (op->count == i)
-            break;
-    return op;
+    auto it = object_map.find(i);
+    if (it != object_map.end()) {
+        return it->second;
+    } else {
+        return nullptr;
+    }
 }
 
 /**
@@ -770,6 +777,8 @@ void object_free_all_data(void) {
         op = next;
     }
 #endif
+
+    object_map.clear();
 
     LOG(llevDebug, "%d allocated objects, %d free objects, STARMAX=%d\n", nrofallocobjects, nroffreeobjects, STARTMAX);
 }
@@ -1283,6 +1292,7 @@ object *object_new(void) {
     nroffreeobjects--;
 #endif
     op->count = ++ob_count;
+    object_map[op->count] = op;
     op->name = NULL;
     op->name_pl = NULL;
     op->title = NULL;
@@ -1676,6 +1686,7 @@ void object_free(object *ob, int flags) {
     object_update_speed(ob);
 
     SET_FLAG(ob, FLAG_FREED);
+    object_map.erase(ob->count);
     ob->count = 0;
 
     /* Remove this object from the list of used objects */
@@ -4541,6 +4552,7 @@ int object_set_value(object *op, const char *key, const char *value, int add_key
  * base name                  16
  * short name                 18
  * full name                  20
+ * number matching tag        30
  * (note, count is extracted from begin of name parameter or
  *  from pl->contr->count, name has priority)
  *
@@ -4559,6 +4571,14 @@ int object_set_value(object *op, const char *key, const char *value, int add_key
 int object_matches_string(object *pl, object *op, const char *name) {
     char *cp, local_name[MAX_BUF], name_op[MAX_BUF], name_short[HUGE_BUF], bname_s[MAX_BUF], bname_p[MAX_BUF];
     int count, retval = 0;
+
+    char *endptr;
+    if (op->count == strtoul(name, &endptr, 10)) {
+        if ((endptr != name) && (*endptr == '\0')) {
+            return 30;
+        }
+    }
+
     /* strtok is destructive to name */
     safe_strncpy(local_name, name, sizeof(local_name));
     sstring custom_name = object_get_value(op, CUSTOM_NAME_FIELD);
@@ -4876,11 +4896,8 @@ static const char *const flag_names[NUM_FLAGS+1] = {
  */
 static void get_string_move_type(StringBuffer *sb, MoveType mt)
 {
-    static char retbuf[MAX_BUF], retbuf_all[MAX_BUF];
+    std::string retbuf{""}, retbuf_all{" all"};
     int i, all_count = 0, count;
-
-    strcpy(retbuf, "");
-    strcpy(retbuf_all, " all");
 
     /* Quick check, and probably fairly common */
     if (mt == MOVE_ALL) {
@@ -4898,11 +4915,11 @@ static void get_string_move_type(StringBuffer *sb, MoveType mt)
      */
     for (i = MOVE_ALL, count = 0; i != 0; i >>= 1, count++) {
         if (mt&(1<<count)) {
-            strcat(retbuf, " ");
-            strcat(retbuf, move_name[count]);
+            retbuf += " ";
+            retbuf += move_name[count];
         } else {
-            strcat(retbuf_all, " -");
-            strcat(retbuf_all, move_name[count]);
+            retbuf_all += " -";
+            retbuf_all += move_name[count];
             all_count++;
         }
     }
@@ -4912,9 +4929,9 @@ static void get_string_move_type(StringBuffer *sb, MoveType mt)
      * 'all -walk -fly_low' - it is shorter to return 'fly_high swim'
      */
     if (all_count <= 1)
-        stringbuffer_append_string(sb, retbuf_all+1);
+        stringbuffer_append_string(sb, retbuf_all.c_str()+1);
     else
-        stringbuffer_append_string(sb, retbuf+1);
+        stringbuffer_append_string(sb, retbuf.c_str()+1);
 }
 
 /** Adds a line to the buffer. */

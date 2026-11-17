@@ -1625,18 +1625,6 @@ static void free_all_objects(mapstruct *m) {
                 object_free(op, FREE_OBJ_NO_DESTROY_CALLBACK);
             }
         }
-#ifdef MANY_CORES
-    /* I see periodic cores on metalforge where a map has been swapped out, but apparantly
-     * an item on that map was not saved - look for that condition and die as appropriate -
-     * this leaves more of the map data intact for better debugging.
-     */
-    for (op = objects; op != NULL; op = op->next) {
-        if (!QUERY_FLAG(op, FLAG_REMOVED) && op->map == m) {
-            LOG(llevError, "free_all_objects: object %s still on map after it should have been freed\n", op->name);
-            abort();
-        }
-    }
-#endif
 }
 
 /**
@@ -2225,7 +2213,7 @@ void update_position(mapstruct *m, int x, int y) {
      */
     if (((oldflags&~(P_NEED_UPDATE|P_NO_ERROR)) != flags)
     && (!(oldflags&P_NO_ERROR))) {
-        LOG(llevDebug, "update_position: updated flags do not match old flags: %s (x=%d,y=%d) %x != %x\n",
+        LOG(llevWarn, "update_position: updated flags do not match old flags: %s (x=%d,y=%d) %x != %x\n",
             m->path, x, y, (oldflags&~P_NEED_UPDATE), flags);
     }
 

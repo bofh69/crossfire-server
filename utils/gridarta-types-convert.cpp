@@ -712,7 +712,7 @@ attribute_type *get_description_for_attribute(attribute_definition *attribute, c
 
     add = static_cast<attribute_type *>(calloc(1, sizeof(attribute_type)));
     attribute->type_count++;
-    attribute->types = static_cast<attribute_type **>(realloc(attribute->types, attribute->type_count*sizeof(attribute_type)));
+    attribute->types = static_cast<attribute_type **>(realloc(attribute->types, attribute->type_count*sizeof(attribute_type *)));
     attribute->types[attribute->type_count-1] = add;
 
     if (description)

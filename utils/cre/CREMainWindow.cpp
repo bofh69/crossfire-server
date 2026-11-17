@@ -697,11 +697,11 @@ static QString alchemyTable(const QString& skill, QStringList& noChance, std::ve
     report += "</tr></thead><tbody>";
 
     QList<int> difficulties = recipes.keys();
-    qSort(difficulties);
+    std::sort(difficulties.begin(), difficulties.end());
     foreach(int difficulty, difficulties)
     {
         QStringList line = recipes[difficulty];
-        qSort(line);
+        line.sort();
         report += line.join("\n");
     }
 
@@ -739,7 +739,7 @@ void CREMainWindow::onReportAlchemy()
         report += alchemyTable(skill, noChance, allIngredients);
     }
 
-    qSort(noChance);
+    noChance.sort();
     report += tr("<h1>Formulae with chance of 0</h1>");
     report += "<table><th>";
     foreach(const QString& name, noChance) {
@@ -862,9 +862,9 @@ static QString spellsTable(const QString& skill)
     getManager()->archetypes()->each([&skill, &spells, &one] (const archetype *spell) {
         if (spell->clone.type == SPELL && spell->clone.skill == skill)
         {
-            auto buf = stringbuffer_finish(describe_spellpath_attenuation(nullptr, spell->clone.path_attuned, nullptr));
-            spells[spell->clone.level].append(QString("<tr><td>%1</td><td>%2</td><td>%3</td></tr>").arg(spell->clone.name).arg(spell->clone.level).arg(buf));
-            free(buf);
+            StringBuffer sb;
+            describe_spellpath_attenuation(nullptr, spell->clone.path_attuned, &sb);
+            spells[spell->clone.level].append(QString("<tr><td>%1</td><td>%2</td><td>%3</td></tr>").arg(spell->clone.name).arg(spell->clone.level).arg(QString::fromStdString(sb)));
             one = true;
         }
     });
@@ -873,7 +873,7 @@ static QString spellsTable(const QString& skill)
         return QString();
 
     QList<int> levels = spells.keys();
-    qSort(levels);
+    std::sort(levels.begin(), levels.end());
     foreach(int level, levels)
     {
         spells[level].sort();
@@ -1396,7 +1396,7 @@ void CREMainWindow::onReportShops()
                 items.append(item);
         }
     }
-    qSort(items);
+    items.sort();
 
     QStringList part;
 

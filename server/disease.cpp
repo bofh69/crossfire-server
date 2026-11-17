@@ -684,16 +684,20 @@ void check_physically_infect(object *victim, object *hitter) {
  */
 int cure_disease(object *sufferer, object *caster, sstring skill) {
     int casting_level;
-    int cure = 0;
 
     if (caster)
         casting_level = caster->level;
     else
         casting_level = 1000;  /* if null caster, CURE all.  */
 
+    int diseases = 0, cured = 0;
     FOR_INV_PREPARE(sufferer, disease) {
-        if (disease->type == DISEASE && !QUERY_FLAG(disease, FLAG_STARTEQUIP)) {
-             /* attempt to cure this disease. God-given diseases are given by the god, so don't remove them */
+        if (disease->type == DISEASE) {
+            diseases++;
+            if (QUERY_FLAG(disease, FLAG_STARTEQUIP)) {
+                // God-given diseases are given by the god, so don't remove them
+                continue;
+            }
             /* If caster lvel is higher than disease level, cure chance
              * is automatic.  If lower, then the chance is basically
              * 1 in level_diff - if there is a 5 level difference, chance
@@ -703,21 +707,30 @@ int cure_disease(object *sufferer, object *caster, sstring skill) {
             || (!(random_roll(0, (disease->level-casting_level-1), caster, PREFER_LOW)))) {
                 remove_symptoms(disease);
                 object_remove(disease);
-                cure = 1;
+                cured++;
                 if (caster)
                     change_exp(caster, disease->stats.exp, skill, 0);
                 object_free_drop_inventory(disease);
             }
         }
     } FOR_INV_FINISH();
-    if (cure) {
-        /* Only draw these messages once */
-        if (caster)
-            draw_ext_info_format(NDI_UNIQUE, 0, caster, MSG_TYPE_SPELL, MSG_TYPE_SPELL_HEAL,
-                                 "You cure a disease!");
 
-        draw_ext_info(NDI_UNIQUE, 0, sufferer, MSG_TYPE_ATTRIBUTE, MSG_TYPE_ATTRIBUTE_BAD_EFFECT_END,
-                      "You no longer feel diseased.");
+    if (diseases == 0) {
+        draw_ext_info(NDI_UNIQUE, 0, sufferer, MSG_TYPE_SPELL, MSG_TYPE_SPELL_HEAL, "You feel just fine.");
+    } else {
+        if (cured > 0) {
+            if (diseases == cured) {
+                draw_ext_info(NDI_UNIQUE, 0, sufferer, MSG_TYPE_ATTRIBUTE, MSG_TYPE_ATTRIBUTE_BAD_EFFECT_END, "You no longer feel diseased.");
+            } else {
+                draw_ext_info(NDI_UNIQUE, 0, sufferer, MSG_TYPE_ATTRIBUTE, MSG_TYPE_ATTRIBUTE_BAD_EFFECT_END, "You feel less diseased.");
+            }
+            if (caster)
+                draw_ext_info_format(NDI_UNIQUE, 0, caster, MSG_TYPE_SPELL, MSG_TYPE_SPELL_HEAL, "You cure a disease!");
+        } else {
+            draw_ext_info(NDI_UNIQUE, 0, sufferer, MSG_TYPE_SPELL, MSG_TYPE_SPELL_HEAL, "You still feel diseased.");
+            if (caster)
+                draw_ext_info_format(NDI_UNIQUE, 0, caster, MSG_TYPE_SPELL, MSG_TYPE_SPELL_HEAL, "You fail to cure a disease.");
+        }
     }
-    return cure;
+    return cured > 0;
 }

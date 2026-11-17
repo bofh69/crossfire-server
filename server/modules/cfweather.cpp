@@ -23,6 +23,7 @@
 #include "object.h"
 #include "output_file.h"
 #include "sproto.h"
+#include "modules.h"
 
 #include <string.h>
 #include <assert.h>
@@ -4816,7 +4817,10 @@ static command_registration command_handler = 0;
  * Weather module initialisation.
  * @param settings server settings.
  */
-void cfweather_init(Settings *settings, ServerSettings *serv) {
+void cfweather_init(Settings *settings, ServerSettings *server, StartupStage stage) {
+    if (stage != STARTUP_STAGE_BEFORE_SERVER)
+        return;
+
     int x, tx, ty;
 
     // Initialize weather settings
@@ -4918,7 +4922,7 @@ void cfweather_init(Settings *settings, ServerSettings *serv) {
     // Register the 'weather command
     command_handler = command_register("weather", COMMAND_TYPE_NORMAL, command_weather, 0.0);
     /* Disable the plugin in case it's still there */
-    serv->disabled_plugins.push_back(strdup("cfweather"));
+    server->disabled_plugins.push_back(strdup("cfweather"));
 }
 
 void cfweather_close() {

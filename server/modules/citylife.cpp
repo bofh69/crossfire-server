@@ -52,6 +52,7 @@
 #include "sproto.h"
 #include "server.h"
 #include "assets.h"
+#include "modules.h"
 
 /** Module name for the event system. */
 #define CITYLIFE_NAME   "citylife"
@@ -174,6 +175,8 @@ static void add_npc_to_point(const mapzone *zone, mapstruct *map) {
     int which;
     object *npc = get_npc(zone);
 
+    if (!npc)
+        return;
     which = RANDOM() % zone->points.size();
     if (!object_teleport(npc, map, zone->points[which].x, zone->points[which].y)) {
         object_free_drop_inventory(npc);
@@ -270,7 +273,7 @@ static int eventListener(int *type, ...) {
         object *th = object_find_by_type_subtype(who, EVENT_CONNECTOR, EVENT_TIME);
         if (th) {   // Should not be NULL, but play it safe
             object_remove(th);
-            object_free(th, 0);
+            object_free(th, FREE_OBJ_NO_DESTROY_CALLBACK);
         }   // Attacked hook is unique thus removed by the event handler
         CLEAR_FLAG(who, FLAG_RANDOM_MOVE);
         CLEAR_FLAG(who, FLAG_STAND_STILL);
@@ -423,7 +426,9 @@ static void load_citylife(BufferReader *reader, const char *filename) {
 
 static event_registration c, m;
 
-void citylife_init(Settings *, ServerSettings *serverSettings) {
+void citylife_init(Settings *, ServerSettings *serverSettings, StartupStage stage) {
+    if (stage != STARTUP_STAGE_COLLECT_HOOKS)
+        return;
     c = events_register_global_handler(EVENT_CLOCK, citylife_globalEventListener);
     m = events_register_global_handler(EVENT_MAPLOAD, citylife_globalEventListener);
     events_register_object_handler(CITYLIFE_NAME, eventListener);
@@ -438,7 +443,7 @@ void citylife_close() {
     events_unregister_global_handler(EVENT_CLOCK, c);
     events_unregister_global_handler(EVENT_MAPLOAD, m);
     events_unregister_object_handler(CITYLIFE_NAME);
-    for (auto map : maps) {
+    for (const auto& map : maps) {
         delete map.second;
     }
     maps.clear();

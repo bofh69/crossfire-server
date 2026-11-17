@@ -126,7 +126,6 @@ START_TEST(test_object_sum_weight) {
     object *ob2;
     object *ob3;
     object *ob4;
-    unsigned long sum;
 
     ob1 = cctk_create_game_object(NULL);
     ob2 = cctk_create_game_object(NULL);
@@ -142,8 +141,8 @@ START_TEST(test_object_sum_weight) {
     object_insert_in_ob(ob2, ob1);
     object_insert_in_ob(ob3, ob1);
     object_insert_in_ob(ob4, ob1);
-    sum = object_sum_weight(ob1);
-    FAIL_UNLESS(sum == 45, "Sum of object's inventory should be 45 ((6*10+7+8)*.6) but was %lu.", sum);
+    object_sum_weight(ob1);
+    FAIL_UNLESS(ob1->carrying == 45, "Sum of object's inventory should be 45 ((6*10+7+8)*.6) but was %lu.", ob1->carrying);
 }
 END_TEST
 
@@ -232,14 +231,15 @@ END_TEST
  *  object *object_find_by_tag_global(tag_t i);
  */
 START_TEST(test_object_find_by_tag_global) {
-    object *ob1;
-    object *result;
-
-    cctk_create_game_object(NULL);
-    cctk_create_game_object(NULL);
-    ob1 = cctk_create_game_object(NULL);
-    result = object_find_by_tag_global(ob1->count);
-    FAIL_UNLESS(result == ob1, "Should find ob1(%p) while search for item %d but got %p", ob1, ob1->count, result);
+    object *ob1 = cctk_create_game_object(NULL);
+    object *ob2 = cctk_create_game_object(NULL);
+    object *ob3 = cctk_create_game_object(NULL);
+    ck_assert_ptr_eq(object_find_by_tag_global(ob3->count), ob3);
+    ck_assert_ptr_eq(object_find_by_tag_global(ob1->count), ob1);
+    ck_assert_ptr_eq(object_find_by_tag_global(ob2->count), ob2);
+    object_free(ob1, 0);
+    ck_assert_ptr_null(object_find_by_tag_global(ob1->count));
+    ck_assert_ptr_null(object_find_by_tag_global(OBJECT_INVALID));
 }
 END_TEST
 
@@ -619,7 +619,6 @@ START_TEST(test_object_sub_weight) {
     object *ob2;
     object *ob3;
     object *ob4;
-    unsigned long sum;
 
     ob1 = cctk_create_game_object(NULL);
     ob2 = cctk_create_game_object(NULL);
@@ -636,8 +635,8 @@ START_TEST(test_object_sub_weight) {
     object_insert_in_ob(ob2, ob1);
     object_insert_in_ob(ob3, ob2);
     object_insert_in_ob(ob4, ob3);
-    sum = object_sum_weight(ob1);
-    FAIL_UNLESS(sum == 18, "Sum of object's inventory should be 18 (30*0.6+10) but was %lu.", sum);
+    object_sum_weight(ob1);
+    FAIL_UNLESS(ob1->carrying == 18, "Sum of object's inventory should be 18 (30*0.6+10) but was %lu.", ob1->carrying);
     object_sub_weight(ob4, 10);
     FAIL_UNLESS(ob1->carrying == 12, "after call to object_sub_weight, carrying of ob1 should be 22 but was %d", ob1->carrying);
 }
@@ -1187,6 +1186,12 @@ START_TEST(test_object_matches_string) {
     FAIL_UNLESS(val != 0, "unpaid cloak didn't match cloak with %d", val);
     val = object_matches_string(pl, o2, "wrong");
     FAIL_UNLESS(val == 0, "unpaid cloak matched wrong name %d", val);
+    char buf[10];
+    snprintf(buf, sizeof(buf), "%d", o2->count);
+    val = object_matches_string(pl, o2, buf);
+    FAIL_UNLESS(val == 30, "tag %s didn't match cloak, returned with value %d", buf, val);
+    val = object_matches_string(pl, o2, "1234567");
+    FAIL_UNLESS(val == 0, "tag 1234567 matched cloak, returned with value %d", val);
 }
 END_TEST
 

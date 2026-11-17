@@ -1095,7 +1095,7 @@ void command_create(object *op, const char *params) {
                                      "No artifact list for type %d\n",
                                      at->clone.type);
             } else {
-                auto items = find_artifactlist(at->clone.type)->items;
+                const auto& items = find_artifactlist(at->clone.type)->items;
                 auto i = std::find_if(items.cbegin(), items.cend(),
                         [&] (const auto art) { return !strcmp(art->item->name, cp) && legal_artifact_combination(&at->clone, art); });
                 art = i == items.cend() ? nullptr : *i;

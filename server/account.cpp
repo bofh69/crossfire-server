@@ -178,8 +178,19 @@ void accounts_load(void) {
 
         /* Ignore any comment lines */
         if (buf[0] == '#') continue;
+        /* Ignore empty lines */
+        if (buf[0] == 0) continue;
+        /* Skip if account name is empty. This cleans up entries introduced by a bug fixed in patches/477 */
+        if (buf[0] == ':') {
+            LOG(llevDebug, "Ignoring accounts entry without account name: %s\n", buf);
+            continue;
+        }
 
         fields = split_string(buf, tmp, NUM_ACCOUNT_FIELDS, ':');
+        if (fields < 3) {
+            LOG(llevWarn, "Parse failure for line in %s starting with: %s\n", fname, buf);
+            continue;
+        }
 
         account_struct *ac = account_alloc();
         ac->name = strdup_local(tmp[0]);
@@ -235,14 +246,14 @@ static void account_write_entry(FILE *fp, account_struct *ac)
 {
     int i;
 
-    fprintf(fp,"%s:%s:%u:", ac->name, ac->password, (uint32_t)ac->last_login);
+    fprintf(fp,"%s:%s:%" PRIu64 ":", ac->name, ac->password, (uint64_t)ac->last_login);
     for (i=0; i<ac->num_characters; i++) {
         if (i != 0)
             fprintf(fp,";%s", ac->character_names[i]);
         else
             fprintf(fp,"%s", ac->character_names[i]);
     }
-    fprintf(fp,":%u:\n", (uint32_t) ac->created);
+    fprintf(fp,":%" PRIu64 ":\n", (uint64_t)ac->created);
 }
 
 
